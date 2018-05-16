@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>YC Note - server</title><link href="YCNote/" rel="alternate"></link><link href="YCNote/feeds/server.atom.xml" rel="self"></link><id>YCNote/</id><updated>2015-02-18T16:00:00+08:00</updated><entry><title>Ubuntu Install</title><link href="YCNote/ubuntu-install.html" rel="alternate"></link><published>2015-02-18T16:00:00+08:00</published><updated>2015-02-18T16:00:00+08:00</updated><author><name>Matthieu OLIVIER</name></author><id>tag:None,2015-02-18:YCNote/ubuntu-install.html</id><summary type="html">&lt;h1&gt;H1&lt;/h1&gt;
+&lt;h2&gt;H2&lt;/h2&gt;
+&lt;p&gt;jfidsjfojdsjfidjsjfijdijf;adjfj&lt;/p&gt;</summary><content type="html">&lt;h1&gt;H1&lt;/h1&gt;
+&lt;h2&gt;H2&lt;/h2&gt;
+&lt;p&gt;jfidsjfojdsjfidjsjfijdijf;adjfj&lt;/p&gt;</content><category term="ubuntu"></category><category term="kernel"></category></entry></feed>
