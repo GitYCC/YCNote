@@ -1,43 +1,63 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*- #
-from __future__ import unicode_literals
+# Nest
 
-AUTHOR = u'YC Chen'
-SITENAME = u'YC Note'
-SITEURL = ''
+Nest is a theme for [Pelican](http://docs.getpelican.com) 3.5+, a static site generator written in Python.
 
-PATH = 'content'
+I initially created this theme for [my blog](https://www.molivier.com), but now the theme is supposed to be generic enough to have its own repository.
 
-TIMEZONE = 'Asia/Taipei'
+## Screenshots
 
-DEFAULT_LANG = u'zh'
+### Homepage
 
-# Feed generation is usually not desired when developing
-FEED_ALL_ATOM = None
-CATEGORY_FEED_ATOM = None
-TRANSLATION_FEED_ATOM = None
-AUTHOR_FEED_ATOM = None
-AUTHOR_FEED_RSS = None
+![Nest Index View](homepage.png)
 
-# Blogroll
-LINKS = (('Pelican', 'http://getpelican.com/'),
-         ('Python.org', 'http://python.org/'),
-         ('Jinja2', 'http://jinja.pocoo.org/'),
-         ('You can modify those links in your config file', '#'),)
+### Homepage with background
 
-# Social widget
-SOCIAL = (('You can add links in your config file', '#'),
-          ('Another social link', '#'),)
+![Nest Article View](homepage-background.png)
 
-DEFAULT_PAGINATION = 10
+Add a background image by configuring `NEST_HEADER_IMAGES` parameter in your pelican.conf. Image should be located in `content/images` directory.
 
-# Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
+### Article
 
-### Nest ###
+![Nest Index View](article.png)
 
+### Article or page with background
+
+![Nest Article View](article-background.png)
+
+Add a background image by adding `Illustration` custom parameter in your markdown article or page. Image should be located in `content/images` directory.
+
+	Title: Ubuntu Install
+	Date: 2015-02-18 16:00
+	Category: server
+	Tags: ubuntu, kernel
+	Slug: ubuntu-install
+	Author: Matthieu OLIVIER
+	Illustration: background.jpg
+
+
+## Features
+
+* Featured site header image
+* Featured article header image
+* **Pygments** syntax highlighting
+* **Disqus** support for comments
+* **Google Analytics** support
+* **Piwik** support
+* RSS and Atom feeds
+
+## Settings
+
+Nest template can be customized by adding parameters to your `pelicanconf.py` file. Template specifics parameters are prefixed with template name.
+
+The header-nav have a fixed heigth of 100px. This is the max size for the logo without css modification.
+
+The min-height for the background header is 360px. The image is displayed using background-size: cover; which scale the background image to be as large as possible so that the background area is completely covered by the background image. If smaller than screen, the image is repeated to fit the background area.
+
+### Pelican.conf example
+
+```python
 # NEST Template
-THEME = 'theme/nest'
+THEME = 'nest'
 SITESUBTITLE = u'My Awesome Blog'
 # Minified CSS
 NEST_CSS_MINIFY = True
@@ -45,7 +65,7 @@ NEST_CSS_MINIFY = True
 MENUITEMS = [('Homepage', '/'),('Categories','/categories.html')]
 # Add header background image from content/images : 'background.jpg'
 NEST_HEADER_IMAGES = ''
-NEST_HEADER_LOGO = '/static/img/favicon.png'
+NEST_HEADER_LOGO = '/image/logo.png'
 # Footer
 NEST_SITEMAP_COLUMN_TITLE = u'Sitemap'
 NEST_SITEMAP_MENU = [('Archives', '/archives.html'),('Tags','/tags.html'), ('Authors','/authors.html')]
@@ -113,9 +133,27 @@ NEST_TAGS_HEADER_SUBTITLE = u'Tags List'
 NEST_TAGS_CONTENT_TITLE = u'Tags List'
 NEST_TAGS_CONTENT_LIST = u'tagged'
 # Static files
-STATIC_PATHS = ['static', 'extra/robots.txt', 'extra/favicon.ico', 'extra/logo.svg']
+STATIC_PATHS = ['images', 'extra/robots.txt', 'extra/favicon.ico', 'extra/logo.svg']
 EXTRA_PATH_METADATA = {
     'extra/robots.txt': {'path': 'robots.txt'},
     'extra/favicon.ico': {'path': 'favicon.ico'},
     'extra/logo.svg': {'path': 'logo.svg'}
 }
+```
+
+### Disqus activation
+
+`SITEURL` and `DISQUS_SITENAME` must be set in `publishconf.py` and/or `pelicanconfig.py` to activate the Disqus comment system:
+
+```python
+SITEURL = 'https://www.molivier.com'
+DISQUS_SITENAME = 'molivier'
+```
+
+
+## Third-party assets
+
+The theme uses external softwares, scripts, libraries and artworks:
+
+* [Bootstrap](http://getbootstrap.com/) 3.x.x
+* [Open Sans Font](http://www.google.com/fonts/specimen/Open+Sans)
