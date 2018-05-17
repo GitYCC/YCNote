@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="物件導向怎麼用才能成就好的程式碼？ 一個好的工具，也要配合對於工具的理解，才能發揮效用。在上一回中，我們完整介紹了Java和Python的物件導向實現方式，我們講到了「封裝」、「繼承」、「多型」等等物件導向的特色，也講了「抽象類別」、「接口」等抽象化的方法，不過我並沒有告訴大家該怎麼用這些工具？使用這些工具是不是有什麼樣的法則？...">
+        <meta name="keywords" content="軟體設計">
+        <link rel="icon" href="./favicon.ico">
+
+        <title>物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID - YC Note</title>
+
+        <!-- Stylesheets -->
+        <link href="./theme/css/all.min.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Full Atom Feed" />
+        <link href="YCNote/feeds/coding.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('./images/coding_front_board.jpg'); background-position: center; background-size: cover;">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="./"><img class="mr20" src="./static/img/favicon.png" alt="logo">YC Note</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="./category/coding.html">Coding</a>
+                                <a href="./category/aiml.html">AI.ML</a>
+                                <a href="./category/reading.html">Reading</a>
+                                <a href="./category/recording.html">Recording</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID</h1>
+                      <p class="header-date">By <a href="./author/yc-chen.html">YC Chen</a>, 2018 / 4月 14, in category <a href="./category/coding.html">Coding</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="./tag/ruan-ti-she-ji.html">軟體設計</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <h3>物件導向怎麼用才能成就好的程式碼？</h3>
+<p>一個好的工具，也要配合對於工具的理解，才能發揮效用。<a href="http://www.ycc.idv.tw/YCNote/post/48">在上一回中</a>，我們完整介紹了Java和Python的物件導向實現方式，我們講到了「封裝」、「繼承」、「多型」等等物件導向的特色，也講了「抽象類別」、「接口」等抽象化的方法，不過我並沒有告訴大家該怎麼用這些工具？使用這些工具是不是有什麼樣的法則？</p>
+<p>在接下來的這一篇，我將會介紹物件導向的使用方式，我會提到物件導向著名的六大法則：</p>
+<ol>
+<li>單一職責原理</li>
+<li>開閉原理</li>
+<li>里氏替換原則</li>
+<li>迪米特法則</li>
+<li>依賴倒置原則</li>
+<li>接口分隔原則</li>
+</ol>
+<p>在這之前我們先來介紹描述類別關係的UML類別圖。</p>
+<h3>UML類別圖</h3>
+<p>開始介紹各種原則之前，先來介紹UML類別圖，UML全名稱為Unified Modeling Language，是一種使用圖形來描繪軟體工程架構的方法，這邊準備介紹的是它的類別圖，這個工具有助於我們快速的了解物件與物件之間的關係。</p>
+<ul>
+<li>類別(Class): -代表<code>private</code>，+代表<code>public</code>，#代表<code>protected</code></li>
+</ul>
+<p><img alt="Class" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Class.png"></p>
+<ul>
+<li>抽象類別(Abstract Class)</li>
+</ul>
+<p><img alt="AbstractClass" src="https://www.ycc.idv.tw/media/SOLID_Introduction/AbstractClass.png"></p>
+<ul>
+<li>接口(Interface)</li>
+</ul>
+<p><img alt="Interface" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Interface.png"></p>
+<ul>
+<li>繼承關係(Inheritance)和抽象類、接口實現</li>
+</ul>
+<p><img alt="Inheritance" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Inheritance.png"></p>
+<ul>
+<li>關聯關係(Association)：A類中使用B類當作「成員變數」，但是A和B並沒有「擁有」的關係，只能說是「有個」的關係，就稱為：A關聯到B，英文為"has-a"的關係。</li>
+</ul>
+<p><img alt="Associatione" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Association.png"></p>
+<ul>
+<li>聚合關係(Aggregation)：A類中使用B類當作「成員變數」，而且A和B有一個弱的「擁有」關係，A包含B，但B不是A的一部分，拔掉B，A依然能存在，就稱為：A聚合到B，英文為"owns-a"關係。</li>
+</ul>
+<p><img alt="Aggregation" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Aggregation.png"></p>
+<ul>
+<li>合成（組合）關係(Composition)：A類中使用B類當作「成員變數」，而且A和B有一個強的「擁有」關係，B是A的組成的一部分，拔掉B，A就不完整，就稱為：A合成到B，英文為"is-part-of"關係。</li>
+</ul>
+<p><img alt="Composition" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Composition.png"></p>
+<ul>
+<li>依賴關係(Dependency)：A類中使用到B類，但僅僅是弱連結，譬如：B類作為A類方法的參數、B類作為A類的局域變數、A類調用B類的靜態方法、B類作為A類方法的回傳值，就稱為：A依賴B，英文為"uses-a"的關係。</li>
+</ul>
+<p><img alt="Dependency" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Dependency.png"></p>
+<h3>單一職責原則(Single Responsibility Principle, SRP)</h3>
+<ul>
+<li>
+<p>定義：There should never be more than one reason for a class to change.（一個類別中不要有多於一個以上的變化理由）</p>
+</li>
+<li>
+<p>簡單的說，就是一個類別中不要做超過一件事，要去切分直到不能再分割為止，如此一來可以提高內聚性。</p>
+</li>
+<li>
+<p>乍看之下，這樣的原則很容易實現，但是魔鬼藏在細節裡，我們常常會沒注意到其實還可以繼續的切分。舉個例子，假設我想設計一個電話的接口，我可能是這樣設計的</p>
+</li>
+</ul>
+<p><img alt="phone_1" src="https://www.ycc.idv.tw/media/SOLID_Introduction/phone_1.png"></p>
+<p>乍看之下沒有問題，一個電話擁有撥號、掛號、數據傳送和接收，但是等等！連接的過程和數據的傳輸其實是兩個職責啊！它們之間沒有強烈的關聯性，完全是可以分開處理的，因此這個配置不符合「單一職責原則」，可以繼續切分下去，修改如下。</p>
+<p><img alt="phone_2" src="https://www.ycc.idv.tw/media/SOLID_Introduction/phone_2.png"></p>
+<ul>
+<li>「單一職責原則」原文指的是類別的單一職責，但是務實上，類別如果切分到如此程度，程式碼會變得細碎不堪，這違反了程式碼的「可讀性」，所以我們一般只要求「接口必須保持單一原則」，而類別去套用接口，類別就盡量達成少的職責就好。</li>
+</ul>
+<h3>開閉原則(Open-Closed Principle, OCP)</h3>
+<ul>
+<li>
+<p>定義：Software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification.（軟體中的實體，例如：類、模組、函數等等，都必須對延伸開放，但對修改封閉）</p>
+</li>
+<li>
+<p>對延伸開放：實體在因應新的改變時，必須是可以靈活擴充的。</p>
+</li>
+<li>
+<p>對修改封閉：實體一旦完成，就盡量不要再去修改它了。</p>
+</li>
+<li>
+<p>綜合以上兩點，我們可以總結出：實體本身的內聚性要高，可以讓我們未來不需要再做修改，單一職責可以做到增強內聚性；實體間的耦合性要低，所以實體像是積木一樣可以因應各種需求去任意組合、擴充。所以「開閉原則」只是進一步的把「低耦合高內聚」再說的更清楚一點，實現「開閉原則」將有利於單元測試、提高維護和擴充能力。</p>
+</li>
+</ul>
+<h3>里氏替換原則(Liskov Subsititution Principle, LSP)</h3>
+<ul>
+<li>
+<p>定義：What is wanted here is something like the following substitution property: If for each object o1 of type S there is an object o2 of type T such that for all programs P defined in terms of T, the behavior of P is unchanged when o1 is substituted for o2 then S is a subtype of T.（簡言之：子類對象能夠替換其父類對象，使用父類方法而不會有問題）</p>
+</li>
+<li>
+<p>「里氏替換原則」用於規範繼承，子類繼承自父類的方法是保有彈性可以覆寫(Overriding)和多載(Overloading)的，但是應該怎麼做，程式碼才不會髒掉？「里氏替換原則」告訴我們一個簡單的法則，就是先寫一段父類的執行代碼，然後把父類替換成子類，然後再跑跑看能不能正常執行，如果正常執行代表這個繼承關係是健康的。</p>
+</li>
+<li>
+<p>為什麼要這樣檢查？之前我們提過繼承主要是為了要避免Repeat Yourself而生，我們找出各種類別共享的屬性和方法，把它獨立出來，然後大家再一起繼承自它，所以我們要盡可能的避免父類出現不是共享的性質。也就是說在理想情況下「父類必須等於子類們的交集」，所以「父類必定是任一子類的子集合」，因此「使用子類來執行父類是不應該有問題的」，這就是「里氏替換原則」。</p>
+</li>
+<li>
+<p>為了遵循「里氏替換原則」，則子類必須完全實現父類的方法。如果子類不能完整地實現父類的方法，或者父類的某些方法在子類中已經發生了「畸變」，則建議斷開父子繼承關係，採用依賴、聚集、組合等關係替代。</p>
+</li>
+<li>
+<p>有了「里氏替換原則」，我們終於可以談談一個上一章沒提到的重要問題：什麼情況可以做繼承？有一些書籍會告訴你，繼承為"is-a"的關係，例如：瑪爾濟斯(B) is-a 狗(A)，所以瑪爾濟斯(B)可以繼承狗(A)，乍看之下沒問題，但這樣的說法存在缺陷，舉個例子，假設今天我先有了類別<code>Retangle</code>，也就是長方形，然後我想要弄一個新的類別<code>Square</code>，也就是正方形，我可以讓<code>Square</code>繼承自<code>Retangle</code>嗎？我們用"is-a"來檢視：正方形是一個長方形？答案是Yes，但是「里氏替換原則」持相反意見，來看一下，</p>
+</li>
+</ul>
+<p><img alt="square_1" src="https://www.ycc.idv.tw/media/SOLID_Introduction/square_1.png"></p>
+<p>依照「里氏替換原則」，<code>Square</code>不能繼承自<code>Retangle</code>，因為<code>Square</code>只需要<code>width</code>的成員變數，而<code>Retangle</code>則需要<code>width</code>和<code>height</code>兩個成員變數，當我們將子類<code>Square</code>放到父類<code>Retangle</code>的方法中，因為缺少<code>height</code>變數，必然會出錯，所以違反「里氏替換原則」，因此這兩類不適合作為「繼承」關係。我們可以這樣改善，讓<code>Square</code>應用<code>Retangle</code>來幫忙計算，使用「關聯」關係取代「繼承」關係。</p>
+<p><img alt="square_2" src="https://www.ycc.idv.tw/media/SOLID_Introduction/square_2.png"></p>
+<ul>
+<li>下面這一張集合圖是我自創的，圖中清楚的指出「繼承」中的父類和子類應該是什麼樣的關係。</li>
+</ul>
+<p><img alt="Inheritance Principle.jpeg" src="https://www.ycc.idv.tw/media/SOLID_Introduction/inheritance_principle.jpeg"></p>
+<h3>迪米特法則(Law of Demeter, LoD)</h3>
+<ul>
+<li>
+<p>又稱為「最少知識原則」</p>
+</li>
+<li>
+<p>定義：</p>
+<ol>
+<li>Each unit should have only limited knowledge about other units: only units "closely" related to the current unit.</li>
+<li>Each unit should only talk to its friends; don't talk to strangers.</li>
+<li>Only talk to your immediate friends.</li>
+</ol>
+</li>
+<li>
+<p>「朋友」的定義：對於類別C的所有方法M而言，在M的方法中僅能訪問以下物件的方法</p>
+<ul>
+<li><code>self</code>，類別C自身</li>
+<li>M的輸入參數</li>
+<li>C的成員變數</li>
+<li>M的輸出物件</li>
+<li>全域變數的物件</li>
+</ul>
+</li>
+<li>
+<p>白話總結：</p>
+<ol>
+<li>僅能訪問那些類別出現在自身、成員變數、方法的輸入和輸出參數中的方法。</li>
+<li>減少類別的對外方法，將沒必要對外公布的方法隱藏起來。 </li>
+</ol>
+</li>
+</ul>
+<p><strong>（詳解）僅能訪問那些類別出現在自身、成員變數、方法的輸入和輸出參數中的方法。</strong></p>
+<p>-- 例子: 假設今天一名老師給了學生名條想叫班長幫忙點名。</p>
+<p>錯誤示範：</p>
+<div class="highlight"><pre><span></span><span class="c1">### Python3.4</span>
+
+<span class="k">class</span> <span class="nc">Student</span><span class="p">:</span> <span class="c1">#friends: None</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+<span class="k">class</span> <span class="nc">Leader</span><span class="p">:</span> <span class="c1">#friends: Student</span>
+    <span class="k">def</span> <span class="nf">countStudents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">student_list</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Total number of students is &quot;</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">student_list</span><span class="p">))</span>
+
+<span class="k">class</span> <span class="nc">Teacher</span><span class="p">:</span> <span class="c1">#friends: Leader</span>
+    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name_list</span><span class="p">,</span><span class="n">leader</span><span class="p">):</span>
+        <span class="n">student_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">name_list</span><span class="p">:</span>
+            <span class="n">student_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Student</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="c1">#`Student` is not a friend</span>
+        <span class="n">leader</span><span class="o">.</span><span class="n">countStudents</span><span class="p">(</span><span class="n">student_list</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">teacher</span> <span class="o">=</span> <span class="n">Teacher</span><span class="p">()</span>
+    <span class="n">leader</span> <span class="o">=</span> <span class="n">Leader</span><span class="p">()</span>
+    <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
+    <span class="n">teacher</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name_list</span><span class="p">,</span><span class="n">leader</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="teacher-leader-student_1" src="https://www.ycc.idv.tw/media/SOLID_Introduction/teacher-leader-student_1.png"></p>
+<p>以上程式違反「迪米特法則」，因為在類別<code>Teacher</code>的方法<code>command</code>中訪問了不是朋友的<code>Student</code>，這會使得<code>Teacher</code>和<code>Student</code>會產生不必要的耦合，我們可以將創造<code>student_list</code>的權責轉移到<code>Leader</code>上，如此一來就可以斷開<code>Teacher</code>和<code>Student</code>的耦合。</p>
+<p>正確示範：</p>
+<div class="highlight"><pre><span></span><span class="c1">### Python3.4</span>
+
+<span class="k">class</span> <span class="nc">Student</span><span class="p">:</span> <span class="c1">#friends: None</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+<span class="k">class</span> <span class="nc">Leader</span><span class="p">:</span> <span class="c1">#friends: Student</span>
+    <span class="k">def</span> <span class="nf">giveNameList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name_list</span><span class="p">):</span>
+        <span class="n">student_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">name_list</span><span class="p">:</span>
+            <span class="n">student_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Student</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">__student_list</span> <span class="o">=</span> <span class="n">student_list</span>
+
+    <span class="k">def</span> <span class="nf">countStudents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Total number of students is &quot;</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__student_list</span><span class="p">))</span>
+
+<span class="k">class</span> <span class="nc">Teacher</span><span class="p">:</span> <span class="c1">#friends: Leader</span>
+    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name_list</span><span class="p">,</span><span class="n">leader</span><span class="p">):</span>
+        <span class="n">leader</span><span class="o">.</span><span class="n">giveNameList</span><span class="p">(</span><span class="n">name_list</span><span class="p">)</span>
+        <span class="n">leader</span><span class="o">.</span><span class="n">countStudents</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">teacher</span> <span class="o">=</span> <span class="n">Teacher</span><span class="p">()</span>
+    <span class="n">leader</span> <span class="o">=</span> <span class="n">Leader</span><span class="p">()</span>
+    <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="s1">&#39;E&#39;</span><span class="p">]</span>
+    <span class="n">teacher</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name_list</span><span class="p">,</span><span class="n">leader</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="teacher-leader-student_2" src="https://www.ycc.idv.tw/media/SOLID_Introduction/teacher-leader-student_2.png"></p>
+<p>-- Why it works? </p>
+<p>先來想想「朋友」有什麼共通之處？其實它們都是類別本身無法斷開耦合的物件，既然無法斷開耦合，何不運用到底，運用這些「朋友」來完成任務，不要再去增加其他的耦合性，也同時幫助提升類別的內聚性，這就是「迪米特法則」真正想做的事。</p>
+<p>以這樣的方式去寫程式，也可以避免寫出像是<code>A.getB().getC()</code>的程式碼（A和C不是朋友），這樣冗長的程式碼不僅增加了無益的耦合，也讓程式變得不利於可讀性。</p>
+<p><strong>（詳解）減少類別的對外方法，將沒必要對外公布的方法隱藏起來。</strong></p>
+<p>-- 例子: 安裝程式。</p>
+<p>錯誤範例：</p>
+<div class="highlight"><pre><span></span><span class="c1">### Python3.4</span>
+
+<span class="k">class</span> <span class="nc">Wizard</span><span class="p">:</span> <span class="c1"># 3 public methods</span>
+    <span class="k">def</span> <span class="nf">first</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Install first step of wizard at mode&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">second</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mode</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Install second step of wizard at mode &quot;</span><span class="o">+</span><span class="n">mode</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">third</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Install third step of wizard&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Install</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">install</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wizard</span><span class="p">,</span><span class="n">mode</span><span class="p">):</span>
+        <span class="n">wizard</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="n">wizard</span><span class="o">.</span><span class="n">second</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+        <span class="n">wizard</span><span class="o">.</span><span class="n">third</span><span class="p">()</span>
+</pre></div>
+
+
+<p>有太多沒必要對外公布的細節了，依照「迪米特法則」，我們應該將盡量減少對外公布的資訊，把不必要公布的細節私有化。</p>
+<p>正確範例：</p>
+<div class="highlight"><pre><span></span><span class="c1">### Python3.4</span>
+
+<span class="k">class</span> <span class="nc">Wizard</span><span class="p">:</span> <span class="c1"># only 1 public method</span>
+    <span class="k">def</span> <span class="nf">install</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mode</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__first</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__second</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__third</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__first</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Install first step of wizard&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__second</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mode</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Install second step of wizard at mode &quot;</span><span class="o">+</span><span class="n">mode</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__third</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Install third step of wizard&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Install</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">install</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wizard</span><span class="p">,</span><span class="n">mode</span><span class="p">):</span>
+        <span class="n">wizard</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>依賴倒置原則(Dependence Inversion Principle, DIP)</h3>
+<ul>
+<li>
+<p>定義：High level modules should not depend upon low level modules. Both should depend upon abstractions. Abstractions should not depend upon details. Details should depend upon abstractions.（高層次模組不應該依賴低層次模組，兩者都應該依賴抽象。而抽象不應該依賴細節，反之細節應該要依賴抽象。）</p>
+</li>
+<li>
+<p>範例：假設我們成立一家玩具車公司，開始著手設計我們的第一款車款A，設計的架構圖如下</p>
+</li>
+</ul>
+<p><img alt="toycar_1" src="https://www.ycc.idv.tw/media/SOLID_Introduction/toycar_1.png"></p>
+<p><code>ToyCarA</code>是我們的實體車子，可以使用<code>setRPM</code>來設定在幾秒之後到達什麼轉速，而控制他的是電腦模擬的虛擬車<code>VirtualCar</code>，虛擬車提供方法<code>setSpeeed</code>可以設定車速，當然！模擬的車速要和真實車速吻合，還需配合適當的調控實體車的轉速，所以<code>VirtualCarA</code>關聯到<code>ToyCarA</code>去做控制。然後我們公司會提供一個控制器<code>ControllerA</code>來控制車子，控制器上的搖桿分為五級，讓使用者可以控制速度，使用<code>controlBarLevel</code>方法根據級數去控制<code>VirtualCarA</code>的速度。</p>
+<p>檢驗一下這個設計圖，它違反「依賴倒置原則」，<code>ControllerA</code>依賴<code>VirtualCarA</code>，<code>VirtualCarA</code>依賴<code>ToyCarA</code>，這些都是實體類別，高層次依賴了低層次。不過，公司的車子A還是賣得很好，沒有什麼大礙。</p>
+<p>終於有一天災難降臨了，市場出現了比車子A馬力更強大的玩具車，我們公司如果不趕緊採用新的馬達推出新的車款，就會失去競爭力，我們需要採用新的玩具車<code>ToyCarB</code>，它擁有更好的馬達，我們需要為因應高速度而推出九級分級的搖桿，新的控制器<code>ControllerB</code>，結果回頭一看原本設計圖，完了！所有的A系列的程式碼都耦合在一起了，核心程式<code>VirtualCarA</code>原可以不需要大改，就建造出<code>VirtualCarB</code>的，但是現在程式碼全部耦合在一起，它已經變得不可擴張了。</p>
+<p>如果我們一開始就依照「依賴倒置原則」，我們來看看擴張會有多容易</p>
+<p><img alt="toycar_2" src="https://www.ycc.idv.tw/media/SOLID_Introduction/toycar_2.png"></p>
+<p><code>VirtualCar</code>中的很多方法都可以在B車款上再重用，大大的減少重新開發的成本。</p>
+<ul>
+<li>
+<p>依賴倒置原則又稱為「面向接口原則」，這裡的接口應該想的更廣義一點，不侷限在interface上，我認為只要藉由抽象化將架構擬定出來的這些抽象單元都可以稱作接口，「廣義的接口」可以是指</p>
+</li>
+<li>
+<p>客戶端和業務邏輯的分離介面</p>
+</li>
+<li>物件的開放方法</li>
+<li>抽象類別</li>
+<li>定義行為的interface</li>
+</ul>
+<p>我們不讓作為實現的類別彼此依賴，而是使用接口將抽象架構擬定好，再讓類別去依賴接口實現目標。</p>
+<h3>接口分隔原則(Interface Segregation Principle, ISP)</h3>
+<ul>
+<li>
+<p>定義：Clients should not be forced to depend uponn interfaces that they don't use. The dependency of one class to another one should depend on the smallest possible interface.（客戶類不應該被強迫依賴那些它不需要的接口，類別間的彼此依賴應該建立在盡可能小的接口上）</p>
+</li>
+<li>
+<p>這裡說的接口同樣的是剛剛所說的「廣義接口」，可以是客戶端和業務邏輯的分離介面、物件的開放方法、抽象類別和Interface。</p>
+</li>
+<li>
+<p>接口分隔原則建議我們要讓這些廣義接口盡可能的細切，但在實務上，切的過細會導致程式碼非常零碎難以閱讀，所以YC的建議是切到遵守「單一職責原理」就足夠了，與剛剛的建議一致，Interface一定要遵守「單一職責原理」，但是類別就盡力而為吧！</p>
+</li>
+<li>
+<p>範例：剛剛玩具車公司的設計圖其實還是不夠好，如果今天公司想要開發新的車款C，添加新「方向盤」的功能，你會發現夢魘又再次的降臨，抽象類別<code>ToyCar</code>、<code>VirtualCar</code>、<code>Controller</code>都需要改變，而且就算真的把「方向盤」的相關方法添加上去，抽象類別也會開始出現多於一的職責，所以我們用Interface來重新改寫架構，如下圖所示。不難看出，控制馬達、控制速度、控制搖桿的行為是彼此依賴的，我們可以將他們的行為由Interface獨立拉出並相互依賴。</p>
+</li>
+</ul>
+<p><img alt="toycar_3" src="https://www.ycc.idv.tw/media/SOLID_Introduction/toycar_3.png"></p>
+<p>如此一來，當我們想要開發新的車款C，添加新「方向盤」的功能，也能輕鬆的擴充，如下所示。<code>ToyCarPlus</code>、<code>VirtualCarPlus</code>、<code>ControllerPlus</code>是我們實作C車款的抽象類別，它現在可以直接套用<code>IMotor</code>、<code>ISpeed</code>、<code>IControlBar</code>的Interface。</p>
+<p><img alt="toycar_4" src="https://www.ycc.idv.tw/media/SOLID_Introduction/toycar_4.png"></p>
+<h3>總結：物件導向的指導原則—SOLID</h3>
+<p>上面介紹的六大原理：</p>
+<ol>
+<li>Single Responsibility Principl</li>
+<li>Open-Closed Principle</li>
+<li>Liskov Subsititution Principle</li>
+<li>Law of Demeter</li>
+<li>Interface Segregation Principle</li>
+<li>Dependence Inversion Principle</li>
+</ol>
+<p>剛剛好組成SOLID這個單字，所以又被統稱SOLID原則。</p>
+<p>事實上，這些原則所要達到的目的，不外乎就是我們<a href="http://www.ycc.idv.tw/YCNote/post/47">第一篇</a>當中所介紹的好的程式碼特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，或者是「低耦合、高內聚」，所以寫程式時如果能時時注意，說不定你也可以自己領會這六大法則。</p>
+<p>我來快速的總結這六大法則告訴我們的事：</p>
+<ol>
+<li>在開發程式的初期，先定義好抽象架構，也就是廣義的接口，徹底的使客戶端與業務邏輯分離，將「行為」定義成Interface，將「類別的泛化」定義成Abstract Class。</li>
+<li>所有的實體類別都依賴於抽象，細節依賴於抽象。</li>
+<li>每個單元盡量達到：單一權責、對延伸開放但對修改封閉、盡可能少的對外方法。</li>
+<li>牽涉「繼承」，必須要問自己：子類可以替換父類執行嗎？父類是不是為子類的交集？</li>
+<li>類別中的方法僅能訪問那些類別出現在自身、成員變數、方法的輸入和輸出參數中的。</li>
+</ol>
+<p>如此一來，我們心中就有一個準則去使用物件導向。</p>
+<p>在一般情形下，這三篇的內容應該就足夠讓你寫出好的程式碼，但是實際面上使用仍然會碰到許多問題，於是乎有人將問題整理並總結出一些套路，這就是「設計模式」，我們以後再來談談吧！今天就先到這。</p>
+<h3>Reference</h3>
+<ol>
+<li><a href="https://www.tenlong.com.tw/products/9789866761799">大話設計模式</a></li>
+<li><a href="https://www.tenlong.com.tw/products/9787111437871">設計模式之禪</a></li>
+</ol>
+
+
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./archives.html">Archives</a></li>
+                            <li><a href="./tags.html">Tags</a></li>
+                            <li><a href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Contact Me</div>
+                        <ul class="list-unstyled">
+                            <li><a href="/" target="_blank">About Me</a></li>
+                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
+                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; YC Note 2018</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>
