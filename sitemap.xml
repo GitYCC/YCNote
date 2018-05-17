@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/</loc>
-<lastmod>2018-05-17T20:46:07-00:00</lastmod>
+<lastmod>2018-05-17T20:51:31-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/archives.html</loc>
-<lastmod>2018-05-17T20:46:07-00:00</lastmod>
+<lastmod>2018-05-17T20:51:31-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/tags.html</loc>
-<lastmod>2018-05-17T20:46:07-00:00</lastmod>
+<lastmod>2018-05-17T20:51:31-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/categories.html</loc>
-<lastmod>2018-05-17T20:46:07-00:00</lastmod>
+<lastmod>2018-05-17T20:51:31-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -48,6 +48,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>YCNote/introduction-object-oriented-programming_1.html</loc>
 <lastmod>2018-04-05T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/the-selfish-gene.html</loc>
+<lastmod>2018-02-03T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
@@ -76,6 +83,20 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>YCNote/big-data-a-revolution.html</loc>
 <lastmod>2017-04-07T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/the-brain-the-story-of-you.html</loc>
+<lastmod>2017-03-24T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/how-to-read-books.html</loc>
+<lastmod>2017-03-18T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
@@ -110,7 +131,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/category/reading.html</loc>
-<lastmod>2017-09-05T12:00:00+08:06</lastmod>
+<lastmod>2018-02-03T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
