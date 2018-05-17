@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/</loc>
-<lastmod>2018-05-17T13:56:33-00:00</lastmod>
+<lastmod>2018-05-17T14:06:24-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/archives.html</loc>
-<lastmod>2018-05-17T13:56:33-00:00</lastmod>
+<lastmod>2018-05-17T14:06:24-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/tags.html</loc>
-<lastmod>2018-05-17T13:56:33-00:00</lastmod>
+<lastmod>2018-05-17T14:06:24-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/categories.html</loc>
-<lastmod>2018-05-17T13:56:33-00:00</lastmod>
+<lastmod>2018-05-17T14:06:24-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -67,13 +67,6 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>YCNote/ubuntu-install.html</loc>
-<lastmod>2015-02-18T16:00:00+08:00</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.7</priority>
-</url>
-
-<url>
 <loc>YCNote/category/aiml.html</loc>
 <lastmod>2015-02-20T16:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
@@ -102,22 +95,8 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>YCNote/tag/kernel.html</loc>
-<lastmod>2015-02-18T16:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
 <loc>YCNote/tag/ruan-ti-she-ji.html</loc>
 <lastmod>2018-04-10T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>YCNote/tag/ubuntu.html</loc>
-<lastmod>2015-02-18T16:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
