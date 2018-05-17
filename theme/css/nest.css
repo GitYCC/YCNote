@@ -128,7 +128,7 @@ h2 {
     font-size: 24px;
     line-height: 1.285714285714286em; 
     font-weight: 600;
-    margin-top: 40px;   
+    margin-top: 60px;   
     margin-bottom: 40px;
 }
 h2:after {
@@ -144,7 +144,7 @@ h3 {
     font-size: 20px;
     line-height: 1.285714285714286em; 
     font-weight: 600;
-    margin-top: 30px; 
+    margin-top: 45px; 
     margin-bottom: 30px;
 }
 h3:after {
