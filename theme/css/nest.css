@@ -409,7 +409,10 @@ blockquote{
 /* Spaces */
 .mr5 { margin-right: 5px;}
 .mr20 { margin-right: 20px;}
-
+.logo { 
+    margin-right:15px;
+    width:25px;
+}
 /* Gradients */
 .gradient {
     background-color: #356689;
