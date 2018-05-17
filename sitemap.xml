@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/</loc>
-<lastmod>2018-05-17T10:49:13-00:00</lastmod>
+<lastmod>2018-05-17T11:06:24-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/archives.html</loc>
-<lastmod>2018-05-17T10:49:13-00:00</lastmod>
+<lastmod>2018-05-17T11:06:24-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/tags.html</loc>
-<lastmod>2018-05-17T10:49:13-00:00</lastmod>
+<lastmod>2018-05-17T11:06:24-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/categories.html</loc>
-<lastmod>2018-05-17T10:49:13-00:00</lastmod>
+<lastmod>2018-05-17T11:06:24-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
