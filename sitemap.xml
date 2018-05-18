@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/</loc>
-<lastmod>2018-05-18T10:55:42-00:00</lastmod>
+<lastmod>2018-05-18T11:20:56-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/archives.html</loc>
-<lastmod>2018-05-18T10:55:42-00:00</lastmod>
+<lastmod>2018-05-18T11:20:56-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/tags.html</loc>
-<lastmod>2018-05-18T10:55:42-00:00</lastmod>
+<lastmod>2018-05-18T11:20:56-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/categories.html</loc>
-<lastmod>2018-05-18T10:55:42-00:00</lastmod>
+<lastmod>2018-05-18T11:20:56-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -88,6 +88,20 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>YCNote/python-play-with-data_3.html</loc>
+<lastmod>2017-05-06T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/python-play-with-data_2.html</loc>
+<lastmod>2017-04-17T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
 <loc>YCNote/big-data-a-revolution.html</loc>
 <lastmod>2017-04-07T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
@@ -95,8 +109,22 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>YCNote/algorithm-complexity-theory.html</loc>
+<lastmod>2017-03-30T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
 <loc>YCNote/the-brain-the-story-of-you.html</loc>
 <lastmod>2017-03-24T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/python-play-with-data_1.html</loc>
+<lastmod>2017-03-20T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
@@ -160,6 +188,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>YCNote/tag/ruan-ti-she-ji.html</loc>
 <lastmod>2018-04-14T12:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>YCNote/tag/pythonwan-shu-ju.html</loc>
+<lastmod>2017-05-06T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
