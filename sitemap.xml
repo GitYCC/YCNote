@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/</loc>
-<lastmod>2018-05-18T12:12:25-00:00</lastmod>
+<lastmod>2018-05-18T12:19:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/archives.html</loc>
-<lastmod>2018-05-18T12:12:25-00:00</lastmod>
+<lastmod>2018-05-18T12:19:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/tags.html</loc>
-<lastmod>2018-05-18T12:12:25-00:00</lastmod>
+<lastmod>2018-05-18T12:19:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/categories.html</loc>
-<lastmod>2018-05-18T12:12:25-00:00</lastmod>
+<lastmod>2018-05-18T12:19:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -81,13 +81,6 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>YCNote/about-me.html</loc>
-<lastmod>2017-08-17T12:00:00+08:00</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.7</priority>
-</url>
-
-<url>
 <loc>YCNote/python-play-with-data_3.html</loc>
 <lastmod>2017-05-06T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
@@ -137,6 +130,34 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>YCNote/ml-course-foundations_4.html</loc>
+<lastmod>2016-09-18T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/about-me.html</loc>
+<lastmod>2016-08-17T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/ml-course-foundations_3.html</loc>
+<lastmod>2016-08-07T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/ml-course-foundations_2.html</loc>
+<lastmod>2016-06-26T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
 <loc>YCNote/ml-course-foundations_1.html</loc>
 <lastmod>2016-06-06T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
@@ -144,15 +165,8 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>YCNote/ai.html</loc>
-<lastmod>2015-02-20T16:00:00+08:00</lastmod>
-<changefreq>monthly</changefreq>
-<priority>0.7</priority>
-</url>
-
-<url>
 <loc>YCNote/category/aiml.html</loc>
-<lastmod>2016-06-06T12:00:00+08:06</lastmod>
+<lastmod>2016-09-18T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -166,7 +180,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/category/me.html</loc>
-<lastmod>2017-08-17T12:00:00+08:06</lastmod>
+<lastmod>2016-08-17T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -201,7 +215,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/tag/ji-qi-xue-xi-ji-shi.html</loc>
-<lastmod>2016-06-06T12:00:00+08:06</lastmod>
+<lastmod>2016-09-18T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -209,13 +223,6 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>YCNote/tag/pythonwan-shu-ju.html</loc>
 <lastmod>2017-05-06T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>YCNote/author/mate.html</loc>
-<lastmod>2015-02-20T16:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
