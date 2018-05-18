@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/</loc>
-<lastmod>2018-05-18T11:59:43-00:00</lastmod>
+<lastmod>2018-05-18T12:12:25-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/archives.html</loc>
-<lastmod>2018-05-18T11:59:43-00:00</lastmod>
+<lastmod>2018-05-18T12:12:25-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/tags.html</loc>
-<lastmod>2018-05-18T11:59:43-00:00</lastmod>
+<lastmod>2018-05-18T12:12:25-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/categories.html</loc>
-<lastmod>2018-05-18T11:59:43-00:00</lastmod>
+<lastmod>2018-05-18T12:12:25-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -137,6 +137,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>YCNote/ml-course-foundations_1.html</loc>
+<lastmod>2016-06-06T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
 <loc>YCNote/ai.html</loc>
 <lastmod>2015-02-20T16:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
@@ -145,7 +152,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/category/aiml.html</loc>
-<lastmod>2015-02-20T16:00:00+08:06</lastmod>
+<lastmod>2016-06-06T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -188,6 +195,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>YCNote/tag/ruan-ti-she-ji.html</loc>
 <lastmod>2018-04-14T12:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>YCNote/tag/ji-qi-xue-xi-ji-shi.html</loc>
+<lastmod>2016-06-06T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
