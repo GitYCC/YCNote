@@ -47,7 +47,7 @@
 &lt;p&gt;舉個例子好了，如果第一天我以50元買入一張股票，當天最高價位來到了51元，所以過程中最高價位目前是51元，假設我停損停利設10%，所以如果第二天股價低於51*90%=45.9元就賣出，45.9元就是目前的賣出點，假設未來都沒有價位超出51元，那賣出點永遠都在45.9元不會變。好，如果到了第二天，它飆上去了，收盤54元，最高價位曾經來到了55元，此時賣出點也跟著增加，以買股以來的最高價55元當作新的基準向下10％算出新的賣出點，也就是55*90%=49.5元，第三天氣勢依舊，開盤直接跳空漲停，最高價位來到了59.4元，所以賣出點目前是59.4*90%=53.45元，第四天開始反轉，微微下跌，最低價來到55元，最高價為57元，沒有低於賣出點所以不賣，此時賣出點也沒有改變，因為最高價沒有超過第三天，所以一樣是用第三天當作基準點向下算出賣出點53.45元，第五天終於稱不住了，股價跌到了53.45元，然後就當天賣出或隔天賣出，假如當天賣出的話，那就是53.45元，所以最後我的投報率是(53.45 - 50) / 50 = 6.9 %。&lt;/p&gt;
 &lt;p&gt;那這個停損停利的比例該怎麼訂呢？在這個作者寫這篇文章的時候漲跌停百分比為7%，所以他設10%很合理，不會只有一天跌停就賣出了，而目前的漲跌停百分比為10%，所以我認為應該設把停損停利百分比設更高一點，建議在10~15%之間。&lt;/p&gt;
 &lt;p&gt;那如果遇到除息的話，當然要將你口袋裡的股息從最高價上扣掉，在重新計算賣出點，這樣的賣出點才合理。&lt;/p&gt;
-&lt;p&gt;以上的策略在一種情形下會賺錢，那就是你投資的股票漲的比跌的還多，當然這是一句廢話啦！這讓我想起之前在跟我朋友聊股票，我朋友說他的股票都賠錢，我就跟他開玩笑，股票不就是買在低點，然後賣在高點，你怎麼不照做，難怪會賠錢。移動停損法提供一種紀律讓你不會賠太多，但如果真的要獲利的話，還是得從基本面或技術面去分析股票，並在低價買進好股票，然後等它上漲。&lt;/p&gt;</content></entry><entry><title>大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think</title><link href="YCNote/big-data-a-revolution.html" rel="alternate"></link><published>2017-04-07T12:00:00+08:00</published><updated>2017-04-07T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-04-07:YCNote/big-data-a-revolution.html</id><summary type="html">&lt;p&gt;&lt;img alt="cover" src="www.ycc.idv.tw/media/Reading/BigData_pic.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;以上的策略在一種情形下會賺錢，那就是你投資的股票漲的比跌的還多，當然這是一句廢話啦！這讓我想起之前在跟我朋友聊股票，我朋友說他的股票都賠錢，我就跟他開玩笑，股票不就是買在低點，然後賣在高點，你怎麼不照做，難怪會賠錢。移動停損法提供一種紀律讓你不會賠太多，但如果真的要獲利的話，還是得從基本面或技術面去分析股票，並在低價買進好股票，然後等它上漲。&lt;/p&gt;</content></entry><entry><title>大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think</title><link href="YCNote/big-data-a-revolution.html" rel="alternate"></link><published>2017-04-07T12:00:00+08:00</published><updated>2017-04-07T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-04-07:YCNote/big-data-a-revolution.html</id><summary type="html">&lt;p&gt;&lt;img alt="cover" src="http://www.ycc.idv.tw/media/Reading/BigData_pic.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;最近，Big Data這個詞相當的紅，但是對於這個詞我們還是有很多的誤會，一個常見的疑問是，究竟多大才可以稱得上是大數據呢？事實上，我接下來要介紹的這本書告訴你，大數據多「大」不是重點，重點是你怎麼看待和處理數據。&lt;/p&gt;
 &lt;p&gt;「&lt;a href="http://www.books.com.tw/products/0010587258"&gt;大數據&lt;/a&gt;」這本書分為三個部分，在第一個部分，作者為讀者介紹大數據的三大思維變革，包括：採用全體數據取代抽樣數據、容忍資料的混雜特性、「是什麼」比「為什麼」還重要，第二部分則在講述大數據如何改變了商業、市場和社會的本質。第三部分在探討大數據會對人類產生什麼不好的影響，而我們如何去避免。本篇我主要著墨於第一部分和第二部分。&lt;/p&gt;
 &lt;h2&gt;樣本=總體&lt;/h2&gt;
@@ -55,7 +55,7 @@
 &lt;p&gt;大數據是指不採用統計「隨機採樣」這樣的捷徑，而直接處理所有的數據。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在資料分析中，如果要研究的對象（母群體）非常的龐大、資料量非常大，我們通常會採取「隨機採樣」來處理，這條捷徑在處理特定問題非常成功，也因此它成為現代社會、現代測量領域的主要路數，但這方式存在著一些缺陷。&lt;/p&gt;
-&lt;p&gt;「隨機採樣」的缺陷之一是無法瞭解更深層次的細節。在宏觀領域起作用的方法在微觀領域失去了作用。隨機採樣就像印象派的畫作一樣 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="cover" src="www.ycc.idv.tw/media/Reading/BigData_pic.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;「隨機採樣」的缺陷之一是無法瞭解更深層次的細節。在宏觀領域起作用的方法在微觀領域失去了作用。隨機採樣就像印象派的畫作一樣 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="cover" src="http://www.ycc.idv.tw/media/Reading/BigData_pic.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;最近，Big Data這個詞相當的紅，但是對於這個詞我們還是有很多的誤會，一個常見的疑問是，究竟多大才可以稱得上是大數據呢？事實上，我接下來要介紹的這本書告訴你，大數據多「大」不是重點，重點是你怎麼看待和處理數據。&lt;/p&gt;
 &lt;p&gt;「&lt;a href="http://www.books.com.tw/products/0010587258"&gt;大數據&lt;/a&gt;」這本書分為三個部分，在第一個部分，作者為讀者介紹大數據的三大思維變革，包括：採用全體數據取代抽樣數據、容忍資料的混雜特性、「是什麼」比「為什麼」還重要，第二部分則在講述大數據如何改變了商業、市場和社會的本質。第三部分在探討大數據會對人類產生什麼不好的影響，而我們如何去避免。本篇我主要著墨於第一部分和第二部分。&lt;/p&gt;
 &lt;h2&gt;樣本=總體&lt;/h2&gt;

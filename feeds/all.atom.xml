@@ -1312,7 +1312,7 @@
 &lt;h2&gt;Contact Me&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;Email:&lt;/strong&gt;    &lt;a href="mailto:ycc.tw.email@gmail.com" target="blank"&gt;ycc.tw.email@gmail.com&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Github:&lt;/strong&gt;    &lt;a href="https://github.com/GitYCC" target="blank"&gt;https://github.com/GitYCC&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Website:&lt;/strong&gt;    &lt;a href="http://www.ycc.idv.tw" target="blank"&gt;www.ycc.idv.tw&lt;/a&gt;&lt;/p&gt;</content></entry><entry><title>大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think</title><link href="YCNote/big-data-a-revolution.html" rel="alternate"></link><published>2017-04-07T12:00:00+08:00</published><updated>2017-04-07T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-04-07:YCNote/big-data-a-revolution.html</id><summary type="html">&lt;p&gt;&lt;img alt="cover" src="www.ycc.idv.tw/media/Reading/BigData_pic.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Website:&lt;/strong&gt;    &lt;a href="http://www.ycc.idv.tw" target="blank"&gt;www.ycc.idv.tw&lt;/a&gt;&lt;/p&gt;</content></entry><entry><title>大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think</title><link href="YCNote/big-data-a-revolution.html" rel="alternate"></link><published>2017-04-07T12:00:00+08:00</published><updated>2017-04-07T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-04-07:YCNote/big-data-a-revolution.html</id><summary type="html">&lt;p&gt;&lt;img alt="cover" src="http://www.ycc.idv.tw/media/Reading/BigData_pic.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;最近，Big Data這個詞相當的紅，但是對於這個詞我們還是有很多的誤會，一個常見的疑問是，究竟多大才可以稱得上是大數據呢？事實上，我接下來要介紹的這本書告訴你，大數據多「大」不是重點，重點是你怎麼看待和處理數據。&lt;/p&gt;
 &lt;p&gt;「&lt;a href="http://www.books.com.tw/products/0010587258"&gt;大數據&lt;/a&gt;」這本書分為三個部分，在第一個部分，作者為讀者介紹大數據的三大思維變革，包括：採用全體數據取代抽樣數據、容忍資料的混雜特性、「是什麼」比「為什麼」還重要，第二部分則在講述大數據如何改變了商業、市場和社會的本質。第三部分在探討大數據會對人類產生什麼不好的影響，而我們如何去避免。本篇我主要著墨於第一部分和第二部分。&lt;/p&gt;
 &lt;h2&gt;樣本=總體&lt;/h2&gt;
@@ -1320,7 +1320,7 @@
 &lt;p&gt;大數據是指不採用統計「隨機採樣」這樣的捷徑，而直接處理所有的數據。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在資料分析中，如果要研究的對象（母群體）非常的龐大、資料量非常大，我們通常會採取「隨機採樣」來處理，這條捷徑在處理特定問題非常成功，也因此它成為現代社會、現代測量領域的主要路數，但這方式存在著一些缺陷。&lt;/p&gt;
-&lt;p&gt;「隨機採樣」的缺陷之一是無法瞭解更深層次的細節。在宏觀領域起作用的方法在微觀領域失去了作用。隨機採樣就像印象派的畫作一樣 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="cover" src="www.ycc.idv.tw/media/Reading/BigData_pic.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;「隨機採樣」的缺陷之一是無法瞭解更深層次的細節。在宏觀領域起作用的方法在微觀領域失去了作用。隨機採樣就像印象派的畫作一樣 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="cover" src="http://www.ycc.idv.tw/media/Reading/BigData_pic.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;最近，Big Data這個詞相當的紅，但是對於這個詞我們還是有很多的誤會，一個常見的疑問是，究竟多大才可以稱得上是大數據呢？事實上，我接下來要介紹的這本書告訴你，大數據多「大」不是重點，重點是你怎麼看待和處理數據。&lt;/p&gt;
 &lt;p&gt;「&lt;a href="http://www.books.com.tw/products/0010587258"&gt;大數據&lt;/a&gt;」這本書分為三個部分，在第一個部分，作者為讀者介紹大數據的三大思維變革，包括：採用全體數據取代抽樣數據、容忍資料的混雜特性、「是什麼」比「為什麼」還重要，第二部分則在講述大數據如何改變了商業、市場和社會的本質。第三部分在探討大數據會對人類產生什麼不好的影響，而我們如何去避免。本篇我主要著墨於第一部分和第二部分。&lt;/p&gt;
 &lt;h2&gt;樣本=總體&lt;/h2&gt;
