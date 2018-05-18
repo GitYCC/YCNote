@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest。 綜觀Aggregation Models 如果今天我有很多支的Model，我有辦法融合他們得到更好的效果嗎？ 這就是Aggregation Models的精髓，Aggregation...">
+        <meta name="keywords" content="機器學習技法">
+        <link rel="icon" href="./static/img/favicon.png">
+
+        <title>機器學習技法 學習筆記 (4)：Basic Aggregation Models - YC Note</title>
+
+        <!-- Stylesheets -->
+        <link href="./theme/css/all.min.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Full Atom Feed" />
+        <link href="YCNote/feeds/aiml.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('./images/ai_front_board.jpg'); background-position: center; background-size: cover;">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="./"><img class="logo" src="./static/img/favicon.png" alt="logo">YC Note</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="./category/coding.html">Coding</a>
+                                <a href="./category/aiml.html">AI.ML</a>
+                                <a href="./category/reading.html">Reading</a>
+                                <a href="./category/recording.html">Recording</a>
+                                <a href="./about-me.html">About Me</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">機器學習技法 學習筆記 (4)：Basic Aggregation Models</h1>
+                      <p class="header-date">By <a href="./author/yc-chen.html">YC Chen</a>, 2017 / 3月 29, in category <a href="./category/aiml.html">Ai.ml</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="./tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <blockquote>
+<p>本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest。</p>
+</blockquote>
+<h3>綜觀Aggregation Models</h3>
+<p>如果今天我有很多支的Model，我有辦法融合他們得到更好的效果嗎？</p>
+<p>這就是Aggregation Models的精髓，Aggregation Models藉由類似於投票的方法綜合各個子Models的結果得到效果更好的Model。換個角度看，你可以把整個體系看成一個新的Model，而原本這些子Models當作轉換過後的新Features，<strong>所以Aggregation Model裡頭做了「特徵轉換」，這個特徵轉換產生出許多有預測答案能力的Features，稱為Predictive Features，然後再綜合它們得到最後的Model</strong>。</p>
+<p><img alt="Aggregation Models" src="https://dl.dropbox.com/s/ibdowsfjwy0z7zm/MachineLearningTechniques.007.jpeg"></p>
+<p>Aggregation Models可以分成兩大類，第一種的作法比較簡單，先Train出一個一個獨立的Predictive Features，然後在綜合它們，<strong>「集合」的動作是發生在得到Train好的Predictive Feature之後，這叫做「Blending Models」</strong>；第二種作法則是，<strong>「集合」的動作和Training同步進行，這叫做「Aggregation-Learning Models」</strong>，Aggregation-Learning Models有一個特殊的例子叫做Boost，翻開字典查Boost的意思是「促進」，在這邊的意義是<strong>假設在Training過程所產生的Predictive Feature朝著改善Model的方向前進就叫做Boost</strong>。</p>
+<p>從「集合」的方法上也可以進一步細分三種類型，有票票等值的<strong>「Uniform Aggregation Type」</strong>，有給予Predictive Features不同權重的<strong>「Linear Aggregation Type」</strong>，甚至還可以用條件或任意Model來分配Predictive Features，這叫做<strong>「Non-linear Aggregation Type」</strong>。</p>
+<p>所以兩種類型、三種Aggregation Type，交互產生各類的Aggregation Models。有Blending的三種Aggregation Type，Aggregation-Learning的Uniform Type—Bagging，再加上Aggregation-Learning的Linear Type兩種—AdaBoost和GradientBoost，這兩種也亦是Boost的方法，AdaBoost負責處理Classification的問題，而GradientBoost則負責處理Regression的問題，最後介紹Aggregation-Learning的Non-Linear Type—Decision Tree。然後接著，使用Decision Tree結合其他方法再進一步的產生Random Forest、AdaBoost Decision Tree和GradientBoost Decision Tree。</p>
+<p>我將會分兩篇來介紹Aggregation Models，一篇介紹沒Boost的部分，就是今天這一篇，另外一篇則是來專攻有Boost的部分。</p>
+<p><br/></p>
+<h3>Blending</h3>
+<p><strong>Blending是泛指在Training結束之後得到幾個Predictive Features，然後再對這些Predictive Features做集合的方法</strong>。</p>
+<p><img alt="Blending" src="https://dl.dropbox.com/s/kotwynmp51p457q/MachineLearningTechniques.008.jpeg"></p>
+<p>如上圖，基本流程是這樣的，一開始先把Data切成一部分拿來Training，另外一部分拿來Validation，這部份很重要，因為我們待會要利用Validation的Error來決定每筆Predictive Feature對Model的貢獻分配比重；接下來使用不同的方法來產生不同的Predictive Features g<sub>t</sub>，來源可能是不同的Model形式、不同的參數變化、不同的隨機情形等等；有了各類的g<sub>t</sub>之後，我們就可以選擇使用怎樣的方式來結合它們，如果是Uniform Combination，就直接平均所有g<sub>t</sub>就可以了，那如果是Linear Combination，想當然爾就是使用線性模型來結合，那如果是Non-Linear Combination，你可以使用任意Model來描述也行；決定好結合方式了，也就同時決定了「特徵轉換」的方法，接下來出動Validation Data，使用這個「特徵轉換」來轉化Validation Data並且做Fitting，最後我們會找到一組解最佳的參數來確定結合的方法，如果是Uniform Combination是不需要這一步的，基本上你得到g<sub>t</sub>就直接平均就得到結果了，而Linear Combination則是需要去找出α<sub>t</sub>。</p>
+<p><strong>在數學上可以證明Aggregation的效果會比單一一個g<sub>t</sub>的描述的結果還好</strong>，這很像是在做投票選舉，不同方法可能帶有不一樣的偏見，但是綜合所有意見之後可以找到共識，這個共識是具有較少偏見的，你可以想像偏見就像是Overfitting，<strong>所以Aggregation是具有像Regularizaiton一般抑制Overfitting的效果的</strong>，但有些時候特別的看法不一定是偏見，也許這一個方法可以看出其他方法看不出來的規律，此時這個部分也不會被完全忽略掉，<strong>所以Aggregation也可以同時擁有像Feature Transform一樣的複雜度。因此Aggregation的方法可以同時增加Model複雜度又同時防止它Overfitting，這個效果是我們以前沒看過的，所以我們會說Aggregation具有截長補短的效果</strong>。</p>
+<p><br/></p>
+<h3>Bagging</h3>
+<p><img alt="Bagging" src="https://dl.dropbox.com/s/ht7d8qs8p5744le/MachineLearningTechniques.009.jpeg"></p>
+<p><strong>Bagging是一種利用變換原本Data來造出不同g<sub>t</sub>的簡單方法</strong>，Bagging的全名稱為Bootstrap Aggregation，其中<strong>Bootstrap指的是「重新取樣原有Data產生新的Data，取樣的過程是均勻且可以重複取樣的」</strong>，使用Bootstrap我們就可以從一組Data中生出多組Dataset，然後就可以使用這些Dataset來產生多組g<sub>t</sub>，最後再Uniform Combination這些g<sub>t</sub>，就完成了Bagging。</p>
+<p><br/></p>
+<h3>Decision Tree（決策樹）</h3>
+<p>接下來談Decision Tree這個重要的概念，Decision Tree其實就像是一個多層次的分類，每一次的分類會根據某一個Feature來當作依據判斷它應該繼續往哪一條路走，然後繼續使用可能是另外一個Feature來繼續細分下去。舉個例子好了，假設今天有一個自由式摔跤重量63公斤的女選手Ms. D要參加奧運，所以得透過奧運的分級制度分級，一開始可能根據比賽模式這個Feature下去分類，我查了一下有自由式和古典式兩種，所以Ms. D會被歸類到自由式，再來根據性別這個Feature下去分類，Ms. D是女選手所以分到女選手這一類，再繼續可能會根據體重來細分，體重在奧運分級共有8級，Ms. D可能就被分到62公斤级的那類，這樣的分類精神就是Decision Tree。</p>
+<p>所以，Decision Tree的優點是結果所提供的結構非常容易讓人了解，另外在演算法部分也很容易實現，而且因為具有以條件篩選的結構，所以其實很容易可以做到多類別分類。但是Decision Tree也有一些為人詬病的缺點，Decision Tree整體理論是缺乏基礎的，存在很多是前人的巧思，很多作法都是使用起來感覺效果不錯就延續下去了，目前並不了解背後的原因，也因此沒有一個代表性的演算法存在。</p>
+<p>在講Decision Tree操作方法之前應該要先來講一下Decision Stump，Decision Stump做的事其實就是上述中提到的對某個Feature做切分的這件事，<strong>可以想知Decision Stump是一個預測效果很差的Model，而Aggregation這些Decision Stump形成Decision Tree卻有很好的效果</strong>，這就是Aggregation的威力。</p>
+<p><img alt="Decision Tree" src="https://dl.dropbox.com/s/nafpnsu8icnazic/MachineLearningTechniques.010.jpeg"></p>
+<p>見上圖，我們來看一下Decision Tree的流程，Decision Tree最為人所知的演算法是C&amp;RT，C&amp;RT是一整套的套件，我們今天只是提到它整套套件中的一種特例。Decision Tree產生的函式是這樣的，一開始先判斷進來的這筆資料還能不能繼續分支下去，在三個情況下，我們沒辦法繼續分支下去：</p>
+<ol>
+<li>數據Ɗ只剩一筆數據。</li>
+<li>這群數據Ɗ已經最佳化了，我們會說它的Impurity=0，這個時候我們不知道要從哪裡再切一刀。</li>
+<li>這群數據Ɗ的Feature X<sub>n</sub>都完全相同。</li>
+</ol>
+<p><strong>當無法再繼續分支下去時，會回傳一個g<sub>t</sub>(x)=constant，這個常數是一個可以使得這個群體內E<sub>in</sub>最小的數值，在分類問題中這個常數是{y<sub>n</sub>}中佔多數的類別，在Regression問題中這個常數是{y<sub>n</sub>}的平均值。</strong></p>
+<p>大家應該會有點驚訝，Decision Tree也有辦法做Regression？其實是可以的，在分類問題中我們可以利用類別來做分類，在Regression問題我們可以利用一個切分數值來區分成兩群或多群，例如：以50當切分數值，大於50的一類，小於等於50的另外一類，當我們切的夠細夠多層的時候就是在做一個Regression問題了。</p>
+<p>那接下來來看假如還可以繼續分支下去應該要怎麼做，這邊假設我們只切一刀分為兩個區塊C=2，我們該根據怎樣的條件來切呢？我們剛剛其實有稍微提到，那就是Impurity，我們<strong>可以根據Impurity Function來衡量「一群資料的不相似程度」</strong>。</p>
+<p>分類問題的Impurity Function有以下兩種：</p>
+<ul>
+<li>Impurity(Ɗ) = (1/N) 𝚺<sub>n</sub> ⟦y<sub>n</sub>≠y*⟧，其中y*是Ɗ中佔多數的類別，這個衡量方法就直接的去數出錯誤答案的比例。</li>
+<li><strong>Gini Index: Impurity(Ɗ) = 1 - 𝚺<sub>k</sub> [ 𝚺<sub>n</sub>⟦y<sub>n</sub>=k⟧  / N ]<sup>2</sup></strong>，Gini Index是最為流行的作法，它不同於上一個作法，它是在評估所有的類別後才去計算Impurity。</li>
+</ul>
+<p>而Regression問題有以下方法：</p>
+<ul>
+<li><strong>Impurity(Ɗ) = (1/N) 𝚺<sub>n</sub> ( y<sub>n</sub> - ȳ )<sup>2</sup></strong>，其中ȳ代表的是{y<sub>n</sub>}的平均值，式子中使用平方誤差來評估資料的離散程度。</li>
+</ul>
+<p>有了Impurity Function我們就有了指標，找出應該要使用哪個Feature、應該要怎麼切，才能使得Impurity Function總和最小，決定好這一刀後，接下來就從這一刀切下去，把Data一分為二，然後這兩組Data再各自去長出一棵Decision Tree，經過遞迴式的迭代，我們就可以得到一棵完整的Decision Tree了。</p>
+<p><img alt="Show C&amp;RT" src="https://dl.dropbox.com/s/sy6xt51dcxfcmz4/MachineLearningTechniques.015.jpeg"></p>
+<p>如果我們讓一棵樹完整的長成了，可以想到的後果想當然爾就是Overfitting，所以我們必須要做Regularization，<strong>Decision Tree常用的Regularization的方法是Pruning</strong>，就是砍樹，我們將分支的數量Ω(G)加進去E<sub>in</sub>中做為Regularization，所以我們問題變成是去找到 argmin E<sub>in</sub>(G)+λΩ(G)，其中的λ可以利用Validation Data來做選擇，你會發現如果真正的要去找到argmin E<sub>in</sub>(G)+λΩ(G)的最佳解，這問題會非常的困難，因為你必須要把所有的可能的樹都考慮進去，所以有一個替代方案，<strong>我們可以先將樹整棵長完，然後在一一的去合併分支，看哪兩個分支合併之後可以使E<sub>in</sub>最小就先合併，使用這樣的作法逐步減少分支的數量</strong>。</p>
+<p>順道一提，C&amp;RT可以產生許多替代方案，這些替代方案稱為Surrogate Branch，當有一筆Data缺乏某個Feature，我們仍然有辦法使用替代方案來做決策，這是C&amp;RT的一個大大的優點。</p>
+<p><br/></p>
+<h3>Random Forest（隨機森林）</h3>
+<p>如果我拿Decision Tree來做Bagging這樣可以嗎？當然OK，Aggregation Model的精髓就是可以綜合子Model，那Decision Tree也可以是看成一個子Model，所以我們在做的就是Aggregation of Aggregation，<strong>這種拿Decision Tree來做Bagging的Model叫做Random Forest</strong>，這個名字取的很生動，有很多棵數的地方就是森林啦！</p>
+<p><strong>Decision Tree和Bagging其實是有互補的作用</strong>，Decision Tree這種演算法是「變異度」很高的，因為它不像SVM這類的演算法，會去評估與Data之間的距離，空出最大的距離來避免Overfitting，而Bagging正可以拿來減少「變異度」，消除雜訊，所以<strong>Random Forest會比Decision Tree更不易Overfitting</strong>。</p>
+<p><img alt="Random Forest" src="https://dl.dropbox.com/s/sw72it5miiczjri/MachineLearningTechniques.011.jpeg"></p>
+<p>見上圖，我們來看一下Random Forest的流程，一開始先做和Bagging裡頭一樣做的事Bootstrap，藉此來產生新的Dataset，另外為了讓我們隨機程度變得更高，我也對我們Features來做點變化，將它乘上一個亂數產生的P，如果P<sub>i</sub>=0代表我們完全不取這個Feature，如果P<sub>i</sub>=1代表我們完全取這個Feature，我們更可以以分數來代表我們對某個Feature的重視程度，這個手法叫做Random-subspace。接下來就是把弄的很亂的Dataset放進去長一顆Decision Tree，最後再把所有的Decision Tree平均就是Random Forest的結果。</p>
+<p>Random Forest發展出了一套獨特的Validation方法，我們知道Bootstrap的結果會造成有些Data取用而有些Data不使用，而取用的Data會拿來Training，這讓你想到什麼呢？沒錯，沒有用到的Data可以做Validation，我們可以拿那些沒有被取用的Data來評估Training的好壞，我們會稱那些沒被取用的Date叫做Out-of-Bag Data，而利用Out-of-Bag Data來Validation的Error，稱為Out-of-Bag Error，</p>
+<blockquote>
+<p><strong>Out-of-Bag Error E<sub>oob</sub>=(1/N) 𝚺<sub>n</sub> err(y<sub>n</sub>, G<sub>n</sub><sup>-</sup>(x<sub>n</sub>)) <br/></strong></p>
+<p><strong>G<sub>n</sub><sup>-</sup>(x) = Average(沒有取用這筆Data的所有Models)</strong></p>
+</blockquote>
+<p>Out-of-Bag Error提供一個很方便的Self-validation的方法。</p>
+<p>在以前Linear Model中，權重W代表每筆Feature對Model的貢獻度，我們可以由W的分量大小來評估每個Feature的重要程度。Random Forest則是可以利用E<sub>oob</sub>和Random-subspace來標示出每個Feature的重要程度，想法是這樣的，如果今天某一個Feature i 對Model很重要，所以說我只對Feature i 做Random-subspace，也就是只有P<sub>i</sub>是隨機的，可以想知E<sub>oob</sub>會大幅增加，因此利用這個想法我們可以用來定義Feature的重要程度，</p>
+<p>important(i) = E<sub>oob</sub>(G) - E<sub>oob</sub>(G with random-subspace at i)</p>
+<p><br/></p>
+<h3>結語</h3>
+<p>在這一篇我們提了幾個基礎的Aggregation Models，從最簡單的Blending，Blending的方法本身不去產生子Model，而是使用兩階段學習，先自行挑選和訓練來產生很多的子Model，而Blending只在這些結果上做不同方式的結合。</p>
+<p>接下來，Learning-Aggregation的方法則化被動為主動，我們先提了Bagging，裡頭使用Bootstrap的技巧來造成資料的隨機性，利用這樣的變異來產生多個g<sub>t</sub>，再接下來我講了Decision Tree，Decision Tree由多個Decision Stump組合而成，每個Decision Stump就是g<sub>t</sub>，Decision Tree做的事就是，產生Decision Stump、切分Dataset、再產生Decision Stump...接續下去，最後綜合全部的Decision Stump成為Decision Tree。</p>
+<p>最後，我們結合Decision Tree和Bagging產生了Random Forest，利用彼此的互補，讓效果變得更好可以比單純Decision Tree更好。</p>
+
+
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./archives.html">Archives</a></li>
+                            <li><a href="./tags.html">Tags</a></li>
+                            <li><a href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Contact Me</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
+                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
+                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; YC Note 2018</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>

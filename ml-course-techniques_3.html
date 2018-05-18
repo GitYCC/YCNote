@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="本篇內容涵蓋Probabilistic SVM、Kernel Logistic Regression、Kernel Ridge Regression、Support Vector Regression (SVR)。 在上一篇當中我們看到了Kernel Trick的強大，我們繼續運用這個數學工具在其他的Regression上看看。 Soft-Margin SVM其實很像L2...">
+        <meta name="keywords" content="機器學習技法">
+        <link rel="icon" href="./static/img/favicon.png">
+
+        <title>機器學習技法 學習筆記 (3)：Kernel Regression - YC Note</title>
+
+        <!-- Stylesheets -->
+        <link href="./theme/css/all.min.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Full Atom Feed" />
+        <link href="YCNote/feeds/aiml.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('./images/ai_front_board.jpg'); background-position: center; background-size: cover;">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="./"><img class="logo" src="./static/img/favicon.png" alt="logo">YC Note</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="./category/coding.html">Coding</a>
+                                <a href="./category/aiml.html">AI.ML</a>
+                                <a href="./category/reading.html">Reading</a>
+                                <a href="./category/recording.html">Recording</a>
+                                <a href="./about-me.html">About Me</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">機器學習技法 學習筆記 (3)：Kernel Regression</h1>
+                      <p class="header-date">By <a href="./author/yc-chen.html">YC Chen</a>, 2017 / 3月 15, in category <a href="./category/aiml.html">Ai.ml</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="./tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <blockquote>
+<p>本篇內容涵蓋Probabilistic SVM、Kernel Logistic Regression、Kernel Ridge Regression、Support Vector Regression (SVR)。</p>
+</blockquote>
+<p>在上一篇當中我們看到了Kernel Trick的強大，我們繼續運用這個數學工具在其他的Regression上看看。</p>
+<p><br/></p>
+<h3>Soft-Margin SVM其實很像L2 Regularized Logistic Regression</h3>
+<p>上一篇中提到的Soft-Margin SVM其實很像<a href="http://www.ycc.idv.tw/tag__筆記：機器學習基石/">《機器學習基石》</a>裡頭提到的L2 Regularized Logistic Regression，如果你還記得的話，Logistic Regression是為了因應雜訊而給予每筆資料的描述賦予「機率」的性質，讓Model在看Data的時候不那麼的非黑及白，那時候有提到這叫做Soft Classification，而這個概念就非常接近於Soft-Margin的概念。</p>
+<p>從數學式來看會更清楚，</p>
+<blockquote>
+<p>Soft-Margin SVM：<br/></p>
+<p>min. (W<sup>T</sup>W/2) + C×𝚺<sub>n</sub> ξ<sub>n</sub> s.t. y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b) ≥ 1-ξ<sub>n</sub>且ξ<sub>n</sub> ≥ 0, n=1~N</p>
+</blockquote>
+<p>上面的式子中，可以將限制條件由max取代掉，轉換成下面的Unbounded的表示方法，</p>
+<blockquote>
+<p>Soft-Margin SVM：<br></p>
+<p>min. C×𝚺<sub>n</sub> Err<sub>hinge,n</sub> + (W<sup>T</sup>W/2)<br/></p>
+<p><strong>其中，Err<sub>hinge,n</sub>=max[0,1-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b)]，稱之為Hinge Error Measure</strong>。</p>
+</blockquote>
+<p>接下來比較一下L2 Regularized Logistic Regression，</p>
+<blockquote>
+<p>L2 Regularized Logistic Regression：<br></p>
+<p>min. (1/N)×𝚺<sub>n</sub> Err<sub>ce,n</sub> +  (λ/N)×W<sup>T</sup>W<br/></p>
+<p>其中，Err<sub>ce,n</sub>=ln[1+exp(-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>))]，為Cross-Entropy Error Measure。</p>
+</blockquote>
+<p>你會發現Soft-Margin SVM和L2 Regularized Logistic Regression兩個式子的形式是很接近的，都有W<sup>T</sup>W這一項，只是意義上不同，在Soft-Margin SVM裡頭W<sup>T</sup>W所代表的是反比於空白區大小距離的函式，而在L2 Regularized Logistic Regression裡頭則是指Regularization。</p>
+<p>另外，我們來疊一下Err<sub>hinge,n</sub>和Err<sub>ce,n</sub>來看看這兩個函數像不像，</p>
+<p><img alt="compare:hinge and ce" src="https://dl.dropbox.com/s/qg2gyf8646cp3jh/MachineLearningTechniques.000_03.png"></p>
+<p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf</a></p>
+<p><strong>Err<sub>hinge,n</sub>和Err<sub>ce,n</sub>是非常接近的，所以我們可以說做Soft-Margin SVM，很像是在做L2 Regularized Logistic Regression。</strong></p>
+<p><strong>雖然說Soft-Margin SVM和L2 Regularized Logistic Regression非常的像，但是我在做完Soft-Margin SVM後，仍然沒辦法像Logistic Regression一樣得到一個具有機率分布的Target Function，以下提供了兩種方法，第一種是間接的方法，使用兩階段學習來達成Logistic的效果；第二種是直接將L2 Regularized Logistic Regression加入有如Soft-Margin SVM的Kernel性質。</strong></p>
+<p><br/></p>
+<h3>使用SVM做Logistic Regression：Probabilistic SVM</h3>
+<p>要讓Soft-Margin SVM在最後呈現的Target Function時具有機率性質，最簡單的作法就是透過兩階段的學習來達成，第一階段先用Soft-Margin SVM去解出切分資料的平面，第二階段再將Logistic Function套在這個平面上，並做Fitting，最後我們就得到一個以Logistic Function表示的Target Function，這個稱之為Probabilistic SVM。實際操作方法如下：</p>
+<blockquote>
+<ol>
+<li>使用Soft-Margin SVM解出切平面W<sub>SVM</sub><sup>T</sup>Z+b<sub>SVM</sub>=0，並將所有Data進一步的轉換到 Z'<sub>n</sub>=W<sub>SVM</sub><sup>T</sup>Z(X<sub>n</sub>)+b<sub>SVM</sub>。</li>
+<li>接下來用轉換後的結果{Z'<sub>n</sub>, y<sub>n</sub>}做Logistic Regression得到係數A和B。</li>
+<li>最後的Target Function就是 g(x)=Θ(A∙(W<sub>SVM</sub><sup>T</sup>Z(X<sub>n</sub>)+b<sub>SVM</sub>)+B)，Θ為Logistic Function。</li>
+</ol>
+</blockquote>
+<p>上面的方法有一個缺點，就是如果B的值不接近0時，SVM的切平面就會和Logistic Regression的邊界就會不同，而且一個Model要Fitting兩次也相當的麻煩，以下還有另外一個可以達到一樣的具有機率性質的效果的方法—Kernel Logistic Regression。</p>
+<p><br/></p>
+<h3>Kernel Trick的真正精髓：Representer Theorem</h3>
+<p>在說明Kernel Logistic Regression之前我們先來複習一下Kernel的概念，並且從中將他的重要觀念萃取出來。</p>
+<p>再來看一眼我們怎麼解Kernel Soft-Margin SVM的，</p>
+<blockquote>
+<p>Kernel Soft-Margin SVM：<br/></p>
+<p>在0 ≤ α<sub>n</sub> ≤ C; 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub> = 0的限制條件下，求解min. [(1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)-𝚺<sub>n</sub> α<sub>n</sub>]</p>
+<p><br/></p>
+<p>得到α<sub>n</sub>，然後</p>
+<p><br/></p>
+<p><strong>W = 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>Z<sub>n</sub></strong></p>
+<p><br/></p>
+<p>b=y<sub>sv</sub>-𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>K(X<sub>n</sub>,X<sub>sv</sub>)</p>
+</blockquote>
+<p>其中W可以想成是由Z<sub>n</sub>所組合而成的，而決定貢獻程度則反應在放在它前面的係數(α<sub>n</sub>y<sub>n</sub>)，y<sub>n</sub>決定貢獻的方向，α<sub>n</sub>決定影響的程度。</p>
+<p><strong>數學上，有個理論Representer Theorem可以告訴我們，所有的最佳化問題中，W的最佳解都是由Z<sub>n</sub>所組合而成的，以線性代數的角度，就是W由Z<sub>n</sub>所展開(span)，數學上表示成W*=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>。</strong></p>
+<p>這個性質為Kernel Trick提供了一個良好的基礎，每次我們只要遇到W*<sup>T</sup>Z的部分，我們就可以使用Representer Theorem把問題轉換成W*<sup>T</sup>Z=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>Z=𝚺<sub>n</sub> β<sub>n</sub>K(X<sub>n</sub>,X)，就可以使用Kernel Function了。</p>
+<p><img alt="kernel trick" src="https://dl.dropbox.com/s/zba8381572jub0r/MachineLearningTechniques.000_04.png"></p>
+<p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf</a></p>
+<p>上圖是老師在上課時列出來SVM、PLA和Logistic Regression的W的展開式，你會發現都可以表現成Representer Theorem的形式。</p>
+<p>有了這個概念，我們就可以把很多問題都利用Representer Theorem來轉換，並且套上Kernel Trick。</p>
+<p><br/></p>
+<h3>Kernel Logistic Regression</h3>
+<p>那我們有了Representer Theorem就可以直接來轉換L2 Regularized Logistic Regression，讓它有擁有Kernel的效果，</p>
+<blockquote>
+<p>L2 Regularized Logistic Regression：<br/></p>
+<p>min. (1/N)×𝚺<sub>n</sub> ln[1+exp(-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>))] +  (λ/N)×W<sup>T</sup>W</p>
+</blockquote>
+<p>使用W*=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>代入得，</p>
+<blockquote>
+<p><strong>Kernel Logistic Regression: <br/></strong></p>
+<p><strong>min. (1/N)×𝚺<sub>n</sub> ln[ 1+exp(-y<sub>n</sub>×𝚺<sub>n</sub> β<sub>n</sub>K(X<sub>n</sub>,X)) ] +  (λ/N)×𝚺<sub>n</sub>𝚺<sub>m</sub> β<sub>n</sub>β<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)</strong></p>
+</blockquote>
+<p>上面的式子可以使用Grandient Descent來求解β<sub>n</sub>，進而得到W*=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>。而且在Kernel Function的幫助之下，我們更容易可以做到非常高次的特徵轉換。</p>
+<p><br/></p>
+<h3>Kernel Ridge Regression</h3>
+<p>同理，我們也可以把相同技巧套用到Ridge Regression，</p>
+<blockquote>
+<p>Ridge Regression：<br/></p>
+<p>min. (1/N)×𝚺<sub>n</sub> (y<sub>n</sub>-W<sup>T</sup>Z<sub>n</sub>)<sup>2</sup> +  (λ/N)×W<sup>T</sup>W</p>
+</blockquote>
+<p>使用W*=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>代入得，</p>
+<blockquote>
+<p><strong>Kernel Ridge Regression：<br/></strong></p>
+<p><strong>min. (1/N)×𝚺<sub>n</sub> (y<sub>n</sub>-𝚺<sub>m</sub> β<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>))<sup>2</sup> +  (λ/N)×𝚺<sub>n</sub>𝚺<sub>m</sub> β<sub>n</sub>β<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)</strong></p>
+</blockquote>
+<p>上面的式子也可以使用Grandient Descent來求解β<sub>n</sub>。</p>
+<p>另外，這個式子有辦法推出解析解，先把上式可以寫成矩陣形式，</p>
+<blockquote>
+<p>Kernel Ridge Regression：<br/></p>
+<p>min. E<sub>aug</sub></p>
+<p><br/>E<sub>aug</sub>=(1/N)×(β<sup>T</sup>K<sup>T</sup>Kβ-2β<sup>T</sup>K<sup>T</sup>y+y<sup>T</sup>y) +  (λ/N)×β<sup>T</sup>Kβ)</p>
+</blockquote>
+<p>所以，由∇E<sub>aug</sub>=0就可以得到最小值成立的條件為</p>
+<p><strong>β*=(λI+K)<sup>-1</sup>y</strong></p>
+<p>其實這個式子非常像之前在線性模型時使用的Pseudo-Inverse，</p>
+<p>Pseudo-Inverse：W=(X<sup>T</sup>X)<sup>-1</sup>X<sup>T</sup>y</p>
+<p>不過現在更為強大了，可以求得非線性模型+Regularization下的解析解。</p>
+<p><strong>我們可以使用Kernel Ridge Regression來做分類問題，稱之為Least-Squares SVM (LSSVM) 。</strong></p>
+<p><br/></p>
+<h3>Support Vector Regression (SVR)</h3>
+<p>其實，不管是Kernel Logistic Regression還是Kernel Ridge Regression，這種直接套用Representer Theorem在Regression上的都有一個缺點。</p>
+<p>那就是它們的<strong>β<sub>n</sub>並不確保大多數是0</strong>，如果Data筆數非常多的話，這在計算上會是一種負荷。在之前我們討論Kernel SVM時有提到只有Support Vector的數據才會對Model最後的結果有所貢獻，Support Vector的α<sub>n</sub>&gt;0；而不是Support Vector的數據則沒有貢獻，Non-Support Vector的α<sub>n</sub>=0。所以你可以想見的是，<strong>α<sub>n</sub>大多數是0除了Support Vector外，我們稱這叫做「Sparse α<sub>n</sub>」性質</strong>，有這樣的性質可以大大的減少計算量。</p>
+<p>因此接下來我們打算<strong>讓Regression具有Support Vector的性質，稱之為Support Vector Regression (SVR)</strong>。</p>
+<p><img alt="SVR" src="https://dl.dropbox.com/s/76wyl84tdhj9r7a/MachineLearningTechniques.006.jpeg"></p>
+<p>見上圖說明，Support Vector Regression簡稱SVR，以往的Linear Regression是求一條擬合直線能使所有數據點到直線的Error最小，而現在我們賦予它Soft-Margin的能力，<strong>SVR將擬合直線向外擴張距離ε，在這個擴張的區域裡頭的數據點不去計算它的Error，只有在超出距離ε外的才去計算Error</strong>，此時這個擬合直線有點像一條水管，水管外我們才計算Error，所以又稱之為Tube Regression。</p>
+<p>這個概念和Soft-Margin SVM有點像，都是在邊界給予犯錯的機會，不同的是Soft-Margin SVM因為是分類問題，所以不允許錯誤的數據超過界，所以評估Error的方向是向內的，而SVR是向外評估Error，超出水管之上的Error我們記作ξ<sub>n</sub><sup>⋀</sup>，低於水管之下的Error我們記作ξ<sub>n</sub><sup>⋁</sup>，<strong>所以SVR的目的就是在Regularization之下使得ξ<sub>n</sub><sup>⋀</sup>+ξ<sub>n</sub><sup>⋁</sup>最小，並且調整距離ε和C來決定對Error的容忍程度</strong>。</p>
+<p>這個問題同樣的可以化作Dual問題，問題變成只需要最佳化α<sub>n</sub><sup>⋀</sup>和α<sub>n</sub><sup>⋁</sup>，再使用最佳化後的α<sub>n</sub><sup>⋀</sup>和α<sub>n</sub><sup>⋁</sup>就可以得到W和b。其中W=𝚺<sub>n</sub> (α<sub>n</sub><sup>⋀</sup>-α<sub>n</sub><sup>⋁</sup>) Z<sub>n</sub>這式子裡頭隱含著Representer Theorem，每筆數據的貢獻程度β<sub>n</sub>=(α<sub>n</sub><sup>⋀</sup>-α<sub>n</sub><sup>⋁</sup>)，<strong>因此在管子內的α<sub>n</sub><sup>⋀</sup>=0且α<sub>n</sub><sup>⋁</sup>=0，不會有所貢獻，這使得SVR具有Sparse的性質，可以大大的減少計算</strong>。</p>
+<p><br/></p>
+<h3>結語</h3>
+<p>這一篇中，我們一開始揭露了「Soft-Margin SVM其實很像L2 Regularized Logistic Regression」的這個現象，所以在SVM中最小化W<sup>T</sup>W有點像是Regression中的Regularization，也因為形式上相當的接近，所以在SVM裡頭用到的數學技巧同樣的可以套到這些有Regularized的Regression上。</p>
+<p>然後，我們從Kernel Soft-Margin SVM中萃取出Kernel Trick的精華—Representer Theorem，最佳化的W可以由Data的Feature Z<sub>n</sub>所組成，記作W*=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>，這提供了Kernel Trick背後的實踐基礎，接下來我們就開始運用Representer Theorem在L2 Regularized Logistic Regression和Ridge Regression上，讓這些Regression可以輕易的做非線性特徵轉換。</p>
+<p>最後，我們指出了直接套用Representer Theorem在Regression上的缺點就是參數並不Sparse，所以造成計算量大大增加。因此Support Vector Regression (SVR)參照Soft-Margin SVM的形式重新設計Regression，並且使用Dual Transformation和Kernel Function來轉化問題，最後SVR就具有Sparse的特性了。</p>
+<p>上一篇跟這一篇，談的是「Kernel Models」，在這樣的形式下我們可以讓我們的「特徵轉化」變得更為複雜，甚至是無窮多次方還是做得到的。下一篇，我們會進到另外一個主題—Aggregation Models。</p>
+
+
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./archives.html">Archives</a></li>
+                            <li><a href="./tags.html">Tags</a></li>
+                            <li><a href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Contact Me</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
+                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
+                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; YC Note 2018</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>

@@ -410,6 +410,194 @@ H = F + G&quot;
 <li>Slicing Method ( Ex: M[1,0:2] )</li>
 <li>布林陣列的取值賦值方法</li>
 </ul></dd>
+                <dt>2017 / 4月 22</dt>
+                <dd><a href="./ml-course-techniques_7.html">機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
+<p>本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization。</p>
+</blockquote>
+<p><br/></p>
+<h5><u>Radial Basis Function (RBF) Network</u></h5>
+<p>回顧一下Gaussian Kernel SVM，</p>
+<blockquote>
+<p>W = 𝚺<sub>n=sv</sub> α<sub>n</sub>y<sub>n</sub>Z<sub>n</sub>  <br/></p>
+<p>G<sub>SVM</sub>   <br/></p>
+<p>= sign[WZ+b] <br/></p>
+<p>= sign{[𝚺<sub>n=sv</sub>α<sub>n</sub>y<sub>n</sub>K(X<sub>n</sub>,X)]+b} <br/></p>
+<p>⇒ G<sub>SVM</sub> = sign{[𝚺<sub>n=sv</sub>α<sub>n</sub>y<sub>n</sub>exp(-γ|X-X<sub>n</sub>|<sup>2</sup>)]+b} <br/></p>
+</blockquote>
+<p>看到這個式子你想到了什麼？有沒有融會貫通的感覺，你同樣的可以把上面的式子看成是Aggregation，又或者是Network。</p>
+<p>先來定義一下RBF Function， 其實就是Gaussian Function，</p>
+<p><strong>RBF Function: RBF(X,X<sub>n</sub>)=exp(-γ|X-X<sub>n</sub>|<sup>2</sup>)</strong></p>
+<p>所以我們可以仿造SVM的形式來造一個Network，</p>
+<p><strong>G=Output{[𝚺<sub>m</sub> β<sub>m</sub>RBF(X,μ<sub>m</sub>)]+b}</strong></p>
+<p>當Output為sign Function、β<sub>m</sub>為α<sub>n</sub>y<sub>n</sub>就回到特例SVM了。</p>
+<p>我們來細看這個式子傳遞的概念，RBF Network的第一層是先產生M組RBF(X,μ<sub>m</sub>)，意味著以這M個位置μ<sub>m</sub>當作中心點來評估各個X與它的相似程度，RBF是有評估相似度的味道，越接近μ<sub>m</sub>的點，RBF越大，並隨著與μ<sub>m</sub>距離變大，RBF的值也快速遞減，所以這M個μ<sub>m</sub>是有象徵性的，越接近它你越受它的影響。</p>
+<p>決定了每一筆數據各是受哪些μ<sub>m</sub>影響，接下來第二層是由這M個代表性的位置來進行投票決定最後的結果，這意味的不同的地方μ<sub>m</sub>對最後結果也有不同的影響力，舉個例子，假設在SVM裡頭，某個μ<sub>m</sub>如果它的y<sub>m</sub>=+1，那它對最後的影響就會是正的；那如果某個μ<sub>m</sub>的y<sub>m</sub>=-1，那它對最後的影響就會是負的，所以一個點進來，先評估一下它和象徵性的幾個點μ<sub>m</sub>的距離，如果相鄰幾點都是正的，這個點最後的結果就會是正的。</p>
+<p><img alt="RBF Network" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_05.png"></p>
+<p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf</a></p>
+<p>RBF Network在歷史上是Neural Network的一個分支，不過從上面的介紹你就會發現，它們的結構是有差異的，演算法也就不一樣。</p>
+<p>通常最佳化RBF Network做法是這樣的，我們會先用一些方法將μ<sub>m</sub>決定，如果μ<sub>m</sub>很懶惰的就直接使用所有的Training Data，總共有N個μ<sub>m</sub>，這就叫做<strong>「Full RBF Network」</strong>。<strong>我們也可以使用一些歸納的演算法找出代表資料群體的幾個象徵性的中心點，例如待會會介紹的K-Means的方法</strong>，找出k個μ<sub>m</sub>再做計算，這樣的RBF Network稱為<strong>「k Nearest Neighbor RBF Network」</strong>。</p>
+<p>找到了μ<sub>m</sub>就已經決定了所有的RBF Function，接下來就可以線性組合這些RBF Function，我們可以使用Regression的方法來求取β<sub>m</sub>。</p>
+<p>而如果你使用「Full RBF Network」，你會發現做完Regression後E<sub>in</sub>=0，這是典型的Overfitting，那這時你可能就要採用有Regularization的Regression啦！譬如說Ridge Regression之類的。</p>
+<p><br/></p>
+<h5><u>K-Means</u></h5>
+<p><img alt="K-Means" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_06.png"></p>
+<p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf</a></p>
+<p>接下來來看怎麼用K-Means找到代表資料群體的幾個象徵性的中心點。</p>
+<p>首先，先決定要有幾個「中心點」，這裡假設我要有k個好了，接下來先隨機給這些「中心點」一個初始的位置，接下來根據數據的靠近程度開始歸類，如果一筆數據比較所有的「中心點」後發現離「中心點」A是最近的話，那這筆數據就歸「中心點」A了，就用這樣的規則把所有數據都做分類。</p>
+<p>分完類後，接下來平均每一個資料群體裡的數據座標找出新的代表這個群體的「中心點」，然後又拿這個新的「中心點」根據數據的靠近程度再歸類一次，如此循環多次，直到收斂為止。這樣的話，這k個「中心點」收斂後會各自佔據四方，並且代表某個群體的中心點。我們就可以找到代表性的k個點，並拿這些點做「k Nearest Neighbor RBF Network」。</p>
+<p><br/></p>
+<h5><u>One-Hot Encoding</u></h5>
+<p>討論這麼久的ML，我們還沒有討論過假設遇到「類別」要怎麼處理！</p>
+<p><strong>通常遇到類別的狀況，我們還是需要把它轉換成數值或向量來處理，常見的方法叫做One-Hot Encoding。</strong></p>
+<p>舉個例子，如果要描述血型應該要怎麼做？我們可是無法拿字串下去Regression的啊～此時就需要One-Hot Encoding，假設血型有A, B, AB, O四種，我們可以這樣設定，</p>
+<p>A = [1, 0, 0, 0]<sup>T</sup></p>
+<p>B = [0, 1, 0, 0]<sup>T</sup></p>
+<p>AB = [0, 0, 1, 0]<sup>T</sup></p>
+<p>O = [0, 0, 0, 1]<sup>T</sup></p>
+<p>就是這麼簡單，這個動作就叫做One-Hot Encoding。</p>
+<p><br/></p>
+<h5><u>Matrix Factorization</u></h5>
+<p><strong>那如果今天我的Input和Output都是類別，而我們想要讓機器自己去找到匹配Input和Output的機制，解決這個問題的方法稱之為Matrix Factorization。</strong></p>
+<p><strong>Matrix Factorization精神上有點像是Autoencoder，Autoencoder找出隱含在Data裡的特性，而Matrix Factorization則是找出隱含的匹配關係。</strong></p>
+<p>舉個例子，如果Netflix有了一堆用戶和他們曾看過的電影的資料，我們想要從中抽取出用戶與他愛看的電影之間的關係，所以這不單單只是匹配而已，單純匹配就只需要硬碟就做的到了，我們要做的是找出匹配的規律，並且用更少、更精簡的方式表示這個匹配關係，舉個例子，有可能有部分用戶會被歸納到愛看恐怖片的，並且同時這些客戶會被連結到具有恐怖元素的電影，我們預期Matrix Factorization會有自行歸納整理的能力。</p>
+<p>可以仿造Autoencoder來設計Matrix Factorization，而你會發現Activation Function只要使用線性就已經足夠了，因為對於One-Hot Encoding的類別來說，只有一條通道是有效的，這已經具有開關的味道了，所以我們不用在Activation Function上面再弄一道開關，所以採用Linear就足夠了。</p>
+<p><img alt="Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_07.png"></p>
+<p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf</a></p>
+<p>因為是線性模型的緣故，我們可以很簡單的使用矩陣來描述，</p>
+<p>Hypothesis: h(X) = W<sup>T</sup>VX</p>
+<p>而如果是某一用戶，則</p>
+<p>h(X<sub>n</sub>) = W<sup>T</sup>V<sub>n</sub></p>
+<p>對某個用戶而言與他匹配的電影是一個向量，上面紀錄了他看過的電影，假設我再指定一部電影m，此時W<sub>m</sub><sup>T</sup>V<sub>n</sub>就代表這個用戶有沒有看過這部電影。</p>
+<p>用這個方法來想問題，假設今天你把用戶和電影填成一個大的表格，或是矩陣，有交集的部分就打個勾，這個矩陣的每個元素表示成r<sub>nm</sub>，有打勾的部分r<sub>nm</sub>=1，沒打勾的部分r<sub>nm</sub>=0，那我們做的轉換W和V最終就是為了讓</p>
+<p>W<sub>m</sub><sup>T</sup>V<sub>n</sub>≈r<sub>nm</sub></p>
+<p>為了評估匹配的好壞，我們定義Error Function為</p>
+<p>E<sub>in</sub>({W<sub>m</sub>},{V<sub>n</sub>}) = (1/𝚺<sub>m</sub> |D<sub>m</sub>|)×𝚺<sub>n,m</sub> (r<sub>nm</sub>-W<sub>m</sub><sup>T</sup>V<sub>n</sub>)<sup>2</sup></p>
+<p>最佳化Matrix Factorization有兩個演算法，一個是Alternating Least Squares，另外一個是SGD。</p>
+<p><br/></p>
+<h5><u>Alternating Least Squares for Matrix Factorization</u></h5>
+<p><img alt="Alternating Least Squares for Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_08.png"></p>
+<p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf</a></p>
+<p>第一個方法是利用Linear Regression交互的優化W<sub>m</sub>和V<sub>n</sub>，我們的目標是使得W<sub>m</sub><sup>T</sup>V<sub>n</sub>=r<sub>nm</sub>，這式子可以用兩個角度看，如果固定W<sub>m</sub>，優化V<sub>n</sub>，那就是線性擬合{V<sub>n</sub>, r<sub>nm</sub>}的問題；那如果固定V<sub>n</sub>，優化W<sub>m</sub>，這就是線性擬合{W<sub>m</sub>, r<sub>nm</sub>}的問題。<strong>因此，交替優化W<sub>m</sub>和V<sub>n</sub>就可以使得W<sub>m</sub><sup>T</sup>V<sub>n</sub>越來越接近r<sub>nm</sub>了</strong>。</p>
+<p><br/></p>
+<h5><u>SGD for Matrix Factorization</u></h5>
+<p><img alt="SGD for Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_09.png"></p>
+<p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf</a></p>
+<p>第二個方法則是老招—Gradient Descent，這裡採用隨機的版本SGD，所以過程中我們會隨意的從(n,m)中挑點，然後根據Error Measure</p>
+<p>E<sub>in</sub>({W<sub>m</sub>},{V<sub>n</sub>}) = (1/𝚺<sub>m</sub> |D<sub>m</sub>|)×𝚺<sub>n,m</sub> (r<sub>nm</sub>-W<sub>m</sub><sup>T</sup>V<sub>n</sub>)<sup>2</sup></p>
+<p>我們就可以得到更新W<sub>m</sub>和V<sub>n</sub>的方法，詳細的方法見上圖所示。</p>
+<p><strong>目前，SGD方法是處理大型Matrix Factorization最流行的作法。</strong></p>
+<p><br/></p>
+<h5><u>結語</u></h5>
+<p>本篇介紹類似Neural Network的兩種Network結構，分別為Radial Basis Function (RBF) Network和Matrix Factorization。</p>
+<p>在做RBF Network時，我們先找出幾個代表的中心，並評估一筆資料與這些中心的距離，再來再考慮不同中心對於答案的貢獻，加總起來可以預測這筆資料的答案，我們可以使用K-Means的方法來找出k點代表性的中心點來做RBF Network。</p>
+<p>Matrix Factorization和Autoencoder有點類似，Autoencoder目標在於找出隱含在Data裡的特性，而Matrix Factorization則是找出隱含的匹配關係，並且介紹了兩種Matrix Factorization的演算法：Alternating Least Squares和SGD方法。</p>
+<p>這系列的介紹文章，到這裡算是走到尾聲了，最後跟大家推薦一下老師的最後一堂課的投影片：</p>
+<p><a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/216_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/216_handout.pdf</a></p>
+<p>這個投影片裡頭林軒田教授用心的彙整了一整個學期的內容，很值得一看。</p></dd>
+                <dt>2017 / 4月 17</dt>
+                <dd><a href="./ml-course-techniques_6.html">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
+<p>本篇內容涵蓋神經網路(Neural Network, NN)、深度學習(Deep Learning, DL)、反向傳播算法(Backpropagation, BP)、Weight-elimination Regularizer、Early Stop、Autoencoder、Principal Component Analysis (PCA)。</p>
+</blockquote>
+<p><br/></p>
+<h5><u>神經網路(Neural Network)</u></h5>
+<p>最後一個主題，我們要來講第三種「特徵轉換」— Extraction Models，其實就是現今很流行的「類神經網路」(Neural Network) 和「深度學習」(Deep Learning)，包括下圍棋的AlphaGo、Tesla的自動駕駛都是採用這一類的Machine Learning。</p>
+<p>Extraction Models的基本款就是廣為人知的「神經網路」(Neural Network)，它的特色是使用神經元來做非線性的特徵轉換，那如果具有多層神經元，就是做了多次的非線性特徵轉換，這就是所謂的「深度學習」(Deep Learning)。</p>
+<p><img alt="Neural Network" src="https://dl.dropbox.com/s/a7divvzh6mzfwvb/MachineLearningTechniques.016.jpeg"></p>
+<p>上圖左側就是具有一層神經元的Neural Network，首先我們有一組特徵X，通常我們會加入一個維度X<sub>0</sub>=1，這是為了可以讓結構變得更好看，未來可以與W<sub>0</sub>相乘產生常數項。使用W來給予特徵X權重，最後總和的結果稱之為Score，s = W<sub>0</sub>X<sub>0</sub>+𝚺<sub>i=1</sub>W<sub>i</sub>X<sub>i</sub> = 𝚺<sub>i=0</sub>W<sub>i</sub>X<sub>i</sub>。</p>
+<p>這個Score會被輸入到一個Activation Function裡頭，<strong>Activation Function的用意就是開關</strong>，當Score大於某個閥值，就打通線路讓這條路的貢獻可以繼續向後傳遞；當Score小於某個閥值，就關閉線路，所以Activation Function可以是Binary Function，但在實際操作之下不會使用像Binary Function這類不可以微分的Activation Function，所以我們會找具有相似特性但又可以微分的函數，例如tanh或者是ReLU這類比較接近開關效果的函數，經過Activation Function轉換後的輸出表示成g<sub>t</sub> = σ(𝚺<sub>i</sub>W<sub>i</sub>X<sub>i</sub>)，這個g<sub>t</sub>就稱為神經元、σ為Activation Function、𝚺<sub>i</sub> W<sub>i</sub>X<sub>i</sub>是Score。</p>
+<p>如果我們有多組權重W就能產生多組神經元g<sub>t</sub>，然後最後把g<sub>t</sub>做線性組合並使用Output Function h(x)來衡量出最後的答案，Output Function可以是Linear Classification的Binary Function h(x)=sign(x)，不過一樣的問題，它不可以微分，通常不會被使用，常見的是使用Linear Regression h(x)=x，或者Logistic Regression h(x)=Θ(x)來當作Output Function，最後的結果可以表示成 y=h(𝚺<sub>t</sub>α<sub>t</sub>g<sub>t</sub>)，看到這個式子有沒有覺得很熟悉，它就像我們上一回講的Aggregation，將特徵X使用特徵轉換轉成使用g<sub>t</sub>表示，再來組合這些g<sub>t</sub>成為最後的Model，所以單層的Neural Network就使用到了Aggregation，它繼承了Aggregation的優點。</p>
+<p>有了這個Model的形式了，我們可以使用Gradient Descent的手法來做最佳化，這也就是為什麼要讓操作過程當中所使用的函數都可以微分的原因。Gradient Descent在Neural Network的領域裡面發展出一套方法稱為Backpropagation，我們待會會介紹。<strong>因此實現Backpropagation，我只要餵Data進去，Model就會去尋找可以描述這組Data的特徵轉換g<sub>t</sub>，這就好像是可以從Data中萃取出隱含的Feature一樣，所以這類的Models才會被統稱為Extraction Models</strong>。</p>
+<p><br/></p>
+<h5><u>深度學習(Deep Learning)</u></h5>
+<p>剛剛我們介紹了最基本款的Neural Network，那如果這個Neural Network有好幾層，我還會稱它為Deep Learning，所以基本上Deep Neural Network和Deep Learning是指同一件事，那為什麼會有兩個名字呢？其實是有歷史典故的。</p>
+<p>Neural Network的歷史相當悠久，早在1958年就有人提出以Perceptron當作Activation Function的單層Neural Network，大家也知道一層的Neural Network是不Powerful的，所以在1969年，就有人寫了論文叫做「perceptron has limitation」，從那時Neural Network的方法就很少人研究了。</p>
+<p>直到1980年代，有人開始使用多層的Neural Network，並在1989年，Yann LeCun博士等人就已經將反向傳播演算法(Backpropagation, BP)應用於Neural Network，當時Neural Network的架構已經和現在的Deep Learning很接近了，不過礙於當時的硬體設備計算力不足，Neural Network無法發揮功效，並且緊接的<strong>有人在1989年證明了只要使用一層Neural Network就可以代表任意函數，那為何還要Deep呢？</strong>所以Deep Neural Network這方法就徹底黑掉了。</p>
+<p>一直到了最近，<strong>G. E. Hinton博士為了讓Deep Neural Network起死回生，重新給了它一個新名字「Deep Learning」</strong>，再加上他在2006年提出的RBM初始化方法，這是一個非常複雜的方法，所以在學術界就造成了一股流行，雖然後來被證明RBM是沒有用的，不過卻因為很多人參與研究Deep Learning的關係，也找出了解決Deep Learning痛處的方法，<strong>2009年開始有人發現使用GPU可以大大的加速Deep Learning</strong>，從這一刻起，Deep Learning就開始流行起來，直到去年的2016年3月，圍棋程式Alpha GO運用Deep Learning技術以4:1擊敗世界頂尖棋手李世乭，Deep Learning正式掀起了AI的狂潮。</p>
+<p>聽完這個故事我們知道改名字的重要性XDD，不過大家是否還有看到什麼關鍵，「使用一層Neural Network就可以代表任意函數，那為何還要Deep呢？」這句話，這不就否定了我們今天做的事情了嗎？的確，使用一層的Neural Network就可以形成任意函數，但這一層的神經元也同樣需要無窮多個才做的到。<strong>Deep Learning的學習方法和人有點類似，我們在學習一個艱深的理論時，會先單元式的針對幾個簡單的概念學習，然後在整合這些概念去理解更高層次的問題</strong>，Deep Learning透過多層結構學習，雖然第一層的神經元沒有很多，能學到的也只是簡單的概念而已，不過第二層再重組這些簡單概念，第三層再用更高層次的方法看問題，所以同樣的問題使用一層Neural Network可能需要很多神經元才有辦法描述，但是Deep Learning卻可以使用更少的神經元做到一樣的效果。</p>
+<p>另外，Deep Learning還有一個很大好處，就是比較不容易Overfitting，你可以想像一下如果我們使用100個神經元來造一個單層Neural Network，跟使用100個神經元來造一個五層的Neural Network，哪一個比容易Overfitting，當然是單層的Neural Network，多層Neural Network是使用一個從簡單到複雜的抽取特徵方法，所以它比較不易受到雜訊的影響，<strong>Deep Learning在建立多層「模組化」的過程可以抑制對於雜訊的過度反應，這等於是一種Regularization</strong>。</p>
+<p><strong>因此，Deep Learning中每一層當中做了Aggregation，在增加模型複雜度的同時，也因為平均的效果而做到截長補短，這具有Regularization的效果，並且在採用多層且瘦的結構也同時因為「模組化」而做到Regularization，這就不難想像Deep Learning為何如此強大。</strong></p>
+<p><br/></p>
+<h5><u>反向傳播算法(Backpropagation, BP)</u></h5>
+<p><img alt="Neural Network" src="https://dl.dropbox.com/s/khbpmalswll787f/MachineLearningTechniques.017.jpeg"></p>
+<p>我們接下來就來看一下Deep Learning的演算法—反向傳播法，我們來看要怎麼從Gradient Descent來推出這個算法。</p>
+<p>看一下上面的圖，我畫出了具有L層深的Deep Learning，每一層都有一個權重W<sub>ij</sub><sup>(ℓ)</sup>，因此我們可以估計出每一層的Score s<sub>j</sub><sup>(ℓ)</sup>= 𝚺<sub>i</sub> W<sub>ij</sub><sup>(ℓ)</sup>X<sub>i</sub><sup>(ℓ-1)</sup>，把Score s<sub>j</sub><sup>(ℓ)</sup>通過Activation Function，就可以得到下一層的Input，如此不斷的疊上去，直到最後一層L為Output Layer，Output最後的結果y，這裡我使用Linear Function來當作Output Function，這就是Deep Learning最簡單的架構。</p>
+<p>而我們需要Training的就是這些權重W<sub>ij</sub><sup>(ℓ)</sup>，我們如何一步一步的更新W<sub>ij</sub><sup>(ℓ)</sup>，使得它可以Fit數據呢？回想一下Gradient Descent的流程：</p>
+<ol>
+<li>定義出Error函數</li>
+<li>Error函數讓我們可以去評估E<sub>in</sub></li>
+<li>算出它的梯度∇E<sub>in</sub></li>
+<li>朝著∇E<sub>in</sub>的反方向更新參數W，而每次只跨出η大小的一步</li>
+<li>反覆的計算新參數W的梯度，並一再的更新參數W</li>
+</ol>
+<p>假設使用平方誤差的話，Error函數在這邊就是</p>
+<p>L = (1/2) (y-ŷ)<sup>2</sup>，</p>
+<p>因此我們的更新公式可以表示成</p>
+<p>W<sub>ij</sub><sup>(ℓ)</sup> ←  W<sub>ij</sub><sup>(ℓ)</sup>-η×∂L/∂W<sub>ij</sub><sup>(ℓ)</sup> </p>
+<p>那我們要怎麼解這個式子呢？關鍵就在∂L/∂W<sub>ij</sub><sup>(ℓ)</sup>這項要怎麼計算，這一項在Output Layer (ℓ=L)是很好計算的，</p>
+<p>∂L/∂W<sub>ij</sub><sup>(L)</sup></p>
+<p>= {∂L/∂s<sub>j</sub><sup>(L)</sup>}×{∂s<sub>j</sub><sup>(L)</sup>/∂W<sub>ij</sub><sup>(L)</sup>}  (連鎖率)</p>
+<p>= {δ<sub>j</sub><sup>(L)</sup>}×{X<sub>i</sub><sup>(L-1)</sup>}</p>
+<p>上式當中我們使用了微分的連鎖率，並且令</p>
+<p><strong>δ<sub>j</sub><sup>(L)</sup> = ∂L/∂s<sub>j</sub><sup>(L)</sup></strong></p>
+<p>δ<sub>j</sub><sup>(L)</sup>這一項被稱為Backward Pass Term，而X<sub>i</sub><sup>(L-1)</sup>這項被稱為Forward Pass Term，所以L層權重的更新取決於Forward Pass Term和Backward Pass Term相乘δ<sub>j</sub><sup>(L)</sup>×X<sub>i</sub><sup>(L-1)</sup>。</p>
+<p>我們先來看一下L層的Forward Pass Term要怎麼計算，X<sub>i</sub><sup>(L-1)</sup>這項是很容易求的，我們只要讓數據一路從0層傳遞上來就可以自然而然的得到X<sub>i</sub><sup>(L-1)</sup>的值，所以我們會稱X<sub>i</sub><sup>(L-1)</sup>這一項為Forward Pass Term，因為我們必須要往前傳遞才可以得到這個值。</p>
+<p>再來看一下L層的Backward Pass Term要怎麼計算，δ<sub>j</sub><sup>(L)</sup>一樣是很容易求得的，</p>
+<p>δ<sub>j</sub><sup>(L)</sup> = ∂L/∂s<sub>j</sub><sup>(L)</sup> = ∂[(1/2) (y-ŷ)<sup>2</sup>]/∂y = (y-ŷ)</p>
+<p>你會發現這一項的計算需要得到誤差的資訊，而誤差資訊要等到Forward的動作做完才有辦法得到，所以資訊的傳遞方向是從尾巴一路回到頭，是一個Backword的動作。</p>
+<p>因此，最後一層也是Output Layer的更新公式如下：</p>
+<p>W<sub>ij</sub><sup>(L)</sup> ←  W<sub>ij</sub><sup>(L)</sup>-η×δ<sub>j</sub><sup>(L)</sup>×X<sub>i</sub><sup>(L-1)</sup></p>
+<p>權重的更新取決於Input和Error的影響，需要考慮Forward Pass Term和Backward Pass Term。</p>
+<p>那除了Output這一層以外的權重應該怎麼更新？來看一下(ℓ)層，</p>
+<p>∂L/∂W<sub>ij</sub><sup>(ℓ)</sup></p>
+<p>= {∂L/∂s<sub>j</sub><sup>(ℓ)</sup>}×{∂s<sub>j</sub><sup>(ℓ)</sup>/∂W<sub>ij</sub><sup>(ℓ)</sup>} (連鎖率)</p>
+<p>= δ<sub>j</sub><sup>(ℓ)</sup>×X<sub>i</sub><sup>(ℓ-1)</sup></p>
+<p>一樣是Forward Pass Term和Backword Pass Term相乘，不過δ<sub>j</sub><sup>(ℓ)</sup>這一項的計算有點技巧性，來看一下，</p>
+<p>δ<sub>j</sub><sup>(ℓ)</sup></p>
+<p>= ∂L/∂s<sub>j</sub><sup>(ℓ)</sup></p>
+<p>= 𝚺<sub>k</sub> {∂L/∂s<sub>k</sub><sup>(ℓ+1)</sup>}×{∂s<sub>k</sub><sup>(ℓ+1)</sup>/∂X<sub>jk</sub><sup>(ℓ)</sup>}×{∂X<sub>jk</sub><sup>(ℓ)</sup>/∂s<sub>j</sub><sup>(ℓ)</sup>} (連鎖率)</p>
+<p>= 𝚺<sub>k</sub> {δ<sub>k</sub><sup>(ℓ+1)</sup>}×{W<sub>jk</sub><sup>(ℓ)</sup>}×{σ'(s<sub>j</sub><sup>(ℓ)</sup>)}</p>
+<p>W<sub>jk</sub><sup>(ℓ)</sup>和σ'(s<sub>j</sub><sup>(ℓ)</sup>)都是Forward之後就會得到的資訊，而δ<sub>k</sub><sup>(ℓ+1)</sup> 而是需要Backward才可以得到，我們已經知道δ<sub>j</sub><sup>(ℓ=L)</sup>的值，就可以從δ<sub>j</sub><sup>(ℓ=L)</sup>開始利用上面的公式，一路Backward把所有的δ<sub>j</sub>都找齊。好！那現在我們已經找到了更新所有Weights的方法了。</p>
+<p>看一下上圖中的最下面的Flow，一開始我們Forward，把所有X和s都得到，到了Output Layer，我們得到了δ<sub>j</sub><sup>(ℓ=L)</sup>，再Backward回去找出所有的δ，接下來就可以用Forward Pass Term和Backword Pass Term來Update所有的W了。</p>
+<p>總結一下，反向傳播算法(Backpropagation, BP)更新權重的方法為</p>
+<blockquote>
+<p><strong>W<sub>ij</sub><sup>(ℓ)</sup> ←  W<sub>ij</sub><sup>(ℓ)</sup>-η×δ<sub>j</sub><sup>(ℓ)</sup>×X<sub>i</sub><sup>(ℓ-1)</sup>  <br/></strong></p>
+<p><strong>If output layer (ℓ=L), δ<sub>j</sub><sup>(ℓ=L)</sup>=(y-ŷ)  <br/></strong></p>
+<p><strong>If other layer, δ<sub>j</sub><sup>(ℓ)</sup>= σ'(s<sub>j</sub><sup>(ℓ)</sup>) × 𝚺<sub>k</sub> δ<sub>k</sub><sup>(ℓ+1)</sup>×W<sub>jk</sub><sup>(ℓ)</sup>  <br/></strong></p>
+<p><strong>δ<sub>j</sub><sup>(ℓ)</sup>為Backword Pass Term；X<sub>i</sub><sup>(ℓ-1)</sup>為Forward Pass Term。</strong></p>
+</blockquote>
+<p><br/></p>
+<h5><u>Regularization in Deep Learning</u></h5>
+<p>那麼像是Deep Learning這麼複雜的Model，我們要怎麼避免Overfitting呢？有五個方法。</p>
+<p>第一個方法，就是我們剛剛提過的<strong>「設計Deep Neural Network的結構」</strong>，藉由限縮一層當中的神經元來達到一種限制，做到Regularization。</p>
+<p>第二個方法是<strong>「限制W的大小」</strong>，和標準Regularization作一樣的事情，我們將W的大小加進去Cost裡頭做Fitting，例如使用L2 Regularizer Ω(W)=𝚺(W<sub>jk</sub><sup>(ℓ)</sup>)<sup>2</sup>，但這樣使用有一個問題就是W並不是Sparse的，L2 Regularizer在抑制W的方法是，如果W的分量大的話就抑制多一點，如果分量小就抑制少一點（因為W<sup>2</sup>微分為一次），所以最後會留下很多很小的分量，造成計算量大大增加，尤其像是Deep Learing這麼龐大的Model，這樣的Regularization顯然不夠好，L1 Regularizer顯然可以解決這個問題（因為在大部分位置微分為常數），但不幸的是它無法微分，所以就有了L2 Regularizer的衍生版本，</p>
+<p>Weight-elimination L2 regularizer: 𝚺[(W<sub>jk</sub><sup>(ℓ)</sup>)<sup>2</sup>]/[1+(W<sub>jk</sub><sup>(ℓ)</sup>)<sup>2</sup>]</p>
+<p>這麼一來不管W大或小，它受到抑制的值大小接近的 (Weight-elimination L2 regularizer微分為 -1次方)，因此就可以使得部分W可以為0，大大便利於我們做計算。</p>
+<p>第三種方法是最常使用的<strong>「Early Stopping」</strong>，所謂的Early Stopping就是，在做Backpropagation的過程去觀察Validation Data的Error有沒有脫離Training Data的Error太多，如果開始出現差異，我們就立刻停止計算，這樣就可以確保Model裡的參數沒有使得Model產生Overfitting，是一個很直接的作法。</p>
+<p>第四種方法是<strong>「Drop-out」</strong>，在Deep Learing Fitting的過程中，隨機的關閉部分神經元，藉由這樣的作法使得Fitting的過程使用較少的神經元，並且使得結構是瘦長狀的，來達到Regularization。</p>
+<p>第五種方法是接下來會用更大篇幅介紹的<strong>「Denoising Autoencoder」</strong>，在Deep Neural Network前面加入這樣的結構有助於抑制雜訊。</p>
+<p><br/></p>
+<h5><u>Autoencoder</u></h5>
+<p><img alt="Regularization in Deep Learning" src="https://dl.dropbox.com/s/qnyy3uyyszq45yx/MachineLearningTechniques.018.jpeg"></p>
+<p>Neural Network針對不同需要發展出很多不同的型態，包括CNN, RNN，還有接下來要介紹的Autoencoder，<strong>Autoencoder是一種可以將資料重要資訊保留下來的Neural Network</strong>，效果有點像是資料壓縮，在做資料壓縮時，會有一個稱為Encoder的方法可以將資料壓縮，那當然還要有另外一個方法將它還原回去，這方法稱為Decoder，壓縮的過程就是用更精簡的方式保存了資料。<strong>Autoencoder同樣的有Encoder和Decoder，不過它不像資料壓縮一樣可以百分之一百還原，不過特別之處是Autoencoder會試著從Data中自己學習出Encoder和Decoder，並盡量讓資料在壓縮完了可以還原回去原始數據</strong>。</p>
+<p>見上圖中Basic Autoencoder的部分，透過兩層的轉換，我們試著讓Input X可以完整還原回去，通常中間這一層會使用比較少的神經元，因為我們想要將資訊做壓縮，所以第一層的部分就是一個Encoder，而第二層則是Decoder，他們由權重W<sub>jk</sub><sup>(ℓ)</sup>決定，而在Training的過程，Autoencoder會試著找出最好的W<sub>jk</sub><sup>(ℓ)</sup>來使得資訊可以盡量完整還原回去，這也代表Autoencoder可以自行找出了Encoder和Decoder。</p>
+<p><strong>Encoder這一段就是在做一個Demension Reduction</strong>，Encoder轉換原本數據到一個新的空間，這個空間可以比原本Features描述的空間更能精準的描述這群數據，而中間這層Layer的數值就是新空間裡頭的座標，有些時候我們會用這個新空間來判斷每筆Data之間彼此的接近程度。</p>
+<p>我們也可以讓Encoder和Decoder可以設計的更複雜一點，所以你同樣的可以使用多層結構，稱之為Deep Autoencoder。另外，也有人使用Autoencoder的方法來Pre-train Deep Neural Network的各個權重。</p>
+<p>緊接著介紹兩種特殊的例子，第一個是Linear Autoencoder，我們把所有的Activation Function改成線性的，這個方法可以等效於待會要講的Principal Component Analysis (PCA)的方法，PCA是一個全然線性的方法，所以它的效力會比Autoencoder差一點。</p>
+<p>第二個是剛剛提到的Denoising Autoencoder，我們在原本Autoencoder的前面加了一道增加人工雜訊的流程，但是又要讓Autoencoder試著去還原出原來沒有加入雜訊的資訊，這麼一來<strong>我們將可以找到一個Autoencoder是可以消除雜訊的</strong>，把這個Denoising Autoencoder加到正常Neural Network的前面，那這個Neural Network就擁有了抑制雜訊的功用，所以可以當作一種Regularization的方法。</p>
+<p><br/></p>
+<h5><u>Principal Component Analysis (PCA)</u></h5>
+<p>最後來講一下Principal Component Analysis (PCA)，它不太算是Deep Learning的範疇，不過它是一個傳統且重要的Dimension Reduction的方法，我們就來看一下。</p>
+<p><img alt="PCA" src="https://dl.dropbox.com/s/4ek9k9g8vrwnwia/MachineLearningTechniques.019.jpeg"></p>
+<p>PCA的演算法是這樣的，第一步先求出資料Features的平均值，並且將各個Features減掉平均值，令為ζ，第二步求出由ζ<sup>T</sup>ζ產生的矩陣的Eigenvalue和Eigenvector，第三步，從這些Eigenvalue和Eigenvector中挑選前面k個，並組成轉換矩陣W，而最終PCA的轉換就是Φ(x)=W<sup>T</sup>(X-mean(X))，這個轉換做的就是Dimension Reduction，將數據降維到k維。</p>
+<p>PCA做的事是這樣的，每一個Eigenvector代表新空間裡頭的一個軸，而Eigenvalue代表站在這個軸上看資料的離散程度，當然我們如果可以描述每筆資料越分離，就代表這樣的描述方法越好，所以Eigenvalue越大的Eigenvector越是重要，<strong>所以取前面k個Eigenvector的用意是在降低維度的過程，還可以盡量的保持對數據的描述力，而且Eigenvector彼此是正交的，也就是說在新空間裡頭的每個軸是彼此垂直，彼此沒有Dependent的軸是最精簡的，所以PCA所做的Dimension Reduction一定是線性模型中最好、最有效率的</strong>。</p>
+<p>另外，剛剛有提到的Linear Autoencode幾乎是等效於PCA，大家可以看上圖中的描述，這裡不多贅述，不過不同的是，Linear Autoencoder並沒有限制新空間軸必須是正交的特性，所以它的效率一定會比PCA來的差。</p>
+<p><br/></p>
+<h5><u>結語</u></h5>
+<p>這一篇當中，我們介紹了Neural Network，並且探討多層Neural Network—Deep Neural Network，也等同於Deep Learning，並且說明為什麼需要「Deep」，然後介紹Deep Learning最重要的演算法—反向傳播算法，接著介紹五種常用的Regularization的方法：設計Deep Neural Network的結構、限制W的大小、Early Stopping、Drop-out和Denoising Autoencoder。</p>
+<p>介紹完以上內容，我們就已經對於Deep Learning的全貌有了一些認識了，緊接著來看Deep Learning的特殊例子—Autoencoder，Autoencoder可以用來做Dimension Reduction，那既然提到了Dimension Reduction，那就不得不在講一下重要的線性方法PCA。</p>
+<p>那在下一回，我們會繼續探討Neural Network還有哪些特殊的分支。</p></dd>
                 <dt>2017 / 4月 17</dt>
                 <dd><a href="./python-play-with-data_2.html">Python玩數據 (2)：Numpy [1/2]</a></dd>
                 <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>在上一次我們已經成功了安裝了IPython，這將會是我們這系列教學的主要舞台，而今天我要教大家在這個舞台上利用Numpy來做一些簡單的科學計算。</p>
@@ -796,6 +984,60 @@ H = F + G&quot;
 <p>Google就是這方面的高手，例如錯誤拼寫校正，Google擁有世界上最完整的拼寫檢查器，基本上涵蓋了各種語言，而且Google幾乎免費的獲得這種能力，它依據每天處理的30億個錯誤拼寫的查詢，一個巧妙的反饋系統可以讓用戶告訴Google他其實是想輸入什麼字，當搜尋頁面頂部顯示「你要找的是不是：流行病學」時，如果是的話，你將會點選並讓Google了解你真正想查的字詞，原本輸入錯誤這樣的數據廢氣卻被巧妙的回收再利用來優化它的系統。</p>
 <h5><u>全息社會</u></h5>
 <p>大數據正在慢慢影響這個社會，包括我們的知識取得方式，包括我們的社交活動，甚至在未來會決定人類很多的決策，大至公司策略發展，小至個人理財規劃，確實，大數據和機器學習的引入可能會取代掉許多目前的工作，不過也同時會創造更多新的工作內容，讓人類可以盡情發揮潛能，把更多的精力放在創造之上，如果亨利·福特問大數據他的顧客想要的是什麼，大數據將會回答，「一匹更快的馬。」在全息社會中，包括創意、直覺、冒險精神和知識野心在內的人類特性的培養顯得尤為重要，人類的進步正是源自我們的獨創性。</p></dd>
+                <dt>2017 / 4月 02</dt>
+                <dd><a href="./ml-course-techniques_5.html">機器學習技法 學習筆記 (5)：Boost Aggregation Models</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
+<p>本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。</p>
+</blockquote>
+<h5><u>Boost的精髓</u></h5>
+<p>在上一回當中，我們介紹的Aggregation Models都屬於沒有Boost的，不管是Bagging或Decision Tree都沒有要試著在Training的過程中改善Model，<strong>而這篇將要提到的Boost方法，則是在產生每個g<sub>t</sub>時試圖讓Model整體更完善，更能發揮Aggregation Models中截長補短中的「補短」的效果，也就是說g<sub>t</sub>可以彼此互補不足之處</strong>。</p>
+<p>那實際上我們應該怎麼做才能實踐Boost呢？其實方法的道理早就透漏在上一回中的Bagging和Decision Tree裡頭了，不管是Bagging和Decision Tree都是使用變換Data來做到變異度，在這個方法下Model的架構可以本身是不變的，這帶來相當的便利性，而今天我們要講的Boost也同樣的利用「變換Data」來做到變異度，但不同的是Boost的過程中「變換Data」這件事是有目標性的。</p>
+<p><strong>Boost方法在「變換Data」時會試著去凸顯原先做錯的Data，而降低原本已經做對的Data，藉由這樣的方法訓練出來的g<sub>t</sub>可以補齊前面的不足，所以Boost的過程將會使得Model漸漸的完善，這就是Boost的主要精髓。</strong></p>
+<p><br/></p>
+<h5><u>AdaBoost (Adaptive Boost) for Classification</u></h5>
+<p>剛剛上一段的最後我已經揭露了Boost的真正精髓，拿這樣的概念來做分類問題，就是我們接下來要談的AdaBoost，全名稱為Adaptive Boost。</p>
+<p>在分類問題中我們怎麼做到「凸顯原先做錯的Data」？簡單的想法是這樣的，我們可以減少原本已經是正確分類的Data的數量，然後增加原本錯誤分類的Data的數量，<strong>增減Data的數量其實是等效於改變每筆Data的權重</strong>，假如我們給每筆資料權重，要做的事是拉低正確分類Data的權重，而且拉高錯誤分類Data的權重。</p>
+<p>那我們應該要提升權重或降低權重到什麼程度才是OK的呢？換個方式思考，我們為什麼要去調整權重？目的其實是要去凸顯原先做錯的部分，降低原本做對的部分，也就是想<strong>藉由調整每筆Data的多寡或權重來做到「弭平原先的預測性」，最好可以讓原本的預測方法看起來是隨機分布</strong>，也就是「錯誤率＝正確率」，讓它像是擲銅板一樣，沒有什麼預測能力。</p>
+<p><img alt="AdaBoost" src="https://dl.dropbox.com/s/n61vejw6rs6f9nm/MachineLearningTechniques.012.jpeg"></p>
+<p>有了概念之後，我們來看實際應該要怎麼做？見上圖說明，首先我們需要先將Data權重u<sup>(1)</sup>先初始化，接下來就可以開始找g<sub>t</sub>了，我們使用任意一個分類問題的Model搭配上Data的權重，求得一組g<sub>t</sub>，接下來計算這組g<sub>t</sub>的<strong>「錯誤率」ε<sub>t</sub></strong>，</p>
+<p><strong>ε<sub>t</sub>= 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup></strong></p>
+<p>有注意到考慮「錯誤率」ε<sub>t</sub>的時候必須要評估u<sub>n</sub><sup>(t)</sup>，要記得會有Data權重是為了表示增加或減少原本的Data的數量，所以依照每筆Data的出現機會不同，會有不同的權重，也就會有對「錯誤率」不同的貢獻程度。</p>
+<p>那為了待會要對權重重新分配，我們先定義了β<sub>t</sub>，在未來我會將錯誤的Data的權重乘上β<sub>t</sub>，即u<sub>n</sub><sup>(t+1)</sup>=u<sub>n</sub><sup>(t)</sup>×β<sub>t</sub>，並且把正確的Data權重除以β<sub>t</sub>，即u<sub>n</sub><sup>(t+1)</sup>=u<sub>n</sub><sup>(t)</sup>/β<sub>t</sub>，<strong>而期望的結果是重新分配的Dataset在g<sub>t</sub>的預測下可以表現的像隨機的一樣，於是乎下一次使用這組Dataset訓練出來的g<sub>t+1</sub>將會彌補g<sub>t</sub>的不足</strong>，根據這樣的原則我們來推一下β<sub>t</sub>，</p>
+<p>𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup> ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup>=1/2 (預測能力像隨機分布)</p>
+<p>⇒  𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup> ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ = 𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup> ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ </p>
+<p>⇒  𝚺<sub>n</sub> (u<sub>n</sub><sup>(t)</sup>×β<sub>t</sub>)  ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ = 𝚺<sub>n</sub> (u<sub>n</sub><sup>(t)</sup>/β<sub>t</sub>) ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ </p>
+<p>⇒  β<sub>t</sub><sup>2</sup> = 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup>  ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧</p>
+<p>⇒  β<sub>t</sub><sup>2</sup> = [𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ /  𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup>]/ [𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup>  ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ]</p>
+<p>⇒  <strong>β<sub>t</sub><sup>2</sup> = 1-ε<sub>t</sub> / ε<sub>t</sub></strong></p>
+<p>所以我們就可以利用這個β<sub>t</sub>來更新我的Data權重，並且在多次迭代後，得到很多個g<sub>t</sub>。而將來我們會把所有的g<sub>t</sub>做線性組合，而我們希望<strong>「錯誤率」越低的g<sub>t</sub>可以有更高的貢獻度α<sub>t</sub></strong>，所以使用β<sub>t</sub>緊接著計算「g<sub>t</sub>的權重」α<sub>t</sub>，定義為</p>
+<p><strong>α<sub>t</sub> = ln(βt)</strong></p>
+<p>所以當一個百分之一百可以完全預測的g<sub>t</sub>出現時，它的ε<sub>t</sub>=0，此時它的β<sub>t</sub> →∞，同時α<sub>t</sub> →∞，所以這樣的g<sub>t</sub>會有完全的貢獻。</p>
+<p>如果一個預測效果很差的g<sub>t</sub>出現，它的ε<sub>t</sub>=1/2，此時它的β<sub>t</sub>=1，同時α<sub>t</sub>=0，所以這樣的g<sub>t</sub>並沒有任何參考價值。</p>
+<p>那如果出現一個g<sub>t</sub>它的ε<sub>t</sub> &gt; 1/2，那這樣的g<sub>t</sub>並不能說它沒有用處，反而是一個很好的反指標，我們只需要反著看就好了，當ε<sub>t</sub> &gt; 1/2時，β<sub>t</sub> &lt; 1，所以α<sub>t</sub> &lt; 0，這樣的g<sub>t</sub>具有逆向的貢獻。</p>
+<p>最後只要把這些訓練好的g<sub>t</sub>乘上各自的α<sub>t</sub>再加總起來，我們就完成了AdaBoost啦！</p>
+<p><br/></p>
+<h5><u>Gradient Boost for Regression</u></h5>
+<p>剛剛我們講了AdaBoost，是個很神奇的方法，當我們做錯了，沒關係！從哪裡跌倒就從哪裡站起來，利用這種精神我們就可以做到Boost的效果，但美中不足的是上面的方法只能用在「分類問題」上，那如果我也想在「Regression問題」也做到Boost呢？這就是接下來要講的GradientBoost的方法。</p>
+<p>在課程中林軒田教授是從AdaBoost出發經過推導後，得到一個很像是Gradient Decent的式子，接下來將式子一般化成為可以使用任意Error Measure的形式，我稍微列一下：</p>
+<blockquote>
+<p>GradientBoost: min<sub>η</sub> min<sub>h</sub> (1/N) 𝚺<sub>n</sub> err[𝚺<sub>τ=1~t-1</sub> α<sub>τ</sub> g<sub>τ</sub>(x<sub>n</sub>) + η h(x<sub>n</sub>), y<sub>n</sub>]</p>
+</blockquote>
+<p>我們這邊會考慮err為平方誤差(s-y)<sup>2</sup>的結果，詳細的推導這邊就不多加討論，可以到影片中學習，這裡我想要從我觀察出來的觀點，概念性的來看這個GradientBoost的方法。</p>
+<p>「從哪裡跌倒就從哪裡站起來」就是Boost的精神，所以今天你有一個Regression問題沒做好，<strong>留下了餘數Residual，怎麼辦？那我就把這個餘數當作另外一個Regression問題來做它</strong>，再把這個結果附到先前的那個就好啦！如果第一次Regression後的Model是g<sub>1</sub>(x)，那剩下的沒做好的餘數就應該是y(x)-g<sub>1</sub>(x)，我們拿這個餘數下去在做一次Regression得到另外一個Model g<sub>2</sub>(x)，此時合併這兩個結果的餘數就變成了y(x)-g<sub>1</sub>(x)-g<sub>2</sub>(x)，就可以使用這個餘數繼續做下去，最後組合所有的g<sub>t</sub>(x)就會得到一個更好的Model。</p>
+<p><img alt="Gradient Boost" src="https://dl.dropbox.com/s/dy5xu7ifew5dfn4/MachineLearningTechniques.013.jpeg"></p>
+<p>依循這樣的概念我們來看GradientBoost作法，如上圖，一開始我們先初始化每一筆Data的預測值s<sub>n</sub>為0，再接下來開始產生g<sub>t</sub>，我們先把Data的 y<sub>n</sub> 減去每一筆Data當前的預測值s<sub>n</sub>，就會產生餘數(y<sub>n</sub>-s<sub>n</sub>)，當然，在一開始s<sub>n</sub>=0，所以y<sub>n</sub>-s<sub>n</sub>=y<sub>n</sub>，等於是對原問題求解。</p>
+<p>接下來因為最後我們要線性組合g<sub>t</sub>(x)，所以需要決定g<sub>t</sub>(x)前面的係數α<sub>t</sub>，也就是貢獻度，這個α<sub>t</sub>的決定方式是去求解一個One-Variable-Linear-Regression (單變數線性迴歸)，目的是<strong>去縮放g<sub>t</sub>(x)使得它更接近剛剛的餘數(y<sub>n</sub>-s<sub>n</sub>)，而找到這個縮放值就是α<sub>t</sub></strong>。所以每一次g<sub>t</sub>(x)的產生都是為了可以把G(x)描述的更好，最後G(x)=𝚺<sub>t</sub> α<sub>t</sub>g<sub>t</sub>(x)。</p>
+<p>看到這裡有人一定會認為One-Variable-Linear-Regression求α<sub>t</sub>這一步是多餘的，因為在一開始做{x<sub>n</sub>,y<sub>n</sub>-s<sub>n</sub>}的Regression中我們已經最佳化過g<sub>t</sub>(x)，那為什麼還要把g<sub>t</sub>(x)乘上α<sub>t</sub>再做同樣的事呢？α<sub>t</sub>一定是1的啊！就像我一開始舉的例子一樣啊！其實問題就出在於你把g<sub>t</sub>(x)理所當然的看成是線性模型，你才會覺得這一步是多餘的，如果g<sub>t</sub>(x)不是線性的，求α<sub>t</sub>就很重要的，因為你要使用線性組合來組出G(x)，但是你的g<sub>t</sub>(x)不是線性的，所以你只好在外面再用線性模型來包裝一遍。</p>
+<p><br/></p>
+<h5><u>AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)</u></h5>
+<p><img alt="AdaBoosted and GrandientBoosted DTree" src="https://dl.dropbox.com/s/zm43nardbpkyr4n/MachineLearningTechniques.014.jpeg"></p>
+<p>和Random Forest一樣，我們也可以將AdaBoost和GradientBoost套用到Decision Tree上面，<strong>如果是處理分類問題就使用AdaBoosted Decision Tree；那如果是處理Regression問題可以使用Gradient Boosted Decision Tree</strong>。</p>
+<p>但要特別注意的是，這邊的Decision Tree都必須是弱的，也就是Pruning過後的樹，如果直接使用完全長成的樹，你會發現在AdaBoosted Decision Tree中，因為ε<sub>t</sub>=0所以α<sub>t</sub>→∞；在Gradient Boosted Decision Tree中，y<sub>n</sub>-s<sub>n</sub>→0，因為錯誤出現的太少了，所以造成我們不能真正使用到Boost的效果，也就失去做Boost的意義了，<strong>因此在做AdaBoosted Decision Tree或Gradient Boosted Decision Tree時要使用「弱」一點的Decision Tree</strong>。</p>
+<p><br/></p>
+<h5><u>結語</u></h5>
+<p>這一篇當中，我們完整提了Boost的方法，Boost的精神就是從哪裡跌倒就從哪裡站起來，使用變換Data權重的手法去凸顯原先做錯的Data，而降低原本已經做對的Data，藉由這樣的方法訓練出來的g<sub>t</sub>可以補齊前面的不足，所以Boost的過程將會使得Model漸漸的完善。</p>
+<p>我們提了兩種Boost的方法，如果是處理分類問題就使用AdaBoost；如果是處理Regression問題可以使用GradientBoost，而且這兩種方法都可以和Decision Tree做結合。</p>
+<p>以上兩回，我們已經完成了Aggregation Models了，接下來的下一回將要探討的就是現今很流行的類神經網路和深度學習等等。</p></dd>
                 <dt>2017 / 3月 30</dt>
                 <dd><a href="./algorithm-complexity-theory.html">輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題</a></dd>
                 <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>在寫程式的時候，會聽到有人說這些問題是NP-Complete問題，或說這些是P問題，那這到底是什麼東西？其實這就是一套定義演算法複雜度的方法，今天我就想帶大家來聊聊這個艱澀但有趣的話題。</p>
@@ -823,265 +1065,6 @@ H = F + G&quot;
 <p>右圖是假設P＝NP被證明的情形，此時NP-Complete問題已經被證明為P問題，利用NP-Complete問題的特性，我們可以化約所有NP問題為NP-Complete問題，在把這個NP-Complete問題用 polynomial time 解掉，所以P=NP=NP-Complete。</p>
 <p>事實上，目前科學界普遍相信P≠NP，所以遇到NP-Complete的問題，就直接標註這是一道難題，使用近似解吧！這是一個不怎麼樂觀的看法，難道說我們真的無法把這樣的難題給解決掉了嗎？也未必啦！仔細想想我們也許還有另外一個方法，只要我們創建一個NTM就可以把這些難題給解決掉啦！<a href="https://en.m.wikipedia.org/wiki/BQP">不過連量子電腦都普遍不被認為是一個NTM</a>（最後又回補了一槍）。</p>
 <p><img alt="P_np_np-complete_np-hard" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/P_np_np-complete_np-hard.svg/800px-P_np_np-complete_np-hard.svg.png"></p></dd>
-                <dt>2017 / 3月 24</dt>
-                <dd><a href="./the-brain-the-story-of-you.html">讀書手札：大腦解密手冊 The Brain: The Story of You</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><a href="http://www.books.com.tw/products/0010738920">⟪大腦解密手冊⟫</a>是一本非常易懂但又相當豐富的書，作者David Eagleman是一名美國的神經科學家，在這本書他嘗試拋開教科書的模式，改以輕鬆聊天的方式來聊神經科學，讓讀者可以很輕易的一探這神秘的大腦。</p>
-<h5><u>大腦的可塑性</u></h5>
-<p>人類在剛出生的一刻是非常脆弱的，不能走不能自己吃東西，完全需要依賴他人的照顧，相反的其他的哺乳類在出生的那刻就已經有謀生的能力了，斑馬寶寶出生不到45分鐘就可以奔跑，長頸鹿出生幾個小時就可以學會站立。表面看起來，這對人類生存似乎很不利，事實上卻提供人類大腦更多的彈性，<strong>人類大腦不像其他動物在出生的一開始就已經接好線路了，雖然長大成人的過程腦細胞數量並不會增加，但是突觸的連結卻會有天翻地覆的改變</strong>，人腦建造過程可以長達25年，過程中會有50%的突觸會被修掉，就算是一個成人突觸連結還是每天不斷的更新，這種彈性使得人類可以比其他動物更能應付環境的各種變化。</p>
-<p>能夠看東西不僅僅需要眼睛，而主要還是靠著眼睛後面的大腦，Mike May在3歲時失明了，過了40年因為幹細胞治療重見光明，不過這個恢復正常的眼睛並沒有讓他恢復視力，雖然能夠看見東西，卻很難說出那是什麼，而且也不清楚這個東西是遠是近，視覺系統不像是照相機，把鏡頭修好了就可以正常使用了，他的大腦長達40年沒有接受光線給的訊號，一時之間是無法辨識視覺給的訊號，也就造成眼睛恢復正常了但是視力並沒有恢復。</p>
-<p>只有感官的訊號是沒有用的，我們還需要大腦去統合和理解這些訊號，大腦幫我們做了很多事，一個有趣的例子，你知道嗎？人在閱讀的時候眼球是不斷的跳動的，一秒鐘會跳4次左右，這種快速的運動稱為「眼球迅速移動」(saccade)，儘管眼球不停的跳動但我們卻可以看到一個穩定的畫面，這是因為大腦存在一個內在模型(internal model)，他會先預測你將會看到什麼，然後視覺訊號才進來作驗證，我們體驗到的視覺很少依賴照進眼睛的光線，較多是依賴腦中既有的東西。大腦幫我們預先處理很多的東西，讓我們可以感受到一個穩定的世界。</p>
-<p>另外一個例子，我們對光線的反應時間大約是190毫秒，而我們對聲音的反應時間比光線快一點是160毫秒，但是我們卻不會感受到這種不同步，因為大腦給你的是一個延遲過的版本，將時間差給隱蔽起來。</p>
-<blockquote>
-<p>腦其實不在意輸入資訊的細節，他只關注如何有效率的在這個世界活動，並得到它需要的東西。</p>
-</blockquote>
-<p>也因為如此，所以有了<strong>「感官替代」</strong>這種新科技，也就是利用其他感官體驗來取代失去功能的感官，譬如說失去聽覺的患者，可以穿一個背心，這個背心會把聲音轉換成振動，因為大腦不管進來什麼樣的資料，它都會調整並盡量的處理，天生聽障者使用這個背心大概5天的時間就能正確的辨別別人說出來的字詞，從這裡就可以看出大腦是如何具有彈性。</p>
-<h5><u>意識與無意識</u></h5>
-<p>如果說意識決定一個人，倒不如說無意識（或稱潛意識）決定一個人，我們常常把idea的出現歸功於意識，但事實上在你意識到這個idea之前的幾個小時、甚至幾個月，無意識已經開始塑造這個idea，包括鞏固記憶、試驗新組合、評估後果，美國社會心理學家Brett Pelham和他的研究小組從統計結果發現，名字叫做Dennis或Denise的牙醫(dentist)，以及名字叫做Laura或Laurence的律師(Lawyer)特別多，可以說無意識在我們人生的重大決策中扮演相當重要的角色。</p>
-<p>那意識是怎麼形成的？這是一個有趣的哲學問題，意識這種東西有辦法從物質中產生嗎？而如果打造一個人工智慧讓你分不清他是機器人或者是真人，我們該說這樣的機器人有意識嗎？有人會說不！機器人只遵照預先設計好的程式執行，他們不具有意識，作者舉了一個臆想實驗「中文房間」，房間中的人按照詳細的說明書來處理中文符號，並把回答送出房間，這的確可以騙過母語人士，讓他們以為房間裡面的人懂中文，但房間裡的人根本不懂他在做什麼，那機器人是不是也是這樣的。</p>
-<p>不過作者比較傾向於支持另一個反面，認為腦中每個各別神經元並不清楚他們自己在做什麼，但是集體行為讓大腦產生了意識，他舉了螞蟻群的例子，每隻螞蟻只做一些簡單的事，不過一群螞蟻卻可以打造出相當複雜的系統，譬如：蟻窩</p>
-<blockquote>
-<p>一旦夠多的螞蟻聚集在一起，超生物就出現了，這種集體擁有的特性比個別基礎部分更精緻、複雜。這種現象稱為突現（emergence）; 當簡單的單元以適當的方式交互作用，產生更大的格局，這就是突現。</p>
-</blockquote>
-<p>每個神經元一輩子只負責回應訊號，他不知道現在在彈奏貝多芬，他不知道你的存在，他不知道你的意圖，不過因為突現他們共同產生了你的意識。  </p>
-<p>我們每天都有一大段時間是處於無意識的狀態，那就是睡眠，威斯康辛大學教授Giulio Tononi認為，我們在清醒的的時候皮質的不同區域間會跨區溝通，而睡眠的無意識則是缺乏跨區溝通，也就是說，在有意識的情況下，我們大腦的各個部分會爭執不休的對話，也就造成你可能會猶豫不決，相反的，在無意識的情況下，你將會進入自動導航模式，大腦根據你既有的突觸迴路來執行任務。</p>
-<h5><u>腦中的交戰網路</u></h5>
-<p>如果無意識是一輛直行的車子，意識可以說是這輛車子的方向盤，大腦這一部從衝突中打造出來的機器，每天要下成千上萬的決策。</p>
-<p>作者重新詮釋了Michael Sandel在正義課中提及著名的電車難題，假設今天你是一名鐵路維修工人，遇到一輛失控的火車，在既定的軌道上會撞死正在修理鐵路的5名工人，不過你剛好站在鐵軌控制桿前面，但是如果你扳動控制桿則會造成另一名工人被撞死，幾乎所有人都會扳動這個控制桿，因為1人死亡總比5人好，但換一個情境，如果今天你遇到這個失控火車的時候剛好站在火車上方的橋上，旁邊又剛好有一個胖子，如果你把這個胖子推下去，火車就會因此被他擋住，然後可以拯救5條人命，同樣是1換5的狀況，這個時候你就發現你開始猶豫了。</p>
-<p>作者認為，對腦來說，第一種情境只涉及單純的數學問題，此時活化的是腦中解決邏輯問題的區域，<strong>但在第二種情境，你必須去碰觸那個人，把他推下去，這會激起額外的網路</strong>，也就是腦中與情緒相關的區域，所以這兩個網路，解決邏輯問題的和情緒相關的，會開始爭辯不休，因此你開始產生猶豫。</p>
-<p>這一種腦中衝突有時候會讓你做出錯誤的決策，今天明明要健身的，不過想想有一部影集還沒看完，好想知道接下來劇情會怎麼走下去，算了！明天再去健身好了，我相信大家常常有類似的經驗，雖然健身對你的好處是多於追劇的，但對於大腦而言純粹在大腦裡模擬的好處，比不上此時此刻真實感覺到的好處，所以作者建議用一種方式來克服這種意志力的不足—<strong>尤里西斯合約</strong>，希臘神話中的尤里西斯是一名凱旋歸國的戰士，在回國的途中，他們會在經過一座小島，這座小島住著美麗的賽蓮女妖，據說會唱出美麗的歌聲迷惑水手們不自覺得把船開到礁岩去，所以需要用蜂蠟把耳朵塞住，但是尤里西斯實在是很想聽聽看女妖們的聲音，於是他就心生一計命令水手們把他綁在船桅上，其他人把耳朵塞住，到時候不管尤里西斯怎麼叫，怎麼崩潰，都不要理他，船正常開就好了</p>
-<blockquote>
-<p>尤里西斯知道未來的自己沒資格作良好的決策，所以在頭腦清楚的時候就把事情安排妥當，以防止自己作錯事，於是「現在的你」和「未來的你」之間的這一種協議稱為「尤里西斯合約」</p>
-</blockquote>
-<p>運用在健身的這個例子，你可以約朋友一起在固定的時間健身，讓未來的你沒有任何理由可以推遲。</p>
-<h5><u>科技將如何改變大腦的未來</u></h5>
-<p>這本書的最後，作者探討了大腦科技的未來。舉幾個我覺得有趣的例子，奧爾科生命延長基金會一直致力於一種技術，他們將死亡人的大腦冰封保存下來，以期盼有一天科技進步可以讓這大腦重新擁有年輕的身體，這樣這些被冰封的大腦將擁有並享受第二生命週期。</p>
-<p>不過有些人可能不太喜歡這種感覺，那還有另外一種延續生命的方法，稱為數位的不朽，如果大腦運算只單純是神經元之間的運算，我們將可以使用這個運算的概念來創造一個大腦，實際的作法是利用大腦切片去紀錄每個神經元的狀態，並用數位的方式保存下來，然後也可以透過模擬去讓這顆大腦重新活過來，但是這非常的困難，一般神經元有多達一萬條分枝，要繪製完整人類連結體的圖譜預計還需要十年的時間，目前連建立一個大鼠的大腦都做不到。</p></dd>
-                <dt>2017 / 3月 20</dt>
-                <dd><a href="./python-play-with-data_1.html">Python玩數據 (1)：安裝Python, IPython, Numpy, Pandas</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><strong>相較於R，我比較喜歡在工作上使用python來作數據處理</strong>，主要原因有四個，<strong>第一點，python是一個簡潔的語言</strong>，讓我們可以在不寫註解的情況下還可以很容易的看出每一行code在做哪些事，這可以省去了不少時間在；<strong>第二點，python可以更容易的寫成物件導向編程</strong>，物件導向編程可以讓code看起來更為直覺，而且更易於修改、重構或套用，如果是大型軟體開發的話，需要多人協作，此時物件導向便是絕對必要的；<strong>第三點，python是一個通用語言</strong>，不僅僅只可以作資料處理而已，你可以用python寫一套視窗程式，或者當作網站的後台（這個網站就是建基在python上），如果要做一些平行運算也很容易，<strong>最後一點，也是相當重要的一點，目前常見的deep learning套件TensorFlow或Keras都是架構在python上面</strong>，所以如果你的數據處理結束要作deep learning的話，直接用python處理是相當理想的。講了python這麼多優點，其實它是有一項缺點是不如R的，R是一個專為資料科學設計的語言，所以背後有強大的社群，也就是說能直接取得資料分析方法的套件會比python來的多，不過這方面在這幾年已經漸漸的改善了。</p>
-<p>講了這麼多python的強大，不過在這個系列我並不會著墨太多在python上，這個部分我會在其他的文章中分享，這系列文章主要聚焦在python的資料處理這部份，我會從基礎講起，讓不懂python的人也可以聽懂。  </p>
-<p><br></p>
-<h5><u>最困難的第一步：安裝</u></h5>
-<p>不要以為我在開玩笑，安裝往往是最困難的一步，有些時候安裝一些套件的時候，你必須要先行安裝另外幾個相依套件，如果程式在安裝的過程無法自己補足這些相依套件的話，你就得自己安裝，一般來說如果是python的套件的話，你可以先用待會要介紹的<code>pip install</code>來安裝，如果不幸在上面找不到的話，就只好上網Google了，另外有些時候安裝還會遇到bug，這個時候Google也同樣是你的好朋友，或者到<a href="https://stackoverflow.com">Stack Overflow</a> 上找答案（一個好的coder要培養自己上網找答案的能力），不過大家先不用擔心，以下我會帶大家一步一步的安裝。</p>
-<p>我們將會用到python 2.7版（你也可以選擇更新的版本，不會差距太大），以及他的套件IPython, Numpy和Pandas。</p>
-<p><br></p>
-<h5><u>Python2.7</u></h5>
-<h5><u>Mac</u></h5>
-<p>python2.7已經是內建的程式了！打開「終端機」，直接輸入</p>
-<div class="highlight"><pre><span></span>$ python2.7 -V
-
-Python <span class="m">2</span>.7.13
-</pre></div>
-
-
-<p>就會顯示他的版本。</p>
-<p>如果沒有的話，或者你想要自己安裝一份的話，可以參考<a href="https://stringpiggy.hpd.io/mac-osx-python3-dual-install/">這篇</a>的說明，或者跟著我往下作。</p>
-<p><strong>Step 1:</strong> 安裝 Xcode：打開你的App Store，搜尋Xcode並安裝。</p>
-<p><strong>Step 2:</strong> 安裝 <a href="https://brew.sh">Homebrew</a> 這個Mac上好用的套件管理，打開「終端機」，輸入</p>
-<div class="highlight"><pre><span></span>$ /usr/bin/ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
-
-<span class="o">==</span>&gt; This script will install:
-/usr/local/bin/brew
-/usr/local/share/doc/homebrew
-/usr/local/share/man/man1/brew.1
-/usr/local/share/zsh/site-functions/_brew
-/usr/local/etc/bash_completion.d/brew
-/usr/local/Homebrew
-
-Press RETURN to <span class="k">continue</span> or any other key to abort
-</pre></div>
-
-
-<p>(附註：我用 <code>＄</code> 代表終端機的輸入起始字元，後面才是你需要輸入的指令)</p>
-<p>按下Enter就會開始安裝了。</p>
-<p>安裝完畢你就可以直接在「終端機」上使用它，我們試著搜尋python</p>
-<div class="highlight"><pre><span></span>$ brew search python
-
-app-engine-python               boost-python@1.59               micropython                    
-python-markdown                 wxpython
-boost-python                    gst-python                      python ✔                       
-python3 ✔                       zpython
-homebrew/apache/mod_python            
-Caskroom/cask/kk7ds-python-runtime          
-Caskroom/cask/mysql-connector-python
-</pre></div>
-
-
-<p>因為我的電腦已經安裝了python2.7和python3.0，所以你會看到他們已經是打勾的狀態，我們的目標就是安裝「python」。</p>
-<p><br></p>
-<p><strong>Step 3:</strong> 安裝python2.7：</p>
-<div class="highlight"><pre><span></span>$ brew install python
-</pre></div>
-
-
-<p>安裝完畢後檔案會被放在底下這個路徑，你可以打開來看一下</p>
-<div class="highlight"><pre><span></span>$ open /usr/local/Cellar
-</pre></div>
-
-
-<p>應該就會看到python的資料夾了。</p>
-<p><br></p>
-<p><strong>Step 4:</strong> 設定路徑 $PATH（不跟系統 Python 打架）</p>
-<p>這是什麼呢？當你輸入<code>brew</code> , <code>open</code> , <code>python2.7</code> 這些指令到「終端機」上，為什麼「終端機」會認的了這些指令，原因就出在於這個PATH上，又稱為「環境變數」，我們把它叫出來看看</p>
-<div class="highlight"><pre><span></span>$ <span class="nb">echo</span> <span class="nv">$PATH</span>
-/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-</pre></div>
-
-
-<p>你可以看到有五個路徑分別被字元 <code>:</code> 隔開，由前到後分別為<code>/user/local/bin</code>、<code>/usr/bin</code>、<code>/bin</code>、<code>/usr/sbin</code>、<code>/sbin</code>，這一些都是裝有執行檔的資料夾，今天你如果輸入某個指令，他就會從第一個資料夾下面開始找起，也就是<code>/user/local/bin</code>，沒有找到再依序往下找，直到找不到為止，如果今天<code>/usr/bin</code>底下有python，而你剛剛用brew安裝的另一個python放在<code>/user/local/bin</code> 底下，在這個例子中，你會執行到的就是第一個路徑<code>/user/local/bin</code> 下的python，那這也是我們要的結果，我們想要執行我們自己安裝的，而不是系統原有的。</p>
-<p>如果<code>/user/local/bin</code>不是在第一個的話，就必須去修改PATH的順序。</p>
-<div class="highlight"><pre><span></span>$ sudo emacs /etc/paths
-</pre></div>
-
-
-<p>輸入密碼後，就會進入修改模式，然後開始修改順序，利用以下指令把<code>/user/local/bin</code> 放到最上面</p>
-<p>control + k：把一行字剪下來</p>
-<p>control + y：把字貼上</p>
-<p>control + x + s：存檔</p>
-<p>control + x + c：關掉 emacs</p>
-<p>修改完成重開「終端機」，讓環境變數重載，在輸入一次 <code>echo $PATH</code> 應該就可以看到修改後正確的環境變數了。</p>
-<p><br></p>
-<p><strong>Step 5:</strong> 那就安裝完畢啦！最後檢查一下你下<code>python2.7</code>的時候是不是來自於<code>/user/local/bin</code></p>
-<div class="highlight"><pre><span></span>$ which python2.7
-/usr/local/bin/python2.7
-</pre></div>
-
-
-<p>看起來很正常，Great!</p>
-<p><br></p>
-<h5><u>Ubuntu</u></h5>
-<p>請參考<a href="https://tecadmin.net/install-python-2-7-on-ubuntu-and-linuxmint/">這篇</a> 。</p>
-<p><strong>Step 1:</strong> 先安裝一些相依套件</p>
-<div class="highlight"><pre><span></span>$ sudo apt-get install build-essential checkinstall
-$ sudo apt-get install libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev
-</pre></div>
-
-
-<p><strong>Step 2:</strong> 從網路上下載python2.7 source code</p>
-<div class="highlight"><pre><span></span>$ <span class="nb">cd</span> /usr/src
-$ wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz
-</pre></div>
-
-
-<p><strong>Step 3:</strong> 解壓縮並進去資料夾</p>
-<div class="highlight"><pre><span></span>$ tar xzf Python-2.7.13.tgz
-$ <span class="nb">cd</span> Python-2.7.13
-</pre></div>
-
-
-<p><strong>Step 4:</strong> 依環境配置並安裝</p>
-<div class="highlight"><pre><span></span>$ sudo ./configure
-$ sudo make altinstall
-</pre></div>
-
-
-<p><code>make altinstall</code> 是為了避免你去取代掉預設的python在/usr/bin/python。</p>
-<p><br></p>
-<h5><u>Windows</u></h5>
-<p><strong>Step 1:</strong> 在這個<a href="https://www.python.org/downloads/release/python-2713/">網站</a>依照你的CPU架構下載安裝檔，並安裝。</p>
-<p><img alt="python_win_install_01" src="https://dl.dropboxusercontent.com/s/awu45hdpv0d2j64/python_win_install_01.jpeg"></p>
-<p><strong>Step 2:</strong> 設定環境變數</p>
-<p>打開 控制台 &gt; 系統及安全性 &gt; 系統 &gt; 進階系統設定 &gt; 環境變數</p>
-<p>選Path，並按下 編輯，將<code>C:\Python27;C:\Python27＼Scripts</code> 加到後面，並儲存。環境變數的說明請參考上面Mac安裝的第四步，原理是一樣的，不過在windows裡的區分的符號是<code>;</code>不是<code>:</code>。</p>
-<p><br></p>
-<h5><u>IPython, Numpy, Pandas</u></h5>
-<h5><u>Mac ＆Ubuntu</u></h5>
-<p><strong>Step 1:</strong> 安裝pip</p>
-<div class="highlight"><pre><span></span>$ curl <span class="s2">&quot;https://bootstrap.pypa.io/get-pip.py&quot;</span> -o <span class="s2">&quot;get-pip.py&quot;</span>
-$ python2.7 get-pip.py
-</pre></div>
-
-
-<p><strong>Step 2:</strong> 安裝套件</p>
-<div class="highlight"><pre><span></span>$ pip2.7 install ipython
-$ pip2.7 install numpy
-$ pip2.7 install pandas
-</pre></div>
-
-
-<p><br></p>
-<h5><u>Windows</u></h5>
-<p>雖然不建議在windows下開發程式，不過我還是提供一個方法，讓你在接下的文章可以正常作操作。有一個好用的軟體—Anaconda，這個軟體不只可以在windows上使用，在linux和mac都有辦法使用。</p>
-<ol>
-<li>安裝windows版的Anaconda(python 2.7)：<a href="https://www.continuum.io/downloads#windows">網址</a></li>
-<li>安裝結束，就已經安裝好「IPython」的程式，直接打開就可以使用。</li>
-<li>安裝Numpy和Pandas：打開「Anaconda Prompt 」，輸入</li>
-</ol>
-<div class="highlight"><pre><span></span>$ conda install numpy
-$ conda install pandas
-</pre></div>
-
-
-<p><br></p>
-<h5><u>開啟IPython</u></h5>
-<p>IPython將會是未來我們這系列會用的一個介面，只要能夠開啟它，我們今天就大功告成了。</p>
-<ul>
-<li>
-<p>Mac ＆Ubuntu:  在終端機輸入 <code>$ ipython2</code></p>
-</li>
-<li>
-<p>Windows：直接打開「IPython」程式</p>
-</li>
-</ul>
-<p>試著import numpy和pandas進來，如果都正常，就代表成功了！</p>
-<p><img alt="ipython" src="http://www.ycc.idv.tw/media/PlayDataWithPython/ipython.jpeg"></p>
-<p>Ctrl + D 就可以結束跳出啦～ 今天就到這～</p></dd>
-                <dt>2017 / 3月 18</dt>
-                <dd><a href="./how-to-read-books.html">從《如何閱讀一本書》想像一種不同的知識呈現方法</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>⟪如何閱讀一本書⟫是美國哲學家Mortimer Jerome Adler在1940年所著的一本教你如何讀書的書，雖然是70年前的書，不過卻是歷久彌新，隨便google都有好幾十篇的文章在講這本書，其中的一篇就是現在你讀的這一篇。</p>
-<p>書中作者教你讀書的策略，像在練功一樣，必須循序漸進的，掌握了一階技巧在前進下一階，作者把閱讀分為四個階段，至於是哪四階段呢？在這邊賣個關子，我待會會好好的解釋。</p>
-<p>這裡先打個岔，我們先來談談書籍紀錄的知識呈現方式。</p>
-<h5><u>書籍與網路的PK</u></h5>
-<p>現今科技革命當中，對我們影響最深的就屬網際網路的發展了，它是人類歷史上資訊傳播方式的大變革，人類技術發展史你可以簡單看成是一部人類如何延長自己的手腳及大腦的故事，斧頭被發明來延長補足手的不足，眼鏡被發明來補足眼睛的不足，書籍被發明來延長溝通，同樣的，網際網路也一樣的是延長溝通的發明，使得資訊傳遞更有效率。</p>
-<p>雖然書籍和網際網路一樣是資訊傳播的方式，不過看起來更為便利的網路並沒有使書籍被淘汰，網路上的知識仍然走不進學校，撇開使用體驗不談，網路知識的缺點之一是過於零碎化，書籍是作者整合資訊和自己的認知而成的體系，有一個比較完整的結構，不是網路上零碎知識的總和所能取代的。</p>
-<p>不過網路上的確有許多整合得相當好的資訊，但如果仔細看這些知識的傳播方式不脫書籍的那一套，甚至有些有名的部落客將他們的部落格文章整理成書，通常在轉換上也不會遇到太大的困難，因為這些資訊的呈現方式和書籍的呈現方式並無太大差異，等於是把書搬到網路上而已。</p>
-<p>不過這樣感覺白白浪費電腦或網路不同於書籍的彈性，譬如說超連結或者是動態回饋，不過一定有人會想起來，維基百科不就是一個好例子嗎？它利用超連結把眾多知識給串起來，讓它更有結構性，不同於書籍的好處是，你可以在自己不懂的地方，延伸出去找到答案，延伸出去的頁面如果有不懂的還可以繼續向下延伸。</p>
-<p>但也因為可以一直延伸下去，如果要學習的東西本身很複雜和有很強的連貫性，往往你會迷失在一片頁面海裡，這就是維基百科式的知識呈現方式的弱點。反觀，書籍有作者帶著你走，把後面需要用到的知識在前面為你補足，連結起每個知識節點，還會告訴你哪些地方太困難可以先不要碰，建立起易於學習的體系，這是目前網路知識無法做到的。</p>
-<p>讀到這裡你一定會覺得我應該是要吹捧完書籍閱讀有多棒，然後順著下去講如何閱讀。不過，你猜錯了，<strong>我想做的是了解如何有效率的閱讀一本書，然後回過頭想網路的知識呈現方式可以有怎樣的改善，既然有一本教你如何閱讀一本書的書這麼暢銷，也就是代表閱讀一本書本身還是有所不足，說不定我們可以用電腦或網路來補足這樣的不足</strong>。</p>
-<h5><u>閱讀的層次</u></h5>
-<p>這本書對我來說，除了重新審視多年來我的讀書方法外，另外也可以進一步探討我上述的疑問，想找尋更好的「知識體系呈現方式」，必須先了解如何有效地取得知識，才能進一步的構思更好的方式來幫助讀者學習知識，本書雖然是一本教你如何讀一本書的書，其實也是在談如何獲取知識的方法。</p>
-<p>作者將閱讀分為四個層次，分別是基礎閱讀(Elementary Reading)、檢視閱讀(Inspectional Reading)、分析閱讀(Analytical Reading)和主題閱讀(Comparative Reading)，基礎閱讀就是指識字能力，也就是閱讀的基礎能力，下一個層次是檢視閱讀，培養能在閱讀中主動地去思考作者想說的話，更進階是分析閱讀，看完一本書有辦法綜觀一本書的整體性和複雜性，並透徹的了解作者的疑問還有解答，最後研究所等級的主題閱讀，這個時候就不只是一本書的事了，你必須有可以比較好幾本書的能力，去學習一個領域的知識，成為那個領域的專家。</p>
-<h5><u>檢視閱讀</u></h5>
-<p><strong>檢視閱讀的首要條件就是化被動為主動，主動去思考檢視一本書</strong>，那該怎麼著手呢? 首先拿到書，先不要就直接一股腦的從第一頁讀起，就像是古代有經驗的將領一定在會戰前會看看對方擺怎樣的陣式，所以先看看書名，再看看序和索引，了解這本書大概在講什麼，然後針對自己有興趣或不了解的篇章去大略的看過，或者隨機東翻翻西翻翻，這個時候你就了解這本書大概在講什麼了。</p>
-<p>這個過程花不了多少時間，可能大概半小時到一個小時之間，不過這個方法可以讓你大致了解一本書的架構，接下來你就可以決定要不要看這本書，如果你在書店，就可以決定要不要買這本書，有些書並不值得花時間閱讀，或者有些書你只需要知道個大概就好了，雖然有些書是公認的好書，但可能不適合你或你不需要，那這一個小時的閱讀也就足夠啦!</p>
-<p>如果大略掃過一本書，你覺得這本書值得一讀，並且還有一些不懂的地方，那就開始完整的讀一遍吧! 在已經知道這本書大致架構的情況下，開始進行完整的閱讀會更為流暢，依循著架構你可以調配你閱讀的速度，簡單的地方你可以快速的讀過，較難的地方就把速度放慢，也就是說你可以依照自己理解來配速。</p>
-<p>那有什麼依循的標準嗎? 有的，但是一樣的你必須保持主動的思考，你可以藉由檢視以下四個要素來判斷是不是真的理解作者想說的：</p>
-<ul>
-<li>現在作者在談什麼?</li>
-<li>作者細說了哪些東西?</li>
-<li>作者說得有道理嗎?</li>
-<li>這些跟我有什麼關係?   </li>
-</ul>
-<p>時時不斷的問這些問題，知識才有辦法進到你的腦袋中，在過程中你可能會劃一些線或做一些筆記，去輔助你達到這四個要素，這樣的閱讀層次稱為檢視閱讀，讀完了你能大概能了解作者想說的，有些簡單的書只需要做到檢視閱讀就夠了，但如果想理解更複雜的書就必須開始另一個層次—分析閱讀。</p>
-<h5><u>分析閱讀</u></h5>
-<p>分析閱讀必須用檢視閱讀的精神來完成三個步驟。</p>
-<p><strong>第一個步驟，讀者必須結構性的回答一本書再說什麼。</strong>首先你要盡快的了解這本書應該歸於哪一類，是文學、戲劇、歷史、傳記，還是科學、數學、哲學、社會科學，是虛構的還是紀實的，是實用類型的還是理論類型的書，這通常可以從書名還有前言中看出來，不過有些書就很難以界定，譬如《飄》是愛情小說抑或是歷史故事。</p>
-<p>了解書的類別有助於你依照相應的分析方法來讀書，書中有詳列各種類型書籍的閱讀方式，在這邊不一一舉例，有興趣的人可以去翻翻這本書。了解一本書的類別就可以開始分析閱讀，你的目標應該放在做到了解書中的三個面向：</p>
-<ol>
-<li>整體性： 能用幾句話寫出這本書主要在說些什麼</li>
-<li>複雜性： 為這本書擬大綱說明書中的篇章架構</li>
-<li>作者的意圖：找出作者的問題和他的答案。</li>
-</ol>
-<p><strong>第二個步驟，讀者必須細部的去詮釋一本書的內容。</strong>閱讀完一本書你需要回答有哪一些keyword，而這些keyword在作者心中代表的是什麼意思，藉由文字間的連結來產生與作者相同的共識，有哪一些重要的句子當中隱含著重要的主旨。接下來主動出擊，重構作者論述來明白他的主張，也就是以自己的話寫出作者的主張，並且重新審視作者在提出的疑問中解決哪些問題? 還有那些問題沒有被解決?</p>
-<p><strong>第三個步驟 ，讀者必須有能力去評論一本書。</strong>當我們已經客觀的了解作者的想法後，我們可以開始評論一本書，也許有一些論述你是認可的，而另外一些是你不認可的，而當你要指出作者的錯誤，可以從四個方向去著手：證明作者知識不足、知識錯誤、不合邏輯或分析與理由不完整。</p>
-<p>這三個步驟都需要搭配前面所提到的檢視閱讀，完成這三個步驟你對於一本書已經有了深入的了解了! 但如果你想要了解一個領域，或成為那領域的專家，那就不能只是讀一本書而已，每個作者的著眼點不同，觀點也相異，甚至是針鋒相對的，就算是同一個作者，也無法在一本書之中闡述他所有的想法，譬如：如果你看了亞當．斯密的《國富論》，卻沒有看他的《道德情操論》，你會覺得有一些地方似乎很沒有說服力。因此接下來要談的是最後一個層次—主題閱讀。</p>
-<h5><u>主題閱讀</u></h5>
-<p>開始主題閱讀前，你先要有一份書單，這份書單可以囊括你想要研究的主題，這份書單可以是從一些書裡的參考書單，或者是同一個作者的其他書，有了這份書單，要再進一步的建立起這些書彼此間的連結，最好還是有簡單的翻過這些書，了解這些書大概在講什麼，建立起這些書大致的連結。</p>
-<p>有了這個書單當作地圖，我們就可以開始主題閱讀了。主題閱讀分為五個步驟。</p>
-<p><strong>第一個步驟，找出你的書單中最重要的章節</strong>，並且去讀這些章節，在強調一下喔！是章節喔！不是最重要的一本書喔！在主題閱讀中，我們的重點應該放在主題上而不是單一書籍上，雖然作者也覺得很難以做到，所以如果你對這個領域還不夠了解，還是先利用分析閱讀好好的K幾本書在說，有了基本認識再來做主題閱讀。</p>
-<p><strong>第二步驟，是建立與書單上的作者們之間的共識</strong>，如同之前在分析閱讀所提到的，找出重要的keyword，並且了解作者所表示這個keyword的含意，你才有辦法和作者產生共識，但現在書單上有很多位作者，每位作者也許所用的語言都不同，所以你需要建立起每個作者之間的連結。</p>
-<p><strong>第三步驟，有了字義上的共識後，我們就可以開始釐清每本書所討論的中心主旨。</strong></p>
-<p><strong>第四步驟，藉由每本書的中心主旨，我們就可以界定他們在討論的議題</strong>，哪一些是主要的議題，哪一些是次要的議題，哪一些議題作者彼此間有差不多的看法，而哪些議題是爭論不休的。</p>
-<p><strong>最後一個步驟，把自己丟進去討論，開始評論、分析這一些議題的討論，然後提出自己的看法。</strong> 事實上，主題閱讀有點像分析閱讀的擴大版，只是分析閱讀是只對一本書，而主題閱讀則是對一群書，方法上差異不大。</p>
-<h5><u>書籍與網路的第二回合PK</u></h5>
-<p>回到最初的問題，我們藉由這本書來了解書籍閱讀本身有什麼弱點，我們需要用怎樣的策略來使得書籍閱讀更有效率，而我們是否能夠使用網路或電腦去改善這些缺點，讓網路可以在下一輪PK中扳回一城。</p>
-<p>先總結一下這本書，這本書所告訴我們的閱讀法則，其實不外乎是三個面向，第一，主動去閱讀，能用自己的話來講一本書的內容，第二，與作者建立相同的共識，第三，針對作者討論的議題，加以評論，提出自己的看法。</p>
-<p>從這幾個面向，所以我腦中就有了一個未來知識傳遞的另一種可能。在讀者方面，我們可以用超連結的方式來主動去找尋我們想要了解的部分，就像是維基百科一樣，但你所閱讀的網頁本身應該有所結構，不然很可能會使得讀者迷失在其中。</p>
-<p>所以不像一般的網路資訊，我們需要一個作者來整合，但在作者寫作方面要有所改變，與電腦技術相結合，我們之所以需要學習這本書的這些閱讀技巧，很大的原因是因為書籍本身的結構和架構並不是那麼容易被理解，往往不懂的作者真正想說什麼，書籍沒有明寫出作者心中的keyword和主旨，作者必須很費力的分章節分段落的解釋他的脈絡，好的章節分法會讓書籍更容易閱讀，作者也要很小心的在使用一個keyword的時候要先向讀者解釋清楚，避免造成歧意。</p>
-<p>於是，一件很奇妙的事情發生了，作者必須要有一個架構，從這個架構出發，然後巧妙的打平寫成一段段的文字，然後讀者在從這一段段的文字，試著了解作者想要表達的架構，等於繞了一大圈，如果一開始作者在寫作的時候就有軟體輔助他，作者給軟體一個架構，作者依照脈絡寫作，而這脈絡可以由軟體完整的呈現在讀者面前，另外，keyword的解釋可以放在一個獨立的頁面，用超連結連接進來，讓讀者在不清楚這個keyword的時候有更多的說明可以看，並且軟體可以依照作者所給的結構和段落，連貫成一本書，作者只需要再審視一下有哪個地方不通順，稍作修改，一本書就完成了。</p>
-<p><strong>有了這樣的軟體，可以輕鬆的讓作者把心中的結構給「存」進文件裡，並且很智慧化的「呈現」給讀者，作者與讀者之間理解的鴻溝將會被弭平。</strong></p>
-<p>另外，如果讀者想要做主題閱讀，網路資訊更容易重構，你可以把不同的書籍談論相同的章節給連結起來，相互比較閱讀，甚至這個軟體還可以幫你預先整理一個脈絡，這個軟體比你更了解每一位作者心中的脈絡，所以他可以連結比你好，也許還可以幫你準備一個學習順序，就像是一個老師一樣。</p>
-<p>還有可以加入社群的力量，在閱讀的過程，可以針對不清楚的地方進行提問，又或者看看別人寫下的某段的註解或評論，在書中寫下自己的看法，也可以看見其他讀者的評論，此時你不只是一個人在讀書，而是和一群人一起讀書，思考的廣度也就更大了。<strong>如果用這樣的方式來傳遞知識，可以同時兼顧書籍的完整性，和網路知識的彈性，我想知識傳遞將會更有效率。</strong></p></dd>
             </dl>
         </div>
     </div>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。 Boost的精髓 在上一回當中，我們介紹的Aggregation Models都屬於沒有Boost的，不管是Bagging或Decision...">
+        <meta name="keywords" content="機器學習技法">
+        <link rel="icon" href="./static/img/favicon.png">
+
+        <title>機器學習技法 學習筆記 (5)：Boost Aggregation Models - YC Note</title>
+
+        <!-- Stylesheets -->
+        <link href="./theme/css/all.min.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Full Atom Feed" />
+        <link href="YCNote/feeds/aiml.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('./images/ai_front_board.jpg'); background-position: center; background-size: cover;">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="./"><img class="logo" src="./static/img/favicon.png" alt="logo">YC Note</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="./category/coding.html">Coding</a>
+                                <a href="./category/aiml.html">AI.ML</a>
+                                <a href="./category/reading.html">Reading</a>
+                                <a href="./category/recording.html">Recording</a>
+                                <a href="./about-me.html">About Me</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">機器學習技法 學習筆記 (5)：Boost Aggregation Models</h1>
+                      <p class="header-date">By <a href="./author/yc-chen.html">YC Chen</a>, 2017 / 4月 02, in category <a href="./category/aiml.html">Ai.ml</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="./tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <blockquote>
+<p>本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。</p>
+</blockquote>
+<h3>Boost的精髓</h3>
+<p>在上一回當中，我們介紹的Aggregation Models都屬於沒有Boost的，不管是Bagging或Decision Tree都沒有要試著在Training的過程中改善Model，<strong>而這篇將要提到的Boost方法，則是在產生每個g<sub>t</sub>時試圖讓Model整體更完善，更能發揮Aggregation Models中截長補短中的「補短」的效果，也就是說g<sub>t</sub>可以彼此互補不足之處</strong>。</p>
+<p>那實際上我們應該怎麼做才能實踐Boost呢？其實方法的道理早就透漏在上一回中的Bagging和Decision Tree裡頭了，不管是Bagging和Decision Tree都是使用變換Data來做到變異度，在這個方法下Model的架構可以本身是不變的，這帶來相當的便利性，而今天我們要講的Boost也同樣的利用「變換Data」來做到變異度，但不同的是Boost的過程中「變換Data」這件事是有目標性的。</p>
+<p><strong>Boost方法在「變換Data」時會試著去凸顯原先做錯的Data，而降低原本已經做對的Data，藉由這樣的方法訓練出來的g<sub>t</sub>可以補齊前面的不足，所以Boost的過程將會使得Model漸漸的完善，這就是Boost的主要精髓。</strong></p>
+<p><br/></p>
+<h3>AdaBoost (Adaptive Boost) for Classification</h3>
+<p>剛剛上一段的最後我已經揭露了Boost的真正精髓，拿這樣的概念來做分類問題，就是我們接下來要談的AdaBoost，全名稱為Adaptive Boost。</p>
+<p>在分類問題中我們怎麼做到「凸顯原先做錯的Data」？簡單的想法是這樣的，我們可以減少原本已經是正確分類的Data的數量，然後增加原本錯誤分類的Data的數量，<strong>增減Data的數量其實是等效於改變每筆Data的權重</strong>，假如我們給每筆資料權重，要做的事是拉低正確分類Data的權重，而且拉高錯誤分類Data的權重。</p>
+<p>那我們應該要提升權重或降低權重到什麼程度才是OK的呢？換個方式思考，我們為什麼要去調整權重？目的其實是要去凸顯原先做錯的部分，降低原本做對的部分，也就是想<strong>藉由調整每筆Data的多寡或權重來做到「弭平原先的預測性」，最好可以讓原本的預測方法看起來是隨機分布</strong>，也就是「錯誤率＝正確率」，讓它像是擲銅板一樣，沒有什麼預測能力。</p>
+<p><img alt="AdaBoost" src="https://dl.dropbox.com/s/n61vejw6rs6f9nm/MachineLearningTechniques.012.jpeg"></p>
+<p>有了概念之後，我們來看實際應該要怎麼做？見上圖說明，首先我們需要先將Data權重u<sup>(1)</sup>先初始化，接下來就可以開始找g<sub>t</sub>了，我們使用任意一個分類問題的Model搭配上Data的權重，求得一組g<sub>t</sub>，接下來計算這組g<sub>t</sub>的<strong>「錯誤率」ε<sub>t</sub></strong>，</p>
+<p><strong>ε<sub>t</sub>= 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup></strong></p>
+<p>有注意到考慮「錯誤率」ε<sub>t</sub>的時候必須要評估u<sub>n</sub><sup>(t)</sup>，要記得會有Data權重是為了表示增加或減少原本的Data的數量，所以依照每筆Data的出現機會不同，會有不同的權重，也就會有對「錯誤率」不同的貢獻程度。</p>
+<p>那為了待會要對權重重新分配，我們先定義了β<sub>t</sub>，在未來我會將錯誤的Data的權重乘上β<sub>t</sub>，即u<sub>n</sub><sup>(t+1)</sup>=u<sub>n</sub><sup>(t)</sup>×β<sub>t</sub>，並且把正確的Data權重除以β<sub>t</sub>，即u<sub>n</sub><sup>(t+1)</sup>=u<sub>n</sub><sup>(t)</sup>/β<sub>t</sub>，<strong>而期望的結果是重新分配的Dataset在g<sub>t</sub>的預測下可以表現的像隨機的一樣，於是乎下一次使用這組Dataset訓練出來的g<sub>t+1</sub>將會彌補g<sub>t</sub>的不足</strong>，根據這樣的原則我們來推一下β<sub>t</sub>，</p>
+<p>𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup> ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup>=1/2 (預測能力像隨機分布)</p>
+<p>⇒  𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup> ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ = 𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup> ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ </p>
+<p>⇒  𝚺<sub>n</sub> (u<sub>n</sub><sup>(t)</sup>×β<sub>t</sub>)  ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ = 𝚺<sub>n</sub> (u<sub>n</sub><sup>(t)</sup>/β<sub>t</sub>) ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ </p>
+<p>⇒  β<sub>t</sub><sup>2</sup> = 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup>  ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧</p>
+<p>⇒  β<sub>t</sub><sup>2</sup> = [𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ /  𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup>]/ [𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup>  ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ]</p>
+<p>⇒  <strong>β<sub>t</sub><sup>2</sup> = 1-ε<sub>t</sub> / ε<sub>t</sub></strong></p>
+<p>所以我們就可以利用這個β<sub>t</sub>來更新我的Data權重，並且在多次迭代後，得到很多個g<sub>t</sub>。而將來我們會把所有的g<sub>t</sub>做線性組合，而我們希望<strong>「錯誤率」越低的g<sub>t</sub>可以有更高的貢獻度α<sub>t</sub></strong>，所以使用β<sub>t</sub>緊接著計算「g<sub>t</sub>的權重」α<sub>t</sub>，定義為</p>
+<p><strong>α<sub>t</sub> = ln(βt)</strong></p>
+<p>所以當一個百分之一百可以完全預測的g<sub>t</sub>出現時，它的ε<sub>t</sub>=0，此時它的β<sub>t</sub> →∞，同時α<sub>t</sub> →∞，所以這樣的g<sub>t</sub>會有完全的貢獻。</p>
+<p>如果一個預測效果很差的g<sub>t</sub>出現，它的ε<sub>t</sub>=1/2，此時它的β<sub>t</sub>=1，同時α<sub>t</sub>=0，所以這樣的g<sub>t</sub>並沒有任何參考價值。</p>
+<p>那如果出現一個g<sub>t</sub>它的ε<sub>t</sub> &gt; 1/2，那這樣的g<sub>t</sub>並不能說它沒有用處，反而是一個很好的反指標，我們只需要反著看就好了，當ε<sub>t</sub> &gt; 1/2時，β<sub>t</sub> &lt; 1，所以α<sub>t</sub> &lt; 0，這樣的g<sub>t</sub>具有逆向的貢獻。</p>
+<p>最後只要把這些訓練好的g<sub>t</sub>乘上各自的α<sub>t</sub>再加總起來，我們就完成了AdaBoost啦！</p>
+<p><br/></p>
+<h3>Gradient Boost for Regression</h3>
+<p>剛剛我們講了AdaBoost，是個很神奇的方法，當我們做錯了，沒關係！從哪裡跌倒就從哪裡站起來，利用這種精神我們就可以做到Boost的效果，但美中不足的是上面的方法只能用在「分類問題」上，那如果我也想在「Regression問題」也做到Boost呢？這就是接下來要講的GradientBoost的方法。</p>
+<p>在課程中林軒田教授是從AdaBoost出發經過推導後，得到一個很像是Gradient Decent的式子，接下來將式子一般化成為可以使用任意Error Measure的形式，我稍微列一下：</p>
+<blockquote>
+<p>GradientBoost: min<sub>η</sub> min<sub>h</sub> (1/N) 𝚺<sub>n</sub> err[𝚺<sub>τ=1~t-1</sub> α<sub>τ</sub> g<sub>τ</sub>(x<sub>n</sub>) + η h(x<sub>n</sub>), y<sub>n</sub>]</p>
+</blockquote>
+<p>我們這邊會考慮err為平方誤差(s-y)<sup>2</sup>的結果，詳細的推導這邊就不多加討論，可以到影片中學習，這裡我想要從我觀察出來的觀點，概念性的來看這個GradientBoost的方法。</p>
+<p>「從哪裡跌倒就從哪裡站起來」就是Boost的精神，所以今天你有一個Regression問題沒做好，<strong>留下了餘數Residual，怎麼辦？那我就把這個餘數當作另外一個Regression問題來做它</strong>，再把這個結果附到先前的那個就好啦！如果第一次Regression後的Model是g<sub>1</sub>(x)，那剩下的沒做好的餘數就應該是y(x)-g<sub>1</sub>(x)，我們拿這個餘數下去在做一次Regression得到另外一個Model g<sub>2</sub>(x)，此時合併這兩個結果的餘數就變成了y(x)-g<sub>1</sub>(x)-g<sub>2</sub>(x)，就可以使用這個餘數繼續做下去，最後組合所有的g<sub>t</sub>(x)就會得到一個更好的Model。</p>
+<p><img alt="Gradient Boost" src="https://dl.dropbox.com/s/dy5xu7ifew5dfn4/MachineLearningTechniques.013.jpeg"></p>
+<p>依循這樣的概念我們來看GradientBoost作法，如上圖，一開始我們先初始化每一筆Data的預測值s<sub>n</sub>為0，再接下來開始產生g<sub>t</sub>，我們先把Data的 y<sub>n</sub> 減去每一筆Data當前的預測值s<sub>n</sub>，就會產生餘數(y<sub>n</sub>-s<sub>n</sub>)，當然，在一開始s<sub>n</sub>=0，所以y<sub>n</sub>-s<sub>n</sub>=y<sub>n</sub>，等於是對原問題求解。</p>
+<p>接下來因為最後我們要線性組合g<sub>t</sub>(x)，所以需要決定g<sub>t</sub>(x)前面的係數α<sub>t</sub>，也就是貢獻度，這個α<sub>t</sub>的決定方式是去求解一個One-Variable-Linear-Regression (單變數線性迴歸)，目的是<strong>去縮放g<sub>t</sub>(x)使得它更接近剛剛的餘數(y<sub>n</sub>-s<sub>n</sub>)，而找到這個縮放值就是α<sub>t</sub></strong>。所以每一次g<sub>t</sub>(x)的產生都是為了可以把G(x)描述的更好，最後G(x)=𝚺<sub>t</sub> α<sub>t</sub>g<sub>t</sub>(x)。</p>
+<p>看到這裡有人一定會認為One-Variable-Linear-Regression求α<sub>t</sub>這一步是多餘的，因為在一開始做{x<sub>n</sub>,y<sub>n</sub>-s<sub>n</sub>}的Regression中我們已經最佳化過g<sub>t</sub>(x)，那為什麼還要把g<sub>t</sub>(x)乘上α<sub>t</sub>再做同樣的事呢？α<sub>t</sub>一定是1的啊！就像我一開始舉的例子一樣啊！其實問題就出在於你把g<sub>t</sub>(x)理所當然的看成是線性模型，你才會覺得這一步是多餘的，如果g<sub>t</sub>(x)不是線性的，求α<sub>t</sub>就很重要的，因為你要使用線性組合來組出G(x)，但是你的g<sub>t</sub>(x)不是線性的，所以你只好在外面再用線性模型來包裝一遍。</p>
+<p><br/></p>
+<h3>AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)</h3>
+<p><img alt="AdaBoosted and GrandientBoosted DTree" src="https://dl.dropbox.com/s/zm43nardbpkyr4n/MachineLearningTechniques.014.jpeg"></p>
+<p>和Random Forest一樣，我們也可以將AdaBoost和GradientBoost套用到Decision Tree上面，<strong>如果是處理分類問題就使用AdaBoosted Decision Tree；那如果是處理Regression問題可以使用Gradient Boosted Decision Tree</strong>。</p>
+<p>但要特別注意的是，這邊的Decision Tree都必須是弱的，也就是Pruning過後的樹，如果直接使用完全長成的樹，你會發現在AdaBoosted Decision Tree中，因為ε<sub>t</sub>=0所以α<sub>t</sub>→∞；在Gradient Boosted Decision Tree中，y<sub>n</sub>-s<sub>n</sub>→0，因為錯誤出現的太少了，所以造成我們不能真正使用到Boost的效果，也就失去做Boost的意義了，<strong>因此在做AdaBoosted Decision Tree或Gradient Boosted Decision Tree時要使用「弱」一點的Decision Tree</strong>。</p>
+<p><br/></p>
+<h3>結語</h3>
+<p>這一篇當中，我們完整提了Boost的方法，Boost的精神就是從哪裡跌倒就從哪裡站起來，使用變換Data權重的手法去凸顯原先做錯的Data，而降低原本已經做對的Data，藉由這樣的方法訓練出來的g<sub>t</sub>可以補齊前面的不足，所以Boost的過程將會使得Model漸漸的完善。</p>
+<p>我們提了兩種Boost的方法，如果是處理分類問題就使用AdaBoost；如果是處理Regression問題可以使用GradientBoost，而且這兩種方法都可以和Decision Tree做結合。</p>
+<p>以上兩回，我們已經完成了Aggregation Models了，接下來的下一回將要探討的就是現今很流行的類神經網路和深度學習等等。</p>
+
+
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./archives.html">Archives</a></li>
+                            <li><a href="./tags.html">Tags</a></li>
+                            <li><a href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Contact Me</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
+                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
+                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; YC Note 2018</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>

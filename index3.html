@@ -74,323 +74,728 @@
         <div class="container content archive">
             <h2><a href="./index3.html">Last Posts <small>- page 3</small></a></h2>
             <dl class="dl-horizontal">
-                <dt>2016 / 9月 18</dt>
-                <dd><a href="./ml-course-foundations_4.html">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>前言</u></h5>
-<p>在上一回中，我們已經了解了機器學習基本的操作該怎麼做。而這一篇中，我們來看<strong>機器可以怎麼學得更好?</strong> 基本上有三招：Feature Transformation（特徵轉換）、Regularization（正規化）和Validation（驗證），我們來看看。</p>
+                <dt>2017 / 3月 29</dt>
+                <dd><a href="./ml-course-techniques_4.html">機器學習技法 學習筆記 (4)：Basic Aggregation Models</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
+<p>本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest。</p>
+</blockquote>
+<h5><u>綜觀Aggregation Models</u></h5>
+<p>如果今天我有很多支的Model，我有辦法融合他們得到更好的效果嗎？</p>
+<p>這就是Aggregation Models的精髓，Aggregation Models藉由類似於投票的方法綜合各個子Models的結果得到效果更好的Model。換個角度看，你可以把整個體系看成一個新的Model，而原本這些子Models當作轉換過後的新Features，<strong>所以Aggregation Model裡頭做了「特徵轉換」，這個特徵轉換產生出許多有預測答案能力的Features，稱為Predictive Features，然後再綜合它們得到最後的Model</strong>。</p>
+<p><img alt="Aggregation Models" src="https://dl.dropbox.com/s/ibdowsfjwy0z7zm/MachineLearningTechniques.007.jpeg"></p>
+<p>Aggregation Models可以分成兩大類，第一種的作法比較簡單，先Train出一個一個獨立的Predictive Features，然後在綜合它們，<strong>「集合」的動作是發生在得到Train好的Predictive Feature之後，這叫做「Blending Models」</strong>；第二種作法則是，<strong>「集合」的動作和Training同步進行，這叫做「Aggregation-Learning Models」</strong>，Aggregation-Learning Models有一個特殊的例子叫做Boost，翻開字典查Boost的意思是「促進」，在這邊的意義是<strong>假設在Training過程所產生的Predictive Feature朝著改善Model的方向前進就叫做Boost</strong>。</p>
+<p>從「集合」的方法上也可以進一步細分三種類型，有票票等值的<strong>「Uniform Aggregation Type」</strong>，有給予Predictive Features不同權重的<strong>「Linear Aggregation Type」</strong>，甚至還可以用條件或任意Model來分配Predictive Features，這叫做<strong>「Non-linear Aggregation Type」</strong>。</p>
+<p>所以兩種類型、三種Aggregation Type，交互產生各類的Aggregation Models。有Blending的三種Aggregation Type，Aggregation-Learning的Uniform Type—Bagging，再加上Aggregation-Learning的Linear Type兩種—AdaBoost和GradientBoost，這兩種也亦是Boost的方法，AdaBoost負責處理Classification的問題，而GradientBoost則負責處理Regression的問題，最後介紹Aggregation-Learning的Non-Linear Type—Decision Tree。然後接著，使用Decision Tree結合其他方法再進一步的產生Random Forest、AdaBoost Decision Tree和GradientBoost Decision Tree。</p>
+<p>我將會分兩篇來介紹Aggregation Models，一篇介紹沒Boost的部分，就是今天這一篇，另外一篇則是來專攻有Boost的部分。</p>
 <p><br/></p>
-<h5><u>Feature Transformation（特徵轉換）</u></h5>
-<p><img alt="ML" src="https://dl.dropbox.com/s/vutayryjaw27ckp/MachineLearningFoundations.013.jpeg"></p>
-<p>在上一回當中我們講了很多的線性模型，大家有沒有懷疑說，數據呈現的方式一定可以用線性描述嗎？我的答案是通常線性描述會表現不錯，但不是絕對，<strong>那我們怎麼用非線性的方法來描述我們的數據，這邊提供一個方法叫做「非線性轉換」，或者又稱為「特徵轉換」（還記得變數x又可以稱為特徵Features）</strong>，聽起來有點困難齁～其實不會啦！</p>
-<p>假設今天你的Data分布是圓圈狀的分布，顯而易見的你很難用一條線去區分他們，那我們應該怎麼做呢？假設今天有一個轉換可以把這個圓圈狀分布的空間轉換到另外一個空間，在這個新的空間可以做到線性可分，這樣的問題不就解決了嗎，我們會做線性可分的問題啊！</p>
-<p>這個轉換就叫做「非線性轉換」，那這個轉換要怎麼得到呢？可以用人為定義，譬如你知道這個空間的分布狀況是圓圈分布，記作 </p>
-<p>H(x<sub>1</sub>, x<sub>2</sub>) = sign(-A*x<sub>1</sub><sup>2</sup>-B*x<sub>2</sub><sup>2</sup>+C)</p>
-<p>，那只要做一件事我就可以把它轉換成線性可描述的，令 z<sub>1</sub>=-x<sub>1</sub><sup>2</sup>; z<sub>2</sub>=-x<sub>2</sub><sup>2</sup>，所以問題就變成</p>
-<p>H(z<sub>1</sub>, z<sub>2</sub>) = sign(A*z<sub>1</sub>+B*z<sub>2</sub>+C)</p>
-<p>此時這個問題就變成一個線性問題啦！</p>
-<p><strong>藉由人為觀察數據並給予適當的特徵轉換是特徵工程（Feature Engineering）中一件重要的事。</strong></p>
-<p>但如果我們需要去人為定義這個「非線性轉換」，這就很弱啦！我們當然希望機器可以自行從Data中學習到這個轉換，作法是這樣的，我們先把變數x做個變化和擴充，讓它們互相的相乘創造出高次項，再把這些項等價的放到Linear Model裡，所以我們就用了線性的作法來做到Non-linear Model，而因為有權重W在非線性項前面的關係，所以機器會針對Data自行去調配非線性項，這效果就等同於機器自行學習到「非線性轉換」。</p>
-<p><strong>機器自己學習特徵轉換的這個概念應該是現今ML最重要的概念之一，最近很夯的深度學習甚至不只做一次性的特徵轉換，而是做了多層的特徵轉換，而這些轉換都是機器自動從Data中學來的。</strong></p>
-<p><strong>特徵轉換讓ML變得很強大，但要特別注意，因為我們增加了非線性項，所以等於是增加了模型的複雜度，這麼做的確可以壓低E<sub>in</sub>沒有錯，但也可能使得E<sub>in</sub> ≈ E<sub>out</sub>不再成立，也就是Overfitting，所以建議要逐步的增加非線性項，從低次方的項開始加起，避免Overfitting。</strong></p>
-<p><br /></p>
-<h5><u>Overfitting</u></h5>
-<p>Overfitting是一個大怪獸，在學習怎麼對付牠之前，我們先來好好的了解牠！</p>
-<p><img alt="Overfitting" src="https://dl.dropbox.com/s/jet3ocknucywtlz/MachineLearningFoundations.000.03.png"></p>
-<p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf</a></p>
-<p>上面這張圖用很簡單的方法說明了Overfitting是怎麼一回事，假設藍色的線是Target，也就是我們抽樣的母群體，因為雜訊的關係，抽樣出來的點可能會稍微偏離Target，而如果這個時候我們用二次式來描述這些抽樣出來的Data（上圖中的左側）會發現E<sub>in</sub>不能壓到0，所以這個時候可能有人想說加進去更高次項來試試看（上圖中的右側），此時會發現E<sub>in</sub>=0，所有數據都可以被完整描述了，但是你會發現Fit的曲線已經完全偏離了Target，反而是使用低次項還描述的比較好，所以結論是<strong>如果我們把「隨機雜訊」（Stochastic Noise）Fit進去Model裡面就會因此產生Overfitting</strong>。</p>
-<p><img alt="Overfitting2" src="https://dl.dropbox.com/s/wzv2dxk0m310wuy/MachineLearningFoundations.000.04.png"></p>
-<p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf</a></p>
-<p>但可別以為沒有「隨機雜訊」鬧場就不會出現Overfitting，上圖假設一個沒有「隨機雜訊」的情形，但是Target Function的複雜度很高（上圖右側），當我們從中採樣一些Data來進行Fitting，如上圖左側，我們分別使用2次和10次來做Fitting，這個時候你會發現雖然2次和10次都和Target曲線差很遠，但是小次方的還是Fit的比較好一點，造成Overfitting的原因是因為當Target很複雜的情況下，如果採樣的數據不大，根本無法反應Target本身，所以就算使用了和Target一樣複雜的Model，也只是在瞎猜而已。<strong>這種因為Target本身的複雜度所帶來的雜訊，我們稱為「決定性雜訊」(Deterministic Noise)</strong>。</p>
-<p><img alt="Noise" src="https://dl.dropbox.com/s/vgur2f9qjmonlm0/MachineLearningFoundations.000.05.png"></p>
-<p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf</a></p>
-<p>我們來看一下「隨機雜訊」（Stochastic Noise）和「決定性雜訊」（Deterministic Noise）怎麼造成Overfitting的，上圖中的兩張漸層圖表示的是Overfitting的程度，越接近紅色代表Overfitting越嚴重；反之，越接近藍色則Overfitting越輕微。左邊的漸層圖是考慮「隨機誤差」的影響，右邊的漸層圖則是考慮「決定性雜訊」的影響。從這兩張圖我們可以觀察出下面四點，</p>
-<ol>
-<li>Data數量N越少，越容易Overfitting</li>
-<li>「隨機雜訊」越多，越容易Overfitting</li>
-<li>「決定性雜訊」越多，越容易Overfitting</li>
-<li>Model本身越複雜，越容易Overfitting</li>
-</ol>
-<p>那有什麼方法可以防止Overfitting嗎？有的，有一些之前提過，而有一些我接下來會講，我們來看一下：</p>
-<ol>
-<li><strong>從簡單的模型開始做起，從低次模型開始做起，在慢慢加入高次項</strong></li>
-<li><strong>提升資料的正確性：Data Cleaning/Pruning（資料清洗）將錯誤的Data修正或刪除</strong></li>
-<li><strong>Data Hinting（製造資料），使用合理的方法擴增原有的資料，例如：在圖形辨識問題中，可以用平移和旋轉來擴增出更多Data</strong></li>
-<li><strong>Regularization（正規化）：限制權重W的大小以控制高次的影響。</strong>（接下來會詳述...）</li>
-<li><strong>Validation（驗證）：將部分Data保留不進去Fitting，然後用這個Validation Data來檢驗Overfitting的程度。</strong>（接下來會詳述...）</li>
-</ol>
-<p><br /></p>
-<h5><u>Regularization（正規化）</u></h5>
-<p><img alt="regularation" src="https://dl.dropbox.com/s/3aulwfr8gj2pr14/MachineLearningFoundations.014.jpeg"></p>
-<p>剛剛我們提到了Overfitting所造成的影響很大一部分是因為Model複雜度所造成的，但是為了可以把E<sub>in</sub>給壓下去，我們又的確需要去增加高次項，所以依照建議需要從低次項開始慢慢的加，這樣感覺很麻煩啊！<strong>有沒有辦法讓機器自己去限制高次項的出現呢？有的，這就是Regularization（正規化）</strong>。</p>
-<p>還記得剛剛在講「特徵轉換」時，有提到一點，ML有辦法自行學習「特徵轉換」的關鍵是因為高次項前面有一個可調控的權重，而機器會針對Data來調整權重大小，那其實就是等價於機器自己學習到了「特徵轉換」，同理可知，<strong>我們只要限制權重W的大小就等同於限制了機器無所忌憚的使用高次項</strong>。</p>
-<p>經數學證明，<strong>限制權重W的大小可以等價於在E<sub>in</sub>上面加上「W大小的平方」乘上定值λ，λ越大代表W大小限制越緊；λ越小代表W大小限制越鬆</strong>，這也非常容易想像，訓練Model的方法是去降低E<sub>in</sub>，但是如果使用了大的W，就會使得E<sub>in</sub>增大，自然而然在訓練的過程中，機器會去尋找小一點的W，也就等同於限制了W的大小。</p>
-<p>見上圖左側，我們修改了Gradient Descent讓它受到Regularization的限制。</p>
-<p>而上圖左側下方，顯示了在λ增大的同時，限制W的大小會越來越緊，所以Fitting的結果從原本的Overfitting變成Underfitting。</p>
-<p><strong>Underfitting所代表的是Model本身的複雜度不足以使得E<sub>in</sub>減小，如果你經過Validation（待會會講）後發現沒有Overfitting的現象，但是你的E<sub>in</sub>始終壓不下來，那就有可能是Underfitting，那你可以考慮增加Model複雜度或者放寬Regularization。</strong></p>
-<p><strong>Regularizer的選擇常見的有兩種L2和L1，L2使用「W大小的平方」，L1則使用「W大小的絕對值」。</strong></p>
-<p>當Linear Regression使用Regularization限制，統計上有一個名稱稱為Ridge Regression，你可以使用Gradient Descent來做，又或者使用解析解的方法。</p>
-<p>最後提一個Regularization的細節，你會發現因為高次項是彼此兩兩相乘的結果，所以項目的個數會隨著次方增加而增加，這麼一來在做Regularization時可能會過度懲罰高次項，因此，我們可以將Feature轉換成Legendre Polynomials來避免這個問題。</p>
-<p><br /></p>
-<h5><u>Validation（驗證）</u></h5>
-<p><img alt="validation" src="https://dl.dropbox.com/s/ytuv7ns8s39ocvd/MachineLearningFoundations.015.jpeg"></p>
-<p>講了這麼多Overfitting，但到底要怎麼去量化Overfitting呢？Overfitting就是E<sub>in</sub> ≈ E<sub>out</sub>不成立，但是E<sub>out</sub>我們不會知道啊！因為我們不會知道Target Function是什麼，那該怎麼得到量化Overfitting的值呢？</p>
-<p><strong>有一個方法叫做Validation可以拿來量化Overfitting的值，這個方法是先將採樣的數據做分離，一部分將會拿來做Model Fitting（Model Training），另外一部分保留起來評估訓練完畢的Model，因為保留的這一部分源自於母群體，而且又沒有被Model給看過，所以它可以很客觀的反應出E<sub>out</sub>的大小。</strong></p>
-<p>我們的Model和Algorithm從以前講到現在已經是越來越複雜了，來複習一下Model和Algorithm受哪些參數影響，Algorithm的選擇就有很多了，包括：PLA、Linear Regression、Logistic Regression；Learning Rate η也需要去選擇大小決定學習速率；Feature Transformation中Feature的決定和次方大小的決定；Regularization也有L2、L1 Regularizer的選擇；還有Regularization的λ值也必須被決定。</p>
-<p>這些條件彼此交互搭配會產生很多組的Model，那該如何挑選Model呢？我們就可以使用Validation來當作一個依據來選擇Model，選擇出E<sub>val</sub>最小的Model，如上圖所示。</p>
-<p>另外實作上有一些方法：Leave-One-Out Cross Validation和V-Fold Cross Validation，他們的精髓就是保留k筆Data當作未來Validation用，另外一些拿下去Train Model，然後再用這k筆去評估並得到E<sub>val</sub>1，還沒結束，為了讓E<sub>val</sub>盡可能的正確，所以我們會在把Data作一個迴轉，這次使用另外一組k組Data來Validation，其餘的再拿去Train Model，然後在評估出E<sub>val</sub>2， … 以此類推，當轉完一輪之後，在把這些E<sub>val</sub>1, E<sub>val</sub>2, ...做平均得到一個較為精確E<sub>val</sub>。那Leave-One-Out Cross Validation顧名思義就是k=1，但這樣做要付出的代價就是計算量太大了，所以V-Fold Cross Validation則使用k=V來做。實務上，我常常做Validation時根本不會去Cross它們，我大都只是保留一部分的Data來驗證而已，給大家參考。</p>
-<p><br /></p>
-<h5><u>總結</u></h5>
-<p>來到了這四篇有關於林軒田教授機器學習基石學習筆記的尾聲了，讓我們重溫看看我們學會了什麼？</p>
-<p>一開始我帶大家初探ML的基本架構，建立Model、使用Data訓練、最後達到描述Target Function的目的，也帶大家認識各種機器學習的類型。</p>
-<p>接下來，我們用理論告訴大家，ML是不是真的可以做到，那在什麼時候可以做到？要符合哪些條件？我們知道要有好的Model，VC Dimension越小越好，也就是可調控的參數越少越好，才會使得E<sub>in</sub> ≈ E<sub>out</sub>成立；要有足夠的Data；要有好的Learning Algorithm能把E<sub>in</sub>壓低，這三種條件成立後，如此一來Model在描述訓練數據很好的同時也可以很好的去預測母群體，但我們發現E<sub>in</sub>壓低和可調控的參數越少越好兩者是Trade-off，所以我們必須取適當的VC Dimension。</p>
-<p>再接下來我們開始看實際上ML該怎麼做，引入相當重要的Learning Algorithm，也就是Gradient Descent，並且說明了Linear Regression和Logistic Regression，而且還可以使用這兩種Regression來做分類問題。</p>
-<p>那最後就真正亮出ML的三大絕招啦：Feature Transformation（特徵轉換）、Regularization（正規化）和Validation（驗證），Feature Transformation使得Model更為強大，所以E<sub>in</sub>更能夠壓低，但是為了避免Overfitting我們必須去限制它，Regularization可以限制高次項的貢獻，另外，Validation可以量化Overfitting的程度，有了這個我們就可以去選出體質健康而且E<sub>in</sub>又小的Model。</p>
-<p>機器學習基石的這些概念都很重要，往後如果你開始學習其他的ML技巧，例如：深度學習，這些知識都是你強大的基礎，所以多看幾次吧！</p></dd>
-                <dt>2016 / 8月 17</dt>
-                <dd><a href="./about-me.html">About Me</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><img src="http://www.ycc.idv.tw/media/Me/my_picture.png"; width="150"></img></p>
-<h5><u>YC Chen 陳宜昌</u></h5>
-<p>你好，我是宜昌，我從小就對這個世界充滿著好奇心，喜歡接觸新的事物，喜歡思考並鑽研知識，物理本科生的我，身體裡永遠住著那追根究柢的科學家，因此我習慣於追溯原理來認識世界。</p>
-<p>現在我正在學習Machine Learning，希望成為這領域的專家，為此目標，開啟了我的自學旅程，從基礎電腦科學到演算法，從Machine Learning理論學習到實務操作，一步一腳印的積累，而寫作正是自我檢驗的最好方法，因此這個網站我會與大家分享一些我學到的東西，希望你們會喜歡，有任何疑問都可以在文章下面留言，或者我也很樂意你寫信與我討論。</p>
-<h5><u>Contact Me</u></h5>
-<p><strong>Email:</strong>    <a href="mailto:ycc.tw.email@gmail.com" target="blank">ycc.tw.email@gmail.com</a></p>
-<p><strong>Github:</strong>    <a href="https://github.com/GitYCC" target="blank">https://github.com/GitYCC</a></p>
-<p><strong>Website:</strong>    <a href="http://www.ycc.idv.tw" target="blank">www.ycc.idv.tw</a></p></dd>
-                <dt>2016 / 8月 07</dt>
-                <dd><a href="./ml-course-foundations_3.html">機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>前言</u></h5>
-<p>在上一回中，我們已經了解了機器學習在理論上有怎樣的條件才可以達成，所以接下來我們就可以正式的來看有哪一些機器學習的方法。</p>
-<p>在這一篇中，我會帶大家初探：<strong>機器可以怎麼樣學習?</strong> 內容包括：Gradient Descent、Linear Regression、Logistic Regression、使用迴歸法做二元分類問題等等。</p>
+<h5><u>Blending</u></h5>
+<p><strong>Blending是泛指在Training結束之後得到幾個Predictive Features，然後再對這些Predictive Features做集合的方法</strong>。</p>
+<p><img alt="Blending" src="https://dl.dropbox.com/s/kotwynmp51p457q/MachineLearningTechniques.008.jpeg"></p>
+<p>如上圖，基本流程是這樣的，一開始先把Data切成一部分拿來Training，另外一部分拿來Validation，這部份很重要，因為我們待會要利用Validation的Error來決定每筆Predictive Feature對Model的貢獻分配比重；接下來使用不同的方法來產生不同的Predictive Features g<sub>t</sub>，來源可能是不同的Model形式、不同的參數變化、不同的隨機情形等等；有了各類的g<sub>t</sub>之後，我們就可以選擇使用怎樣的方式來結合它們，如果是Uniform Combination，就直接平均所有g<sub>t</sub>就可以了，那如果是Linear Combination，想當然爾就是使用線性模型來結合，那如果是Non-Linear Combination，你可以使用任意Model來描述也行；決定好結合方式了，也就同時決定了「特徵轉換」的方法，接下來出動Validation Data，使用這個「特徵轉換」來轉化Validation Data並且做Fitting，最後我們會找到一組解最佳的參數來確定結合的方法，如果是Uniform Combination是不需要這一步的，基本上你得到g<sub>t</sub>就直接平均就得到結果了，而Linear Combination則是需要去找出α<sub>t</sub>。</p>
+<p><strong>在數學上可以證明Aggregation的效果會比單一一個g<sub>t</sub>的描述的結果還好</strong>，這很像是在做投票選舉，不同方法可能帶有不一樣的偏見，但是綜合所有意見之後可以找到共識，這個共識是具有較少偏見的，你可以想像偏見就像是Overfitting，<strong>所以Aggregation是具有像Regularizaiton一般抑制Overfitting的效果的</strong>，但有些時候特別的看法不一定是偏見，也許這一個方法可以看出其他方法看不出來的規律，此時這個部分也不會被完全忽略掉，<strong>所以Aggregation也可以同時擁有像Feature Transform一樣的複雜度。因此Aggregation的方法可以同時增加Model複雜度又同時防止它Overfitting，這個效果是我們以前沒看過的，所以我們會說Aggregation具有截長補短的效果</strong>。</p>
 <p><br/></p>
-<h5><u>Gradient Descent（梯度下降）</u></h5>
-<p><img alt="ML" src="https://dl.dropbox.com/s/9wwibe1ix3cs1od/MachineLearningFoundations.009.jpeg"></p>
-<p>還記得上一回我們歸納出了一套ML的流程，複習一下</p>
-<ol>
-<li>準備好足夠的數據</li>
-<li>把Model建立好，d<sub>VC</sub>必須要是有限的，而且大小要適中</li>
-<li>定義好評估E<sub>in</sub>的Error Measurement</li>
-<li>使用演算法找出最佳參數把E<sub>in</sub>降低</li>
-<li>最後評估一下是否有Overfitting的狀況，確保E<sub>in</sub> ≈ E<sub>out</sub></li>
-</ol>
-<p>請容許我先不管Model這部份該怎麼建立，我們先來看如何找到最佳參數這部份，<strong>假設今天我知道E<sub>in</sub>的評估方法，我該如何找到最佳的參數來使得E<sub>in</sub>更小？有一套普遍的方法叫做Gradient Descent</strong>，很強大，甚至連現今流行的「深度學習」找最佳解的機制也是從Gradient Descent衍生出來的。</p>
-<p>想像一下你是一位登山客，你在爬一座由E<sub>in</sub>所決定的高山，你的目標是去這座山最低的山谷，也就是E<sub>in</sub>最小的地方，因為村莊正在那裡，但是很不幸的你沒有地圖，這個時候有什麼方法可以知道低谷在哪裡呢？答案是就一直下坡吧！反正我知道村莊在山谷裡，那我就一路下山應該就可以找到村莊了，這就是Gradient Descent的精髓。</p>
-<p>在數學上有一個衡量函數變化的東西，這就是Gradient（梯度），Gradient是一個向量，它的「方向」指向函數值增加量最大的方向，而它的「大小」反應這個變化有多大，其實就是一次微分啦！只不過Gradient推廣到高維度而已。所以我們和這個登山客做一樣的事情，我們朝著下降最多的方向前進，這就是Gradient Descent（梯度下降法），我剛剛說了，梯度是指向函數值增加量最大的方向，那顯然我們往反方向走就可以達到最大下降，所以如果我們有一個Error函數E<sub>in</sub>，它的Gradient就是∇E<sub>in</sub>，那我們的下降方向就是-∇E<sub>in</sub>。</p>
-<p>來看一下上圖中Gradient Descent的流程，</p>
-<ol>
-<li>定義出Error函數</li>
-<li>Error函數讓我們可以去評估E<sub>in</sub></li>
-<li>算出它的梯度∇E<sub>in</sub></li>
-<li>朝著∇E<sub>in</sub>的反方向更新參數W，而每次只跨出η大小的一步</li>
-<li>反覆的計算新參數W的梯度，並一再的更新參數W</li>
-</ol>
-<p>這邊要特別注意，流程中的第四項中，有提到η，<strong>η稱為Learning Rate，它影響的是更新步伐的大小</strong>，η的選擇要適當，如果η太小的時候，我們可能要花很多時間才可以走到低點，但如果η太大的話，又可能導致我們在兩個山腰間跳來跳去，甚至越更新越往高處跑，<strong>所以選擇適當的η相當的重要，所以下次如果你發現E<sub>in</sub>一直降不下來甚至在增大，試著將η減小看看</strong>。另外η也可以是變動的值，我們可以直接設η＝|∇E<sub>in</sub>|，這麼一來遇到陡坡的時候它就會跨大一點的步伐，遇到緩坡的時候就會跨小步一點，隨狀況調整η的值。</p>
-<p>Gradient Descent (GD, 梯度下降) 有兩個變形，分別為Stochastic Gradient Descent (SGD, 隨機梯度下降) 和 Batch Gradient Descent (BGD, 批次梯度下降)，這差別只在於評估∇E<sub>in</sub>的時候所考慮的Data數量，正常來說必須要考慮所有的Data，我們才會得到真正的E<sub>in</sub>，才有辦法算出正確的∇E<sub>in</sub>，但這樣所要付出的代價就是較大的計算量。</p>
-<p>所以<strong>Stochastic Gradient Descent的作法是一次只拿一筆Data來求E<sub>in</sub>'，並且更新參數W</strong>，這樣的更新方法顯然會比較不穩定，但我們假設，經過好幾輪的更新後，已經完整看過整個數據了，所以平均來說效果和一般的Gradient Descent一樣。</p>
-<p>另外還有一種介於Gradient Descent和Stochastic Gradient Descent之間的作法，稱之為Batch Gradient Descent，它不像Stochastic Gradient Descent那麼極端，一次只評估一組Data，<strong>Batch Gradient Descent一次評估k組數據，並更新參數W</strong>，這是相當好的折衷方案，平衡計算時間和更新穩定度，而且在某些情形下，計算時間還比Stochastic Gradient Descent還快，為什麼呢？GPU的計算方法你可以想像成在做矩陣計算，矩陣元素在計算的時候往往是可以拆開計算的，此時GPU利用它強大的平行化運算將這些元素平行計算，可以大大增進效率，所以如果一次只算一筆資料，反而是沒有利用到GPU的效率，<strong>所以如果你用GPU計算的話，依照你的GPU去設計適當的k值做Batch Gradient Descent，是既有效率又穩定的作法</strong>。</p>
-<p>Gradient Descent求最佳解其實是會產生問題的，還記得我們的目標嗎？我們希望可以走到最低點的山谷裡，所以我們採取的策略是不斷的下降，這個時候如果遇到兩種情形就會動彈不得，</p>
-<ol>
-<li>小山谷，數學上稱為<strong>Local Minimum</strong>，雖然在那點看起來，那邊的確是低點，但卻不是整個E<sub>in</sub>的最低點</li>
-<li>平原，數學上稱為<strong>Saddle Point（鞍點）</strong>，在一片很平的區域，∇E<sub>in</sub>=0，所以就停止不動了</li>
-</ol>
-<p>針對這些問題有一些改良後的演算法，在這裡不詳述，請參考<a href="http://ruder.io/optimizing-gradient-descent/">S. Ruder的整理</a>。</p>
-<p>好！我們已經了解了怎麼使用Gradient Descent去找到E<sub>in</sub>最小的最佳參數，那我們可以回頭看Model有哪一些？Error Measure該怎麼定？</p>
+<h5><u>Bagging</u></h5>
+<p><img alt="Bagging" src="https://dl.dropbox.com/s/ht7d8qs8p5744le/MachineLearningTechniques.009.jpeg"></p>
+<p><strong>Bagging是一種利用變換原本Data來造出不同g<sub>t</sub>的簡單方法</strong>，Bagging的全名稱為Bootstrap Aggregation，其中<strong>Bootstrap指的是「重新取樣原有Data產生新的Data，取樣的過程是均勻且可以重複取樣的」</strong>，使用Bootstrap我們就可以從一組Data中生出多組Dataset，然後就可以使用這些Dataset來產生多組g<sub>t</sub>，最後再Uniform Combination這些g<sub>t</sub>，就完成了Bagging。</p>
 <p><br/></p>
-<h5><u>Linear Regression</u></h5>
-<p><img alt="ML" src="https://dl.dropbox.com/s/prx1u719y743s56/MachineLearningFoundations.010.jpeg"></p>
-<p>先從最簡單的看起，那就是線性迴歸（Linear Regression），假設今天我要用三種變數(x<sub>1</sub>, x<sub>2</sub>, x<sub>3</sub>)來建立一個簡單的線性模型，那就是</p>
-<p>w<sub>0</sub>+w<sub>1</sub>x<sub>1</sub>+w<sub>2</sub>x<sub>2</sub>+w<sub>3</sub>x<sub>3</sub>，</p>
-<p>這個又稱為Score，標為s，為了方便起見，我們會額外增加x<sub>0</sub>=1的參數，這麼一來Score就可以寫成矩陣形式</p>
-<p>s = w<sub>0</sub>x<sub>0</sub>+w<sub>1</sub>x<sub>1</sub>+w<sub>2</sub>x<sub>2</sub>+w<sub>3</sub>x<sub>3</sub>=W<sup>T</sup>x</p>
-<p>W = [w<sub>0</sub>, w<sub>1</sub>, w<sub>2</sub>, w<sub>3</sub>]</p>
-<p>x = [x<sub>0</sub>=1, x<sub>1</sub>, x<sub>2</sub>, x<sub>3</sub>]</p>
-<p>在線性模型中，這個 s 就正好是我們Model預測的 y，通常我們會把預測得來的 y 記作 ŷ (y hat)，如果今天這個 y 和 ŷ 是實數的話，那這就是一個標準的Linear Regression問題，那如何去衡量預測的好或不好呢？<strong>我們可以使用Squared Error來衡量，err(ŷ,y)=(ŷ-y)<sup>2</sup></strong>，所以 ŷ 和 y 越靠近Error就越小。</p>
-<p>Squared Error的E<sub>in</sub>平面比較簡單，就是一個單純的開口向上的拋物線，所以它的最低點其實是有解析解的，我們可以靠著數學上的<strong>Pseudo-Inverse方法</strong>在評估完全部的Data之後把最佳參數給算出來，這麼簡單的E<sub>in</sub>平面是很難見到的，我們之前介紹的Gradient Descent則是靠著逐步更新的方式去尋找近似解，這個方法是不管E<sub>in</sub>平面有多麼複雜都可以處理，但是需要特別注意別卡在Local Minimum和Saddle Point。</p>
-<p><br/></p>
-<h5><u>Logistic Regression</u></h5>
-<p><img alt="ML" src="https://dl.dropbox.com/s/ugchv7yzd1bcm1a/MachineLearningFoundations.011.jpeg"></p>
-<p>在上一回討論二元分類問題時，我們考慮的狀況是「沒有雜訊」的情形，不過在實際情況下，「雜訊」是一定需要考慮的。在「沒有雜訊」的情形下，一筆Data只會有一個確定的答案，<strong>如果考慮「雜訊」，一筆Data有可能有多個答案，呈現機率分布</strong>，對於正確答案的機率也許會高一點，但因為雜訊的干擾的原因並非能百分之一百的出現正確答案。</p>
-<p>在二元分類的答案因為雜訊出現了機率分布，可能會產生像下面一樣的情況，</p>
-<p>ℙ(◯|X<sup>1</sup>) = 0.9 ;   ℙ(✕|X<sup>1</sup>) = 0.1</p>
-<p>而之前PLA的分類方法是屬於非黑及白的，這種分類法我們稱為Hard Classification，並不能描述這種機率分布，所以我們來考慮另外一種分類法，稱之為Soft Classification。</p>
-<p><strong>Soft Classification看待每個答案不是非黑及白的，而是去評估每個答案出現的機會有多大，以此作為分類</strong>，我們打算使用Regression的連續特性來產生Soft Classification，我們需要引入一個重要的函數—Logistic Function，這個函數可以將所有實數映射到0到1之間，如上圖下方中間的圖示所示，<strong>Logistic Function會將極大的值映射成1，而將極小值映射成0，這個0到1的值剛剛好可以拿來當作機率的大小</strong>。</p>
-<p>所以我們就可以來建立一個有機率概念的模型，這個Model的預測值是一個機率，一樣的先給予輸入變數x權重W求出Score s，再把 s 放到Logistic Function當中，我們就可以映射出在一個機率空間，我們藉由調整W來改變Model以描述我們的Data，有了這個新的Model，我們就可以用機率的方式來描述二元分類，</p>
-<p>ℙ(◯|X<sup>1</sup>) = Θ(s) ;   ℙ(✕|X<sup>1</sup>) = 1 - Θ(s) = Θ(-s)</p>
-<p>OK! 決定好Model，我們就可以來定義它的Error Measurement的方式了，這個時候如果使用Squared Error來作為Error Measurement你會發現這種評估方式有一點失焦了，我們並不是要將雜訊給放進去Model之中，而是要在考慮雜訊之下盡可能的去描述數據背後真正的機制。</p>
-<p>所以我們來探討一下「可能性」，在考慮採樣數據過程因為雜訊造成的機率分布的前提下，我們去看會採樣到這組Data的可能性，我們應該合理的認為採樣出來的這組Data應該具有最大的「可能性」，這個「可能性」可以表示成</p>
-<p>Assume ◯ ≡ (y=+1) and ✕ ≡ (y=-1)</p>
-<p>ℙ(likelihood of ◯) = ℙ(x<sup>1</sup>)Θ(y<sup>1</sup>×s<sup>1</sup>) × ℙ(x<sup>2</sup>)Θ(y<sup>2</sup>×s<sup>2</sup>) × … × ℙ(x<sup>N</sup>)Θ(y<sup>N</sup>×s<sup>N</sup>)</p>
-<p><strong>所以我們需要設計一組Error Measurement，使得Error降低的同時可以使得ℙ of likelihood可以增大，這個Error Measurement就是Cross-Entropy，Error<sub>ce</sub>=ln[1+exp(-ys)]。</strong></p>
-<p>來推導一下Cross-Entropy怎麼來的，</p>
-<p>Max. ℙ(likelihood of ◯) </p>
-<p>= Max. Θ(y<sup>1</sup>×s<sup>1</sup>) × Θ(y<sup>2</sup>×s<sup>2</sup>) × … × Θ(y<sup>N</sup>×s<sup>N</sup>)</p>
-<p>= Min. 𝚺 -ln[Θ(y<sup>n</sup>×s<sup>n</sup>)]</p>
-<p>= Min. 𝚺 ln[1+exp(-y<sup>n</sup>×s<sup>n</sup>)]</p>
-<p>= Min. 𝚺 Error<sub>ce, n</sub></p>
-<p><strong>我們可以使用Gradient Descent來降低Cross-Entropy，這又稱為Logistic Regression，在這個問題中就沒有簡單的解析解可以直接算，只能使用近似解來處理。</strong></p>
-<p><br/></p>
-<h5><u>使用迴歸法做二元分類問題</u></h5>
-<p><img alt="ML" src="https://dl.dropbox.com/s/01zyuaqal2achqu/MachineLearningFoundations.012.jpeg"></p>
-<p>剛剛介紹了Logistic Regression，我們可以使用Regression方式來做二元分類問題，我們來看一下實際上該怎麼做？</p>
-<p>線性模型的標準方法，我們會將變數x做線性組合得到Linear Scoring Function — s，線性組合的係數和Threshold稱為權重W，我們可以調整權重W來改變Model，那針對看待s的不同方式就衍生出不同的方法。那為了可以將Regression問題轉換成二元分類問題，所以通常我們會假設(y=+1)為◯，(y=-1)為✕。</p>
-<p>先回顧一下之前<a href="http://www.ycc.idv.tw/YCNote/post/25">PLA的作法</a>，我們把 <code>s&gt;0</code> 的狀況視為◯，也就是(y=+1)；然後把 <code>s&lt;0</code> 的狀況視為✕，也就是(y=-1)，把這個概念畫成上圖右側的圖，圖中藍色的階梯函數就是PLA的Error Measurement，正是因為它是一個階梯函數，所以我們不能使用Gradient Descent等Regression方法來處理，<strong>因為在階梯的每一點∇E<sub>in</sub>都是0（除了原點外），也就是如此PLA在更新的過程才無法確保趨近於最佳解，而需要使用Pocket PLA來解決這個問題</strong>。</p>
-<p>那如果我們用Linear Regression來做這件事呢？我們把Squared Error畫在上圖右側小圖的紅線，你會發現它的低點會落在ys=1的地方，這應該不是我們要的結果，雖然它一樣可以把錯誤的判斷修正回正確，但是面對過度確定的正確答案，它反而會去修正它往錯誤的方向，很顯然這不是我們想要的。</p>
-<p>最好的方式就是Logistic Regression了，我們將s做Logistic Function的轉換，轉換成機率，並在評估最大化Likelihood的條件下定義出Cross-Entropy來當作Error Measurement，在上圖右側的小圖，我們稍微調整Cross-Entropy，使得它的Error Function可以在ys=0的地方和Squared Error相切，<strong>這張圖告訴我們的是隨著Grandient Descent每次的更新，Logistic Regression會把分類做的越來越好，把◯和✕拉的更遠</strong>。</p>
-<p><br /></p>
-<h5><u>後話</u></h5>
-<p>在這一篇當中，我們介紹了Grandient Descent這一個相當重要的演算法，並且運用在兩種Regression上：Linear Regression和Logistic Regression，Linear Regression是最簡單的Regression方法，甚至它還可以使用Pseudo-Inverse的方法直接算出最佳解，Logistic Regression考慮了有雜訊的Data產生的機率分布，我們可以用Logistic Regression做Soft Binary Classification，而且我們也說明了Logistic Regression為何適合拿來用在二元分類上。本篇我們對於ML的實際作法有了基本認識，在下一篇，我們繼續討論還有沒有什麼方式可以讓ML做的更好。</p></dd>
-                <dt>2016 / 6月 26</dt>
-                <dd><a href="./ml-course-foundations_2.html">機器學習基石 學習筆記 (2)：為什麼機器可以學習?</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>前言</u></h5>
-<p>在上一回當中，我們初探了機器學習，了解了什麼時候適合使用機器學習，而不是一般的Hard Coding，那今天這篇文章要繼續問下去。</p>
-<p><strong>為什麼機器可以學習(Why Can Machines Learn?)</strong>，本篇會介紹學理上機器學習（ML）必須要有哪些條件才可行，這些理論有非常多的數學，但卻是了解機器學習非常重要的內功，我會盡量避開繁複的數學運算，而帶大家直接的了解式子所要告訴我們的觀念。</p>
-<h5><u>機器可以學習嗎?</u></h5>
-<p><img alt="MachineLearningFoundations.001" src="https://dl.dropbox.com/s/rjxzcwyfabb02ae/MachineLearningFoundations.001.jpeg"></p>
-<p>還記得上面這張圖嗎? 上次帶大家初探了Machine Learning(ML)的基本架構，可以把整個概念總結成上面這張圖。</p>
-<p>我們來複習一下，先從最上面的盆子開始看起，我們用Target Function代表你想要學習的技能，在非常理想的情況下，也就是沒有noise的情況，每組輸入變數 Xn都會找到一組精確的輸出 yn，而這個Target Function能產生多個Data，圖中那些小球就是代表各個單筆的Data，今天我從中隨機抽取出N組Data來做機器學習，接下來Learning Algorithm會利用這些取出的Data去從Hypothesis Set中找出最像Target Function的Hypothesis，那這組Hypothesis就成了我們學習出來的結果，我們可以利用這個結果來預測新的問題。</p>
-<p>那麼上面這張圖真的合理嗎? 我們真的有辦法用上面的方法讓機器學習嗎? </p>
-<p>先介紹幾個名詞，我們會稱<strong>抽樣的Data為In-sample Data</strong>，並且稱<strong>Hypothesis預測In-sample Data的誤差為In-sample Error，表示為E<sub>in</sub></strong>，因此Learning Algorithm的目的就是找出那組Hypothesis使得E<sub>in</sub>最小。</p>
-<p>回想一下二元分類問題，在上一篇當中我們使用PLA來挑選Hypothesis Set，還記得我們做了什麼事來確保我們可以得到最佳解嗎? 那就是Pocket的方法，Pocket的目的就是去留住一組能預測最好的Hypothesis，也就是能保留一組參數使得E<sub>in</sub>最小。</p>
-<p>但如果E<sub>in</sub>真的已經可以壓到0了，我們就可以說機器學習已經完成了嗎？</p>
-<p>並不是這樣的，回到目的，我們真正希望的是機器有辦法預測新的問題，所以真正的目標是將取樣前的母群體給預測好。</p>
-<p>我們會稱<strong>抽樣前的母群體為Out-sample Data</strong>，並且稱<strong>Hypothesis預測Out-sample Data的誤差為Out-sample Error，表示為E<sub>out</sub>，我們最終目的就是把E<sub>out</sub>壓下來</strong>。</p>
-<p>但遺憾的是我們不會真正知道E<sub>out</sub>的大小，所以我們只能評估E<sub>in</sub>來選取Model參數，因此重要的是需要E<sub>in</sub> ≈ E<sub>out</sub>這個條件成立，否則一切的學習都是無效的。</p>
-<p><strong>總結一下機器學習的條件，我們必須建立一個 Learning Model在N筆資料輸入的情況下可以確保E<sub>in </sub>≈ E<sub>out</sub>，所以在Learning Algorithm選出最小E<sub>in</sub>的Hypothesis，同時這組Hypothesis也可以很好的預測Out-sample，我們就可以說機器已經會學習了。</strong></p>
-<h5><u>E<sub>in</sub>和E<sub>out</sub>的差異</u></h5>
-<p><img alt="image" src="https://dl.dropbox.com/s/z6s7d0wsq00c5nn/MachineLearningFoundations.005.jpeg"></p>
-<p>剛剛我們已經提到了如果機器能學習，那就必須先確保E<sub>in</sub> ≈ E<sub>out</sub>，下面我會引入Hoeffding不等式來說明這個條件怎麼成立。</p>
-<p>我們先想像一下我有一個桶子，這個桶子裝了兩種顏色的很多顆小球，分別為橘色和綠色，今天如果桶子內橘色球佔的比例為μ，而今天我們從中隨機抽樣出N顆小球，並且計算出這N顆小球中橘色佔的比例為ν，此時我們可以想像的到，μ=ν不一定會成立，但μ也不至於離ν太遠，所以Hoeffding不等式就告訴我們|μ-ν|會被限制在一個範圍內，大家可以看一下上圖中左側的圖例。</p>
-<p>接下來我們再把橘球和綠球的意義換成是，一組Hypothesis預測每筆Data的好或壞，預測正確的是綠球，預測失敗的是橘球，所以橘球的比例正是一組Hypothesis的預測誤差，所以在Out-sample就是E<sub>out</sub>，在In-sample就是E<sub>in</sub>，也就得到上圖右側的公式。</p>
-<p>如果我們定義E<sub>in</sub>和E<sub>out</sub>差異大於 ε 的情形為Bad Data(不好的數據)，則上述式子保證的是出現這樣Bad Data的機率將被一個定值給限制住，所以只要出現Bad Data的機率不是太大，基本上我們就可以說E<sub>in</sub> ≈ E<sub>out</sub>。</p>
-<p><img alt="image" src="https://dl.dropbox.com/s/yq5l9mz9y5ulh4h/MachineLearningFoundations.006.jpeg"></p>
-<p>而事實上，我們的hypothesis不會只有一個，所以接下來來考慮如果有M個Hypotheses的情況下我們的E<sub>in</sub>和E<sub>out</sub>的差異會怎麼被參數影響。</p>
-<p>如果我們考慮M組Hypotheses，就會發現每種Hypothesis出現Bad Data的地方可能不一樣，因此大大的減少能使用的Data，如上圖左側所示。</p>
-<p>今天如果我有1000份從Target Function取N個Data的情形，然後只用一個Hypothesis來衡量，根據Hoeffding's Inequality，1000份裡面假設大概5份會出現Bad Data，但今天我再增加一組Hypothesis來衡量，對於這個Hypothesis也可能有自己的5份Bad Data，如果很不幸的，剛剛好這5份Bad Data和前5份沒有重疊，因此用這兩個hypotheses來評估的話，1000份裡頭將會出現10份的Bad Data，由此類推，如果有M組Hypotheses，最差的情況會發生在什麼時候呢? 那就是M個Hypotheses的每份Bad Data彼此都沒有交集，夠慘吧! 所以把這些出現Bad Data的機率取聯集得到上圖右側的公式。</p>
-<p>大家現在回想一下上一篇所提到的Perceptron Hypothesis Set就會發現，糟糕了! Perceptron Hypothesis Set 裡有無限多組的Hypotheses，也就是M→∞，那我們不就需要無限多的Data才能做到E<sub>in</sub> ≈ E<sub>out</sub>，否則機器根本不會學習，所以前一篇都在亂講，PLA根本無法學習，等一下，先沉住氣，聽我解釋一下，你就會明白PLA還是可以做到機器學習的。</p>
-<h5><u>VC Generalization Bound</u></h5>
-<p><img alt="image" src="https://dl.dropbox.com/s/5p6sz6y53oh58xe/MachineLearningFoundations.007.jpeg"></p>
-<p>問題出在這裡，我們在Multi-Bin Hoeffding’s Inequality中採用了一個假設，就是假設每組Hypotheses的Bad Data彼此間都沒有重疊，所以在M→∞的情況下，當然會有一個無限大的上限值，但如果考慮了Bad Data重疊的情形，縱使M→∞的情況下還是有機會把Bad Data的出現機率壓在一個有限的定值之下。</p>
-<p>我們回到二元分類問題，看一下上圖中左側的圖例，如果今天在二維平面上做二元分類，當n=1時，就算你的Hypotheses有無限多組，對於一組Data來說就只有兩種而已，再來看n=2的情況，一樣的無限多組的Hypotheses也只能分類成4種。</p>
-<p>因此Hypotheses彼此之間因為Data數量的關係，而出現重疊的狀況。但聰明的你一定想到，如果今天n的數量不斷的增加，則Hypotheses被分類的數量就會增加，Hypotheses彼此之間的重疊就會漸漸減少，我們還是無法限制住Bad Data出現的機率。</p>
-<p>我們繼續看下去，當n=3，沒有意外的Hypotheses會被分類為8種，那接下來n=4時，你就會發現一個有趣的現象，開始有一些情況是不會出現在這一組Hypothesis Set的，因此我們擔心因為Data數量增加而造成Hypotheses的種類暴增的情形被排除了，有一些狀況是不會出現的。</p>
-<p>剛剛所提到的分類方式的數量又稱為Dichotomy。在n=1、n=2到n=3的情形，所有列得出來的方式都可被完整分類開來，我們稱這情形為Shatter，但是到了n=4的時候，有些不可能被分類的情形出現了，稱為不可被Shatter，另外又稱此情形開始發生的那點為Break Point，這邊注意一下喔! 會不會有Break Point取決於你的Hypothesis Set長怎麼樣，現在是因為線性二元分類的Hypothesis Set，所以Break Point才會在n=4，其他的Hypothesis Set就不一定了。</p>
-<p>Break Point的出現非常重要，他所代表的是Bad Data的出現機率不會無所限制的大下去，因此把這概念帶入Multi-Bin Hoeffding’s Inequality，經過繁複的計算，就可以得到上圖右側的公式，原本的M消失了，取而代之的是Growth Function，Growth Function與Data數量N有關，這就是我們剛剛解說的，決定Hypothesis Set的種類的其實是 Data的數量N。</p>
-<p>那麼Growth Function要怎麼和Break Point連結起來呢？</p>
-<p>先定義一下VC Dimension：d<sub>VC</sub>= Break Point-1，Break Point代表首次出現不Shatter的情況，那比它小一級代表的正是最大可以Shatter的點，上面的例子中d<sub>VC</sub>=3。而這個VC Dimension就可以和我們在意的Growth Function連接起來，經過數學推倒可以得到上圖右側下方的關係式。</p>
-<p>所以我們就知道啦！<strong>只要有Break Point存在，VC Dimension就是一個有限的值，也因此Growth Function是一個有限的值，VC Bound就產生了，就可以確保Bad Data出現的機率被壓在一個定值之下，所以一樣的只要資料量N夠多就可以確保E<sub>in</sub> ≈ E<sub>out</sub>，機器將可以學習。</strong></p>
-<p>另外一件重要的事，VC Dimension在數學上是有意義的，<strong>d<sub>VC</sub> ≈ 可調控變數的個數</strong>，像是上述的二維二元分類問題，它的可調控變數有w0, w1 和 w2，總共3個，所以d<sub>VC</sub>=3。<strong>也就是說Hypothesis Set的可調變參數如果是有限，大部分都可以做機器學習。</strong></p>
-<h5><u>機器要能學習的三要素</u></h5>
-<p>前面拉哩拉雜的講了一堆，終於要推出我們的結論了! 所以如果剛剛的數學讓你感到很挫敗，沒關係，讀懂這段那就足夠了。</p>
-<p>從VC Generalization Bound，我們可以知道機器學習是可能的，只要它具備三點要素：</p>
+<h5><u>Decision Tree（決策樹）</u></h5>
+<p>接下來談Decision Tree這個重要的概念，Decision Tree其實就像是一個多層次的分類，每一次的分類會根據某一個Feature來當作依據判斷它應該繼續往哪一條路走，然後繼續使用可能是另外一個Feature來繼續細分下去。舉個例子好了，假設今天有一個自由式摔跤重量63公斤的女選手Ms. D要參加奧運，所以得透過奧運的分級制度分級，一開始可能根據比賽模式這個Feature下去分類，我查了一下有自由式和古典式兩種，所以Ms. D會被歸類到自由式，再來根據性別這個Feature下去分類，Ms. D是女選手所以分到女選手這一類，再繼續可能會根據體重來細分，體重在奧運分級共有8級，Ms. D可能就被分到62公斤级的那類，這樣的分類精神就是Decision Tree。</p>
+<p>所以，Decision Tree的優點是結果所提供的結構非常容易讓人了解，另外在演算法部分也很容易實現，而且因為具有以條件篩選的結構，所以其實很容易可以做到多類別分類。但是Decision Tree也有一些為人詬病的缺點，Decision Tree整體理論是缺乏基礎的，存在很多是前人的巧思，很多作法都是使用起來感覺效果不錯就延續下去了，目前並不了解背後的原因，也因此沒有一個代表性的演算法存在。</p>
+<p>在講Decision Tree操作方法之前應該要先來講一下Decision Stump，Decision Stump做的事其實就是上述中提到的對某個Feature做切分的這件事，<strong>可以想知Decision Stump是一個預測效果很差的Model，而Aggregation這些Decision Stump形成Decision Tree卻有很好的效果</strong>，這就是Aggregation的威力。</p>
+<p><img alt="Decision Tree" src="https://dl.dropbox.com/s/nafpnsu8icnazic/MachineLearningTechniques.010.jpeg"></p>
+<p>見上圖，我們來看一下Decision Tree的流程，Decision Tree最為人所知的演算法是C&amp;RT，C&amp;RT是一整套的套件，我們今天只是提到它整套套件中的一種特例。Decision Tree產生的函式是這樣的，一開始先判斷進來的這筆資料還能不能繼續分支下去，在三個情況下，我們沒辦法繼續分支下去：</p>
 <ol>
-<li><strong>Good Hypothesis Set: Hypothesis Set 必須有Break Point的存在，也意味著VC Dimension是有限的，而且越小越好，在意義上代表可以調控的變數不要太多。</strong></li>
-<li><strong>Good Data: 數據量越大越好，可以壓低VC Generalization Bound</strong></li>
-<li><strong>Good Learning Algorithm: 以上兩點可以確定的是E<sub>in</sub> ≈ E<sub>out</sub>，接下來好的Learning Algorithm要有能力找到E<sub>in</sub> 最小的參數。很直觀的，當我們可以調控的變數越多，我們的選擇就越多，也就是我們可以找到更小E<sub>in</sub> 的機會變多了，所以可以調控的變數不可以太少。</strong></li>
+<li>數據Ɗ只剩一筆數據。</li>
+<li>這群數據Ɗ已經最佳化了，我們會說它的Impurity=0，這個時候我們不知道要從哪裡再切一刀。</li>
+<li>這群數據Ɗ的Feature X<sub>n</sub>都完全相同。</li>
 </ol>
-<p>眼尖的你有沒有發現矛盾啊! 可以調控的變數很少，我們能確保E<sub>in</sub> ≈ E<sub>out</sub>，但是如果我想要找到更小的E<sub>in</sub> 又必須有更多的調控變數，這個矛盾是機器學習上一個重要的課題，<strong>解法是我們必須要能找到適當的調控變數數量，也就是適當大小的d<sub>VC</sub> </strong>。</p>
-<p><img alt="" src="https://dl.dropbox.com/s/0dxzdyi0r8ourz6/MachineLearningFoundations.000.02.jpeg"></p>
-<p>from: <a href="https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf">https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf</a></p>
-<p>上圖中，我們把VC Generalization Bound公式帶入Growth Function和d<sub>VC</sub>的關係式，並且設δ 為最大可以容忍的Bad Data出現機率，把它帶入取代掉ε，整理一下，就可以推出上圖的公式，後面帶根號的紅字稱為Model Complexity，這一項代表的是Hypothesis Set造成的模型複雜度，我們可以看到它隨著d<sub>VC</sub>增加而增加。Model Complexity越大代表Bad Data更容易出現，所以E<sub>in</sub>和E<sub>out</sub>開始被帶開了。</p>
-<p><strong>這個現象有一個很常見的名字叫做Overfitting，指的是使用非常複雜的Model來Fitting，雖然可以把手頭上的數據Fit的很漂亮，但是拿到其他的數據來看就會發現這Model的預測性非常的差，原因就是因為Model Complexity造成E<sub>in</sub>和E<sub>out</sub>脫鉤了，所以選擇一個複雜度適中的Model是很重要的。</strong></p>
-<h5><u>機器學習架構一般化</u></h5>
-<p><img alt="image" src="https://dl.dropbox.com/s/h8qabqhjjaew5gs/MachineLearningFoundations.008.jpeg"></p>
-<p>最後我們來總結一下機器學習的流程，上圖中是之前提到的機器學習的架構，額外的我們還需要考慮到一些真實情形，</p>
-<ol>
-<li>每筆Data出現的機會不一定，同樣的採樣結果也是會受機率的影響，所以上圖中標示為P(x)，這個修改並不會影響機器學習的流程和結果。</li>
-<li>Data可能會受到Noise的影響，所以給定X<sub>n</sub>並不一定會百分之一百得到y<sub>n</sub>，他存在著可能會出錯，上圖標示為P(y|x)，我們可以增大我們採樣的數量N來減少Noise的影響。</li>
-<li>我們是採用E<sub>in</sub>來當作選擇Model參數的指標，因此我們需要訂出Error的評估方式，常見的有Squared Error = (y<sub>n</sub> - y<sub>prediction</sub>)<sup>2</sup>。</li>
-</ol>
-<p>跟著架構我們就有一套機器學習的<strong>標準流程</strong>，</p>
-<ol>
-<li><strong>準備好足夠的數據</strong></li>
-<li><strong>把Model建立好，d<sub>VC</sub>必須要是有限的，而且大小要適中</strong></li>
-<li><strong>定義好評估E<sub>in</sub>的Error Measurement</strong></li>
-<li><strong>使用演算法找出最佳參數把E<sub>in</sub>降低</strong></li>
-<li><strong>最後評估一下是否有Overfitting的狀況，確保E<sub>in</sub> ≈ E<sub>out</sub></strong>（未來會講怎麼做）</li>
-</ol></dd>
-                <dt>2016 / 6月 06</dt>
-                <dd><a href="./ml-course-foundations_1.html">機器學習基石 學習筆記 (1)：何時可以使用機器學習?</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>前言</u></h5>
-<p>經過幾個月的努力，終於完成田神在Coursera上machine learning的兩門課中的第一門課—<a href="https://www.coursera.org/course/ntumlone">機器學習基石</a>，田神不愧為田神的名號，整門課上起來非常流暢，每個觀念講得非常得清晰，考究學理，但是又不會單單只有理論而已，課程中會舉很多實用的例子，讓你了解每個觀念如何實踐。因此，非常推薦大家去把Coursera上面的課程完整聽一次，應該會收益良多，接下來一系列的文章，我會摘要出《機器學習基石》之中主要的概念，適合對Machine Learning（ML）有興趣的初學者來一窺它的脈絡。</p>
-<p>《機器學習基石》一共有16堂課，主要分為四個方向，第一個方向，<strong>何時可以使用機器學習(When Can Machines Learn? )</strong>，點出什麼是機器學習，適合在哪些情形下使用，並引入貫穿整個課程的二元分類問題，第二個方向，<strong>為什麼機器可以學習(Why Can Machines Learn?)</strong>，介紹學理上機器學習必須要有哪些條件才可行，這些理論是了解機器學習非常重要的內功，第三個方向，<strong>機器可以怎麼樣學習(How Can Machines Learn?)</strong>，學習完了學理，我們來看機器學習有哪些的使用方法，最後一個方向，<strong>機器可以怎麼樣學得更好(How Can Machines Learn Better?)</strong>，探討哪些問題會造成機器學不好，然後怎麼去改善。</p>
-<h5><u>什麼是Machine Learning (ML)</u></h5>
-<p>在了解機器學習之前，我們不妨來想想「你」從小是怎麼學習的，有人會說學習就是一個不斷記憶的過程，但這樣的說法顯然不夠全面，你總不會認為把考題的所有答案都背起來的學生就已經學會一門知識了吧！所以，考題只是表象，我們真正要學習的是它背後的觀念，可以拿來推敲未知的知識。</p>
-<p>同樣的，ML的學習方式也有點類似於人類的學習，機器從Data中開始學習起，這些Data就像是一道一道的考題，而ML做的事正是去學習Data後面的觀念，而不是單純把Data給儲存起來，有了Data背後的觀念才能舉一反三，才算是真正的學會了。</p>
-<p>所以，做ML有點像是手把手的造一顆大腦，並且訓練它學會Data背後的知識。那這個大腦要怎麼設計呢？這個大腦用我們學物理的人的說法就是建一個Model，而餵給它Data的過程就是Fit Model。</p>
-<p>那什麼是Model呢？讓我來解釋一下，<strong>所謂的Model就是一個用來描述未知現象的架構</strong>，舉個例子，我們都知道力的公式是F=ma（力＝質量x加速度），但如果你今天拿一顆皮球來，你就會發現這個公式不那麼正確，因為皮球會形變，那怎麼辦呢？我們可以假設形變會把部份的力給抵消掉，所以式子改寫成(F-F1)=ma，在這邊F1就是那個抵消的力，這樣就是設計了一個Model來描述這個現象，而F1是一個未知的值，我們可以用實驗數據來推估F1，這就是所謂的Model Fitting。</p>
-<p>物理上的Model通常是這樣做的，我們先觀察未知現象，然後從中猜測可能造成這現象的原因，總結這些原因來設計一個Model，Model中可能有一些參數還沒被決定，此時我們就可以用數據來決定它，這就是Model Fitting。</p>
-<p><img alt="MachineLearningFoundations.001" src="https://dl.dropbox.com/s/rjxzcwyfabb02ae/MachineLearningFoundations.001.jpeg"></p>
-<p>了解了Model的概念就相當好了解ML的架構，上圖是ML的基本架構，<strong>假設我們今天要讓機器學一樣技術，這個技術我們用一個函數來表示，稱之為Target Function，這個Target Function就是隱藏在Data後面的真正道理</strong>，每個變數X會有相應的正確答案Y。</p>
-<p>今天我從Target Function中取出N組當作Data來給我的機器學習，那目標是什麼?<strong>目標當然是讓機器學習出這個Target Function啦！</strong>所以我們要先設計我們的Model，最終目的是決定Model裡的參數之後，這個被選擇的Model就是Target Function。</p>
-<p>Model就是上圖中的Hypothesis Set，在Model參數還沒被決定之前，你可以想像它就像一個集合包含很多可以選擇的函數，而使用數據Model Fitting以後，選出一組最佳化的參數，就好像從這個集合中挑選一組函數一樣。</p>
-<p>在這個找最佳化參數的過程，我們需要一個機制，這個機制可以評估Hypothesis Set中每組函數描述Data的好壞，並且找出描述Data最好的那組參數，這個機制就是上圖中的Learning Algorithm。</p>
-<p><strong>建立Model，使用Data加上Learning Algorithm找出最佳參數，這就是ML的架構輪廓</strong>。當然這邊要補充一下，物理上的Model通常是建基在已知的知識之上，而常見的ML強大之處是不需要太多的人為的智慧，機器可以自行學習，所以我這裡指的Model是比物理上的Model更為廣義的。</p>
-<h5><u>Machine Learning (ML)的使用時機</u></h5>
-<p>剛剛帶大家初探了ML的架構，接下來帶大家了解什麼時候我們適合使用ML。</p>
-<p>舉幾個例子，大家可能比較有感覺，譬如說Netflix曾辦過一場競賽，競賽的內容是利用客戶的影片評分紀錄，來預測未評分影片的得分，如果可以增進預測率10%，就可以獨得100萬美元獎金，這個問題就可以使用ML，Data是過去得評分紀錄，Target Function是用戶評分的規律，如此一來，機器學到了這個技術，未來就可以舉一反三的推出未評分影片的分數，和用戶喜歡的影片可能有哪些。</p>
-<p>再多看幾個例子，例如設計火星勘查機，人類目前對火星的了解仍相當有限，所以我們沒辦法完全猜測勘查機在火星會遇到什麼問題，所以必須讓勘查機有ML的能力去學習各種問題的解決方法。</p>
-<p>再來個例子，現在很夯的汽車自動駕駛也需要ML技術，機器去學習辨識交通號誌。</p>
-<p>看了這麼多例子，我們會發現這些例子都很難以寫出簡單的規則，但是卻又存在著一種規律，這種情形正是適合用ML來做。</p>
-<p>在以往電腦工程幾乎都是由工程師用嚴謹的邏輯去逐條的把規則一一的寫上，這樣的機器不具有學習能力，或稱得上人工智慧，因為它只是單純反應工程師的工人智慧而已，但如果遇到一些困難的問題，譬如告訴機器什麼是狗，這時候你就會發現很難用規則來描述，有尾巴，可是是怎樣的尾巴？有耳朵，那這耳朵怎麼和貓區分開來？此時Hard Coding就太困難了，我們不這麼做，反過來我們設計架構讓機器自己去從Data中學習。</p>
-<p>總結一下，ML的使用時機有以下三種</p>
-<ol>
-<li><strong>你想要學習的技術存在一種模式</strong></li>
-<li><strong>要學習的技術不容易簡單的Hard Coding</strong></li>
-<li><strong>有可以代表這個要學習模式的Data</strong></li>
-</ol>
-<h5><u>二元分類問題</u></h5>
-<p><img alt="img" src="https://dl.dropbox.com/s/4chm6lt80pnb684/MachineLearningFoundations.000.01.jpeg"></p>
-<p>from: <a href="https://class.coursera.org/ntumlone-003/lecture/17">https://class.coursera.org/ntumlone-003/lecture/17</a></p>
-<p>好! 大家現在應該對於機器學習有一些認識了，那接下來我們來實作一些例子來了解機器學習架構怎麼運作。像個小學生一樣，我們先從簡單的是非題來學起，雖然是非題看起來非常簡單，但它其實非常的powerful，是非題饒口一點的講法就是「二元分類問題」，這樣的問題將會貫穿整個16堂課程，相當重要!</p>
-<p>舉個例子，今天有一家銀行想要開發一款ML的軟體，這個軟體可以根據過去信用卡核發用戶的資料，去判斷要不要核發信用卡給這個新的申請人，這些過去的資料可能包括：用戶年齡、用戶性別、用戶年薪等等，讓機器藉由這些資料去學習判斷要不要核發信用卡。把這樣的二元分類問題化作</p>
-<p>Target Function：f: X =&gt; y</p>
-<p>X有年齡、性別和年薪這些變數，而y則是個二元類別，不是y=1(核發)就是y= -1(不核發)。</p>
-<p>那接下來，我們就要決定我們的Learning Model，也就是Hypothesis Set。</p>
-<p><img alt="MachineLearningFoundations.002" src="https://dl.dropbox.com/s/r2vv0p2k097v6wb/MachineLearningFoundations.002.jpeg"></p>
-<p>引入<strong>Perceptron(感知器) Hypothesis Set</strong>來當作我們的Hypothesis Set，如上圖，我們給予我們的輸入變數個別的權重，然後相加起來，並且看這個值是正還是負，來決定輸出值是+1或-1，sign函數的作用是假設輸入的值為正則輸出+1，反之則輸出-1。</p>
-<p>對應核發信用卡這個例子，</p>
-<p>x1 = 用戶年齡; x2 = 用戶性別; x3 = 用戶年薪，</p>
-<p>在分別乘上weight w1, w2, w3，這個變數前面的weight代表這個變數對於答案Y有什麼影響，如果是正向影響，weight &gt; 0，如果沒有影響，weight = 0，如果負向影響，weight &lt; 0，舉個例子，高年薪也許可以提升核發信用卡的機會，那它前面的weight應該就是正的，也許性別並不影響核發信用卡的機會，則weight = 0，那麼考慮到這些input變數對結果影響的評估，我們會得到一個數值 w1*x1+w2*x2+....。</p>
-<p>此時我們要用這個數值去做「二元分類」，也就是一分為二，怎麼做呢? 很簡單，給他一分水嶺，高於一個值(-w0)我就給他 y=+1，低於(-w0)我就給他 y=-1，用數學表示就是 sign(w0+w1*x1+w2*x2+...) ，w0可以看成是一個閥值。</p>
-<p>上圖中的 s = w0+w1*x1+w2*x2+... 就像一個分數(score)一樣，高分 s&gt;0 的我就核發(+1)，低分 s &lt; 0 的我就不核發(-1)，其中權重 w0, w1, w2, ... 都可以由機器學習去調整，這些不同的weight就構成了Hypothesis Set，也就是Model，那接下來我們還需要Learning Algorithm來取出最佳參數，也就是決定一組最佳weight。</p>
-<p><img alt="MachineLearningFoundations.003" src="https://dl.dropbox.com/s/51aipr85rfbylj3/MachineLearningFoundations.003.jpeg"></p>
-<p>如上圖所示，<strong>Perceptron Learning Algorithm(PLA)</strong>是用於處理Perceptron Hypothesis Set的一種演算法。</p>
-<p>它的作法簡單來講是，藉由一筆一筆的數據去逐步的更新它的weight使得Model可以描述這筆數據，直到不需要再更新為止，此時所有的Data都可以用這個Model表示，更新的方法是先判斷進來的這筆數據是否符合目前的Model，如果不符合，則朝變數向量Xn的方向，跨出或後退大小為Learning Rate的一步來更新weight，前進還是後退端看你的Data是y=-1或+1，y=+1就往前跨，y=-1就往後退。</p>
-<p>因此，這個跨步更新的動作必須可以使Model接近正確答案，這麼神奇，真的假的？不太直覺，先從score來想起，假設有一筆資料為(Xn,yn)，則Score：s = Wt・Xn，在Wt和Wn向量彼此有同向分量的情況下，s &gt; 0，如果這個時候yn剛好為+1，則sign(s)=yn，這個時候Wt描述這個數據就很好啊，我們就不需要去更新它；如果相反yn=-1，這個Wt描述這個數據就不正確，也就是說Wt 和 Xn不應該同向，所以我們讓Wt加上-Xn(=yn*Xn)，把Wt從原本與Xn同向的狀態反向拉離開來。那如果在Wt和Xn向量彼此不同向的情況下，s &lt; 0，這個時候如果yn剛好為-1，則sign(s)=yn，很好我們不去更新它；如果相反yn=+1，這個Wt描述這個數據不正確，也就是說Wt 和 Xn不應該反向，所以我們讓Wt加上Xn(=yn*Xn)，把Wt拉到和Xn同向一點。這就是PLA找到更好Wt的機制。</p>
-<p><img alt="MachineLearningFoundations.004" src="https://dl.dropbox.com/s/aq6n1491d91z906/MachineLearningFoundations.004.jpeg"></p>
-<p>Seeing is believing，上面這張圖帶我們來看PLA如何運作，</p>
+<p><strong>當無法再繼續分支下去時，會回傳一個g<sub>t</sub>(x)=constant，這個常數是一個可以使得這個群體內E<sub>in</sub>最小的數值，在分類問題中這個常數是{y<sub>n</sub>}中佔多數的類別，在Regression問題中這個常數是{y<sub>n</sub>}的平均值。</strong></p>
+<p>大家應該會有點驚訝，Decision Tree也有辦法做Regression？其實是可以的，在分類問題中我們可以利用類別來做分類，在Regression問題我們可以利用一個切分數值來區分成兩群或多群，例如：以50當切分數值，大於50的一類，小於等於50的另外一類，當我們切的夠細夠多層的時候就是在做一個Regression問題了。</p>
+<p>那接下來來看假如還可以繼續分支下去應該要怎麼做，這邊假設我們只切一刀分為兩個區塊C=2，我們該根據怎樣的條件來切呢？我們剛剛其實有稍微提到，那就是Impurity，我們<strong>可以根據Impurity Function來衡量「一群資料的不相似程度」</strong>。</p>
+<p>分類問題的Impurity Function有以下兩種：</p>
 <ul>
-<li>Initially: 在最一開始的時候，我們weight Wt先設成零向量</li>
-<li>Update 1: PLA更新把零向量的Wt拉成W(t+1)</li>
-<li>Update 2: 上一輪的W(t+1)已經是這一輪的Wt，也就是紅色的那個向量，Wt決定了一條壁壘分明的二元分類邊界，這條線的方程式其實就是 w0+w1x1+... = 0，如果你還記得高中數學的話，這條邊界必然會和Wt垂直，如圖所示，而Wt的方向是屬於y=+1的區域，這一輪剛剛好找到一個圈(y=+1)落在y=-1的區域，因此我們需要更新weight，做法是把Wt 和 yn*Xn(=Xn)相加成為新的weight Wt+1</li>
-<li>...........以此類推</li>
+<li>Impurity(Ɗ) = (1/N) 𝚺<sub>n</sub> ⟦y<sub>n</sub>≠y*⟧，其中y*是Ɗ中佔多數的類別，這個衡量方法就直接的去數出錯誤答案的比例。</li>
+<li><strong>Gini Index: Impurity(Ɗ) = 1 - 𝚺<sub>k</sub> [ 𝚺<sub>n</sub>⟦y<sub>n</sub>=k⟧  / N ]<sup>2</sup></strong>，Gini Index是最為流行的作法，它不同於上一個作法，它是在評估所有的類別後才去計算Impurity。</li>
 </ul>
-<p><strong>如果資料線性可分的話，PLA在迭代多次後，是可以用一條線完全區分兩種數據</strong>。但如果數據不是線性可分，不存在一條線來區分數據，此時最佳解就必須評估整體犯錯有多少，找出犯錯最少的那條直線就是最佳解，但可惜的是PLA方法並不會在迭代中趨向於犯錯最少的那條線，什麼時候該停止迭代是個世紀難解的NP-Hard問題（如果不了解這個名詞，<a href="http://www.ycc.idv.tw/YCNote/post/19">詳見</a>）。</p>
-<p>因此要改變一下PLA，這個方法我們稱之為Pocket，當每次得到一組weight的時候，都拿它來評估它對所有Data的區分能力好或壞，而只留下一組最好的放進口袋裡，所以當迭代次數做多了，保留在口袋的這組解就可以看成是最佳解，就這麼簡單。</p>
-<h5><u>多元學習</u></h5>
-<p>機器學習和人類學習一樣，有各式各樣的學習型態。剛剛的<strong>「二元分類問題」</strong>就像考「是非題」一樣，答案要嘛是Yes不然就是No，表示為 <strong>y={-1, 1}</strong>，這就像是機器在小學時代的問題，較為簡單。</p>
-<p>現在機器脫離國小來到了國中，考試題目開始出現「選擇題」，這和機器學習中的<strong>「多元分類問題」</strong>一樣，必須從兩個以上有限的答案中作選擇，表示為 <strong>y={1, 2, ... , k}</strong>。</p>
-<p>另外機器還可能遇到傷透腦筋的「計算題」，在機器學習裏頭稱為<strong>「Regression 問題」</strong>，這個時候答案已經放寬到整個實數系了，表示為 <strong>y∈R</strong>，舉個例子，譬如利用過去天氣的數據去預測明日氣溫，或者利用歷史股價資料預測未來股價，都是Regression的應用。</p>
-<p>此時，機器到了大學，開始碰到不那麼容易回答，甚至不存在單一答案的「申論題」，這在ML中像是<strong>「Structure Learning 問題」</strong>，答案的選擇換成了各種結構，表示為 <strong>y={structures}</strong>，舉個例子可能比較好理解，例如：自然語言，我們都希望有一天電腦可以理解我們的語言，我們可以不再需要以機器語言來和電腦溝通，而是用人類的語言直接和電腦溝通，聽起來很棒對吧! 這個部分的ML就需要Structure Learning來學習語言的文法結構。</p>
-<p>我們教機器學習也有各種不同的教育方法。</p>
-<p>有像是填鴨式教育的<strong>「Supervised Learning」(監督式學習）</strong>，直接告訴機器考題和答案，讓機器從中學習，這種情況下每筆資料Xn對應的yn都有明確Label，答案是人類直接告訴機器的。</p>
-<p>有像是培養科學家教育方法一樣的<strong>「Unsupervised Learning」(非監督式學習）</strong>，此時每筆資料Xn對應的yn都沒有Label，所以機器要自己歸納整理，然後從中學到規律，通常用於分群問題，對資料做分類找出規律性。</p>
-<p>那還有折衷於上述兩種方法的啟發式教育，<strong>「Semi-supervised Learning」(半監督式學習）</strong>，在這個情形下有部分資料yn是有Label的，機器可以藉由有Label的正確答案和資料的規律性來做更好的學習，一個有名的例子是Facebook的人臉辨識標記功能，有部分已經被用戶標記的照片，這屬於有Label的yn，但有更多沒有標記的照片，這些照片也可以幫助ML學習。</p>
-<p>那還有像是訓練小狗的方法，當我跟小狗說坐下，如果牠真的坐下了，這個時候我就給牠獎勵，譬如說餵牠好吃的食物，久而久之牠就會學會聽從這個命令，<strong>「Reinforcement Learning」(強化式學習）</strong>就是不直接表明yn的Label，但是機器能知道yn結果的好壞，再從這個好壞當作回饋去優化它的學習。</p>
-<p>Data給的方法也可以有很多種類。</p>
-<p>剛剛舉的ML例子都是屬於<strong>「Batch Learning」</strong>，也就是一次給你所有的Data。另外一種給Data的方法叫做<strong>「Online Learning」</strong>，這個情形下Data會一個一個以序列的方式餵給機器，這麼方式下的Model可以隨時更新。最後一種方式是<strong>「Active Learning」</strong>，機器不僅是被動的接受 Data，而是會根據它自己的需求向使用者索取它想要的Data。</p>
-<p>另外，除了有輸出值yn有多種種類之外，輸入的變數 Xn的來源也有很多種，我們稱之為Features。</p>
-<p>如果具有物理意義的輸入變數，稱之為<strong>「Concrete Features」</strong>，這些變數建立在人類知識的預先處理。還有輸入變數並不具有物理含意的情形，這稱之為<strong>「Abstract Features」</strong>。那有些情形下直接採用不加以處理的原始數據，稱為<strong>「Raw Features」</strong>。</p>
-<p>而使用工人智慧由人力從Raw Features中萃取出Concrete Features，這叫做Feature Engineering，而現在很夯的Deep Learning厲害的地方是他可以自行從Data中學習 Features。</p>
-<p><strong>總結一下，機器學習有很多種型態，從Data的給予方式可分為Batch Learning、Online Learning和Active Learning。Data的表達形式由輸入變數 Xn和輸出值 yn所決定，從輸入變數 Xn的來源可分為Concrete Features、Raw Features和Abstract Features，從輸出值 yn的種類上可以分為二元分類、多元分類、Regression和Structured Learning 問題，從輸出值 yn的Label給予情況可分為Supervised Learning、Unsupervised Learning、Semi-supervised Learning 和 Reinforcement Learning。</strong></p>
-<p>順道一提，這16堂課裡頭主要聚焦在探討Batch Supervised Learning with Concrete Features。</p>
+<p>而Regression問題有以下方法：</p>
+<ul>
+<li><strong>Impurity(Ɗ) = (1/N) 𝚺<sub>n</sub> ( y<sub>n</sub> - ȳ )<sup>2</sup></strong>，其中ȳ代表的是{y<sub>n</sub>}的平均值，式子中使用平方誤差來評估資料的離散程度。</li>
+</ul>
+<p>有了Impurity Function我們就有了指標，找出應該要使用哪個Feature、應該要怎麼切，才能使得Impurity Function總和最小，決定好這一刀後，接下來就從這一刀切下去，把Data一分為二，然後這兩組Data再各自去長出一棵Decision Tree，經過遞迴式的迭代，我們就可以得到一棵完整的Decision Tree了。</p>
+<p><img alt="Show C&amp;RT" src="https://dl.dropbox.com/s/sy6xt51dcxfcmz4/MachineLearningTechniques.015.jpeg"></p>
+<p>如果我們讓一棵樹完整的長成了，可以想到的後果想當然爾就是Overfitting，所以我們必須要做Regularization，<strong>Decision Tree常用的Regularization的方法是Pruning</strong>，就是砍樹，我們將分支的數量Ω(G)加進去E<sub>in</sub>中做為Regularization，所以我們問題變成是去找到 argmin E<sub>in</sub>(G)+λΩ(G)，其中的λ可以利用Validation Data來做選擇，你會發現如果真正的要去找到argmin E<sub>in</sub>(G)+λΩ(G)的最佳解，這問題會非常的困難，因為你必須要把所有的可能的樹都考慮進去，所以有一個替代方案，<strong>我們可以先將樹整棵長完，然後在一一的去合併分支，看哪兩個分支合併之後可以使E<sub>in</sub>最小就先合併，使用這樣的作法逐步減少分支的數量</strong>。</p>
+<p>順道一提，C&amp;RT可以產生許多替代方案，這些替代方案稱為Surrogate Branch，當有一筆Data缺乏某個Feature，我們仍然有辦法使用替代方案來做決策，這是C&amp;RT的一個大大的優點。</p>
+<p><br/></p>
+<h5><u>Random Forest（隨機森林）</u></h5>
+<p>如果我拿Decision Tree來做Bagging這樣可以嗎？當然OK，Aggregation Model的精髓就是可以綜合子Model，那Decision Tree也可以是看成一個子Model，所以我們在做的就是Aggregation of Aggregation，<strong>這種拿Decision Tree來做Bagging的Model叫做Random Forest</strong>，這個名字取的很生動，有很多棵數的地方就是森林啦！</p>
+<p><strong>Decision Tree和Bagging其實是有互補的作用</strong>，Decision Tree這種演算法是「變異度」很高的，因為它不像SVM這類的演算法，會去評估與Data之間的距離，空出最大的距離來避免Overfitting，而Bagging正可以拿來減少「變異度」，消除雜訊，所以<strong>Random Forest會比Decision Tree更不易Overfitting</strong>。</p>
+<p><img alt="Random Forest" src="https://dl.dropbox.com/s/sw72it5miiczjri/MachineLearningTechniques.011.jpeg"></p>
+<p>見上圖，我們來看一下Random Forest的流程，一開始先做和Bagging裡頭一樣做的事Bootstrap，藉此來產生新的Dataset，另外為了讓我們隨機程度變得更高，我也對我們Features來做點變化，將它乘上一個亂數產生的P，如果P<sub>i</sub>=0代表我們完全不取這個Feature，如果P<sub>i</sub>=1代表我們完全取這個Feature，我們更可以以分數來代表我們對某個Feature的重視程度，這個手法叫做Random-subspace。接下來就是把弄的很亂的Dataset放進去長一顆Decision Tree，最後再把所有的Decision Tree平均就是Random Forest的結果。</p>
+<p>Random Forest發展出了一套獨特的Validation方法，我們知道Bootstrap的結果會造成有些Data取用而有些Data不使用，而取用的Data會拿來Training，這讓你想到什麼呢？沒錯，沒有用到的Data可以做Validation，我們可以拿那些沒有被取用的Data來評估Training的好壞，我們會稱那些沒被取用的Date叫做Out-of-Bag Data，而利用Out-of-Bag Data來Validation的Error，稱為Out-of-Bag Error，</p>
+<blockquote>
+<p><strong>Out-of-Bag Error E<sub>oob</sub>=(1/N) 𝚺<sub>n</sub> err(y<sub>n</sub>, G<sub>n</sub><sup>-</sup>(x<sub>n</sub>)) <br/></strong></p>
+<p><strong>G<sub>n</sub><sup>-</sup>(x) = Average(沒有取用這筆Data的所有Models)</strong></p>
+</blockquote>
+<p>Out-of-Bag Error提供一個很方便的Self-validation的方法。</p>
+<p>在以前Linear Model中，權重W代表每筆Feature對Model的貢獻度，我們可以由W的分量大小來評估每個Feature的重要程度。Random Forest則是可以利用E<sub>oob</sub>和Random-subspace來標示出每個Feature的重要程度，想法是這樣的，如果今天某一個Feature i 對Model很重要，所以說我只對Feature i 做Random-subspace，也就是只有P<sub>i</sub>是隨機的，可以想知E<sub>oob</sub>會大幅增加，因此利用這個想法我們可以用來定義Feature的重要程度，</p>
+<p>important(i) = E<sub>oob</sub>(G) - E<sub>oob</sub>(G with random-subspace at i)</p>
+<p><br/></p>
+<h5><u>結語</u></h5>
+<p>在這一篇我們提了幾個基礎的Aggregation Models，從最簡單的Blending，Blending的方法本身不去產生子Model，而是使用兩階段學習，先自行挑選和訓練來產生很多的子Model，而Blending只在這些結果上做不同方式的結合。</p>
+<p>接下來，Learning-Aggregation的方法則化被動為主動，我們先提了Bagging，裡頭使用Bootstrap的技巧來造成資料的隨機性，利用這樣的變異來產生多個g<sub>t</sub>，再接下來我講了Decision Tree，Decision Tree由多個Decision Stump組合而成，每個Decision Stump就是g<sub>t</sub>，Decision Tree做的事就是，產生Decision Stump、切分Dataset、再產生Decision Stump...接續下去，最後綜合全部的Decision Stump成為Decision Tree。</p>
+<p>最後，我們結合Decision Tree和Bagging產生了Random Forest，利用彼此的互補，讓效果變得更好可以比單純Decision Tree更好。</p></dd>
+                <dt>2017 / 3月 24</dt>
+                <dd><a href="./the-brain-the-story-of-you.html">讀書手札：大腦解密手冊 The Brain: The Story of You</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><a href="http://www.books.com.tw/products/0010738920">⟪大腦解密手冊⟫</a>是一本非常易懂但又相當豐富的書，作者David Eagleman是一名美國的神經科學家，在這本書他嘗試拋開教科書的模式，改以輕鬆聊天的方式來聊神經科學，讓讀者可以很輕易的一探這神秘的大腦。</p>
+<h5><u>大腦的可塑性</u></h5>
+<p>人類在剛出生的一刻是非常脆弱的，不能走不能自己吃東西，完全需要依賴他人的照顧，相反的其他的哺乳類在出生的那刻就已經有謀生的能力了，斑馬寶寶出生不到45分鐘就可以奔跑，長頸鹿出生幾個小時就可以學會站立。表面看起來，這對人類生存似乎很不利，事實上卻提供人類大腦更多的彈性，<strong>人類大腦不像其他動物在出生的一開始就已經接好線路了，雖然長大成人的過程腦細胞數量並不會增加，但是突觸的連結卻會有天翻地覆的改變</strong>，人腦建造過程可以長達25年，過程中會有50%的突觸會被修掉，就算是一個成人突觸連結還是每天不斷的更新，這種彈性使得人類可以比其他動物更能應付環境的各種變化。</p>
+<p>能夠看東西不僅僅需要眼睛，而主要還是靠著眼睛後面的大腦，Mike May在3歲時失明了，過了40年因為幹細胞治療重見光明，不過這個恢復正常的眼睛並沒有讓他恢復視力，雖然能夠看見東西，卻很難說出那是什麼，而且也不清楚這個東西是遠是近，視覺系統不像是照相機，把鏡頭修好了就可以正常使用了，他的大腦長達40年沒有接受光線給的訊號，一時之間是無法辨識視覺給的訊號，也就造成眼睛恢復正常了但是視力並沒有恢復。</p>
+<p>只有感官的訊號是沒有用的，我們還需要大腦去統合和理解這些訊號，大腦幫我們做了很多事，一個有趣的例子，你知道嗎？人在閱讀的時候眼球是不斷的跳動的，一秒鐘會跳4次左右，這種快速的運動稱為「眼球迅速移動」(saccade)，儘管眼球不停的跳動但我們卻可以看到一個穩定的畫面，這是因為大腦存在一個內在模型(internal model)，他會先預測你將會看到什麼，然後視覺訊號才進來作驗證，我們體驗到的視覺很少依賴照進眼睛的光線，較多是依賴腦中既有的東西。大腦幫我們預先處理很多的東西，讓我們可以感受到一個穩定的世界。</p>
+<p>另外一個例子，我們對光線的反應時間大約是190毫秒，而我們對聲音的反應時間比光線快一點是160毫秒，但是我們卻不會感受到這種不同步，因為大腦給你的是一個延遲過的版本，將時間差給隱蔽起來。</p>
+<blockquote>
+<p>腦其實不在意輸入資訊的細節，他只關注如何有效率的在這個世界活動，並得到它需要的東西。</p>
+</blockquote>
+<p>也因為如此，所以有了<strong>「感官替代」</strong>這種新科技，也就是利用其他感官體驗來取代失去功能的感官，譬如說失去聽覺的患者，可以穿一個背心，這個背心會把聲音轉換成振動，因為大腦不管進來什麼樣的資料，它都會調整並盡量的處理，天生聽障者使用這個背心大概5天的時間就能正確的辨別別人說出來的字詞，從這裡就可以看出大腦是如何具有彈性。</p>
+<h5><u>意識與無意識</u></h5>
+<p>如果說意識決定一個人，倒不如說無意識（或稱潛意識）決定一個人，我們常常把idea的出現歸功於意識，但事實上在你意識到這個idea之前的幾個小時、甚至幾個月，無意識已經開始塑造這個idea，包括鞏固記憶、試驗新組合、評估後果，美國社會心理學家Brett Pelham和他的研究小組從統計結果發現，名字叫做Dennis或Denise的牙醫(dentist)，以及名字叫做Laura或Laurence的律師(Lawyer)特別多，可以說無意識在我們人生的重大決策中扮演相當重要的角色。</p>
+<p>那意識是怎麼形成的？這是一個有趣的哲學問題，意識這種東西有辦法從物質中產生嗎？而如果打造一個人工智慧讓你分不清他是機器人或者是真人，我們該說這樣的機器人有意識嗎？有人會說不！機器人只遵照預先設計好的程式執行，他們不具有意識，作者舉了一個臆想實驗「中文房間」，房間中的人按照詳細的說明書來處理中文符號，並把回答送出房間，這的確可以騙過母語人士，讓他們以為房間裡面的人懂中文，但房間裡的人根本不懂他在做什麼，那機器人是不是也是這樣的。</p>
+<p>不過作者比較傾向於支持另一個反面，認為腦中每個各別神經元並不清楚他們自己在做什麼，但是集體行為讓大腦產生了意識，他舉了螞蟻群的例子，每隻螞蟻只做一些簡單的事，不過一群螞蟻卻可以打造出相當複雜的系統，譬如：蟻窩</p>
+<blockquote>
+<p>一旦夠多的螞蟻聚集在一起，超生物就出現了，這種集體擁有的特性比個別基礎部分更精緻、複雜。這種現象稱為突現（emergence）; 當簡單的單元以適當的方式交互作用，產生更大的格局，這就是突現。</p>
+</blockquote>
+<p>每個神經元一輩子只負責回應訊號，他不知道現在在彈奏貝多芬，他不知道你的存在，他不知道你的意圖，不過因為突現他們共同產生了你的意識。  </p>
+<p>我們每天都有一大段時間是處於無意識的狀態，那就是睡眠，威斯康辛大學教授Giulio Tononi認為，我們在清醒的的時候皮質的不同區域間會跨區溝通，而睡眠的無意識則是缺乏跨區溝通，也就是說，在有意識的情況下，我們大腦的各個部分會爭執不休的對話，也就造成你可能會猶豫不決，相反的，在無意識的情況下，你將會進入自動導航模式，大腦根據你既有的突觸迴路來執行任務。</p>
+<h5><u>腦中的交戰網路</u></h5>
+<p>如果無意識是一輛直行的車子，意識可以說是這輛車子的方向盤，大腦這一部從衝突中打造出來的機器，每天要下成千上萬的決策。</p>
+<p>作者重新詮釋了Michael Sandel在正義課中提及著名的電車難題，假設今天你是一名鐵路維修工人，遇到一輛失控的火車，在既定的軌道上會撞死正在修理鐵路的5名工人，不過你剛好站在鐵軌控制桿前面，但是如果你扳動控制桿則會造成另一名工人被撞死，幾乎所有人都會扳動這個控制桿，因為1人死亡總比5人好，但換一個情境，如果今天你遇到這個失控火車的時候剛好站在火車上方的橋上，旁邊又剛好有一個胖子，如果你把這個胖子推下去，火車就會因此被他擋住，然後可以拯救5條人命，同樣是1換5的狀況，這個時候你就發現你開始猶豫了。</p>
+<p>作者認為，對腦來說，第一種情境只涉及單純的數學問題，此時活化的是腦中解決邏輯問題的區域，<strong>但在第二種情境，你必須去碰觸那個人，把他推下去，這會激起額外的網路</strong>，也就是腦中與情緒相關的區域，所以這兩個網路，解決邏輯問題的和情緒相關的，會開始爭辯不休，因此你開始產生猶豫。</p>
+<p>這一種腦中衝突有時候會讓你做出錯誤的決策，今天明明要健身的，不過想想有一部影集還沒看完，好想知道接下來劇情會怎麼走下去，算了！明天再去健身好了，我相信大家常常有類似的經驗，雖然健身對你的好處是多於追劇的，但對於大腦而言純粹在大腦裡模擬的好處，比不上此時此刻真實感覺到的好處，所以作者建議用一種方式來克服這種意志力的不足—<strong>尤里西斯合約</strong>，希臘神話中的尤里西斯是一名凱旋歸國的戰士，在回國的途中，他們會在經過一座小島，這座小島住著美麗的賽蓮女妖，據說會唱出美麗的歌聲迷惑水手們不自覺得把船開到礁岩去，所以需要用蜂蠟把耳朵塞住，但是尤里西斯實在是很想聽聽看女妖們的聲音，於是他就心生一計命令水手們把他綁在船桅上，其他人把耳朵塞住，到時候不管尤里西斯怎麼叫，怎麼崩潰，都不要理他，船正常開就好了</p>
+<blockquote>
+<p>尤里西斯知道未來的自己沒資格作良好的決策，所以在頭腦清楚的時候就把事情安排妥當，以防止自己作錯事，於是「現在的你」和「未來的你」之間的這一種協議稱為「尤里西斯合約」</p>
+</blockquote>
+<p>運用在健身的這個例子，你可以約朋友一起在固定的時間健身，讓未來的你沒有任何理由可以推遲。</p>
+<h5><u>科技將如何改變大腦的未來</u></h5>
+<p>這本書的最後，作者探討了大腦科技的未來。舉幾個我覺得有趣的例子，奧爾科生命延長基金會一直致力於一種技術，他們將死亡人的大腦冰封保存下來，以期盼有一天科技進步可以讓這大腦重新擁有年輕的身體，這樣這些被冰封的大腦將擁有並享受第二生命週期。</p>
+<p>不過有些人可能不太喜歡這種感覺，那還有另外一種延續生命的方法，稱為數位的不朽，如果大腦運算只單純是神經元之間的運算，我們將可以使用這個運算的概念來創造一個大腦，實際的作法是利用大腦切片去紀錄每個神經元的狀態，並用數位的方式保存下來，然後也可以透過模擬去讓這顆大腦重新活過來，但是這非常的困難，一般神經元有多達一萬條分枝，要繪製完整人類連結體的圖譜預計還需要十年的時間，目前連建立一個大鼠的大腦都做不到。</p></dd>
+                <dt>2017 / 3月 20</dt>
+                <dd><a href="./python-play-with-data_1.html">Python玩數據 (1)：安裝Python, IPython, Numpy, Pandas</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><strong>相較於R，我比較喜歡在工作上使用python來作數據處理</strong>，主要原因有四個，<strong>第一點，python是一個簡潔的語言</strong>，讓我們可以在不寫註解的情況下還可以很容易的看出每一行code在做哪些事，這可以省去了不少時間在；<strong>第二點，python可以更容易的寫成物件導向編程</strong>，物件導向編程可以讓code看起來更為直覺，而且更易於修改、重構或套用，如果是大型軟體開發的話，需要多人協作，此時物件導向便是絕對必要的；<strong>第三點，python是一個通用語言</strong>，不僅僅只可以作資料處理而已，你可以用python寫一套視窗程式，或者當作網站的後台（這個網站就是建基在python上），如果要做一些平行運算也很容易，<strong>最後一點，也是相當重要的一點，目前常見的deep learning套件TensorFlow或Keras都是架構在python上面</strong>，所以如果你的數據處理結束要作deep learning的話，直接用python處理是相當理想的。講了python這麼多優點，其實它是有一項缺點是不如R的，R是一個專為資料科學設計的語言，所以背後有強大的社群，也就是說能直接取得資料分析方法的套件會比python來的多，不過這方面在這幾年已經漸漸的改善了。</p>
+<p>講了這麼多python的強大，不過在這個系列我並不會著墨太多在python上，這個部分我會在其他的文章中分享，這系列文章主要聚焦在python的資料處理這部份，我會從基礎講起，讓不懂python的人也可以聽懂。  </p>
+<p><br></p>
+<h5><u>最困難的第一步：安裝</u></h5>
+<p>不要以為我在開玩笑，安裝往往是最困難的一步，有些時候安裝一些套件的時候，你必須要先行安裝另外幾個相依套件，如果程式在安裝的過程無法自己補足這些相依套件的話，你就得自己安裝，一般來說如果是python的套件的話，你可以先用待會要介紹的<code>pip install</code>來安裝，如果不幸在上面找不到的話，就只好上網Google了，另外有些時候安裝還會遇到bug，這個時候Google也同樣是你的好朋友，或者到<a href="https://stackoverflow.com">Stack Overflow</a> 上找答案（一個好的coder要培養自己上網找答案的能力），不過大家先不用擔心，以下我會帶大家一步一步的安裝。</p>
+<p>我們將會用到python 2.7版（你也可以選擇更新的版本，不會差距太大），以及他的套件IPython, Numpy和Pandas。</p>
+<p><br></p>
+<h5><u>Python2.7</u></h5>
+<h5><u>Mac</u></h5>
+<p>python2.7已經是內建的程式了！打開「終端機」，直接輸入</p>
+<div class="highlight"><pre><span></span>$ python2.7 -V
+
+Python <span class="m">2</span>.7.13
+</pre></div>
+
+
+<p>就會顯示他的版本。</p>
+<p>如果沒有的話，或者你想要自己安裝一份的話，可以參考<a href="https://stringpiggy.hpd.io/mac-osx-python3-dual-install/">這篇</a>的說明，或者跟著我往下作。</p>
+<p><strong>Step 1:</strong> 安裝 Xcode：打開你的App Store，搜尋Xcode並安裝。</p>
+<p><strong>Step 2:</strong> 安裝 <a href="https://brew.sh">Homebrew</a> 這個Mac上好用的套件管理，打開「終端機」，輸入</p>
+<div class="highlight"><pre><span></span>$ /usr/bin/ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
+
+<span class="o">==</span>&gt; This script will install:
+/usr/local/bin/brew
+/usr/local/share/doc/homebrew
+/usr/local/share/man/man1/brew.1
+/usr/local/share/zsh/site-functions/_brew
+/usr/local/etc/bash_completion.d/brew
+/usr/local/Homebrew
+
+Press RETURN to <span class="k">continue</span> or any other key to abort
+</pre></div>
+
+
+<p>(附註：我用 <code>＄</code> 代表終端機的輸入起始字元，後面才是你需要輸入的指令)</p>
+<p>按下Enter就會開始安裝了。</p>
+<p>安裝完畢你就可以直接在「終端機」上使用它，我們試著搜尋python</p>
+<div class="highlight"><pre><span></span>$ brew search python
+
+app-engine-python               boost-python@1.59               micropython                    
+python-markdown                 wxpython
+boost-python                    gst-python                      python ✔                       
+python3 ✔                       zpython
+homebrew/apache/mod_python            
+Caskroom/cask/kk7ds-python-runtime          
+Caskroom/cask/mysql-connector-python
+</pre></div>
+
+
+<p>因為我的電腦已經安裝了python2.7和python3.0，所以你會看到他們已經是打勾的狀態，我們的目標就是安裝「python」。</p>
+<p><br></p>
+<p><strong>Step 3:</strong> 安裝python2.7：</p>
+<div class="highlight"><pre><span></span>$ brew install python
+</pre></div>
+
+
+<p>安裝完畢後檔案會被放在底下這個路徑，你可以打開來看一下</p>
+<div class="highlight"><pre><span></span>$ open /usr/local/Cellar
+</pre></div>
+
+
+<p>應該就會看到python的資料夾了。</p>
+<p><br></p>
+<p><strong>Step 4:</strong> 設定路徑 $PATH（不跟系統 Python 打架）</p>
+<p>這是什麼呢？當你輸入<code>brew</code> , <code>open</code> , <code>python2.7</code> 這些指令到「終端機」上，為什麼「終端機」會認的了這些指令，原因就出在於這個PATH上，又稱為「環境變數」，我們把它叫出來看看</p>
+<div class="highlight"><pre><span></span>$ <span class="nb">echo</span> <span class="nv">$PATH</span>
+/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+</pre></div>
+
+
+<p>你可以看到有五個路徑分別被字元 <code>:</code> 隔開，由前到後分別為<code>/user/local/bin</code>、<code>/usr/bin</code>、<code>/bin</code>、<code>/usr/sbin</code>、<code>/sbin</code>，這一些都是裝有執行檔的資料夾，今天你如果輸入某個指令，他就會從第一個資料夾下面開始找起，也就是<code>/user/local/bin</code>，沒有找到再依序往下找，直到找不到為止，如果今天<code>/usr/bin</code>底下有python，而你剛剛用brew安裝的另一個python放在<code>/user/local/bin</code> 底下，在這個例子中，你會執行到的就是第一個路徑<code>/user/local/bin</code> 下的python，那這也是我們要的結果，我們想要執行我們自己安裝的，而不是系統原有的。</p>
+<p>如果<code>/user/local/bin</code>不是在第一個的話，就必須去修改PATH的順序。</p>
+<div class="highlight"><pre><span></span>$ sudo emacs /etc/paths
+</pre></div>
+
+
+<p>輸入密碼後，就會進入修改模式，然後開始修改順序，利用以下指令把<code>/user/local/bin</code> 放到最上面</p>
+<p>control + k：把一行字剪下來</p>
+<p>control + y：把字貼上</p>
+<p>control + x + s：存檔</p>
+<p>control + x + c：關掉 emacs</p>
+<p>修改完成重開「終端機」，讓環境變數重載，在輸入一次 <code>echo $PATH</code> 應該就可以看到修改後正確的環境變數了。</p>
+<p><br></p>
+<p><strong>Step 5:</strong> 那就安裝完畢啦！最後檢查一下你下<code>python2.7</code>的時候是不是來自於<code>/user/local/bin</code></p>
+<div class="highlight"><pre><span></span>$ which python2.7
+/usr/local/bin/python2.7
+</pre></div>
+
+
+<p>看起來很正常，Great!</p>
+<p><br></p>
+<h5><u>Ubuntu</u></h5>
+<p>請參考<a href="https://tecadmin.net/install-python-2-7-on-ubuntu-and-linuxmint/">這篇</a> 。</p>
+<p><strong>Step 1:</strong> 先安裝一些相依套件</p>
+<div class="highlight"><pre><span></span>$ sudo apt-get install build-essential checkinstall
+$ sudo apt-get install libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev
+</pre></div>
+
+
+<p><strong>Step 2:</strong> 從網路上下載python2.7 source code</p>
+<div class="highlight"><pre><span></span>$ <span class="nb">cd</span> /usr/src
+$ wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz
+</pre></div>
+
+
+<p><strong>Step 3:</strong> 解壓縮並進去資料夾</p>
+<div class="highlight"><pre><span></span>$ tar xzf Python-2.7.13.tgz
+$ <span class="nb">cd</span> Python-2.7.13
+</pre></div>
+
+
+<p><strong>Step 4:</strong> 依環境配置並安裝</p>
+<div class="highlight"><pre><span></span>$ sudo ./configure
+$ sudo make altinstall
+</pre></div>
+
+
+<p><code>make altinstall</code> 是為了避免你去取代掉預設的python在/usr/bin/python。</p>
+<p><br></p>
+<h5><u>Windows</u></h5>
+<p><strong>Step 1:</strong> 在這個<a href="https://www.python.org/downloads/release/python-2713/">網站</a>依照你的CPU架構下載安裝檔，並安裝。</p>
+<p><img alt="python_win_install_01" src="https://dl.dropboxusercontent.com/s/awu45hdpv0d2j64/python_win_install_01.jpeg"></p>
+<p><strong>Step 2:</strong> 設定環境變數</p>
+<p>打開 控制台 &gt; 系統及安全性 &gt; 系統 &gt; 進階系統設定 &gt; 環境變數</p>
+<p>選Path，並按下 編輯，將<code>C:\Python27;C:\Python27＼Scripts</code> 加到後面，並儲存。環境變數的說明請參考上面Mac安裝的第四步，原理是一樣的，不過在windows裡的區分的符號是<code>;</code>不是<code>:</code>。</p>
+<p><br></p>
+<h5><u>IPython, Numpy, Pandas</u></h5>
+<h5><u>Mac ＆Ubuntu</u></h5>
+<p><strong>Step 1:</strong> 安裝pip</p>
+<div class="highlight"><pre><span></span>$ curl <span class="s2">&quot;https://bootstrap.pypa.io/get-pip.py&quot;</span> -o <span class="s2">&quot;get-pip.py&quot;</span>
+$ python2.7 get-pip.py
+</pre></div>
+
+
+<p><strong>Step 2:</strong> 安裝套件</p>
+<div class="highlight"><pre><span></span>$ pip2.7 install ipython
+$ pip2.7 install numpy
+$ pip2.7 install pandas
+</pre></div>
+
+
+<p><br></p>
+<h5><u>Windows</u></h5>
+<p>雖然不建議在windows下開發程式，不過我還是提供一個方法，讓你在接下的文章可以正常作操作。有一個好用的軟體—Anaconda，這個軟體不只可以在windows上使用，在linux和mac都有辦法使用。</p>
+<ol>
+<li>安裝windows版的Anaconda(python 2.7)：<a href="https://www.continuum.io/downloads#windows">網址</a></li>
+<li>安裝結束，就已經安裝好「IPython」的程式，直接打開就可以使用。</li>
+<li>安裝Numpy和Pandas：打開「Anaconda Prompt 」，輸入</li>
+</ol>
+<div class="highlight"><pre><span></span>$ conda install numpy
+$ conda install pandas
+</pre></div>
+
+
+<p><br></p>
+<h5><u>開啟IPython</u></h5>
+<p>IPython將會是未來我們這系列會用的一個介面，只要能夠開啟它，我們今天就大功告成了。</p>
+<ul>
+<li>
+<p>Mac ＆Ubuntu:  在終端機輸入 <code>$ ipython2</code></p>
+</li>
+<li>
+<p>Windows：直接打開「IPython」程式</p>
+</li>
+</ul>
+<p>試著import numpy和pandas進來，如果都正常，就代表成功了！</p>
+<p><img alt="ipython" src="http://www.ycc.idv.tw/media/PlayDataWithPython/ipython.jpeg"></p>
+<p>Ctrl + D 就可以結束跳出啦～ 今天就到這～</p></dd>
+                <dt>2017 / 3月 18</dt>
+                <dd><a href="./how-to-read-books.html">從《如何閱讀一本書》想像一種不同的知識呈現方法</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>⟪如何閱讀一本書⟫是美國哲學家Mortimer Jerome Adler在1940年所著的一本教你如何讀書的書，雖然是70年前的書，不過卻是歷久彌新，隨便google都有好幾十篇的文章在講這本書，其中的一篇就是現在你讀的這一篇。</p>
+<p>書中作者教你讀書的策略，像在練功一樣，必須循序漸進的，掌握了一階技巧在前進下一階，作者把閱讀分為四個階段，至於是哪四階段呢？在這邊賣個關子，我待會會好好的解釋。</p>
+<p>這裡先打個岔，我們先來談談書籍紀錄的知識呈現方式。</p>
+<h5><u>書籍與網路的PK</u></h5>
+<p>現今科技革命當中，對我們影響最深的就屬網際網路的發展了，它是人類歷史上資訊傳播方式的大變革，人類技術發展史你可以簡單看成是一部人類如何延長自己的手腳及大腦的故事，斧頭被發明來延長補足手的不足，眼鏡被發明來補足眼睛的不足，書籍被發明來延長溝通，同樣的，網際網路也一樣的是延長溝通的發明，使得資訊傳遞更有效率。</p>
+<p>雖然書籍和網際網路一樣是資訊傳播的方式，不過看起來更為便利的網路並沒有使書籍被淘汰，網路上的知識仍然走不進學校，撇開使用體驗不談，網路知識的缺點之一是過於零碎化，書籍是作者整合資訊和自己的認知而成的體系，有一個比較完整的結構，不是網路上零碎知識的總和所能取代的。</p>
+<p>不過網路上的確有許多整合得相當好的資訊，但如果仔細看這些知識的傳播方式不脫書籍的那一套，甚至有些有名的部落客將他們的部落格文章整理成書，通常在轉換上也不會遇到太大的困難，因為這些資訊的呈現方式和書籍的呈現方式並無太大差異，等於是把書搬到網路上而已。</p>
+<p>不過這樣感覺白白浪費電腦或網路不同於書籍的彈性，譬如說超連結或者是動態回饋，不過一定有人會想起來，維基百科不就是一個好例子嗎？它利用超連結把眾多知識給串起來，讓它更有結構性，不同於書籍的好處是，你可以在自己不懂的地方，延伸出去找到答案，延伸出去的頁面如果有不懂的還可以繼續向下延伸。</p>
+<p>但也因為可以一直延伸下去，如果要學習的東西本身很複雜和有很強的連貫性，往往你會迷失在一片頁面海裡，這就是維基百科式的知識呈現方式的弱點。反觀，書籍有作者帶著你走，把後面需要用到的知識在前面為你補足，連結起每個知識節點，還會告訴你哪些地方太困難可以先不要碰，建立起易於學習的體系，這是目前網路知識無法做到的。</p>
+<p>讀到這裡你一定會覺得我應該是要吹捧完書籍閱讀有多棒，然後順著下去講如何閱讀。不過，你猜錯了，<strong>我想做的是了解如何有效率的閱讀一本書，然後回過頭想網路的知識呈現方式可以有怎樣的改善，既然有一本教你如何閱讀一本書的書這麼暢銷，也就是代表閱讀一本書本身還是有所不足，說不定我們可以用電腦或網路來補足這樣的不足</strong>。</p>
+<h5><u>閱讀的層次</u></h5>
+<p>這本書對我來說，除了重新審視多年來我的讀書方法外，另外也可以進一步探討我上述的疑問，想找尋更好的「知識體系呈現方式」，必須先了解如何有效地取得知識，才能進一步的構思更好的方式來幫助讀者學習知識，本書雖然是一本教你如何讀一本書的書，其實也是在談如何獲取知識的方法。</p>
+<p>作者將閱讀分為四個層次，分別是基礎閱讀(Elementary Reading)、檢視閱讀(Inspectional Reading)、分析閱讀(Analytical Reading)和主題閱讀(Comparative Reading)，基礎閱讀就是指識字能力，也就是閱讀的基礎能力，下一個層次是檢視閱讀，培養能在閱讀中主動地去思考作者想說的話，更進階是分析閱讀，看完一本書有辦法綜觀一本書的整體性和複雜性，並透徹的了解作者的疑問還有解答，最後研究所等級的主題閱讀，這個時候就不只是一本書的事了，你必須有可以比較好幾本書的能力，去學習一個領域的知識，成為那個領域的專家。</p>
+<h5><u>檢視閱讀</u></h5>
+<p><strong>檢視閱讀的首要條件就是化被動為主動，主動去思考檢視一本書</strong>，那該怎麼著手呢? 首先拿到書，先不要就直接一股腦的從第一頁讀起，就像是古代有經驗的將領一定在會戰前會看看對方擺怎樣的陣式，所以先看看書名，再看看序和索引，了解這本書大概在講什麼，然後針對自己有興趣或不了解的篇章去大略的看過，或者隨機東翻翻西翻翻，這個時候你就了解這本書大概在講什麼了。</p>
+<p>這個過程花不了多少時間，可能大概半小時到一個小時之間，不過這個方法可以讓你大致了解一本書的架構，接下來你就可以決定要不要看這本書，如果你在書店，就可以決定要不要買這本書，有些書並不值得花時間閱讀，或者有些書你只需要知道個大概就好了，雖然有些書是公認的好書，但可能不適合你或你不需要，那這一個小時的閱讀也就足夠啦!</p>
+<p>如果大略掃過一本書，你覺得這本書值得一讀，並且還有一些不懂的地方，那就開始完整的讀一遍吧! 在已經知道這本書大致架構的情況下，開始進行完整的閱讀會更為流暢，依循著架構你可以調配你閱讀的速度，簡單的地方你可以快速的讀過，較難的地方就把速度放慢，也就是說你可以依照自己理解來配速。</p>
+<p>那有什麼依循的標準嗎? 有的，但是一樣的你必須保持主動的思考，你可以藉由檢視以下四個要素來判斷是不是真的理解作者想說的：</p>
+<ul>
+<li>現在作者在談什麼?</li>
+<li>作者細說了哪些東西?</li>
+<li>作者說得有道理嗎?</li>
+<li>這些跟我有什麼關係?   </li>
+</ul>
+<p>時時不斷的問這些問題，知識才有辦法進到你的腦袋中，在過程中你可能會劃一些線或做一些筆記，去輔助你達到這四個要素，這樣的閱讀層次稱為檢視閱讀，讀完了你能大概能了解作者想說的，有些簡單的書只需要做到檢視閱讀就夠了，但如果想理解更複雜的書就必須開始另一個層次—分析閱讀。</p>
+<h5><u>分析閱讀</u></h5>
+<p>分析閱讀必須用檢視閱讀的精神來完成三個步驟。</p>
+<p><strong>第一個步驟，讀者必須結構性的回答一本書再說什麼。</strong>首先你要盡快的了解這本書應該歸於哪一類，是文學、戲劇、歷史、傳記，還是科學、數學、哲學、社會科學，是虛構的還是紀實的，是實用類型的還是理論類型的書，這通常可以從書名還有前言中看出來，不過有些書就很難以界定，譬如《飄》是愛情小說抑或是歷史故事。</p>
+<p>了解書的類別有助於你依照相應的分析方法來讀書，書中有詳列各種類型書籍的閱讀方式，在這邊不一一舉例，有興趣的人可以去翻翻這本書。了解一本書的類別就可以開始分析閱讀，你的目標應該放在做到了解書中的三個面向：</p>
+<ol>
+<li>整體性： 能用幾句話寫出這本書主要在說些什麼</li>
+<li>複雜性： 為這本書擬大綱說明書中的篇章架構</li>
+<li>作者的意圖：找出作者的問題和他的答案。</li>
+</ol>
+<p><strong>第二個步驟，讀者必須細部的去詮釋一本書的內容。</strong>閱讀完一本書你需要回答有哪一些keyword，而這些keyword在作者心中代表的是什麼意思，藉由文字間的連結來產生與作者相同的共識，有哪一些重要的句子當中隱含著重要的主旨。接下來主動出擊，重構作者論述來明白他的主張，也就是以自己的話寫出作者的主張，並且重新審視作者在提出的疑問中解決哪些問題? 還有那些問題沒有被解決?</p>
+<p><strong>第三個步驟 ，讀者必須有能力去評論一本書。</strong>當我們已經客觀的了解作者的想法後，我們可以開始評論一本書，也許有一些論述你是認可的，而另外一些是你不認可的，而當你要指出作者的錯誤，可以從四個方向去著手：證明作者知識不足、知識錯誤、不合邏輯或分析與理由不完整。</p>
+<p>這三個步驟都需要搭配前面所提到的檢視閱讀，完成這三個步驟你對於一本書已經有了深入的了解了! 但如果你想要了解一個領域，或成為那領域的專家，那就不能只是讀一本書而已，每個作者的著眼點不同，觀點也相異，甚至是針鋒相對的，就算是同一個作者，也無法在一本書之中闡述他所有的想法，譬如：如果你看了亞當．斯密的《國富論》，卻沒有看他的《道德情操論》，你會覺得有一些地方似乎很沒有說服力。因此接下來要談的是最後一個層次—主題閱讀。</p>
+<h5><u>主題閱讀</u></h5>
+<p>開始主題閱讀前，你先要有一份書單，這份書單可以囊括你想要研究的主題，這份書單可以是從一些書裡的參考書單，或者是同一個作者的其他書，有了這份書單，要再進一步的建立起這些書彼此間的連結，最好還是有簡單的翻過這些書，了解這些書大概在講什麼，建立起這些書大致的連結。</p>
+<p>有了這個書單當作地圖，我們就可以開始主題閱讀了。主題閱讀分為五個步驟。</p>
+<p><strong>第一個步驟，找出你的書單中最重要的章節</strong>，並且去讀這些章節，在強調一下喔！是章節喔！不是最重要的一本書喔！在主題閱讀中，我們的重點應該放在主題上而不是單一書籍上，雖然作者也覺得很難以做到，所以如果你對這個領域還不夠了解，還是先利用分析閱讀好好的K幾本書在說，有了基本認識再來做主題閱讀。</p>
+<p><strong>第二步驟，是建立與書單上的作者們之間的共識</strong>，如同之前在分析閱讀所提到的，找出重要的keyword，並且了解作者所表示這個keyword的含意，你才有辦法和作者產生共識，但現在書單上有很多位作者，每位作者也許所用的語言都不同，所以你需要建立起每個作者之間的連結。</p>
+<p><strong>第三步驟，有了字義上的共識後，我們就可以開始釐清每本書所討論的中心主旨。</strong></p>
+<p><strong>第四步驟，藉由每本書的中心主旨，我們就可以界定他們在討論的議題</strong>，哪一些是主要的議題，哪一些是次要的議題，哪一些議題作者彼此間有差不多的看法，而哪些議題是爭論不休的。</p>
+<p><strong>最後一個步驟，把自己丟進去討論，開始評論、分析這一些議題的討論，然後提出自己的看法。</strong> 事實上，主題閱讀有點像分析閱讀的擴大版，只是分析閱讀是只對一本書，而主題閱讀則是對一群書，方法上差異不大。</p>
+<h5><u>書籍與網路的第二回合PK</u></h5>
+<p>回到最初的問題，我們藉由這本書來了解書籍閱讀本身有什麼弱點，我們需要用怎樣的策略來使得書籍閱讀更有效率，而我們是否能夠使用網路或電腦去改善這些缺點，讓網路可以在下一輪PK中扳回一城。</p>
+<p>先總結一下這本書，這本書所告訴我們的閱讀法則，其實不外乎是三個面向，第一，主動去閱讀，能用自己的話來講一本書的內容，第二，與作者建立相同的共識，第三，針對作者討論的議題，加以評論，提出自己的看法。</p>
+<p>從這幾個面向，所以我腦中就有了一個未來知識傳遞的另一種可能。在讀者方面，我們可以用超連結的方式來主動去找尋我們想要了解的部分，就像是維基百科一樣，但你所閱讀的網頁本身應該有所結構，不然很可能會使得讀者迷失在其中。</p>
+<p>所以不像一般的網路資訊，我們需要一個作者來整合，但在作者寫作方面要有所改變，與電腦技術相結合，我們之所以需要學習這本書的這些閱讀技巧，很大的原因是因為書籍本身的結構和架構並不是那麼容易被理解，往往不懂的作者真正想說什麼，書籍沒有明寫出作者心中的keyword和主旨，作者必須很費力的分章節分段落的解釋他的脈絡，好的章節分法會讓書籍更容易閱讀，作者也要很小心的在使用一個keyword的時候要先向讀者解釋清楚，避免造成歧意。</p>
+<p>於是，一件很奇妙的事情發生了，作者必須要有一個架構，從這個架構出發，然後巧妙的打平寫成一段段的文字，然後讀者在從這一段段的文字，試著了解作者想要表達的架構，等於繞了一大圈，如果一開始作者在寫作的時候就有軟體輔助他，作者給軟體一個架構，作者依照脈絡寫作，而這脈絡可以由軟體完整的呈現在讀者面前，另外，keyword的解釋可以放在一個獨立的頁面，用超連結連接進來，讓讀者在不清楚這個keyword的時候有更多的說明可以看，並且軟體可以依照作者所給的結構和段落，連貫成一本書，作者只需要再審視一下有哪個地方不通順，稍作修改，一本書就完成了。</p>
+<p><strong>有了這樣的軟體，可以輕鬆的讓作者把心中的結構給「存」進文件裡，並且很智慧化的「呈現」給讀者，作者與讀者之間理解的鴻溝將會被弭平。</strong></p>
+<p>另外，如果讀者想要做主題閱讀，網路資訊更容易重構，你可以把不同的書籍談論相同的章節給連結起來，相互比較閱讀，甚至這個軟體還可以幫你預先整理一個脈絡，這個軟體比你更了解每一位作者心中的脈絡，所以他可以連結比你好，也許還可以幫你準備一個學習順序，就像是一個老師一樣。</p>
+<p>還有可以加入社群的力量，在閱讀的過程，可以針對不清楚的地方進行提問，又或者看看別人寫下的某段的註解或評論，在書中寫下自己的看法，也可以看見其他讀者的評論，此時你不只是一個人在讀書，而是和一群人一起讀書，思考的廣度也就更大了。<strong>如果用這樣的方式來傳遞知識，可以同時兼顧書籍的完整性，和網路知識的彈性，我想知識傳遞將會更有效率。</strong></p></dd>
+                <dt>2017 / 3月 15</dt>
+                <dd><a href="./ml-course-techniques_3.html">機器學習技法 學習筆記 (3)：Kernel Regression</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
+<p>本篇內容涵蓋Probabilistic SVM、Kernel Logistic Regression、Kernel Ridge Regression、Support Vector Regression (SVR)。</p>
+</blockquote>
+<p>在上一篇當中我們看到了Kernel Trick的強大，我們繼續運用這個數學工具在其他的Regression上看看。</p>
+<p><br/></p>
+<h5><u>Soft-Margin SVM其實很像L2 Regularized Logistic Regression</u></h5>
+<p>上一篇中提到的Soft-Margin SVM其實很像<a href="http://www.ycc.idv.tw/tag__筆記：機器學習基石/">《機器學習基石》</a>裡頭提到的L2 Regularized Logistic Regression，如果你還記得的話，Logistic Regression是為了因應雜訊而給予每筆資料的描述賦予「機率」的性質，讓Model在看Data的時候不那麼的非黑及白，那時候有提到這叫做Soft Classification，而這個概念就非常接近於Soft-Margin的概念。</p>
+<p>從數學式來看會更清楚，</p>
+<blockquote>
+<p>Soft-Margin SVM：<br/></p>
+<p>min. (W<sup>T</sup>W/2) + C×𝚺<sub>n</sub> ξ<sub>n</sub> s.t. y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b) ≥ 1-ξ<sub>n</sub>且ξ<sub>n</sub> ≥ 0, n=1~N</p>
+</blockquote>
+<p>上面的式子中，可以將限制條件由max取代掉，轉換成下面的Unbounded的表示方法，</p>
+<blockquote>
+<p>Soft-Margin SVM：<br></p>
+<p>min. C×𝚺<sub>n</sub> Err<sub>hinge,n</sub> + (W<sup>T</sup>W/2)<br/></p>
+<p><strong>其中，Err<sub>hinge,n</sub>=max[0,1-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b)]，稱之為Hinge Error Measure</strong>。</p>
+</blockquote>
+<p>接下來比較一下L2 Regularized Logistic Regression，</p>
+<blockquote>
+<p>L2 Regularized Logistic Regression：<br></p>
+<p>min. (1/N)×𝚺<sub>n</sub> Err<sub>ce,n</sub> +  (λ/N)×W<sup>T</sup>W<br/></p>
+<p>其中，Err<sub>ce,n</sub>=ln[1+exp(-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>))]，為Cross-Entropy Error Measure。</p>
+</blockquote>
+<p>你會發現Soft-Margin SVM和L2 Regularized Logistic Regression兩個式子的形式是很接近的，都有W<sup>T</sup>W這一項，只是意義上不同，在Soft-Margin SVM裡頭W<sup>T</sup>W所代表的是反比於空白區大小距離的函式，而在L2 Regularized Logistic Regression裡頭則是指Regularization。</p>
+<p>另外，我們來疊一下Err<sub>hinge,n</sub>和Err<sub>ce,n</sub>來看看這兩個函數像不像，</p>
+<p><img alt="compare:hinge and ce" src="https://dl.dropbox.com/s/qg2gyf8646cp3jh/MachineLearningTechniques.000_03.png"></p>
+<p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf</a></p>
+<p><strong>Err<sub>hinge,n</sub>和Err<sub>ce,n</sub>是非常接近的，所以我們可以說做Soft-Margin SVM，很像是在做L2 Regularized Logistic Regression。</strong></p>
+<p><strong>雖然說Soft-Margin SVM和L2 Regularized Logistic Regression非常的像，但是我在做完Soft-Margin SVM後，仍然沒辦法像Logistic Regression一樣得到一個具有機率分布的Target Function，以下提供了兩種方法，第一種是間接的方法，使用兩階段學習來達成Logistic的效果；第二種是直接將L2 Regularized Logistic Regression加入有如Soft-Margin SVM的Kernel性質。</strong></p>
+<p><br/></p>
+<h5><u>使用SVM做Logistic Regression：Probabilistic SVM</u></h5>
+<p>要讓Soft-Margin SVM在最後呈現的Target Function時具有機率性質，最簡單的作法就是透過兩階段的學習來達成，第一階段先用Soft-Margin SVM去解出切分資料的平面，第二階段再將Logistic Function套在這個平面上，並做Fitting，最後我們就得到一個以Logistic Function表示的Target Function，這個稱之為Probabilistic SVM。實際操作方法如下：</p>
+<blockquote>
+<ol>
+<li>使用Soft-Margin SVM解出切平面W<sub>SVM</sub><sup>T</sup>Z+b<sub>SVM</sub>=0，並將所有Data進一步的轉換到 Z'<sub>n</sub>=W<sub>SVM</sub><sup>T</sup>Z(X<sub>n</sub>)+b<sub>SVM</sub>。</li>
+<li>接下來用轉換後的結果{Z'<sub>n</sub>, y<sub>n</sub>}做Logistic Regression得到係數A和B。</li>
+<li>最後的Target Function就是 g(x)=Θ(A∙(W<sub>SVM</sub><sup>T</sup>Z(X<sub>n</sub>)+b<sub>SVM</sub>)+B)，Θ為Logistic Function。</li>
+</ol>
+</blockquote>
+<p>上面的方法有一個缺點，就是如果B的值不接近0時，SVM的切平面就會和Logistic Regression的邊界就會不同，而且一個Model要Fitting兩次也相當的麻煩，以下還有另外一個可以達到一樣的具有機率性質的效果的方法—Kernel Logistic Regression。</p>
+<p><br/></p>
+<h5><u>Kernel Trick的真正精髓：Representer Theorem</u></h5>
+<p>在說明Kernel Logistic Regression之前我們先來複習一下Kernel的概念，並且從中將他的重要觀念萃取出來。</p>
+<p>再來看一眼我們怎麼解Kernel Soft-Margin SVM的，</p>
+<blockquote>
+<p>Kernel Soft-Margin SVM：<br/></p>
+<p>在0 ≤ α<sub>n</sub> ≤ C; 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub> = 0的限制條件下，求解min. [(1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)-𝚺<sub>n</sub> α<sub>n</sub>]</p>
+<p><br/></p>
+<p>得到α<sub>n</sub>，然後</p>
+<p><br/></p>
+<p><strong>W = 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>Z<sub>n</sub></strong></p>
+<p><br/></p>
+<p>b=y<sub>sv</sub>-𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>K(X<sub>n</sub>,X<sub>sv</sub>)</p>
+</blockquote>
+<p>其中W可以想成是由Z<sub>n</sub>所組合而成的，而決定貢獻程度則反應在放在它前面的係數(α<sub>n</sub>y<sub>n</sub>)，y<sub>n</sub>決定貢獻的方向，α<sub>n</sub>決定影響的程度。</p>
+<p><strong>數學上，有個理論Representer Theorem可以告訴我們，所有的最佳化問題中，W的最佳解都是由Z<sub>n</sub>所組合而成的，以線性代數的角度，就是W由Z<sub>n</sub>所展開(span)，數學上表示成W*=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>。</strong></p>
+<p>這個性質為Kernel Trick提供了一個良好的基礎，每次我們只要遇到W*<sup>T</sup>Z的部分，我們就可以使用Representer Theorem把問題轉換成W*<sup>T</sup>Z=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>Z=𝚺<sub>n</sub> β<sub>n</sub>K(X<sub>n</sub>,X)，就可以使用Kernel Function了。</p>
+<p><img alt="kernel trick" src="https://dl.dropbox.com/s/zba8381572jub0r/MachineLearningTechniques.000_04.png"></p>
+<p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf</a></p>
+<p>上圖是老師在上課時列出來SVM、PLA和Logistic Regression的W的展開式，你會發現都可以表現成Representer Theorem的形式。</p>
+<p>有了這個概念，我們就可以把很多問題都利用Representer Theorem來轉換，並且套上Kernel Trick。</p>
+<p><br/></p>
+<h5><u>Kernel Logistic Regression</u></h5>
+<p>那我們有了Representer Theorem就可以直接來轉換L2 Regularized Logistic Regression，讓它有擁有Kernel的效果，</p>
+<blockquote>
+<p>L2 Regularized Logistic Regression：<br/></p>
+<p>min. (1/N)×𝚺<sub>n</sub> ln[1+exp(-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>))] +  (λ/N)×W<sup>T</sup>W</p>
+</blockquote>
+<p>使用W*=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>代入得，</p>
+<blockquote>
+<p><strong>Kernel Logistic Regression: <br/></strong></p>
+<p><strong>min. (1/N)×𝚺<sub>n</sub> ln[ 1+exp(-y<sub>n</sub>×𝚺<sub>n</sub> β<sub>n</sub>K(X<sub>n</sub>,X)) ] +  (λ/N)×𝚺<sub>n</sub>𝚺<sub>m</sub> β<sub>n</sub>β<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)</strong></p>
+</blockquote>
+<p>上面的式子可以使用Grandient Descent來求解β<sub>n</sub>，進而得到W*=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>。而且在Kernel Function的幫助之下，我們更容易可以做到非常高次的特徵轉換。</p>
+<p><br/></p>
+<h5><u>Kernel Ridge Regression</u></h5>
+<p>同理，我們也可以把相同技巧套用到Ridge Regression，</p>
+<blockquote>
+<p>Ridge Regression：<br/></p>
+<p>min. (1/N)×𝚺<sub>n</sub> (y<sub>n</sub>-W<sup>T</sup>Z<sub>n</sub>)<sup>2</sup> +  (λ/N)×W<sup>T</sup>W</p>
+</blockquote>
+<p>使用W*=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>代入得，</p>
+<blockquote>
+<p><strong>Kernel Ridge Regression：<br/></strong></p>
+<p><strong>min. (1/N)×𝚺<sub>n</sub> (y<sub>n</sub>-𝚺<sub>m</sub> β<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>))<sup>2</sup> +  (λ/N)×𝚺<sub>n</sub>𝚺<sub>m</sub> β<sub>n</sub>β<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)</strong></p>
+</blockquote>
+<p>上面的式子也可以使用Grandient Descent來求解β<sub>n</sub>。</p>
+<p>另外，這個式子有辦法推出解析解，先把上式可以寫成矩陣形式，</p>
+<blockquote>
+<p>Kernel Ridge Regression：<br/></p>
+<p>min. E<sub>aug</sub></p>
+<p><br/>E<sub>aug</sub>=(1/N)×(β<sup>T</sup>K<sup>T</sup>Kβ-2β<sup>T</sup>K<sup>T</sup>y+y<sup>T</sup>y) +  (λ/N)×β<sup>T</sup>Kβ)</p>
+</blockquote>
+<p>所以，由∇E<sub>aug</sub>=0就可以得到最小值成立的條件為</p>
+<p><strong>β*=(λI+K)<sup>-1</sup>y</strong></p>
+<p>其實這個式子非常像之前在線性模型時使用的Pseudo-Inverse，</p>
+<p>Pseudo-Inverse：W=(X<sup>T</sup>X)<sup>-1</sup>X<sup>T</sup>y</p>
+<p>不過現在更為強大了，可以求得非線性模型+Regularization下的解析解。</p>
+<p><strong>我們可以使用Kernel Ridge Regression來做分類問題，稱之為Least-Squares SVM (LSSVM) 。</strong></p>
+<p><br/></p>
+<h5><u>Support Vector Regression (SVR)</u></h5>
+<p>其實，不管是Kernel Logistic Regression還是Kernel Ridge Regression，這種直接套用Representer Theorem在Regression上的都有一個缺點。</p>
+<p>那就是它們的<strong>β<sub>n</sub>並不確保大多數是0</strong>，如果Data筆數非常多的話，這在計算上會是一種負荷。在之前我們討論Kernel SVM時有提到只有Support Vector的數據才會對Model最後的結果有所貢獻，Support Vector的α<sub>n</sub>&gt;0；而不是Support Vector的數據則沒有貢獻，Non-Support Vector的α<sub>n</sub>=0。所以你可以想見的是，<strong>α<sub>n</sub>大多數是0除了Support Vector外，我們稱這叫做「Sparse α<sub>n</sub>」性質</strong>，有這樣的性質可以大大的減少計算量。</p>
+<p>因此接下來我們打算<strong>讓Regression具有Support Vector的性質，稱之為Support Vector Regression (SVR)</strong>。</p>
+<p><img alt="SVR" src="https://dl.dropbox.com/s/76wyl84tdhj9r7a/MachineLearningTechniques.006.jpeg"></p>
+<p>見上圖說明，Support Vector Regression簡稱SVR，以往的Linear Regression是求一條擬合直線能使所有數據點到直線的Error最小，而現在我們賦予它Soft-Margin的能力，<strong>SVR將擬合直線向外擴張距離ε，在這個擴張的區域裡頭的數據點不去計算它的Error，只有在超出距離ε外的才去計算Error</strong>，此時這個擬合直線有點像一條水管，水管外我們才計算Error，所以又稱之為Tube Regression。</p>
+<p>這個概念和Soft-Margin SVM有點像，都是在邊界給予犯錯的機會，不同的是Soft-Margin SVM因為是分類問題，所以不允許錯誤的數據超過界，所以評估Error的方向是向內的，而SVR是向外評估Error，超出水管之上的Error我們記作ξ<sub>n</sub><sup>⋀</sup>，低於水管之下的Error我們記作ξ<sub>n</sub><sup>⋁</sup>，<strong>所以SVR的目的就是在Regularization之下使得ξ<sub>n</sub><sup>⋀</sup>+ξ<sub>n</sub><sup>⋁</sup>最小，並且調整距離ε和C來決定對Error的容忍程度</strong>。</p>
+<p>這個問題同樣的可以化作Dual問題，問題變成只需要最佳化α<sub>n</sub><sup>⋀</sup>和α<sub>n</sub><sup>⋁</sup>，再使用最佳化後的α<sub>n</sub><sup>⋀</sup>和α<sub>n</sub><sup>⋁</sup>就可以得到W和b。其中W=𝚺<sub>n</sub> (α<sub>n</sub><sup>⋀</sup>-α<sub>n</sub><sup>⋁</sup>) Z<sub>n</sub>這式子裡頭隱含著Representer Theorem，每筆數據的貢獻程度β<sub>n</sub>=(α<sub>n</sub><sup>⋀</sup>-α<sub>n</sub><sup>⋁</sup>)，<strong>因此在管子內的α<sub>n</sub><sup>⋀</sup>=0且α<sub>n</sub><sup>⋁</sup>=0，不會有所貢獻，這使得SVR具有Sparse的性質，可以大大的減少計算</strong>。</p>
+<p><br/></p>
+<h5><u>結語</u></h5>
+<p>這一篇中，我們一開始揭露了「Soft-Margin SVM其實很像L2 Regularized Logistic Regression」的這個現象，所以在SVM中最小化W<sup>T</sup>W有點像是Regression中的Regularization，也因為形式上相當的接近，所以在SVM裡頭用到的數學技巧同樣的可以套到這些有Regularized的Regression上。</p>
+<p>然後，我們從Kernel Soft-Margin SVM中萃取出Kernel Trick的精華—Representer Theorem，最佳化的W可以由Data的Feature Z<sub>n</sub>所組成，記作W*=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>，這提供了Kernel Trick背後的實踐基礎，接下來我們就開始運用Representer Theorem在L2 Regularized Logistic Regression和Ridge Regression上，讓這些Regression可以輕易的做非線性特徵轉換。</p>
+<p>最後，我們指出了直接套用Representer Theorem在Regression上的缺點就是參數並不Sparse，所以造成計算量大大增加。因此Support Vector Regression (SVR)參照Soft-Margin SVM的形式重新設計Regression，並且使用Dual Transformation和Kernel Function來轉化問題，最後SVR就具有Sparse的特性了。</p>
+<p>上一篇跟這一篇，談的是「Kernel Models」，在這樣的形式下我們可以讓我們的「特徵轉化」變得更為複雜，甚至是無窮多次方還是做得到的。下一篇，我們會進到另外一個主題—Aggregation Models。</p></dd>
+                <dt>2017 / 2月 20</dt>
+                <dd><a href="./ml-course-techniques_2.html">機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
+<p>本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem。</p>
+</blockquote>
+<p>在<a href="http://www.ycc.idv.tw/YCNote/post/29">上一篇文章</a>當中，我們掃過了《機器學習技法》 將會包含的內容，今天我們正式來看SVM。</p>
+<p>如果我想要使用無窮次高次方的非線性轉換加入我的Model，可以做到嗎？上一篇，我告訴大家，只要使用Dual Transformation加上Kernel Function等數學技巧就可以做到，我們今天就來看一下這是怎麼一回事。</p>
+<p>本篇文章分為兩個部分，第一部分我盡量不牽扯太多數學計算，而將數學證明放在第二個部分，數學證明的部分非常複雜，但我並不打算把它們忽略掉，因為這些數學計算是相當重要的，它所帶來的方法和概念是可以重複使用的，也有助於你了解和創造其他演算法，所以有心想要成為專家的你請耐心的把後半段的數學看完。</p>
+<p><br/></p>
+<h5><u>Hard-Margin Support Vector Machine (SVM)</u></h5>
+<p><img alt="Hard-Margin SVM" src="https://dl.dropbox.com/s/tknka2p5a7qcqcn/MachineLearningTechniques.001.jpeg"></p>
+<p>回到我們最熟悉的二元分類問題，如果問題的答案是線性可分的話，我們可以找到一條直線把兩類Data給切開來，而在以前PLA的方法，切在哪裡其實是沒辦法決定的，PLA只能幫你找到可以分開兩類的一刀，但不能幫你把這刀切的更好。</p>
+<p><strong>我們希望這個切開兩類的邊界可以離兩類Data越遠越好，讓邊界到Data有一個較大的空白區，這就是Hard-Margin SVM做的事</strong>。</p>
+<p>我們先來看一下如何計算切平面到任意Data的距離，首先我先假設切平面的方程式為</p>
+<p>W<sup>T</sup>X+b = 0 (切平面)</p>
+<p>回想一下高中數學，這個平面的法向量是W，垂直於平面，所以垂直於平面的單位法向量是 W/|W|，今天如果我有一點Data Point落在X，另外在平面上任意再找一點X<sub>0</sub>，從X<sub>0</sub>到X的向量表示為X-X<sub>0</sub>，這個向量如果投影到單位法向量上，這個向量的大小正是Data Point到平面的最短距離，表示成</p>
+<p>d = |W・(X - X<sub>0</sub>)| / |W|</p>
+<p>X<sub>0</sub>符合切平面的方程式W<sup>T</sup>X<sub>0</sub>+b = 0代入，得</p>
+<p>d = |W・X + b| / |W|</p>
+<p>所以假如我有一群線性可分的二元分類Data，這個切平面我希望可以離兩類Data越遠越好，所以我會有一段全部都沒有Data的空白區，這邊假設這個空白區的邊界為</p>
+<p>W<sup>T</sup>X+b = ±1</p>
+<p>這個假設是可以做到的，因為我們可以以比例去調整W和b來達到縮放的效果，而不會影響切平面W<sup>T</sup>X+b = 0 。從上面的距離公式，我們知道在這個假設之下，空白區邊界距離切平面為</p>
+<p>margin = 1 / |W|</p>
+<p>而剛好落在這空白區邊界的Data會符合以下方程式</p>
+<p><strong>y<sub>n</sub>×(W<sup>T</sup>X<sub>n</sub>+b) = 1 (Support Vector)</strong></p>
+<p>y<sub>n</sub>的正負剛好和(W<sup>T</sup>X<sub>n</sub>+b)相抵消，<strong>這些落在空白區邊界的Data被稱為Support Vector，就字面上的意義就像是空白區由這一些數據給「撐」起來，而切平面只由這些Support Vector的數據點所決定，和其他的數據點無關</strong>。</p>
+<p>如果考慮所有Data的話，應該要滿足</p>
+<p>y<sub>n</sub>×(W<sup>T</sup>X<sub>n</sub>+b) ≥ 1 (All Data)</p>
+<p><strong>綜合上述，Hard-Margin SVM的目標就是，在符合y<sub>n</sub>×(W<sup>T</sup>X<sub>n</sub>+b) ≥ 1 , n=1~N的條件下，求Margin (1 / |W|)最大的情形，也可以等價於求 (W<sup>T</sup>W/2) 最小的情形，這個問題有辦法使用QP Solver來求解，詳見<a href="https://en.wikipedia.org/wiki/Quadratic_programming">這裡</a>，我就不多加介紹這個數學工具。</strong></p>
+<p><br/></p>
+<h5><u>Kernel Function</u></h5>
+<p>Kernel Function是最終可以讓我們有無限多次方特徵的數學工具，但這個工具非常容易理解。</p>
+<p>假設考慮一個非線性轉換，將X空間轉換到Z空間，那如果我需要計算轉換過的兩個新Features相乘Z<sub>n</sub>(X<sub>n</sub>)×Z<sub>m</sub>(X<sub>m</sub>)，我有辦法<strong>不需要先做特徵轉換再相乘</strong>，而是直接使用原有的Features X<sub>n</sub>和X<sub>m</sub>求出Z<sub>n</sub>(X<sub>n</sub>)×Z<sub>m</sub>(X<sub>m</sub>)的最後結果？這種情形數學可以表示成K(X<sub>n</sub>,X<sub>m</sub>)=Z<sub>n</sub>(X<sub>n</sub>)×Z<sub>m</sub>(X<sub>m</sub>)，這個函式就叫Kernel Function。</p>
+<p><strong>如果有了Kernel Function這樣的數學工具，就可以簡化和優化因為「特徵轉換」所帶來的複雜計算。</strong></p>
+<p>我列出以下幾種Kernel Function：</p>
+<ul>
+<li><strong>Polynomial Kernel：K<sub>Q</sub>(X<sub>n</sub>,X<sub>m</sub>)=(ζ+γ X<sub>n</sub><sup>T</sup>X<sub>m</sub>)<sup>Q</sup>等價於 「Q次方非線性轉換後的兩個新特徵相乘」。</strong></li>
+<li><strong>Guassian Kernel：K(X<sub>n</sub>,X<sub>m</sub>)=exp(-γ|X<sub>n</sub>-X<sub>m</sub>|<sup>2</sup>)等價於 「無窮次方非線性轉換後的兩個新特徵相乘」。</strong></li>
+</ul>
+<p>因此有了Guassian Kernel的幫忙，我們完全不需要管特徵轉換有多複雜，我們可以直接使用原有的Features 來計算「無窮次方的非線性轉換」。</p>
+<p><strong>最後給予Kernel Function一個物理解釋，Kernel Function說穿了就是兩個向量轉換到Z空間後的「內積」，「內積」可以約略想成是「相似程度」，當兩個向量同向，內積是正的，相似度高，但當兩個向量反向，內積是負的，相似度極低，所以你會發現Guassian Kernel在X<sub>n</sub>=X<sub>m</sub>會出現最大值，因為代表這兩個位置相似度極高。</strong></p>
+<p><br/></p>
+<h5><u>Kernel Hard-Margin SVM</u></h5>
+<p><img alt="Kernel Hard-Margin SVM" src="https://dl.dropbox.com/s/dpyh8stjm665zxd/MachineLearningTechniques.002.jpeg"></p>
+<p>那我們如何使用Kernel Function來使得Hard-Margin SVM更厲害呢？我們必須額外引入另外的數學工具，包括：Lagrange Multiplier和Lagrange Dual Problem，才有辦法把Kernel Function用上，不過這部份的數學有一些複雜，我將這部份的證明放在後面的附錄上，這邊就直接從結果講起。</p>
+<p>Kernel Hard-Margin SVM的公式是，在α<sub>n</sub>  ≥ 0; 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub> = 0的限制條件下，求解α<sub>n</sub></p>
+<p>使得 [(1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)-𝚺<sub>n</sub> α<sub>n</sub>]為最小值，</p>
+<p>其中K(X<sub>n</sub>,X<sub>m</sub>)就是Kernel Function，由你的特徵轉換方式來決定，這個問題一樣可以使用QP Solver來求解。</p>
+<p>當我們已經有了每筆數據點的α<sub>n</sub>了，接下來可以利用α<sub>n</sub>求出切平面的W和b，在那之前來看一下α<sub>n</sub>的意義，<strong>α<sub>n</sub>可以看作是某個數據點對切平面的貢獻程度，α<sub>n</sub>=0的這些數據點為非Support Vector，而α<sub>n</sub>&gt;0的這些數據點是Support Vector，所以對切平面有貢獻的只有Support Vector而已</strong>，這和剛剛的結論相同。因此，W和b可由Support Vector決定，</p>
+<p><strong>W = 𝚺<sub>n=sv</sub> α<sub>n</sub>y<sub>n</sub>Z<sub>n</sub></strong></p>
+<p><strong>b=y<sub>sv</sub>-𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>K(X<sub>n</sub>,X<sub>sv</sub>)</strong></p>
+<p>最後提一個非常重要的概念，是什麼原因讓我們不需要管特徵轉換的複雜度？以往我們的作法是這樣的，我們有每筆Data的Features，接下來對每筆Data做特徵轉換，然後在用特徵轉換後的新Features去Train線性模型，這麼一來如果特徵轉換的次方非常高的話，計算的複雜度就會全落在特徵轉換上。<strong>所以我們巧妙的使用數學工具，讓我們可以單單使用Data的Labels來做優化，而將複雜的特徵轉換利用Kernel Function的方式「嵌入」到優化的過程裡頭，此時計算量就只與Data數量有關，所以可以完全不管特徵轉換所帶來的複雜度</strong>。</p>
+<p><br/></p>
+<h5><u>Kernel Hard-Margin SVM: 無窮次方的特徵轉換效果如何?</u></h5>
+<p>終於我們可以使用無窮次方的特徵轉換了，只要使用Kernel Hard-Margin SVM搭配上Guassian Kernel：K(X<sub>n</sub>,X<sub>m</sub>)=exp(-γ|X<sub>n</sub>-X<sub>m</sub>|<sup>2</sup>)就可以辦到，下圖是模擬的結果，是不是看起來很強大，隨著γ的不同會有不一樣的切分方法，<strong>你會發現γ越大時看起來的結果越接近Overfitting，所以必須小心挑選γ的大小。</strong></p>
+<p><img alt="Guassian Kernel in Hard-Margin SVM" src="https://dl.dropbox.com/s/nzl29z7z8cveefx/MachineLearningTechniques.000_01.png"></p>
+<p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/203_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/203_handout.pdf</a></p>
+<p><br/></p>
+<h5><u>Soft-Margin SVM</u></h5>
+<p><img alt="Soft-Margin SVM" src="https://dl.dropbox.com/s/ipimu7we3zd8vho/MachineLearningTechniques.003.jpeg"></p>
+<p>剛剛Hard-Margin SVM會很容易Overfitting的原因在於它的機制無法<strong>容忍雜訊</strong>，所以接下來要講的Soft-Margin SVM可以容忍部份的Data違反規則，讓它們可以超出空白區的邊界。</p>
+<p>見上圖，可以發現我們稍微修改了Hard-Margin SVM，加入了參數ξ<sub>n</sub>，ξ<sub>n</sub>代表錯誤的Data離空白區邊界有多遠，而我們將ξ<sub>n</sub>的總和加進去Cost裡面，在優化的過程中將使違反的狀況不會太多和離邊界太遠，<strong>而參數C負責控制ξ<sub>n</sub>總和的影響程度，如果C很大，代表不大能容忍雜訊；如果C很小，則代表對雜訊的容忍很寬鬆</strong>。</p>
+<p><strong>因此我們現在有兩種Support Vector，一種是剛好落在空白區邊界的，稱為Free Support Vector；另外一種是違反規則並超出空白區的，稱為Bounded Support Vector，切平面一樣是由這些Support Vector所決定。</strong></p>
+<p><br/></p>
+<h5><u>Kernel Soft-Margin SVM</u></h5>
+<p><img alt="Kernel Soft-Margin SVM" src="https://dl.dropbox.com/s/opndal9c0nhbo9p/MachineLearningTechniques.004.jpeg"></p>
+<p>接下來同樣的對Soft-Margin SVM做數學上Lagrange Multiplier和Lagrange Dual Problem的轉換，再將Kernel Function用上，一樣的，我將這部份的證明放在後面的附錄上，這邊就直接從結果講起。</p>
+<p>Kernel Soft-Margin SVM的公式是，在0 ≤ <strong>α<sub>n</sub> ≤ C</strong>; 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub> = 0的限制條件下，求解α<sub>n</sub></p>
+<p>使得 [(1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)-𝚺<sub>n</sub> α<sub>n</sub>]為最小值，</p>
+<p>你會發現和Kernel Hard-Margin SVM唯一只差在α<sub>n</sub>被C所限制。</p>
+<p>當我們已經有了每筆數據點的α<sub>n</sub>了，接下來可以利用α<sub>n</sub>求出切平面的W和b，α<sub>n</sub>一樣的可以看作是某個數據點對切平面的貢獻程度，α<sub>n</sub>=0的這些數據點為非Support Vector，而α<sub>n</sub>&gt;0的這些數據點是Support Vector，可以進一步細分，α<sub>n</sub> &lt; C為Free Support Vector，而α<sub>n</sub>＝C為Bounded Support Vector。相同的，W和b可由Support Vector (Free Support Vector和Bounded Support Vector)決定，跟Kernel Hard-Margin SVM公式一模一樣</p>
+<p><strong>W = 𝚺<sub>n=sv</sub> α<sub>n</sub>y<sub>n</sub>Z<sub>n</sub></strong></p>
+<p><strong>b=y<sub>sv</sub>-𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>K(X<sub>n</sub>,X<sub>sv</sub>)</strong></p>
+<p><br/></p>
+<h5><u>Kernel Soft-Margin SVM: 容忍雜訊的無窮次方特徵轉換</u></h5>
+<p><img alt="Guassian Kernel in Soft-Margin SVM" src="https://dl.dropbox.com/s/aw9v5e2tr9onqfy/MachineLearningTechniques.000_02.png"></p>
+<p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/204_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/204_handout.pdf</a></p>
+<p>來看看Kernel Soft-Margin SVM搭配上Guassian Kernel的效果如何，上圖是模擬的結果，我們會發現有部分Data違反分類規則，所以Soft-Margin SVM確實可以容忍雜訊，而且C越小，容忍雜訊的能力越強，所以要特別注意C的選取，如果沒有選好還是可能造成Overfitting的。</p>
+<p><br/></p>
+<h5><u>結語</u></h5>
+<p>在這一篇當中，我們介紹了Hard-Margin SVM和Soft-Margin SVM，並且成功的利用數學工具將問題轉換成，可以單單使用Data的Labels來做優化，而將複雜的特徵轉換利用Kernel Function的方式「嵌入」到優化的過程裡頭，此時計算量就只與Data數量有關，所以可以完全不管特徵轉換所帶來的複雜度，因此利用Guassian Kernel就可以做到「無窮多次的特徵轉換」了。最後再次強調數學的部分非常重要，它提供的方法和概念是可以重複使用的，而這部份的數學是少不了的，所以有興趣的可以繼續往下看下去。</p>
+<p><br/><br/></p>
+<h5><u>[進階] 拉格朗日乘子法（Lagrange Multiplier）</u></h5>
+<p>如果是物理系學生修過古典力學，應該對這個數學工具不陌生。<strong>Lagrange Multiplier是用在有限制條件之下的求極值問題</strong>，步驟如下：</p>
+<ol>
+<li>問題：在限制 g<sub>i</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) = 0, i=1~k  之下，求 f(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) 的極值</li>
+<li>假設Lagrange Function：   L(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>,λ<sub>i</sub>) = f(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) + 𝚺<sub>i</sub> λ<sub>i</sub> × g<sub>i</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>)</li>
+<li>聯立方程式求解：</li>
+<li>找L的極值：∇L = 0  [Stationarity Condition]</li>
+<li>g<sub>i</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) = 0, i=1~k  [Primal Feasibility Condition]</li>
+<li>求解以上聯立方程式得到最佳解 x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub></li>
+</ol>
+<p>上面的聯立方程式不難理解，Primal Feasibility Condition就是我們的限制式，然後Stationarity Condition就是求極值的方法，非常直觀，滿足上面的式子我們就可以在限制上面找極值。</p>
+<p><br/></p>
+<p>上面是一般的Lagrange Multiplier，只有考慮到限制式是等式的情形，假如限制條件是不等式呢？我們來看一下加強版的Lagrange Multiplier：</p>
+<ol>
+<li>問題：在限制 g<sub>i</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) = 0, i=1~k 且  h<sub>j</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) ≤ 0, j=1~r 之下，求 f(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) 的極值</li>
+<li>假設Lagrange Function：   L(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>, λ<sub>i</sub>,μ<sub>j</sub>) = f(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) + 𝚺<sub>i</sub> λ<sub>i</sub> × g<sub>i</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) + 𝚺<sub>j</sub> μ<sub>j</sub> × h<sub>j</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>)</li>
+<li>聯立方程式求解：</li>
+<li><strong>找L的極值：∇L = 0  [Stationarity Condition]</strong></li>
+<li><strong>g<sub>i</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) = 0, i=1~k 且 h<sub>j</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) ≤ 0, j=1~r  [Primal Feasibility Condition]</strong></li>
+<li><strong>μ<sub>j</sub>  × h<sub>j</sub> (x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) = 0, j=1~r  [Complementary Slackness Condition]</strong></li>
+<li><strong>求L的最小值時 μ<sub>j</sub> ≥ 0, j=1~r；求L的最大值時 μ<sub>j</sub> ≤ 0, j=1~r [Dual Feasibility Condition]</strong></li>
+<li><strong>以上的條件包括Stationarity、Primal Feasibility、Complementary Slackness、Dual Feasibility通稱 KKT (Karush-Kuhn-Tucker) Conditions</strong></li>
+</ol>
+<p>加強版的Lagrange Multiplier和一般版的一樣有Stationarity Condition和Primal Feasibility Condition。唯一增加的是Complementary Slackness Condition和Dual Feasibility Condition。</p>
+<p>先來講一下Complementary Slackness Condition怎麼來的，我們來考慮不等式條件h<sub>j</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) ≤ 0，會有兩個情形發生，一個是壓到邊界，也就是h<sub>j</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) = 0，這個時候問題就回到一般版的Lagrange Multiplier，此時μ<sub>j</sub>和λ<sub>i</sub>效果是一樣的，μ<sub>j</sub>可以是任意值；另外一種情況是我沒壓到邊界，也就是h<sub>j</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) &lt; 0，這個時候我可以把這個限制看作不存，最簡易的方法就是令μ<sub>j</sub>=0，他在L(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>, λ<sub>i</sub>,μ<sub>j</sub>) 中就不參與作用了。<strong>所以綜合壓到邊界和不壓到兩種情況，我們可以寫出一個有開關效果的方程式 μ<sub>j</sub> × h<sub>j</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) = 0，這就是Complementary Slackness Condition。</strong></p>
+<p>另外一個是Dual Feasibility Condition，這個限制一樣是在不等式條件才會發生，μ<sub>j</sub>的正負號取決於L是要求最大還是求最小值，稍微解釋一下，找極值我們用∇L = 0這個式子來求，代入Lagrange Function後得∇L = ∇f +𝚺<sub>i</sub>λ<sub>i</sub>×∇g<sub>i</sub>+𝚺<sub>j</sub>μ<sub>j</sub>×∇h<sub>j</sub>=0，先定性來看，假設不計∇g<sub>i</sub>的影響，當最後解落在h ≤ 0的邊界上時∇f＝- μ×∇h，因為h ≤ 0的關係，所以∇h是朝向可行區的外面，如果今天是求f的極小值，那們∇f應當朝著可行區才合理，如果不是的話則可行區內部有更小更佳的解，所以求極小值時μ ≥ 0；如果是求f的極大值，那∇f應當朝著可行區的外面，所以μ ≤ 0，這個條件待會會用在對偶問題上面。</p>
+<p><br/></p>
+<p>其實我們之前在《機器學習基石》裡的Regularization有偷用了Lagrange Multiplier的產物。</p>
+<p>Regularization將W的長度限制在一個範圍，表示成</p>
+<p>|W|<sup>2</sup> ≤ C</p>
+<p>在這個條件下我們要找E<sub>in</sub>的極小值，使用加強版的Lagrange Multiplier：</p>
+<ol>
+<li>問題：在限制  |W|<sup>2</sup> - C ≤ 0 之下，求 E<sub>in</sub> 的極小值</li>
+<li>假設Lagrange Function：   L = E<sub>in</sub> + μ × ( |W|<sup>2</sup> - C)</li>
+<li>聯立方程式求解：</li>
+<li>𝞉L / 𝞉W = 𝞉E<sub>in</sub> / 𝞉W + 2μ × |W| = 0  [Stationarity Condition]</li>
+<li>|W|<sup>2</sup> - C ≤ 0  [Primal Feasibility Condition]</li>
+<li>μ × ( C - |W|<sup>2</sup> ) = 0  [Complementary Slackness Condition]</li>
+</ol>
+<p>Stationarity Condition的結果就是Regularization的結果了，可以<a href="http://www.ycc.idv.tw/YCNote/post/28">回去參照一下</a>。</p>
+<p><br/></p>
+<h5><u>[進階] Lagrangian Dual Problem</u></h5>
+<p>接下來來講對偶問題，這個部分很難，我也是反覆在網路上看了很多篇介紹才弄懂，推薦大家看<a href="http://www.eng.newcastle.edu.au/eecs/cdsc/books/cce/Slides/Duality.pdf">這一篇</a>，這篇介紹的很清楚，應該會對大家理解Lagrangian Dual有幫助。</p>
+<p>來考慮一下待會會用到的求極小值問題，</p>
+<blockquote>
+<p>在限制 g<sub>i</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) = 0, i=1~k 且  h<sub>j</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) ≤ 0, j=1~r 之下，求 f(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) 的極小值。</p>
+</blockquote>
+<p>如果我們利用剛剛的解法，稱之為Lagrangian Primal Problem。</p>
+<p><strong>而這個問題可以等效轉換成Lagrangian Dual Problem，利用以下關係式</strong></p>
+<p><strong>Minimum Problem ≡ min. L  ≡ min. [max.<sub>μ ≥ 0</sub> L] ≥ max.<sub>μ ≥ 0</sub> [min. L(μ)]</strong></p>
+<p>我們在將原本min. L 換成min. [max.<sub>μ ≥ 0</sub> L] 是不影響結果的，因為我們剛剛分析過了在求最小值時μ ≥ 0是合理的，相反的如果μ &lt; 0，則求max.<sub>μ ≥ 0</sub> L時會產生無限大的結果，接下來就是交換min.和max.的部分，數學上可以證明min. [max.<sub>μ ≥ 0</sub> L] ≥ max.<sub>μ ≥ 0</sub> [min. L(μ)]這樣的關係，我們就稱左式轉到右式為Dual轉換。</p>
+<p>而上面式子右側的求法，我們可以先求出Θ(λ<sub>i</sub>,μ<sub>j</sub>) = given λ<sub>i</sub>,μ<sub>j</sub> to find min. L(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>, λ<sub>i</sub>,μ<sub>j</sub>) ，作法是使用∇L = 0所產生符合極值的參數代入L(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>, λ<sub>i</sub>,μ<sub>j</sub>)，換成以λ<sub>i</sub>,μ<sub>j</sub>表示的Θ(λ<sub>i</sub>,μ<sub>j</sub>)。然後，再求Θ(λ<sub>i</sub>,μ<sub>j</sub>)的最大值，就可以了。</p>
+<p><strong>經過Dual轉換後，我們將原本在x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>的問題轉換到λ<sub>i</sub>,μ<sub>j</sub>的空間上。</strong></p>
+<p>這個轉換我們可以使用下面的圖來解釋，</p>
+<p><img alt="Lagrangian Dual Geometric Interpretation" src="https://dl.dropbox.com/s/xbham8glnwivfzz/MachineLearningTechniques.005.jpeg"></p>
+<p>我們先不管g(x)的部分只看f(x)和h(x)的部分，假設所有的Data x映射到f(x)和h(x)會產生一塊區域G。</p>
+<p>在Primal Problem中我們可以很容易的找出h<sub>j</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) ≤ 0的限制之下f(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) 的最小值，見上圖左側。</p>
+<p>見上圖中間，Dual Problem採取另外一個方法，它先去找</p>
+<p>Θ(μ) = given μ to find min. L(x,μ)，其中 L(x,μ) = f(x)+μh(x)。</p>
+<p>f(x)+μh(x)=α在圖中的平面上是一條直線，而f(x)+μh(x)的值也就是α也正好是它的「截距」，所以在給定μ後要最小化f(x)+μh(x)的方法，就等效於固定直線斜率最小化截距，所以最後這個直線就必須要切於G才能使得截距最小，所以我們得到一條切於G且斜率(-μ)的直線， 因此我們就順利的得到Θ(μ)的關係式了，接下來我要找出Θ(μ)的最大值，所以就必須往上推，這個時候你就發現答案和前面Primal Problem答案一模一樣，這種最佳化答案相同的情況稱為「Strong Duality」，而最佳化答案不相同的情況就叫做「Weak Duality」，見上圖右側，在這種G的形狀下，就會產生最佳化答案不相同的情況。</p>
+<p><br/></p>
+<h5><u>[進階] Hard-Margin SVM Dual + Kernel Function = Kernel Hard-Margin SVM</u></h5>
+<p>那我們現在可以正式的把Lagrangian Dual的東西放到Hard-Margin SVM上面。</p>
+<p>回想一下Hard-Margin SVM的問題是：</p>
+<blockquote>
+<p>在y<sub>n</sub>×(W<sup>T</sup>X<sub>n</sub>+b) ≥ 1 , n=1~N的條件下，求(W<sup>T</sup>W/2) 最小的情形。</p>
+</blockquote>
+<p>那如果加上非線性轉換，從X空間轉到Z空間，則問題變成</p>
+<blockquote>
+<p>在y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b) ≥ 1 , n=1~N的條件下，求(W<sup>T</sup>W/2) 最小的情形。</p>
+</blockquote>
+<p>所以我們可以使用Lagrangian Multiplier來解決問題，依以下步驟：</p>
+<ol>
+<li>假設Lagrange Function：   L(W,b,α) = (W<sup>T</sup>W/2) +  𝚺<sub>n</sub> α<sub>n</sub> × [1-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b)]</li>
+<li>考慮Primal Feasibility、Complementary Slackness、Dual Feasibility的限制</li>
+<li>Primal Feasibility Condition：1-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b) ≤ 0 [式1-1]</li>
+<li>Complementary Slackness Condition：α<sub>n</sub>  × [1-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b)] = 0 [式1-2]</li>
+<li>Dual Feasibility Condition：α<sub>n</sub>  ≥ 0 [式1-3]</li>
+<li>先求出Θ(α) = given α to find min. L(W,b,α)</li>
+<li>𝞉L / 𝞉b = - 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub> = 0 [式1-4]</li>
+<li>𝞉L / 𝞉W<sub>n</sub> =  |W|- 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>Z<sub>n</sub> = 0，y<sub>n</sub>Z<sub>n</sub>應該和W同向，所以
+     W = 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>Z<sub>n</sub> [式1-5]</li>
+<li>因此L(W,b,α)只要滿足[式1-4]和[式1-5]就代表是極小值了</li>
+<li>所以[式1-4]和[式1-5]代入得Θ(α,β) = (-1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>Z<sub>n</sub>Z<sub>m</sub>+𝚺<sub>n</sub> α<sub>n</sub></li>
+<li>求Θ(α)極大值</li>
+<li>max.[Θ(α)]＝min.[-Θ(α)]=min.[(1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>Z<sub>n</sub>Z<sub>m</sub>-𝚺<sub>n</sub> α<sub>n</sub>] —[式1-6]</li>
+<li>綜合上述[式1-3]、[式1-4]、[式1-6]並改寫成Kernel的形式得，min. [(1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)-𝚺<sub>n</sub> α<sub>n</sub>], s.t. α<sub>n</sub> ≥ 0 ;  𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub> = 0，使用QP Solver可以求出 α<sub>n</sub>。</li>
+<li>可以用α<sub>n</sub>來求W和b</li>
+<li>α<sub>n</sub>涵義：觀察[式1-2]可得 (1) α<sub>n</sub> = 0 為Non-Support Vector； (2) α<sub>n</sub> &gt; 0 代表y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b)=1，為Support Vector。</li>
+<li>由[式1-5]得，W = 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>Z<sub>n</sub>，從式子中你會發現對W有貢獻的只有Support Vector (α<sub>n</sub>&gt;0)。</li>
+<li>假設在某個Support Vector(α<sub>n</sub>&gt;0)上，由[式1-2]可推得，b=y<sub>sv</sub>-𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>K(X<sub>n</sub>,X<sub>sv</sub>)  (at Support Vector)。</li>
+</ol>
+<p><br/></p>
+<h5><u>[進階] Soft-Margin SVM Dual + Kernel Function = Kernel Soft-Margin SVM</u></h5>
+<p>考慮Soft-Margin SVM和特徵轉換：</p>
+<blockquote>
+<p>在y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b) ≥ 1-ξ<sub>n</sub>且ξ<sub>n</sub> ≥ 0, n=1~N的條件下，求(W<sup>T</sup>W/2) + C 𝚺<sub>n</sub> ξ<sub>n</sub>最小的情形。</p>
+</blockquote>
+<p>所以我們可以使用Lagrangian Dual Problem來解決問題，依以下步驟：</p>
+<ol>
+<li>假設Lagrange Function：   L(W,b,ξ,α,β) = (W<sup>T</sup>W/2) + C 𝚺<sub>n</sub> ξ<sub>n</sub> +  𝚺<sub>n</sub> α<sub>n</sub> × [1-ξ<sub>n</sub>-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b)] + 𝚺<sub>n</sub> β<sub>n</sub> × [-ξ<sub>n</sub>]</li>
+<li>考慮Primal Feasibility、Complementary Slackness、Dual Feasibility的限制</li>
+<li>Primal Feasibility Condition：1-ξ<sub>n</sub>-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b) ≤ 0 [式2-1]；-ξ<sub>n</sub> ≤ 0 [式2-2]</li>
+<li>Complementary Slackness Condition：α<sub>n</sub>  × [1-ξ<sub>n</sub>-y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b)] = 0 [式2-3]；β<sub>n</sub> × [-ξ<sub>n</sub>] = 0 [式2-4]</li>
+<li>Dual Feasibility Condition：α<sub>n</sub>  ≥ 0 [式2-5]；β<sub>n</sub>  ≥ 0 [式2-6]</li>
+<li>先求出Θ(α,β) = given α,β to find min. L(W,b,ξ,α,β)</li>
+<li>𝞉L / 𝞉b = - 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub> = 0 [式2-7]</li>
+<li>𝞉L / 𝞉W<sub>n</sub> =  |W|- 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>Z<sub>n</sub> = 0，y<sub>n</sub>Z<sub>n</sub>應該和W同向，所以
+     W = 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>Z<sub>n</sub> [式2-8]</li>
+<li>𝞉L / 𝞉ξ<sub>n</sub> = C - α<sub>n</sub> - β<sub>n</sub> = 0 [式2-9]</li>
+<li>因此L(W,b,ξ,α,β)只要滿足[式2-7]、[式2-8]和[式2-9]就代表是極小值了</li>
+<li>所以[式2-7]、[式2-8]和[式2-9]代入得Θ(α,β) = (-1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>Z<sub>n</sub>Z<sub>m</sub>+𝚺<sub>n</sub> α<sub>n</sub></li>
+<li>求Θ(α,β)極大值</li>
+<li>max.[Θ(α,β)]＝min.[-Θ(α,β)]=min.[(1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>Z<sub>n</sub>Z<sub>m</sub>-𝚺<sub>n</sub> α<sub>n</sub>] —[式2-10]</li>
+<li>綜合上述[式2-5]、[式2-6]、[式2-9]、[式2-10]並改寫成Kernel的形式得，min. [(1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)-𝚺<sub>n</sub> α<sub>n</sub>], s.t. 0 ≤ α<sub>n</sub> ≤ C;  𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub> = 0，使用QP Solver可以求出 α<sub>n</sub>。</li>
+<li>可以用α<sub>n</sub>來求W和b</li>
+<li>α<sub>n</sub>涵義：觀察[式2-3]和[式2-4]可得 (1) α<sub>n</sub> = 0 為Non-Support Vector； (2) 0 &lt; α<sub>n</sub> &lt; C 代表y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b)=1，為Free Support Vector；(3) α<sub>n</sub> = C 代表y<sub>n</sub>×(W<sup>T</sup>Z<sub>n</sub>+b)=1-ξ<sub>n</sub>，為Bounded Support Vector。</li>
+<li>由[式2-8]得，W = 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>Z<sub>n</sub>，從式子中你會發現對W有貢獻的只有Support Vector (α<sub>n</sub>&gt;0)。</li>
+<li>假設在某個Support Vector(α<sub>n</sub>&gt;0且β<sub>n</sub>&gt;0)上，由[式2-3]和[式2-4]可推得，b=y<sub>sv</sub>-𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>K(X<sub>n</sub>,X<sub>sv</sub>)  (at Support Vector)。</li>
+</ol></dd>
+                <dt>2017 / 1月 12</dt>
+                <dd><a href="./ml-course-techniques_1.html">機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>在之前四篇文章中，我總結了台大教授林軒田在Coursera上的《機器學習基石》16堂課程，我覺得這是機器學習初學很重要的基礎課程，接下來我要接續更進階的課程。</p>
+<p>林軒田教授的機器學習是兩學期的課，第一學期是《機器學習基石》，第二學期就是接下來這個系列要講的《機器學習技法》，這兩堂課程是有相當大的銜接關係的，所以如果想看這系列的文章，請先看<a href="http://www.ycc.idv.tw/tag__筆記：機器學習基石/">這四篇《機器學習基石》的介紹</a>或者<a href="https://www.coursera.org/learn/ntumlone-mathematicalfoundations">直接到Coursera上學習</a>。</p>
+<p>《機器學習技法》課程影片可以到老師的Youtube [ <a href="https://www.youtube.com/playlist?list=PLXVfgk9fNX2IQOYPmqjqWsNUFl2kpk1U2">https://www.youtube.com/playlist?list=PLXVfgk9fNX2IQOYPmqjqWsNUFl2kpk1U2</a> ]上收看，投影片可以到老師的個人網站上下載 [ <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/</a> ]。</p>
+<p>以前，我曾經和實驗室的英國學長聊英國的教育方法，然後我驚人的發現，他的學校在大一就已經學過量子場論（物理上很難的學科XDD）了，我就很好奇量子場論不是需要很深厚的數學基礎嗎？大一是要怎麼教啊？他告訴我，他們大一就會完整走過物理的各大領域，不過是用非常概念的方式來學習，不牽涉到太困難的數學，但這概念的一系列課程卻是四年大學中相當重要的基礎，讓他在開始學細節前就可以知道這些東西未來會用在哪裡？產生了連結讓學習更有效率。</p>
+<p>所以，《機器學習技法》中會介紹很多厲害的機器學習的方法，但這一篇我不直接進去看每個方法的細節，我想帶大家坐著直升機來先看看這遊樂園中有哪些遊樂設施，先來見林再來見樹，會更容易了解。</p>
+<p><br/></p>
+<h5><u>有什麼特徵可以使用？</u></h5>
+<p>在之前《機器學習基石》中，我們講到了Features（特徵）的選擇，<strong>Features（特徵）就是我的Model描述Data的方法，也可以說是影響Data的變數</strong>，那在之前我們講過Features（特徵）的選擇可以是線性的，那也可以使用「特徵轉換」來產生非線性。</p>
+<p>在這系列文章，我們會看到更多種類的Features，可以分為三類：</p>
+<ol>
+<li>Embedding Numerous Features（嵌入大量特徵）</li>
+<li>Combining Predictive Features（綜合預測結果的特徵）</li>
+<li>Distilling Implicit Features（抽取隱含特性的特徵）</li>
+</ol>
+<p>我已經盡力用我的理解翻譯上面的英文，哈！</p>
+<p>這些不同種類的Features就會造成不同的Models，這些Models分別是</p>
+<ol>
+<li>Embedding Numerous Features ：Kernel Models（Kernel模型）</li>
+<li>Combining Predictive Features：Aggregation Models（集合模型）</li>
+<li>Distilling Implicit Features：Extraction Models（萃取模型）</li>
+</ol>
+<p>讓我們依序來看。</p>
+<p><br/></p>
+<h5><u>Embedding Numerous Features ：Kernel Models</u></h5>
+<p>還記得《機器學習基石》中，我們講了哪些Model嗎？我們一開始講了二元分類問題，然後提出了Perceptron Learning Algorithm (PLA)來解決這個問題（<a href="http://www.ycc.idv.tw/YCNote/post/25">詳見《機器學習基石》第一篇</a>），如果數據是線性可分的話，我們就可以使用PLA劃分出一條邊界來區分兩種種類。</p>
+<p>接下來提到我們可以使用Regression的方法來做二元分類問題，其中Logistic Regression考慮了雜訊造成每個Label的出現呈機率分布，給予一個較為寬鬆的區分方法，我們會稱PLA為Hard Classification，而Logistic Regression為Soft Classification。（<a href="http://www.ycc.idv.tw/YCNote/post/27">詳見《機器學習基石》第三篇</a>）</p>
+<p>最後，我們引入「特徵轉換」將我們原本的線性區分推到非線性區分，讓我的Model有更大的複雜度，也因為如此，我們需要使用Regularization和Validation來避免 Overfitting。（<a href="http://www.ycc.idv.tw/YCNote/post/28">詳見《機器學習基石》第四篇</a>）</p>
+<p><strong>那如果我想要使用無窮個高次方的非線性Features來當作我的Model，可以做到嗎？</strong></p>
+<p>來看一下之前我們做特徵轉換怎麼做的？其實我們沒有多做什麼功夫，我們只是把高次項先產生出來，然後在把這每一項當作線性模型的Features去處理，我們就用線性模型的方法產生了非線性的效果。</p>
+<p>那如果非線性項目的個數無窮多個，顯然這種方法就做不了了啊！</p>
+<p>不過，數學總是會拯救我們，<strong>我們可以使用Dual Transformation加上Kernel Function的技巧，帶我們走捷徑，直接用解析解讓我們得出答案，繞過要考慮無窮多個Features後再處理的窘境。</strong></p>
+<p>第一堂課「Linear Support Vector Machine」中，提出Hard-Margin Support Vector Machine (SVM)的架構，他和PLA非常相近，屬於Hard Classification，不同的是Hard-Margin SVM還會讓這個切分的邊界落在最佳的位置上。</p>
+<p>第二堂課 「Dual Support Vector Machine」中，我們開始使用Dual Transformation，把大部分與Data中Features有關的計算，取代成計算與Data中Labels有關的計算，讓我們朝不需要計算Features邁進一步，但是因為有另外一部分還是需要計算Features，所以一樣的我們還是無法讓Features有無窮多個。</p>
+<p>第三堂課「Kernel Support Vector Machine」中，我們引入Kernel Function來幫助我們，現在真的可以不需去列出所有Features也能算出答案，所以我們就可以讓Features有無窮多項，但也因為Model太過複雜，我們不得不去面對Overfitting的問題。</p>
+<p>第四堂課「Soft-Margin Support Vector Machine」中，提出Soft-Margin SVM，它是一種Soft Classification，讓我們可以允許部分錯誤發生，並且同樣的使用Dual Transformation加上Kernel Function的技巧，來讓我可以使用無窮多項的Features，而且因為Soft-Margin SVM可以允許錯誤，也就是對雜訊有容忍度，因此可以幫助我們抑制Overfitting的發生。</p>
+<p>第五堂課「Kernel Logistic Regression」中，我們將Kernel的方法引入Logistic Regression當中來用不同於Soft-Margin SVM的方式做二元分類。</p>
+<p>第六堂課「Support Vector Regression」中，會介紹如何使用Kernel Model來做各類Regression的問題。</p>
+<p><strong>這6堂課，主要做的事是把《機器學習基石》裡面學到的東西，全部引入數學工具讓Model的Features可以擴展到無窮多項，產生更強大的Kernel Model。</strong></p>
+<p><br/></p>
+<h5><u>Combining Predictive Features：Aggregation Models</u></h5>
+<p>那如果今天我有很多支的Model，我有辦法融合他們得到更好的效果嗎？</p>
+<p><strong>這就是Aggregation Models的精髓，Aggregation Models藉由類似於投票的方法綜合各個子Models的結果得到效果更好的Model。換個角度看，你可以把整個體系看成一個新的Model，而原本這些子Models當作轉換過後的新Features，所以Aggregation Model裡頭做了「特徵轉換」，這個轉換產生出許多有預測答案能力的Features，稱為Predictive Features，然後再綜合它們。</strong></p>
+<p>Aggregation Models可以分成兩大類，第一種的作法比較簡單，先Train出一個一個獨立的Predictive Features，然後在綜合它們，<strong>「集合」的動作是發生在得到Train好的Predictive Feature之後，這叫做「Blending Models」</strong>；第二種作法則是，<strong>「集合」的動作和Training同步進行，這叫做「Aggregation-Learning Models」</strong>。</p>
+<p>從「集合」的方法上也可以進一步細分三種類型，有票票等值的<strong>「Uniform Aggregation Type」</strong>，有給予Predictive Features不同權重的<strong>「Linear Aggregation Type」</strong>，甚至還可以用條件或任意Model來分配Predictive Features，這叫做<strong>「Non-linear Aggregation Type」</strong>。</p>
+<p>所以兩種類型、三種Aggregation Type，交互產生六種Aggregation Models。</p>
+<p>第七堂課「Bootstrip Aggregation」中，一開始介紹Blending Models的三種Aggregation Type，第一種是直接平均所有的Predictive Features，第二種則是藉由每個Predictive Feature的預測能力，使用線性模型去調配它們的權重，第三種則是使用任意模型分配權重。接著又介紹了Aggregation-Learning Models的Uniform Aggregation Type，稱之為Bagging，它的特點在於它可以利用變換Dataset來造出很多個Predictive Features，並接著做Aggregation。</p>
+<p>第八堂課「Adaptive Boosting」中，介紹Aggregation-Learning Models的Linear Aggregation Type，稱之為AdaBoost，它的特點在於它可以使得每個Predictive Features彼此間可以截長補短。</p>
+<p>第九堂課「Decision Tree」中，介紹Aggregation-Learning Models的Non-linear Aggregation Type，稱之為Decision Tree。</p>
+<p>第十堂課「Random Forest」中，使用Bagging來做Decision Tree，這叫做Random Forest。</p>
+<p>第十一堂課「Gradient Boosted Decision Tree」中，會介紹AdaBoost的Regression版本稱為GradientBoost，並且運用AdaBoost和GradientBoost在Decision Tree上面。</p>
+<p><strong>這5堂課，我們將會介紹Aggregation Models，引入綜合、集合Predictive Feature的概念來使我們造出更好的Model。</strong></p>
+<p><br/></p>
+<h5><u>Distilling Implicit Features：Extraction Models</u></h5>
+<p>那最後這個部分則是介紹現今很流行的「類神經網路」(Neural Network) 和「深度學習」(Deep Learning)，在這裡我們通稱Extraction Models。</p>
+<p><strong>Extraction Models的特色在於它「特徵轉換」的方法，使用一層一層神經元來做非線性的特徵轉換，如果具有多層神經元，那就是做了多次的非線性特徵轉換，這就是「深度學習」，藉由Data機器會自行學習出這每一層的特徵轉換，找出隱含的Features。</strong></p>
+<p>第十二堂課「Neural Network」中，介紹Neural Network，並介紹Neural Network的演算法—Back-Propagation（反向傳遞法），在概念上Gradient Descent就是Back-Propagation的源頭，另外介紹避免Overfitting的方法—Early Stopping。</p>
+<p>第十三堂課「Deep Learning」中，開始介紹「深度學習」，考慮多層神經元的Neural Network就叫做Deep Learning，我們會探討如何在Deep Learning中加入Regularization，並介紹一種叫做Auto-encoder的特殊Deep Learning方法。</p>
+<p>第十四堂課「Radial Basis Function Network」中，介紹Radial Basis Function (RBF) Network，並且介紹K-means等非監督分類法。</p>
+<p>第十五堂課「Matrix Factorization」中，我們會探討類別的匹配問題，例如：我想要知道用戶喜歡看什麼電影，而我的Data只有用戶的ID和電影的編號。</p>
+<p><strong>這4堂課，我們將會介紹Extraction Model，使用神經元的概念來萃取出Data中的Features。</strong></p>
+<p><br/></p>
 <h5><u>後話</u></h5>
-<p>這篇文章帶大家初探了一眼機器學習，介紹了機器學習的架構和種類，以及它的使用時機，還有介紹了整門課非常重要的二元分類問題。但是講這麼多，機器學習真的可能嗎? 那如果可以做到，會需要哪一些要素呢? 這就必須深入理論之中，才能找到答案，在下一篇文章裡，我將介紹這門課的第二個部分：Why Can Machines Learn? </p></dd>
+<p>最後總結一下《機器學習技法》會講哪些東西？我們會講具有三種不同「特徵轉換」方式的Models。<strong>Kernel Model的「特徵轉換」是將非線性Features擴張到無窮多個；Aggregation Model的「特徵轉換」是產生出有預測能力的Features；Extraction Model的「特徵轉換」是利用神經元的方式來做到萃取出隱含的資訊。</strong></p>
+<p><strong>跟《機器學習基石》不一樣的地方，《機器學習技法》中介紹更厲害的「特徵轉換」來產生更厲害的Model，不過因為會有Overfitting的狀況，所以我們還需要介紹相應的配套措施。</strong></p>
+<p>在未來一系列的文章，我會帶大家一一的來看這些內容，不過和之前一樣，我不會以課堂當作單位來講，而是以單元式的方式，而且我主要的目的是去點出概念，並盡可能的不去牽涉太多的數學計算，但是數學計算的部分是很重要的，這會影響到你真正的實作，數學的部份可以去看林軒田老師的影片或投影片，裡頭都有很詳細的介紹。</p></dd>
             </dl>
         </div>
     </div>
 <!-- /Navigation -->
 <div class="container navigation">
     	<a class="navigate pull-left" href="./index2.html"><i class="fa fa-caret-left"></i> Previous</a>
+    	<a class="navigate pull-right" href="./index4.html">Next <i class="fa fa-caret-right"></i></a>
 </div>              
 <!-- /Navigation --> 
         <!-- /Content --> 
