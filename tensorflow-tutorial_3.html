@@ -4,11 +4,11 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="YC Note, 本網站內容包括機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)。">
-        <meta name="keywords" content="">
+        <meta name="description" content="這一章我們終於要討論到影像辨識的重頭戲啦！通常，處理影像類別我們會用Convolutional Neurel Network，聽起來很難很厲害，不過只要了解背後概念你就知道為什麼要這麼做了，讓我們看下去。 本單元程式碼可於Github下載。 影像有什麼特性 來想一下，影像具備了什麼特性？ (1)...">
+        <meta name="keywords" content="Tensorflow">
         <link rel="icon" href="./static/img/favicon.png">
 
-        <title>Homepage - page 2 - YC Note</title>
+        <title>實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN) - YC Note</title>
 
         <!-- Stylesheets -->
         <link href="./theme/css/all.min.css" rel="stylesheet">
@@ -16,6 +16,7 @@
 
         <!-- RSS Feeds -->
         <link href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Full Atom Feed" />
+        <link href="YCNote/feeds/aiml.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Categories Atom Feed" />
         <!-- /RSS Feeds -->
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -31,7 +32,7 @@
     <body>
 
         <!-- Header -->
-    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('./images/welcome_front_board.jpg'); background-position: center; background-size: cover;">
+    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('./images/tensorflow-logo.jpg'); background-position: center; background-size: cover;">
 
             <!-- Static navbar -->
             <div class="container">
@@ -51,17 +52,23 @@
             <!-- /Static navbar -->
 
             <!-- Header -->
+    <!-- Header -->
     <div class="container header-wrapper">
         <div class="row">
               <div class="col-lg-12">
                   <div class="header-content">
-                      <h1 class="header-title">YC NOTE</h1>
+                      <h1 class="header-title">實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)</h1>
+                      <p class="header-date">By <a href="./author/yc-chen.html">YC Chen</a>, 2017 / 11月 12, in category <a href="./category/aiml.html">Ai.ml</a></p>
                       <div class="header-underline"></div>
-                      <p class="header-subtitle header-subtitle-homepage">想像力比知識更重要</p>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="./tag/tensorflow.html">Tensorflow</a>                      </p>
                   </div>
               </div>
         </div>
     </div>
+    <!-- /Header -->
             <!-- /Header -->
 
         </div>
@@ -69,28 +76,22 @@
 
 
         <!-- Content -->
-    
-    <div class="archive-container">
-        <div class="container content archive">
-            <h2><a href="./index2.html">Last Posts <small>- page 2</small></a></h2>
-            <dl class="dl-horizontal">
-                <dt>2017 / 11月 12</dt>
-                <dd><a href="./tensorflow-tutorial_3.html">實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>這一章我們終於要討論到影像辨識的重頭戲啦！通常，處理影像類別我們會用Convolutional Neurel Network，聽起來很難很厲害，不過只要了解背後概念你就知道為什麼要這麼做了，讓我們看下去。</p>
+    <div class="container content">
+        <p>這一章我們終於要討論到影像辨識的重頭戲啦！通常，處理影像類別我們會用Convolutional Neurel Network，聽起來很難很厲害，不過只要了解背後概念你就知道為什麼要這麼做了，讓我們看下去。</p>
 <p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/03_CNN_classification_on_MNIST.py">Github</a>下載。</p>
-<h5><u>影像有什麼特性</u></h5>
+<h3>影像有什麼特性</h3>
 <p>來想一下，影像具備了什麼特性？</p>
 <p>(1) 局域性：通常物件只在一個局域的範圍裡有效，而與太遠的距離無關，譬如我要找一張圖的鳥嘴，鳥嘴的呈現在一張圖當中只會出現在一個小範圍內，所以其實只需要評估這小範圍就可以判斷這是不是鳥嘴了。</p>
 <p>(2) 平移性：通常一張圖任意平移並不影響它的意義，一隻鳥不管是放在圖片的左上角還是右下角，牠都是一隻鳥。</p>
 <p>(3) 縮放性：通常一張圖我把它等比例的放大縮小是不影響它的意義的。</p>
 <p><img alt="影像特性" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.004.jpeg"></p>
-<h5><u>DNN用在影像上的侷限</u></h5>
+<h3>DNN用在影像上的侷限</h3>
 <p>我們剛剛看過了影像具有的三種特性：「局域性」、「平移性」和「縮放性」，那我們就拿這三種特性來檢驗上一回的DNN Classification。</p>
 <p>DNN有「局域性」嗎？沒有，因為我們把圖片攤平處理，原本應該是相鄰的關係就被打壞了，事實上DNN的結構會造成每個Input都會同時影響下一層的「每個」神經元，所以相不相鄰根本沒關係，因為每個Pixels的影響是全域的。</p>
 <p>DNN有「平移性」嗎？沒有，沒有局域性就沒有平移性。</p>
 <p>DNN有「縮放性」嗎？我們沒有一層試著去縮放，而且圖片已經被攤平了，難以做到縮放的效果。</p>
 <p>所以其實使用DNN並不能好好的詮釋影像。</p>
-<h5><u>Convolutional Neurel Network (CNN)</u></h5>
+<h3>Convolutional Neurel Network (CNN)</h3>
 <p>我們需要引入新的架構來處理影像，讓它可以擁有以上三種特性，Convolutional Neurel Network (CNN)此時就登場了，CNN有兩大新要素：Convolution Layer和Pooling Layer，Convolution Layer為我們的Model添加了局域性和平移性，而Pooling Layer則讓Model擁有縮放的特性。</p>
 <p><img alt="Convolution Layer和Pooling Layer" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.005.jpeg"></p>
 <p>Convolution Layer是由Filters所構成的，Filters可以想像是一張小圖，以上面的例子，Filter是一個鳥嘴的小圖，這張小圖要怎麼去過濾原圖呢？答案是使用Convolution(卷積)，把小圖疊到大圖的任意位置，接下來將大圖小圖對到的相應元素相乘起來再加總一起，然後在另外一張表格中填入這個加總值，接下來移動Filter，重複的動作再做一次，如此循環並將值陸續填入表格中，這表格最後就會像是另外一張圖一樣，而這張圖可以繼續串另外的Neurel Network，這就是Convolution Layer的計算方法。</p>
@@ -125,7 +126,7 @@
 <p>接下來來看Pooling Layer如何讓Model擁有檢視縮放的特性？</p>
 <p>先來看在影像上如何做到放大縮小，以Pixels的觀點來看，最簡單的放大方法是，在每個既有的Pixels附近增加一些與它們相似的新Pixel，這樣做就像是將原本的小圖直接拉成大圖，畫質雖然很差，不過這是最簡單的放大方法。那麼縮小就相反操作，把一群附近的Pixels濃縮成一個Pixel當作代表，就可以達到縮小圖片的效果。</p>
 <p>所以回到Pooling Layer的討論，Pooling做的事情就是在縮小圖片，例如我使用2x2來做Pooling，它會在原圖上以2x2來掃描，所以會有四個元素被檢視，然後從這四個值當中產生一個代表值，把原本2x2的Pixels減少成這個1x1的代表值，如果是Max Pooling就是從四個中選最大的那個，如果是Average Pooling則是平均四個值得到平均值，通常如果是2x2的Pooling我們會以每2格一跳的方式掃視，如果是3x3則會以每3格一跳，以此類推。</p>
-<h5><u>Convolution Layer</u></h5>
+<h3>Convolution Layer</h3>
 <p>來看一下Tensorflow如何實作Convolution Layer。</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -192,7 +193,7 @@ Conv:
 <p><code>filter_</code>的部分Rank為4，每個維度分別為<code>[filter_height, filter_width, in_channels, out_channels]</code>，當如果我想要使用多個filters的時候，我的out_channels就不只1而已，如果有RGB的話，in_channels則會是3。</p>
 <p>接下來來看一下<code>tf.nn.conv2d</code>裡頭的參數<code>strides</code>，這可能會讓人感到困惑，它的設定值是<code>[1,conv_strides[0],conv_strides[1],1]</code>，我特別把第二、三項額外用<code>conv_strides</code>來表示，因為這兩個值才是真正代表在圖片上平移每步的距離，那第一項和最後一項的1代表什麼意義呢？是這樣的，Tensorflow是站在維度的角度看平移這件事情，這四個維度分別表示<code>[batch, in_height, in_width, in_channels]</code>的移動量，所以一般情況下只有<code>in_height</code>和<code>in_width</code>需要指定平移的距離。</p>
 <p>最後一個參數就是<code>padding</code>，有兩種可以選擇，分別為<code>VALID</code>和<code>SAME</code>，<code>VALID</code>指的就是沒有額外鋪上0的邊界的情形，<code>SAME</code>則是額外鋪上0的邊界，並且使得輸出的維度和輸入一樣。</p>
-<h5><u>Pooling Layer</u></h5>
+<h3>Pooling Layer</h3>
 <p>接下來來看Tensorflow如何實作Pooling Layer。</p>
 <div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
     <span class="n">img</span> <span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([[[[</span><span class="mi">1</span><span class="p">],[</span><span class="mi">2</span><span class="p">],[</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">]],</span>
@@ -222,7 +223,7 @@ Pooling:
 
 
 <p><code>tf.nn.max_pool</code>的參數中<code>ksize</code>代表kernel size，也就是要Pooling的大小，一樣依照Input layer的Rank去配置，還有<code>strides</code>決定平移的方法。</p>
-<h5><u>最簡單的CNN架構：LeNet5</u></h5>
+<h3>最簡單的CNN架構：LeNet5</h3>
 <p><img alt="LeNet5" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.006.jpeg"></p>
 <p>接下來我們就真正的來實作一下CNN網路，和之前兩個單元一樣，我們拿MNIST的分類問題來當作題目。</p>
 <p>本單元介紹的是最簡單的CNN Classification的方法—LeNet5，流程如上圖所示。</p>
@@ -503,7 +504,7 @@ test_acc = 99.10%
 
 
 <p>太棒了！我們的預測效果如果跟之前的結果比較，在Epoch=3已經達到98.5%了，在Epoch=10更是高達99%！</p>
-<h5><u>圖像化</u></h5>
+<h3>圖像化</h3>
 <p>有這麼好的成果，我們不妨就拉進去看，裡面每個Filters究竟是長什麼樣子的？</p>
 <p>先來看第一層Convolution的Filters。</p>
 <div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">))</span>
@@ -621,945 +622,11 @@ test_acc = 99.10%
 
 
 <p><img alt="png" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA6IAAADFCAYAAABO4U/4AAAABHNCSVQICAgIfAhkiAAAAAlwSFlz%0AAAALEgAACxIB0t1+/AAAIABJREFUeJzt3XmYXFWB/vHvSS9kD1maJHR3Njokk0AIWVgcYFSUTQww%0AgAFHRAUyIjKI4+8RnBGVcWFURkGc0QxK1GFTIYSBsMtiHCAbQUjCEiAJCYGks5AG0lk65/dH1anq%0A5VZ3rbfuPfV+nqefTp2+Vfe8dU7dzu1zz7nGWouIiIiIiIhIWHqVuwIiIiIiIiJSWXQiKiIiIiIi%0AIqHSiaiIiIiIiIiESieiIiIiIiIiEiqdiIqIiIiIiEiodCIqIiIiIiIioarIE1FjzK+NMZuNMS9m%0A+LkxxtxojFljjPmrMWZa2HUslO8Zfc8H/mdUvnjnA/8z+p4P/M+ofPHOB/5nVL5454PKyFgqFXki%0ACswDTunm56cC45Nfc4D/CqFOxTYPvzPOw+984H/GeShfnPOB/xnn4Xc+8D/jPJQvzvnA/4zzUL44%0A54PKyFgSBZ2IGmNOMca8nDzDv6pYlSo1a+1TwLZuNjkD+K1NeAY40BgzMpzaFYfvGX3PB/5nVL54%0A5wP/M/qeD/zPqHzxzgf+Z1S+eOeDyshYKsZam98TjakCXgE+DmwAlgDnW2tXFa96pWOMGQPcZ609%0ALOBn9wHXWWsXJR8/BnzdWrs0YNs5JP66Qb9+/aZPnDixlNXOye7du1mzZg2TJ0/u8rM1a9YwYsQI%0A+vfvD8CyZcv2Ah+KU8Zc8r3yyiu0tLTssNYO7rxtVPNBcdrQ93wQ3Yzqo2pDJ6r5QMcZ9dGEqOYD%0A9VH10YSo5gP/2zBXy5Yta7bW1vW4obU2ry/gWOChdo+vBq7u4Tk2xl/be3pPpk+fbqPkjTfesJMn%0ATw782Sc+8Qn75z//OfUY2AnMsDHKmEu+j370oxZYZWOUz9rit6Hv+WzEMqqPqg2DvqKUz1odZ9RH%0Ao53PWvVR9dFo57PW/zbMFbDU9pDPWlvQpbn1wJvtHm9IlnVgjJljjFlqjOly1h8z68tdgWKqr6/n%0AzTfbNx+1wMYyVafoOufbsGEDwN6yVagEKq0N8Tyf+mj8qA3jr9LyqY/GT6XlUx+tLCVfrMhaO9da%0AO8NaO6PU+yoxrz4Us2bN4re//S3WWp555hmANmvtpnLXq1g65xs0aBCoDWOl0vKpj8aP2jD+Ki2f%0A+mj8VFo+9dHKUl3AczcCje0eN6Cz+8g4//zzeeKJJ2hubqahoYHvfOc77N2b+Fx/8Ytf5LTTTmPh%0AwoU0NTXRt29fgHVlrXCOcs13yy23MHPmzDLXOjdqw8rKpz4aPWrDymtDPM+nPho9yqc+WtGyuX43%0A6IvESezrwFgSQ8zPA5N7eE6553kW8tXjtc6VcC237xmVL7rURysjn62AjMoXXeqjyhd16qOVkc9W%0ASMa8R0SttfuMMV8GHgKqgF9ba1fm+3oiIiIiIiJSGQq5NBdr7UJgYZHqIiIiIiIiIhWgoBPRcps+%0AfToAZ555JmeffTYAEyZMAMAYAyQuPV6+fDkAq1evBuD73/8+L730UtjVFREREREREWJwIjpnzhwA%0A3A1djz/++NTPpk2bBiRONtufeALMnTsXgPnz5/Pwww+HVl8RERERERHpXslv3yIiIiIiIiLSXuRH%0ARH/xi18A6ZHODz74IHVZ7Q033ADASy+9xJYtW4DECKiIiIiIiIhEl0ZERUREREREJFSRHxG9++67%0AgcSCRJAY/YzbjW5FREREREQkLfInopdeeimQXiF39OjRjBo1CoD169eXrV4iIiIiIiKSH12aKyIi%0AIiIiIqGK/IioW4TI3Y7lu9/9LsOGDQM0IioiIiIiIhJHGhEVERERERGRUEV+RNTp1StxzmyM4W/+%0A5m9S/+5s9erVQOI2LyIiIiIiIhI9kT8RraurA+Diiy8GEvcT/c1vfgOkT0Sttal/u/uI3nrrrR0e%0Ai4iIiIiISDTo0lwREREREREJVaRPROvq6njyySd58sknGTVqFKNGjWL58uXcdttt3HbbbVx66aVc%0AeumlfOlLX2L58uUsX76c6dOnM336dO666y7uuusu2traUmV9+/alb9+++VZnWDGzldqDDz7IhAkT%0AaGpq4rrrruvy83nz5lFXV8fUqVOZOnUqxCwf+J/R93yQW0ZgkjHm4tArWQDf29D3fOB/RuWLdz7w%0AP6Pv+UC/C+Pehr7nK6VIn4hGTHO5K5CttrY2LrvsMh544AFWrVrF7bffzqpVq7psN3v2bFasWMGK%0AFSsgRvnA/4y+54PcMwKrrLU3h17RPPnehr7nA/8zKl9CXPOB/xl9zwf6XejEtQ19z1dqkZ4jOmHC%0ABCZMmADA3XffDcC5554buK27vYu7tctnPvMZAM4880wWL14MkOoYp59+OuvWrStdxcts8eLFNDU1%0AMW7cOADOO+88FixYwKRJk8pcs+LxPaPv+cD/jMoXf75nVL748z2j7/nA/4zKJ92J9IjookWLqKqq%0AoqqqinPPPTfjSWh7zc3NNDc389Of/pSf/vSnfPjDH05dwtva2kprayvXXHMNQ4cOZfr06blUpyao%0A0Bgzxxiz1Biz1N3ztNw2btxIY2Nj6nFDQwMbN27sst1dd93FlClTOOeccyBDPvA/o/KVR64ZgXHG%0AmMYuGxDNjL63oY4zaWpD//OB/xmVrzz0uzAhrm1YCceZUor0iWjEjA0qtNbOtdbOsNbOcCv8xsEn%0AP/lJ1q5dy1//+lc+/vGPQ4Z84H9G5Yuu9hmBncBvgraLa0bf21DHmTTliyb10TTliy79LkzwPR/E%0AN2O+KuJEdO7cucydO5dTTz2VU089ld69e3P44Ydz//33c9ZZZ2U7fJ73Kkdhq6+v580330w93rBh%0AA/X19R22GTp0KAcccACQujVObPKB/xl9zwe5ZyQxpyKnyxjKyfc29D0f+J9R+eKdD/zP6Hs+0O9C%0AiHcb+p6v1CriRLSzww47jNdff51169axf/9+NmzYkM3TWktdr2KZOXMmr776Km+88QZ79uzhjjvu%0AYNasWR222bRpU+rf9957L8QoH/if0fd8kHtG4EBgdZh1LITvbeh7PvA/o/LFOx/4n9H3fKDfhRDv%0ANvQ9X6lFerGiYmtuTixSdfnll/PVr36Vc889F2MMl112Gbt27eKnP/1pd09fG0Ydi6G6upqbbrqJ%0Ak08+mba2Nr7whS8wefJkrrnmGmbMmMGsWbO48cYbuffee6murmbIkCEQo3zgf0bf80HuGYGDgNPL%0AXO2s+d6GvucD/zMqX7zzgf8Zfc8H+l0Y9zb0PV/JWWtD+wJsFL5OOOEEu2TJErtkyRK7efNmu3nz%0AZvuVr3ylp+ct7Snf9OnTbVxlk89WQEbliy710crIZysgo/JFl/qo8kWd+mhl5LMVkrEiL8196qmn%0AUvNFt2zZwpYtW/jxj39c7mqJiIiIiIhUhIq6NLc9d5nuokWLAJg4cWI5qyMiIiIiIlIxehwRNcY0%0AGmMeN8asMsasNMZckSwfYox5xBjzavL74NJXV0REREREROIumxHRfcA/W2uXG2MGAMuMMY8AnwMe%0As9ZeZ4y5CrgK+HrpqlpcbgT0zDPPBGDVqlXlrI6IiIiIiEjF6HFE1Fq7yVq7PPnvFhJLRtcDZ5C+%0A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%0A8tBDDwFw5plnAunbt7gRHbeo06BBg4Boj4g67oPuFis69dRTATjrrLMAmD9/fsnrUMqRUHdphxux%0A27FjBwCEz3AqAAAgAElEQVQtLS0l37eb++m+O24RHvc9k969e3PEEUd0KFu9ejWQ/xxYt7CWO6C7%0Aean5cp+v7haO6k5bW1tqLrr77uaxujmi7kqDUaNG0dDQwPLlyznkkENS70V1dTXGmNTtpQLem9zu%0Ao1NGM2fO5NVXX+WNN96gvr6eO+64g9tuu63DNps2bUr1qeS8/djkA/8zKl+884H/GX3PB7lnBA4E%0AVoddz3z53oa+5yu1WJyIiojETa9evWhoaEhdzgyJk+u2tjastV0WEEtaG1b9ClVdXc1NN93EySef%0ATFtbG1/4wheYPHky11xzDTNmzGDWrFnceOON3HvvvVRXV7t7Gq8tc7Vz4ntG5Yt3PvA/o+/5IPeM%0AwEHA6WWudtZ8b0Pf85WaKfZ8rm53ZkzkrnW+8847ATj22GOBblfoXGatndHda0UxX2duVU83Euzm%0Azn7rW9/qMR9EM6MbQXT/sW9tzfiHpki34cCBA4H0yKgbAXXzD90oXDej1z3m69u3r50wYUIRaps9%0A1x7utizZcrcCcp/J+fPnR7aPur43fvz4Dt9d9s7zT91tltzcXLei7549e3rMOGPGDJvvqG65GWOy%0AakPfMypfdKmPJihfdKmPJvieDyojo+aIioiIiIiISKgq/tLc2bNnA/Doo48CpO4D1P5yOp+4Ubcj%0AjzwSgHnz5pWxNsXhRg7jvpLtzp07AVi5ciWAW6Y9NVrvVmAt5Xxe9x6+8847ADQ3d7znsht9dvM2%0A3aq53XGL9tTV1QHp1WozcSPAbnVkNxIcxhzgfLW1tQHwxhtvAOk6u8+by+Tu/+tGQIcPHw6kV68u%0AdB6siIiISFxoRFRERERERERCVfEjos71118P0GEJ5rBNnDixQx3cPLJcuFW5Mt0L0c23e++994Ce%0AV0OV7rnVT90IVzG5lVg/8YlPAOl7d5aCW5na9Yc9e/YEbudGTIN+7uabu3mRblTVrf6brUsvvRRI%0Ar3D985//PKfnl5NbBdd937ZtG5B+T9z3ESNGANDU1AQQePNrEREREZ9pRFRERERERERCFckR0Q99%0A6ENAer5VptG9YvrLX/4ClHaeYUNDA5C42W17bh6Zux+mG5VasmQJkJg76OaQuTl57p6IyWWgUz93%0A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%0AO2hEVEREREREREKlE1EREREREREJlU5ERUREREREJFQ6ERUREREREZFQ6URUREREREREQmXCXCHO%0AGBP55egGDx4cWL59+/Zl1toZ3T135MiR9qKLLsr6Nb/2ta/lUcOS6TEfxKMNu9Fjxijl+9znPhdY%0APnbs2MDyb33rW7HKl4eS9NGPfOQjgeWHH354l7L6+vrAbevq6gLL+/TpE1g+Z86cwPKWlhYv2jDT%0ACqY7d+7UcQY48sgjbdCqrQceeGCp6lRMPebr06ePHTNmTJfy5ubmwO33798fWL5t27bca5elmpqa%0AwPK9e/eqj5J7vl69gsc1pkyZ0qUs0/+JMq1im0c/8OI42g31UTLny7Ta8Pr164tQraLxpg3PPPPM%0AwPJ77rknq4waERUREREREZFQ6URUREREREREQqUTUREREREREQmVTkRFREREREQkVNXlrkDUbN++%0APe/n1tfX893vfjfr7SO2WFFWpk+fztKlS7uUb9myJXD7448/PrD85ZdfLmq9iqVXr17069evS/nH%0APvaxwO3Hjx8fWL548eIuZUGLk3Rn3rx5geVNTU05vU42/u7v/i6wPFO7zpo1q0vZokWLArfNVB4V%0Ajz/+eE7lQWbMCJ6P/6Mf/SiwfOfOnYHlxpis9xllmfJJQlVVFYMGDSp3NUqmtbWVl156qdzV6Nbe%0AvXvLXQWvZFpwasWKFV3KDj300MBtP/vZzwaWZ1rEKJdjdGcDBgzgmGOO6VL+yCOP5P2aEq6BAwdy%0A7LHHdik//fTTA7e//PLLS12linTPPfcU9HyNiIqIiIiIiEiodCIqIiIiIiIiodKJqIiIiIiIiIRK%0AJ6IiIiIiIiISKp2IioiIiIiISKiMtTb/JxuzFmgB2oB91trgpSPT2+e/s/LbBazqLmNDQ4P9p3/6%0Apy7lX//610tZr2LpMR/AIYccYn/wgx90Kc+0atbChQsDy99///0uZTU1NYHbDhkyJLB848aNmaqZ%0AyQfW2q5L4rbT1NRkf/jDH3Ypz7TK39atWwPL//jHP3Yp+9Of/hS47apVq7qrUi56bENjjO3Vq+vf%0AnwYPHhy4faZ8Qc4444zA8vnz5weWDxgwILA8qG8kZdVH43CcGTlyZIfHmzdvxhjDvn37smrDUtev%0As871dQ444IDA8rVr12Z6KW/asBs9HmcmTpxob7755i7lN9xwQ+D2QceTMopkHy2iSuijkWzDTMeZ%0A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%0A"></p>
-<p>有看出什麼規律嗎？哈哈。</p></dd>
-                <dt>2017 / 11月 09</dt>
-                <dd><a href="./uwarn-performance_1.html">[吉他] 方大同-三人遊</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><br/></p>
-<iframe width="100%" height="450" src="https://www.youtube.com/embed/8lwc81a9mAo"  frameborder="0" gesture="media" allowfullscreen></iframe></dd>
-                <dt>2017 / 11月 08</dt>
-                <dd><a href="./uwarn-performance_2.html">[吉他] 光良-傷心地鐵</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><br/></p>
-<iframe width="100%" height="450" src="https://www.youtube.com/embed/7KpOh8N-9Z0" frameborder="0" gesture="media" allowfullscreen></iframe></dd>
-                <dt>2017 / 11月 07</dt>
-                <dd><a href="./tensorflow-tutorial_2.html">實作Tensorflow (2)：Build First Deep Neurel Network (DNN)</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>接續著<a href="http://www.ycc.idv.tw/YCNote/post/38">上一回</a>，我們已經有一個單層的Neurel Network，緊接著我們來試著一步一步改造它，讓它成為我們常使用的Deep Neurel Network的形式。</p>
-<p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py">Github</a>下載。</p>
-<p><br/></p>
-<h5><u>增加Hidden Layer</u></h5>
-<p>在上一回當中，我們只有一層Neurel Network，也就是做完一個線性轉換後，就直接使用Softmax Layer來轉換成機率表示方式，這樣的結構並不夠powerful，我們需要把它的結構弄的又窄又深，這樣效果才會好，詳細原因請參考<a href="http://www.ycc.idv.tw/YCNote/post/35">這一篇的介紹</a>。</p>
-<p>因此，我們來試著加入一層Hidden Layer，來打造成兩層的Neurel Network，並在兩層之間加入Activation Function，為我的Model增加非線性因子。</p>
-<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">features</span><span class="p">,</span><span class="n">labels</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">,</span><span class="n">activation</span><span class="p">):</span>
-        <span class="c1"># build neurel network structure and return their predictions and loss</span>
-        <span class="c1">### Variable</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">)</span> <span class="p">)),</span>
-                <span class="s1">&#39;fc2&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">)</span> <span class="p">)),</span>
-            <span class="p">}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">biases</span>  <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">)</span> <span class="p">)),</span>
-                <span class="s1">&#39;fc2&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">)</span> <span class="p">)),</span>
-            <span class="p">}</span> 
-        <span class="c1">### Structure</span>
-        <span class="c1"># layer 1</span>
-        <span class="n">fc1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;fc1&#39;</span><span class="p">],</span>
-                                 <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;fc1&#39;</span><span class="p">],</span> <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">)</span>
+<p>有看出什麼規律嗎？哈哈。</p>
 
-        <span class="c1"># layer 2</span>
-        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">fc1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;fc2&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;fc2&#39;</span><span class="p">])</span>
 
-        <span class="n">y_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
-
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
-                 <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="n">logits</span><span class="o">=</span><span class="n">logits</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="p">(</span><span class="n">y_</span><span class="p">,</span><span class="n">loss</span><span class="p">)</span>
-</pre></div>
-
-
-<p>首先在變數需要有二層的fully-connect參數，注意這些參數的大小，受到Hidden Layer的神經元數目<code>n_hidden</code>決定。接下來開始建構整個Neurel Network的結構，<code>fc1</code>產生一個fully-connect的結果，並且通過Activation Function再輸出，然後進到下一層，第二層直接使用<code>fc1</code>的結果當作新的輸入，再做一次fully-connect，並且讓它通過Softmax Layer來完成最後的Logistic轉換，它的loss一樣的是使用cross-entropy來評估。</p>
-<p><br/></p>
-<h5><u>Activation Function的選擇</u></h5>
-<p>剛剛提到的Hidden Layer可以採用不同的Activation Function，我列幾個常使用的Activation Function給大家看看。</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-    <span class="n">tanh</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
-    <span class="n">sigmoid</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
-    <span class="n">relu</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">tanh</span><span class="p">,</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">sigmoid</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">relu</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">((</span><span class="s1">&#39;tanh&#39;</span><span class="p">,</span> <span class="s1">&#39;sigmoid&#39;</span><span class="p">,</span> <span class="s1">&#39;relu&#39;</span><span class="p">))</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-
-<p><img alt="png" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAX8AAAD8CAYAAACfF6SlAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz%0AAAALEgAACxIB0t1+/AAAIABJREFUeJzt3Xd8FVX+//HXJ8kloYQAoZckIEWaBAhIFQREBAREUVkV%0AERXL2r+rsK6LXbH87AVZcC0roIgiq6AUKRFB2oIiTVBKkBogIZCE3Nzz++MEkkBouTeZWz7Px2Me%0AMzd3cuczEd+ZnDlzjhhjUEopFVrCnC5AKaVU6dPwV0qpEKThr5RSIUjDXymlQpCGv1JKhSANf6WU%0ACkEa/kopFYI0/JVSKgRp+CulVAiKcLqA06latapJSEhwugyllAooK1eu3G+MqXa2/fw2/BMSElix%0AYoXTZSilVEARkW3nsp82+yilVAjS8FdKqRCk4a+UUiHIb9v8i5KTk0NKSgpZWVlOl+L3oqKiqFu3%0ALi6Xy+lSlFJ+KKDCPyUlhejoaBISEhARp8vxW8YYUlNTSUlJoX79+k6Xo5TyQ143+4hIlIgsE5E1%0AIvKriDxZxD6RIvKpiGwWkZ9EJKE4x8rKyiI2NlaD/yxEhNjYWP0LSSl1Wr5o888GehhjWgGJQB8R%0A6XDSPrcCB40xDYFXgReKezAN/nOjPyel1Jl4Hf7Gysh76cpbTp4bciDwYd7250BP0XRSSqlTffUV%0AfPxxiR/GJ719RCRcRFYDe4E5xpifTtqlDrADwBjjBtKA2CI+Z6SIrBCRFfv27fNFaT536NAh3nnn%0AnWJ/f/fu3fXhNaVU0T7/HK65BsaNg9zcEj2UT8LfGJNrjEkE6gLtRaRFMT9nvDEmyRiTVK3aWZ9O%0AdoS34a+UUkWaNAmuvx4uvhhmzYLw8BI9nE/7+RtjDgHzgT4nvbUTqAcgIhFADJDqy2OXltGjR7Nl%0AyxYSExN58MEH6dmzJ23atKFly5Z89dVXAGzdupWmTZty++2307x5c3r37k1mZuaJz5g6dSrt27en%0AcePGJCcnO3UqSil/8eGHcNNN0KULfPstVKxY4of0uquniFQDcowxh0SkLHAZp97QnQHcDCwBrgG+%0AN8acfF/gvDzw7QOs3r3am484RWLNRF7r89oZ9xk7dixr165l9erVuN1ujh49SsWKFdm/fz8dOnRg%0AwIABAPz2229MnjyZf/3rX1x77bVMmzaNG2+8EQC3282yZcuYOXMmTz75JHPnzvXpeSilAsiECTBy%0AJPTsadv7y5UrlcP6op9/LeBDEQnH/iXxmTHmaxF5ClhhjJkBTAQ+FpHNwAHgeh8c13HGGB599FEW%0ALVpEWFgYO3fuZM+ePQDUr1+fxMREANq2bcvWrVtPfN/gwYOL/LpSKsS88w789a9wxRXwxRcQFVVq%0Ah/Y6/I0xPwOti/j6mALbWcAQb49V0Nmu0EvDJ598wr59+1i5ciUul4uEhIQTfesjIyNP7BceHl6o%0A2ef4e+Hh4bjd7tItWinlH157DR58EAYMgM8+gwKZURp0bJ/zFB0dzeHDhwFIS0ujevXquFwu5s+f%0Az7Zt5zSSqlIq1L34og3+q6+GqVNLPfghwIZ38AexsbF07tyZFi1a0K5dOzZs2EDLli1JSkriwgsv%0AdLo8pZS/e/ppGDMGhg6Fjz6CCGdiWLy871pikpKSzMn94devX0/Tpk0dqijw6M9LKT9ijA39Z56x%0APXv+/e8S6c4pIiuNMUln20+bfZRSqqQZA6NH2+C/9dYSC/7zoc0+SilVkoyBhx6yN3jvugveegvC%0AnL/udr4CpZQKVh4P3HuvDf7774e33/aL4Ae98ldKqZLh8cAdd9iHuB5+GF54AfxoPEv/+BWklFLB%0AJDcXRoywwf+Pf/hd8INe+SullG+53TBsGEyeDE89Bf/8p9MVFUmv/H3gtttuY926dSV6jL59+3Lo%0A0KFTvv7EE0/w8ssvl+ixlVLnKCfH9t+fPBmef95vgx/0yt8nJkyYUOLHmDlzZokfQynlhexsuO46%0AOzjbK6/YJ3j9mF75n6cjR47Qr18/WrVqRYsWLfj0008LTdAyceJEGjduTPv27bn99tu55557ABg+%0AfDh33XUXHTp0oEGDBixYsIARI0bQtGlThg8ffuLzJ0+eTMuWLWnRogWjRo068fWEhAT2798PwLPP%0APkvjxo3p0qULGzduLL2TV0oVLSsLBg+2wf/WW34f/BDAV/4PPACrfTuiM4mJtkfWmXz77bfUrl2b%0Ab775BrDj+7z77rsA/Pnnnzz99NOsWrWK6OhoevToQatWrU5878GDB1myZAkzZsxgwIABLF68mAkT%0AJtCuXTtWr15N9erVGTVqFCtXrqRy5cr07t2b6dOnM2jQoBOfsXLlSqZMmXJiSOk2bdrQtm1b3/4g%0AlFLn7uhRGDQI5s6F996zwzMHAL3yP08tW7Zkzpw5jBo1iuTkZGJiYk68t2zZMrp160aVKlVwuVwM%0AGVJ4INMrr7wSEaFly5bUqFGDli1bEhYWRvPmzdm6dSvLly+ne/fuVKtWjYiICG644QYWLVpU6DOS%0Ak5O56qqrKFeuHBUrVjwxf4BSygEZGdCvnw3+998PmOCHAL7yP9sVeklp3Lgxq1atYubMmTz22GP0%0A7NnznL/3+FDOYWFhhYZ8DgsLw+1243K5fF6vUqqEpKdD376wZImdcP2GG5yu6Lx4feUvIvVEZL6I%0ArBORX0Xk/iL26S4iaSKyOm8ZU9RnBYI///yTcuXKceONN/Lwww+zatWqE++1a9eOhQsXcvDgQdxu%0AN9OmTTuvz27fvj0LFy5k//795ObmMnnyZLp161Zon0suuYTp06eTmZnJ4cOH+e9//+uT81JKnYdD%0Ah+Dyy2HpUpgyJeCCH3xz5e8G/s8Ys0pEooGVIjLHGHNy38dkY0x/HxzPUb/88gsPP/wwYWFhuFwu%0A3n33Xf72t78BUKdOHR599FHat29PlSpVuPDCCws1C51NrVq1GDt2LJdeeinGGPr168fAgQML7dOm%0ATRuuu+46WrVqRfXq1WnXrp1Pz08pdRYHDkDv3vDzz/D557a9PwD5fEhnEfkKeMsYM6fA17oDfzuf%0A8A/UIZ0zMjKoUKECbrebq666ihEjRnDVVVc5Uksg/LyUCij790OvXrB+vZ12sV8/pys6hSNDOotI%0AAnZKx5+KeLujiKwRkVki0tyXx/UnTzzxBImJibRo0YL69esX6qmjlApge/bApZfCxo0wY4ZfBv/5%0A8NkNXxGpAEwDHjDGpJ/09iog3hiTISJ9gelAoyI+YyQwEiAuLs5XpZUqfdpWqSD055/Qsyds3w7f%0AfAM9ejhdkdd8cuUvIi5s8H9ijPni5PeNMenGmIy87ZmAS0SqFrHfeGNMkjEmqVq1ar4oTSmlvLNj%0AB3TrBikp8O23QRH84JvePgJMBNYbY145zT418/ZDRNrnHTfV22MrpVSJ2rrVBv/evTB7NnTt6nRF%0APuOLZp/OwE3ALyJy/JnbR4E4AGPMOOAa4C4RcQOZwPXGXycPVkopgC1b7FV+erp9iCvIetZ5Hf7G%0AmB+AMw5UbYx5C3jL22MppVSp2LjRBn92Nnz/PbRu7XRFPqfDO5SQgoO9KaUCyLp1tqnH7Yb584My%0A+EHD3yvGGDwej9NlKKV85eefoXt3O+vWggXQsqXTFZUYDf/ztHXrVpo0acKwYcNo0aIFH3/8MR07%0AdqRNmzYMGTKEjIyMU76nQoUKJ7Y///zzQkM4K6X8xKpVth9/mTKwcCEE+QOSATuwm2NjOgO//fYb%0AH374IQ0bNmTw4MHMnTuX8uXL88ILL/DKK68wZkzADl2kVGhatsyO1VOxom3qadDA6YpKXOCGv4Pi%0A4+Pp0KEDX3/9NevWraNz584AHDt2jI4dOzpcnVLqvPz4I/TpA9Wq2Zu78fFOV1QqAjf8nRrTGShf%0Avjxg2/wvu+wyJk+efMb98x5xACArK6tEa1NKnYdFi+ywzLVr2+CvW9fpikqNtvl7oUOHDixevJjN%0AmzcDdorHTZs2nbJfjRo1WL9+PR6Phy+//LK0y1RKFWXePHvFHxdn2/hDKPhBw98r1apV44MPPmDo%0A0KFcdNFFdOzYkQ0bNpyy39ixY+nfvz+dOnWiVq1aDlSqlCrk22+hf39o2ND26gnB/y99PqSzrwTq%0AkM7+RH9eShXhv/+Fa66BZs1gzhyoesowYwHNkSGdlVLKr33xBQweDBddZJt9giz4z4eGv1IqNHz6%0AKVx7rR2jZ+5cqFLF6YocFXDh76/NVP5Gf05KFfCf/8Bf/gKdOsF338F5TK8arAIq/KOiokhNTdVg%0AOwtjDKmpqURFRTldilLO+/e/YdgwO17PrFkQHe10RX4hoPr5161bl5SUFPbt2+d0KX4vKiqKuiHW%0AdU2pU7z3Htx5p51w/csvoVw5pyvyGwEV/i6Xi/r16ztdhlIqELz5Jtx3n51r9/PPQf8SLiSgmn2U%0AUuqc/L//Z4N/0CDbw0eD/xS+mMaxnojMF5F1IvKriNxfxD4iIm+IyGYR+VlE2nh7XKWUKtLzz8Pf%0A/gZDhsBnn9lROtUpfHHl7wb+zxjTDOgA/FVEmp20zxVAo7xlJPCuD46rlFL5jIEnn4RHH7U9eyZN%0AApfL6ar8ltfhb4zZZYxZlbd9GFgP1Dlpt4HAR8ZaClQSkdB7nlopVTKMgccegyeegOHD4aOPICKg%0AbmmWOp+2+YtIAtAa+Omkt+oAOwq8TuHUXxBKKXX+jIFHHoHnnoPbb4eJEyE83Omq/J7Pwl9EKgDT%0AgAeMMenF/IyRIrJCRFZod06l1FkZYyd2evll+OtfYdw4CNN+LOfCJz8lEXFhg/8TY8wXReyyE6hX%0A4HXdvK8VYowZb4xJMsYkVatWzRelKaWClccDd98Nb7wBDz5ou3Zq8J8zX/T2EWAisN4Y88ppdpsB%0ADMvr9dMBSDPG7PL22EqpEJWba5t4xo2D0aNt184Ckyaps/PFHZHOwE3ALyJyfFLdR4E4AGPMOGAm%0A0BfYDBwFbvHBcZVSocjthltuseP1jBljb/Jq8J83r8PfGPMDcMafvLGD8fzV22MppUJcTo4dp2fK%0AFHjmGfjHP5yuKGBpXyilVGA4dgyGDrVP7L74Ijz8sNMVBTQNf6WU/8vOtk/s/ve/8NprcP8pAwmo%0A86Thr5Tyb5mZdvatb7+Fd96Bu+5yuqKgoOGvlPJfR4/CgAHw/fcwYQLceqvTFQUNDX+llH/KyID+%0A/SE5GT74wN7oVT6j4a+U8j/p6dC3Lyxdart0Dh3qdEVBR8NfKeVfDh6EPn1g1SrbpfOaa5yuKChp%0A+Cul/Edqqp1y8ZdfYNo0296vSoSGv1LKP+zdC5ddBhs3wvTpttlHlRgNf6WU83btgl694I8/bF/+%0Ayy5zuqKgp+GvlHLWzp3Qo4ddz5wJ3bs7XVFI0PBXSjln+3Yb/Hv32oe4unRxuqKQoeGvlHLGH3/A%0ApZfCoUMwezZ06OB0RSFFw18pVfp++81e8R85AvPmQdu2TlcUcjT8lVKla8MGG/w5OTB/PrRq5XRF%0AIUnnPFNKlZ61a6FbNzsFowa/o3w1h+/7IrJXRNae5v3uIpImIqvzljG+OK5SKoCsWWPb+MPDYcEC%0AaNHC6YpCmq+afT4A3gI+OsM+ycaY/j46nlIqkKxcafvuV6hgR+hs2NDpikKeT678jTGLgAO++Cyl%0AVJBZuhR69oSYGFi4UIPfT5Rmm39HEVkjIrNEpHlRO4jISBFZISIr9u3bV4qlKaVKxA8/2LF6qla1%0AwV+/vtMVqTylFf6rgHhjTCvgTWB6UTsZY8YbY5KMMUnVqlUrpdKUUiViwQI7Omft2jb44+KcrkgV%0AUCrhb4xJN8Zk5G3PBFwiUrU0jq2UcsCcOXZgtvh4+0ugTh2nK1InKZXwF5GaIiJ52+3zjptaGsdW%0ASpWyWbPgyiuhUSMb/DVrOl2RKoJPevuIyGSgO1BVRFKAxwEXgDFmHHANcJeIuIFM4HpjjPHFsZVS%0AfmTGDBgyxHbjnD0bYmOdrkidhk/C3xhzxjnWjDFvYbuCKqWC1bRpcP310KaNHaStcmWnK1JnoE/4%0AKqW8N3kyXHcdtG9v2/s1+P2ehr9SyjsffQQ33gidO8N330HFik5XpM6Bhr9SqvgmToThw+2wDTNn%0A2id4VUDQ8FdKFc+778Jtt8Hll9upF8uXd7oidR40/JVS5+/11+Huu22XzunToWxZpytS50nDXyl1%0Afl56CR54AAYPhs8/h8hIpytSxaDhr5Q6d88+C488Yrt0TpkCZco4XZEqJg1/pdTZGQOPPw6PPQY3%0A3QQffwwul9NVKS/oNI5KqTMzBh59FMaOhREjYPx4OyGLCmga/kqp0zMG/u//4NVX4c474e23IUwb%0ADIKB/ldUShXN44H77rPBf9998M47GvxBRK/8lVKn8njslf6//mWv/F96CezAvCpI6K9xpVRhublw%0A6602+B99VIM/SOmVv1Iqn9sNN98MkybBk0/CP/+pwR+kNPyVUlZODtxwA0ydCs89B3//u9MVqRKk%0A4a+UgmPH7JDM06fDyy/bdn4V1HzS5i8i74vIXhFZe5r3RUTeEJHNIvKziLTxxXGVUj6QlWWHapg+%0AHd54Q4M/RPjqhu8HQJ8zvH8F0ChvGQm866PjKqW8kZkJAwfCN9/AuHFw771OV6RKia+mcVwkIgln%0A2GUg8FHevL1LRaSSiNQyxuzyxfGVUsVw5IgdlXPBAnj/fbjlFqcrCkjGGNweN8dyj5HjycHtcZOT%0Am7fOe+32uMn15OZvm9wTX8s1uSfWHuMh15NLTFQMl8RfUqJ1l1abfx1gR4HXKXlfKxT+IjIS+5cB%0AcXFxpVSaUiHo8GHo1w8WL86fiSvIZLmzSMtKIy07jfTsdDKOZRS5HM05SmZOpl27M8l02+0sdxbZ%0A7my7zs0+sX0s91ihJceT4/PaL65zMUtvW+rzzy3Ir274GmPGA+MBkpKSjMPlKBWc0tLgiitg2TLb%0ApfO665yu6KwyczLZnbGbXRm72J2xm71H9pJ6NJXUzFT2H91PamYqqUdTOZB5gLTsNNKy0sjOzT6n%0Azw6XcMq5ylHWVdauI8pS1lWWshFliYyIJCYqhsjwSKIiooiMiKRMWBm7Di9DmfAyuMJcdh3uwhXm%0AwhXuIiIsAleYXRdcwsPC87clnPCwcMIIx33MRfbRvCXTRXRUuRL+iZZe+O8E6hV4XTfva0qp0nTw%0AIPTuDWvW2C6dV13ldEVk5mSyPW37iWVb2rYT2zsP72R3xm7Ss9OL/N7yrvJULVeV2HKxxJaNJaFS%0AApWiKhETGUNMVAwxkTFUiqpExciKREdGU6FMBSqUqUB5V3m7LlOeMuHFG5baGNtyduiQ/bEeOgRp%0AB+3v1rQ02Jeev334MKSn23XB7YwMu5iTLnU7dID+S4pV1jkrrfCfAdwjIlOAi4E0be9XqpTt3w+X%0AXQbr1sG0aba9v5R4jIdth7axMXUjm1I3sXH/RjYd2MSm1E1sT9teaN8wCaNOdB3iYuJoXbM1NSvU%0APGWpXr46sWVjiYzwzUQymZn2x7Nvn13v3w+pqXY5cMAuBbcPHbKL233mz3W57Hz2MTEQHW2X6tXh%0AggvyX1eocOpSs6ZPTuuMfBL+IjIZ6A5UFZEU4HHABWCMGQfMBPoCm4GjgN5ZUqo07d0LvXrBpk3w%0A1VfQ50yd87yTmZPJr/t+ZfXu1azevZo1e9awZvcaDh87fGKfmMgYmlRtwiXxl9CoSiPqV6pPfKV4%0A4mPiqR1dG1e4d3MFGGOvuHftssvu3fZHsGePXRfc3rcPjh49/WdVqgRVqtglNhYaNIDKle3XC65j%0AYux2TEx+4EdF+e8D0r7q7TP0LO8b4K++OJZS6jzt2gU9e8LWrbZLZ8+ePv34lPQUFm9fzOIdi/lh%0A+w/8vOdnck0uANFlomlVsxU3t7qZi2pcRNNqTWkc25hq5aohxUzFzExISYGdO4tedu+2S1bWqd/r%0Actkr7+rVoUYNuPBCu121av5SrZpdV6liQz3Cr+6M+k6QnpZSCrAp2aMH/PknzJoF3bp5/ZE703cy%0Aa/MsFmxdwA/bf2Bb2jYAyrnK0aFuB0Z3GU3rmq1JrJlI/cr1CZNzf5zIGNvk8scf9nfVtm2wYwds%0A356/3r//1O+LjoY6dezSpQvUqmWbTmrVyt+uUcNemfvrlXhp0/BXKlht22aDf98+mD0bOnUq1sfk%0A5Obw444fmfnbTGZtnsUve38BoFaFWnSJ68KDHR6kc1xnWtVodU7NNZmZ8PvvsGVL/nI87LduPbUJ%0ApmJFiIuDevWgXTu7rlcvP+zr1LHhr86Phr9Swej33+HSS223krlzoX378/r2LHcWs36bxeS1k/lu%0Ay3ekZ6fjCnPRJa4LL/Z6kb6N+tKsWrPTNt1kZ9tQ37Sp8LJli/0jpKCKFW07euPGcPnlkJBgl/r1%0AbejHxBTvR6DOTMNfqWCzaZO94s/MhHnzoM25DaXl9riZ/8d8Jq+dzLT100jPTqd6+epc1/w6+jbq%0AS8/6PYmOLHyJnZoK69cXXjZutH90eDz5+9WoAY0a2c5GF1xQeImN1aYYJ2j4KxVM1q+3we92w/z5%0AcNFFZ/+Wfet5b+V7TFk7hT1H9lAxsiKDmw5maIuh9Kjfg4iwCA4ehDXLYe1a+PXX/PW+ffmfExUF%0ATZrAxRfDsGH2Sr5xYxv6evXufzT8lQoWv/xie/KEhcHChdCs2Wl3zfXk8vWmr3lz2ZvM+2MeZcLL%0AcGXjK7n2whu4wNOXDb9GMm88vLLGBv3OAo9kRkdD8+b2MYFmzaBpU7vEx+sUv4FEw1+pYPC//9k2%0AlchI+P57ewlehP1H9zNx1UTeXfEu2/amUv1wb/qHzabCga5s/CKKm361Q/sDlCljw71nTxv2LVrY%0ApV49baYJBhr+SgW65cvtkA0VK9rgv+CCU3ZZv2MXj/7nc75euBt3SkvKpiYje+qy1whfY/u6t25t%0AnwNr1couTZrYfvEqOGn4KxXIliyxT+vGxtrgT0jgyBFYtQpWrIDkJZnM//Ewh3bWAuxY/bXrHePi%0AjmVo3dreC27TxvaFV6FFw1+pQJWcjOnbl2OxtfjiznnMf64eP/1k2+iP97SRiqmYOstp093DfVd1%0Aon/3WsTGFm8gMxVcNPyVCiD79sHSpbBn8vfc8OmVbDdxXJoxj12jalO5MrRtl0vnVsks402O1VjC%0ATZ0v45+X/JOGVRo6XbryMxr+Svmp3FzbnXLxYtu6s2QJbN4MvfmO6QxiZ9mGfDh0Li9eWoN27Qxr%0Ac7/kodkPsj1tO9c1v46nLl1A49jGTp+G8lMa/kr5iYwM+OknG/aLF9sr/PS8Yexr1ICOHWFsl6+5%0A6pOroWkzGs6bw3NVq7Jh/wbunXUfc36fQ8vqLVlw8wK6JXg/ho8Kbhr+Sjlk924b8snJ8MMPsHq1%0AvdoXsV0q//IX6NzZDslTvz7IV9Ph2mvtg1uzZ3O4vIun5zzCq0tfpbyrPG/0eYO72t1FRJj+b63O%0ATv+VKFUKjLHj2iQn5y+bN9v3ypa1T8X+/e92RMqLL7ajTxYydar9bZCUBLNm8f3BVdzy0S1sT9vO%0AiMQRPN/reaqXr17q56UCl68mc+kDvA6EAxOMMWNPen848BL5Uze+ZYyZ4ItjK+WPPB7bXr9okQ36%0ARYvssPpge2V26QJ33GHXbdrYB6pOa9IkuOkm6NSJo9On8vclj/PGsjdoHNuYxSMW06le8UbrVKHN%0A6/AXkXDgbeAyIAVYLiIzjDHrTtr1U2PMPd4eTyl/5Hbbh2wXLcoP/IMH7Xt169oBNrt2hUsusROI%0AnPMwCB98ACNGQLduLB83hhsnd2NT6ibubX8vY3uNpZyr5Cf6VsHJF1f+7YHNxpjfAfLm6R0InBz+%0ASgWN7Gz7YO3xsF+82N6wBTuQ2eDBNuy7dbNj3hRrOITx4+GOO/D06skzDybx5Ke9qBNdh7k3zaVn%0AA9/OxqVCjy/Cvw6wo8DrFOwk7Se7WkQuATYBDxpjdhSxj1J+6cgR2/tm0SI7ZtrSpfYXANhxb4YN%0As0HftauPnpZ9+2245x6OXtadngNTWbr8BYYnDue1y18jJkqHyFTeK60bvv8FJhtjskXkDuBDoMfJ%0AO4nISGAkQFxcXCmVptSp0tLs1fzxK/vly23TTliYHQPn7rttE07XrrYN36defRUeeojdPS+mVbf/%0AkZMRxpfXfcmgCwf5+EAqlPki/HcC9Qq8rkv+jV0AjDGpBV5OAF4s6oOMMeOB8QBJSUnGB7UpdU72%0A7bPdLY+H/erV9qZtRISdOvChh+yVfefOJTw2/QsvwOjRrL3kQlp3+omLqrXh8yGfU79y/RI8qApF%0Avgj/5UAjEamPDf3rgb8U3EFEahlj8vo6MABY74PjKlVs27cX7omzYYP9elSUfZjqn/+0V/YdOkC5%0A0rqn+vTTMGYM8zrW4PJuG7gl6Tbe7PsmURFRpVSACiVeh78xxi0i9wDfYbt6vm+M+VVEngJWGGNm%0AAPeJyADADRwAhnt7XKXOlccD69blP0yVnAw78u44xcTYq/nhw20TTtu2dkj8UmUMjBkDzzzD1KRy%0ADL/iEOP7T2RE6xGlXIgKJWKMf7auJCUlmRUrVjhdhgpAmZl2OOPFi23YL14Mhw7Z92rWtCHfpYu9%0Asm/ZEsLDHSzWGBg9Gl58kYltheduiOfz67+gda3WDhalApmIrDTGJJ1tP33CVwW83bvhxx/zx8RZ%0AtQpycux7TZrANdfYsO/aNW+YBH+ZhcoYzAMPIG+8wdvt4Ku/9mDFtVOpXLay05WpEKDhrwJKTg6s%0AWZM/yuWSJbB1q30vMjL/5mznzrbtvmpVR8s9PY8H9913EvHev3i1A6z/+2180+8dXOE6dZYqHRr+%0Aym8ZY2/MLltmR7tctsw252Rm2vfr1LEBf++9dvCzsw6T4C88HjJvHUbZDz7hxc4Q9sKLvNfpb4jf%0A/EmiQoGGv/IbBw7YcF++PD/w9+yx70VG2v71d9xhA79jRzuReMDJzeXQDVdT6dOveL57BE3ensLg%0AZlc7XZUKQRr+yhFpaXYsnONhv2IF/P57/vtNmsDll0P79naUy4suCpCr+jNxu9l9dR9qzpjHi5dX%0AoNfE72lI469ZAAARxUlEQVRXp53TVakQpeGvStzevTboV63KX2/Zkv9+QoIdqXjkSLtu27aIIY0D%0AXU4OKf27UXf2El4ZWJ3rP1xOXIw+xa6co+GvfMbtho0b4eef7U3Z48vxoYwBGjSwbfMjRth127ZQ%0ArZpzNZeK7Gy2Xt6BhIWref3aeIZ/sIoqZas4XZUKcRr+6rwZYx+SWru28LJuXf5gZy4XNGsGl10G%0ArVrZoE9MDMIr+rMwmZls6dGahks38s7Nzbht/DLKlynvdFlKafir08vNtd0o168vvPz6Kxw+nL9f%0AnTp2ZMt777VBf9FFdsz6gG+j95LnSAa/XdKCRqu2MeHO9tz+1g/alVP5DQ1/RWoqbNpUeNm40a6P%0AX8mDnUS8aVM7fHGLFnZp3hwq6zNJp8hJO8jmLk1psnYPkx7qxYiXvyNMznUGF6VKnoZ/CDDGPgW7%0AZUv+snlz/vrAgfx9w8Ntu3zjxra3TdOm9iq+aVMN+XOVdWAvWzo1pcmmA3z12DXc8NRn2odf+R0N%0A/yDg8dgeNdu322aagssff8C2bfkPRoEdkz4+Hi64AIYMsd0qGze2S0KCba9XxXN0359s7dSMxr+n%0AMffZEVz194lOl6RUkTT8/dzxYN+5s/Cyfbu96Xp8fXwsm+OqVLHj2DRvDv362e0LLrBLfLy2x5eE%0Aw7u2sbNTCxpuz2DRy/fS58E3nC5JqdPS8HfI0aM21Pfsscvu3bZL5K5dhbd37bJdKAsKD7c3WePi%0A7ANQQ4bY7Xr17JV7fDxUrOjIaYWsQzs2s7dTKxJ2H+XHNx+m591FzleklN/Q8PeB3Fw7ZPCBA/bm%0A6f79hZd9++x679785fhk3yerWtXOAVuzpm1rr1Mnf6lb166rV3d4GGJVyP7ff+VQ1yTq7c1i5bjH%0A6X7rE06XpNRZafhjm1YOH4b0dDvswMnLoUNw8KBdH98+vqSm5o8VXxSXyz7EVLWqXXfoYMO7Rg27%0APr5dq5bd1uaYwLJn0//IuKQDtQ4cY+37Y+l80yinS1LqnPgk/EWkD/A6diavCcaYsSe9Hwl8BLQF%0AUoHrjDFbfXHskx05Ah99ZK+si1oOH85f0tPt+nRX4QW5XLa3y/GlalV7gzQ21ravF1yqVs1foqP9%0AaPx45Tvp6aS9/CxlXnmZ6jkeNv3nddpde5/TVSl1zrwOfxEJB94GLgNSgOUiMsMYs67AbrcCB40x%0ADUXkeuAF4Dpvj12UzEy4++781+XLQ4UK+Ut0tL0Cb9DAblesaNfR0XZKv5OXihVt2JctqyGusH/u%0Avf46ua+9SkxaOrMbR1D9jfdpffnNTlem1HnxxZV/e2CzMeZ3ABGZAgwECob/QOCJvO3PgbdEREwJ%0AzCFZpZKH3evTKF/eTrwd5ovnarLzFhW6MjLg3Xfhrbfg8GHmtCzL2G4VeGn09yTqyJwqAPki/OsA%0AOwq8TgEuPt0+eRO+pwGxwH4fHL+QsIOp1Gha3dcfqxSIkD6gD4MbrmB1dQ9zh80lsWai01UpVSx+%0AdcNXREYCIwHi4oo53G358vDaaz6sSikgLIzf2iTQdcntGIQFwxbQonoLp6tSqth8Ef47gYJzKtXN%0A+1pR+6SISAQQg73xW4gxZjwwHiApKal4TULlysH99xfrW5U6nTW719Dr4164wlzMGzaPptWaOl2S%0AUl7xRYv4cqCRiNQXkTLA9cCMk/aZARy/I3YN8H1JtPcrVRJW/LmCHh/1ICoiioXDF2rwq6Dg9ZV/%0AXhv+PcB32K6e7xtjfhWRp4AVxpgZwETgYxHZDBzA/oJQyu8t3r6YvpP6UqVsFeYNm0eDyg2cLkkp%0An/BJm78xZiYw86SvjSmwnQUM8cWxlCot3//xPVdOvpK6Fesyb9g86las63RJSvmMDjCuVBFm/jaT%0Avp/0pUHlBiwcvlCDXwUdDX+lTvLF+i8YNGUQzas3Z8HNC6hZoabTJSnlcxr+ShUw6ZdJXDv1WpJq%0AJzFv2Dxiy8U6XZJSJULDX6k841aM48YvbqRrfFdm3zSbSlEhNtu8Cika/irkGWN4euHT3PXNXfRt%0A1JeZf5lJhTIVnC5LqRLlV0/4KlXaPMbDA98+wJvL3mRYq2FMuHICrnCdx1IFPw1/FbJycnMY/tVw%0AJv0yiYc6PMRLvV8iTPSPYRUaNPxVSDpy7AhDpg5h1uZZPN/zeUZ1HoXomN0qhGj4q5BzIPMA/Sf1%0A56edPzG+/3hub3u70yUpVeo0/FVI2XxgM/0m9WProa1MHTKVwU0HO12SUo7Q8FchI3lbMoM+HYQg%0AzL1pLl3juzpdklKO0btbKiT85+f/0OvjXlQtV5Wlty3V4FchT8NfBTVjDE8seIKbvryJTvU6seTW%0AJTSs0tDpspRynDb7qKCV5c7i1hm3MumXSQxPHM57/d+jTHgZp8tSyi9o+KugtCNtB0OmDuGnnT/x%0AXI/nGN1ltHblVKoADX8VdOb+Ppeh04aS7c5m2rXTtEePUkXwqs1fRKqIyBwR+S1vXfk0++WKyOq8%0A5eQpHpXyCY/x8OyiZ+n9cW9qVqjJipErNPiVOg1vb/iOBuYZYxoB8/JeFyXTGJOYtwzw8phKneJg%0A5kEGTB7AY/MfY2jLoSy9dSmNYxs7XZZSfsvbZp+BQPe87Q+BBcAoLz9TqfPyv13/4+rPriYlPYW3%0A+77NXUl3afu+Umfh7ZV/DWPMrrzt3UCN0+wXJSIrRGSpiAw63YeJyMi8/Vbs27fPy9JUsHN73Dyf%0A/DwXT7iYHE8Oybckc3e7uzX4lToHZ73yF5G5QFHz2P2j4AtjjBERc5qPiTfG7BSRBsD3IvKLMWbL%0AyTsZY8YD4wGSkpJO91lK8Vvqb9w8/WaWpCxhSLMhvNPvHaqWq+p0WUoFjLOGvzGm1+neE5E9IlLL%0AGLNLRGoBe0/zGTvz1r+LyAKgNXBK+Ct1Nh7j4d3l7/LI3EcoE16GSYMncX2L6/VqX6nz5G2zzwzg%0A5rztm4GvTt5BRCqLSGTedlWgM7DOy+OqELQjbQeX/+dy7pl1D13jurL2rrUMbTlUg1+pYvD2hu9Y%0A4DMRuRXYBlwLICJJwJ3GmNuApsB7IuLB/rIZa4zR8FfnzO1x8/aytxmzYAy5nlzG9RvHyLYjNfSV%0A8oJX4W+MSQV6FvH1FcBteds/Ai29OY4KXQu2LuDeWfeydu9ael/Qm3f6vsMFVS5wuiylAp4+4av8%0AUkp6Cg/PeZgpa6cQHxPPl9d9ycAmA/VqXykf0fBXfiUzJ5PXf3qdZxY9Q67J5fFujzOq8yjKuso6%0AXZpSQUXDX/mFLHcWE1ZN4Lnk59iVsYtBFw7ild6vUL9yfadLUyooafgrR2W7s5n4v4k8l/wcOw/v%0A5JL4S5h09SS6J3R3ujSlgpqGv3JEtjubD1Z/wLPJz7IjfQed63Xmw0Ef0qN+D23XV6oUaPirUpWS%0AnsJ7K95j/Krx7D2yl451OzJxwER6Neiloa9UKdLwVyXOGEPy9mTeWvYWX6z/Ao/x0L9xf+5tf6+G%0AvlIO0fBXJWbvkb1M/XUq41eN5+c9P1M5qjIPdniQu9vdrTdylXKYhr/yqfTsdKZvmM6kXyYx9/e5%0A5JpcEmsmMuHKCQxtOZRyrnJOl6iUQsNf+UBaVhqzt8zms3Wf8fWmr8lyZ5FQKYFHOj/C0BZDaVlD%0AH/BWyt9o+KvzZozh5z0/M2vzLGZtnsXi7YvJNblUL1+d29vcztAWQ+lQt4O25SvlxzT81VkZY9h8%0AYDOLdywmeVsy3235jp2HdwKQWDORUZ1HcUWjK+hQtwMRYfpPSqlAoP+nqlNk5mSyZs8aFm9fzOId%0Adtl7xE7VUDmqMr0a9OKKhlfQp2EfakXXcrhapVRxaPiHuL1H9rJm9xpW717N6j2rWb17NRv2b8Bj%0APABcUPkC+jTsQ5d6Xegc15kLq15ImHg7DYRSymka/iHgaM5RthzYwqbUTXY5sOnE9v6j+0/sFxcT%0AR2LNRK5uejWJNRPpVK8TNSsUNYOnUirQafgHuIxjGezO2H1i2ZG2g21p29ietv3EumDAA9SOrk3j%0A2MZc3fRqmsQ2IbFmIq1qtqJK2SoOnYVSqrR5Ff4iMgR4AjtbV/u8SVyK2q8P8DoQDkwwxoz15rjB%0AyO1xk5aVRlp2GoeyDpGWZdepmamkHk09sd6fuZ/Uo6nsObKH3Rm7yTiWccpnlXeVJ75SPPEx8bSr%0A3Y64mDjqV6pPk6pNaFSlEdGR0Q6coVLKn3h75b8WGAy8d7odRCQceBu4DEgBlovIDH+bytEYQ67J%0AJSc3B7fHTY4nb52bw7HcY+R47Lrgku3OJsudRXZudqHtzJxMjuYcJdOdWWj7SM4Rjhw7QsaxjBPL%0AkZwjpGenczTn6BnriwyPJLZcLLFlY4ktF0tS7SRqVahFzQo1Cy31KtajUlQl7WaplDojb6dxXA+c%0ALWjaA5uNMb/n7TsFGEgJTeKeejSVrv/uSq7JxWM85HpyyTW5hdZuj5tck7cu8NrXIsIiKBtRlrKu%0AspSNKEuFMhVOLLHlYu22qwLRkdHERMYQExVTaF0pqtKJwC/nKqeBrpTymdJo868D7CjwOgW4uKgd%0ARWQkMBIgLi6uWAdzhbtoXr054RJOmIQRHhZOuOQtedsRYRFEhEUQHma3j3/NFe6y6zBXoddlwssU%0AWlxhLsqElyEyIpKoiCgiw/PWEZFEhkeeCHtXuKtY56CUUiXtrOEvInOBorp8/MMY85UvizHGjAfG%0AAyQlJZnifEbFyIpMHTLVl2UppVTQOWv4G2N6eXmMnUC9Aq/r5n1NKaWUQ0rjaZ3lQCMRqS8iZYDr%0AgRmlcFyllFKn4VX4i8hVIpICdAS+EZHv8r5eW0RmAhhj3MA9wHfAeuAzY8yv3pWtlFLKG9729vkS%0A+LKIr/8J9C3weiYw05tjKaWU8h0dpEUppUKQhr9SSoUgDX+llApBGv5KKRWCxJhiPUtV4kRkH7DN%0Ai4+oCuw/617+L1jOA/Rc/FWwnEuwnAd4dy7xxphqZ9vJb8PfWyKywhiT5HQd3gqW8wA9F38VLOcS%0ALOcBpXMu2uyjlFIhSMNfKaVCUDCH/3inC/CRYDkP0HPxV8FyLsFyHlAK5xK0bf5KKaVOL5iv/JVS%0ASp1G0Ia/iDwtIj+LyGoRmS0itZ2uqbhE5CUR2ZB3Pl+KSCWnayouERkiIr+KiEdEAq5nhoj0EZGN%0AIrJZREY7XY83ROR9EdkrImudrsUbIlJPROaLyLq8f1v3O11TcYlIlIgsE5E1eefyZIkdK1ibfUSk%0AojEmPW/7PqCZMeZOh8sqFhHpDXxvjHGLyAsAxphRDpdVLCLSFPBg533+mzFmhcMlnbO8+ag3UWA+%0AamCov81Hfa5E5BIgA/jIGNPC6XqKS0RqAbWMMatEJBpYCQwKxP8uYudqLW+MyRARF/ADcL8xZqmv%0AjxW0V/7Hgz9PeSBgf8sZY2bnDY0NsBQ7IU5AMsasN8ZsdLqOYjoxH7Ux5hhwfD7qgGSMWQQccLoO%0AbxljdhljVuVtH8YOHV/H2aqKx1gZeS9deUuJZFfQhj+AiDwrIjuAG4AxTtfjIyOAWU4XEaKKmo86%0AIEMmWIlIAtAa+MnZSopPRMJFZDWwF5hjjCmRcwno8BeRuSKytohlIIAx5h/GmHrAJ9gJZfzW2c4l%0Ab59/AG7s+fitczkXpXxNRCoA04AHTvrLP6AYY3KNMYnYv/Dbi0iJNMl5NZmL085jfuFPsJPJPF6C%0A5XjlbOciIsOB/kBP4+c3anww77O/0vmo/VRe+/g04BNjzBdO1+MLxphDIjIf6AP4/KZ8QF/5n4mI%0ANCrwciCwwalavCUifYBHgAHGmKNO1xPCdD5qP5R3k3QisN4Y84rT9XhDRKod780nImWxnQtKJLuC%0AubfPNKAJtmfJNuBOY0xAXqWJyGYgEkjN+9LSAO65dBXwJlANOASsNsZc7mxV505E+gKvAeHA+8aY%0AZx0uqdhEZDLQHTuC5B7gcWPMREeLKgYR6QIkA79g/38HeDRv+tiAIiIXAR9i/32FYec8f6pEjhWs%0A4a+UUur0grbZRyml1Olp+CulVAjS8FdKqRCk4a+UUiFIw18ppUKQhr9SSoUgDX+llApBGv5KKRWC%0A/j+3uXalz1k0gQAAAABJRU5ErkJggg==%0A"></p>
-<p><br/></p>
-<h5><u>Mini-Batch Gradient Descent</u></h5>
-<p>在上一回當中，我們的Gradient Descent採用的是將所有的Data一次全考慮進去，評估完所有的Data在一次性的更新權重參數，這樣的作法好處是比較穩定，因為我考慮的是真正的Training Set的E<sub>in</sub>，但缺點就是計算時間長，因為要考慮所有Training Set的每筆數據，需要做大矩陣的計算，而且通常Training Set的數據量也不可以太小，這麼一來計算時間就會拉的很長。</p>
-<p>因此，有另外一種作法一次只考慮「一筆」數據，使用一筆數據來評估並更新權重參數，每一筆雖然更新結果都不怎麼準確，但是當我隨著時間看過整個Training Set後，就會有平均的效果，所以最後只要Learning Rate不要太大，最後的結果還是可以朝向最佳解的，這個手法會使得Gradient Descent具有隨機性，因此又被稱為Stochastic Gradient Descent，它所帶來的優點是計算時間變短了，我們將可以避免去涉及大矩陣的運算，但缺點是一次只評估一筆數據，將會非常的不穩定。</p>
-<p>另外還有一種介於Gradient Descent和Stochastic Gradient Descent之間的作法，稱之為Mini-Batch Gradient Descent，它不像Stochastic Gradient Descent那麼極端，一次只評估一組Data，Mini-Batch Gradient Descent一次評估k組數據，並更新參數W，這是相當好的折衷方案，平衡計算時間和更新穩定度，而且在某些情形下，計算時間還比Stochastic Gradient Descent還快，為什麼呢？GPU的架構設計是非常有利於矩陣計算的，因為GPU會利用它強大的平行化將矩陣運算中每個元素平行計算，可以大大增進效率，所以如果一次只算一筆資料，反而是沒有利用到GPU的效率，所以如果你用GPU計算的話，依照你的GPU去設計適當的k值做Mini-Batch Gradient Descent，這個k值不要超過GPU平行計算所能容納的最大上限，這是個既有效率又更為穩定的作法，順道一提Tensorflow是可以支援GPU的計算的。</p>
-<p>實務經驗告訴我們Mini-Batch Gradient Descent雖然穩定性比Gradient Descent差，但是收斂的速度卻一點都不輸給Gradient Descent，原因就出在更新的次數，Mini-Batch Gradient Descent一次看的數據筆數比較少，所以Mini-Batch一個Epoch可以更新參數好幾次，而Gradient Descent卻只能更新一次，Mini-Batch的靈敏性，使得它的收斂速度更為快速。打個比方，就好像是兩艘船在搜尋小島，Gradient Descent像是巡洋艦，它有更好設備可以有更好的觀測能力，但是因為它的笨重造成它反應不夠靈敏，Mini-Batch Gradient Descent就像是小船一樣，雖然觀測設備沒這麼好，但是反應靈敏，卻是可以更容易率先找到小島。</p>
-<p>那我們來看看要怎麼做到Mini-Batch Gradient Descent。</p>
-<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">validation_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">test_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">batch_size</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-
-        <span class="o">...</span><span class="err">略</span><span class="o">...</span>
-
-        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Epoch </span><span class="si">%2d</span><span class="s2">/</span><span class="si">%2d</span><span class="s2">: &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">epochs</span><span class="p">))</span>
-
-            <span class="c1"># mini-batch gradient descent</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-            <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-                <span class="n">index_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-                <span class="n">batch_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span><span class="n">index_size</span><span class="p">))]</span>    
-
-                <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">:</span> <span class="n">X</span><span class="p">[</span><span class="n">batch_index</span><span class="p">,:],</span> 
-                    <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">:</span> <span class="n">y</span><span class="p">[</span><span class="n">batch_index</span><span class="p">],</span> 
-                <span class="p">}</span>
-                <span class="n">_</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">train_op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="n">feed_dict</span><span class="p">)</span>
-
-                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[</span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">] loss = </span><span class="si">%9.4f</span><span class="s2">     &quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">N</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="n">N</span><span class="p">,</span> <span class="n">loss</span> <span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
-
-            <span class="o">...</span><span class="err">略</span><span class="o">...</span>
-</pre></div>
-
-
-<p>在每一個<code>epoch</code>都完整的看過數據一遍，而mini-batch gradient descent是隨機取<code>batch_size</code>筆數據來更新權重，所以我採用這樣的作法，先依照數據的筆數<code>N</code>列出可能的Index有哪些，然後再做一個<code>random.shuffle</code>來做到隨機採樣，然後接下來只要簡單的從前面取<code>batch_size</code>筆數據進行更新，直到用盡所有的index為止，就可以做到mini-batch的效果。</p>
-<p><br/></p>
-<h5><u>Regularization</u></h5>
-<p>當你開始加深你的DNN時，就已經在增加Model的複雜度，增加複雜度想當然爾的可以增加對於數據的描述能力，在分類問題中代表可以增加精確度，不過要特別注意Overfitting的出現，當Model越複雜越容易產生Overfitting，Overfitting的結果是有看過的數據描述的很好，但沒看過的數據預測就很差，所以在Training的過程要特別注意Validation Set的表現，如果發現Training Set的表現越來越好，但是Validation Set的表現裹足不前甚至變的更差，那就很有可能已經Overfitting了。</p>
-<p>如果你已經看到Overfitting出現了，有什麼方法可以抑制他呢？這個時候就需要Regularization的幫忙，在Neurel Network常見的Regularization有兩種：Weight Regularization和Dropout，待會會一一介紹。</p>
-<p>這邊特別注意，不要每次精確度沒有提升就怪Overfitting！如果連你的Training Set都沒辦法有好的表現，這就可能不是Overfitting，反而可能是Underfitting，這個時候不要再增加Regularization，而是試著去調整Learning Rate，或者增加模型的複雜度，加深DNN或增加神經元的數目。</p>
-<h5><u>Weight Regularization</u></h5>
-<p>我們可以藉著在Loss Function裡頭加入Weight的貢獻，來達到限制W的大小的目標，這樣做可以降低Overfitting，詳細原理請<a href="http://www.ycc.idv.tw/YCNote/post/28">參考這篇的Regularization的部分</a>。</p>
-<p>我們來看看應該怎麼做到L2 Regularization。</p>
-<div class="highlight"><pre><span></span><span class="c1"># regularization loss</span>
-<span class="n">regularization</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">l2_loss</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">/</span><span class="n">tf</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">out_type</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-                                      <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
-<span class="c1"># total loss</span>
-<span class="n">loss</span> <span class="o">=</span> <span class="n">original_loss</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">regularization</span>
-</pre></div>
-
-
-<p>在這裡我習慣將Loss對Weights的個數做平均，這有一個好處當我在調整神經元數目時，<code>alpha</code>可以不需要大動作調整。</p>
-<p><br/></p>
-<h5><u>Dropout</u></h5>
-<p>Dropout是Deep Learning常用的Regularization技巧，它的作法是在訓練的時候我先隨機把部份的神經元關閉，使用較少的神經元訓練，來達到Regularization的效果，最後在「推論」的時候再使用全部的神經元，我個人覺得這有Aggregation Model的味道，分別訓練出許多的sub-model再做Aggregation以達到截長補短的效果。</p>
-<p>實作上有一些細節必須要注意，當我們關閉一些神經元時，也就是等於減少部份的貢獻量，所以我們需要依照相應比例來給予權重，以抵銷減少的部分。舉個例子，假設今天原本應該要輸出的值有十個，這十個值都是1，然後因為Dropout，變成五個1五個0的輸出，我們看到原本貢獻量因為Dropout一半而少一半，這樣並不合理，會導致我後面的Weights在更新的時候低估更新量，所以我們必須要將「沒被Dropout的部分」權重乘上一倍，才可以解決問題。因此，如果Dropout r倍的神經元，權重就要乘以(1/r)倍，我們來看看Tensorflow怎麼做的。</p>
-<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
-    <span class="n">S</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                     <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-                     <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]],</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="c1"># 3 Data, 8 dim. Score</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Original S =&quot;</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">eval</span><span class="p">())</span>
-    <span class="n">S_drop</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">keep_prob</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span> <span class="c1"># dropout ratio = 1 - keep_prob = 0.5</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Dropout S =&quot;</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">S_drop</span><span class="o">.</span><span class="n">eval</span><span class="p">())</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>Original S =
-[[ 1.  1.  1.  1.  1.  1.  1.  1.]
- [ 3.  3.  3.  3.  3.  3.  3.  3.]
- [ 5.  5.  5.  5.  5.  5.  5.  5.]]
-Dropout S =
-[[  2.   2.   2.   0.   0.   2.   0.   0.]
- [  6.   0.   6.   0.   6.   6.   0.   0.]
- [ 10.  10.  10.  10.  10.   0.   0.  10.]]
-</pre></div>
-
-
-<p>我們看到因為dropout 0.5倍，所以輸出值權重乘上2倍，另外一提，Tensorflow的Dropout機制是隨機的，所以Drop out的比例會接近我們想要的比例，但不是絕對剛好。</p>
-<p>那我要怎麼把Dropout放進去我的Model呢？特別注意，我們並不希望已經Training完的Model還有Dropout這一層，所以我在<code>structure</code>裡頭設計一個<code>train</code>的開關，當我在Training過程就把它打開，Dropout這一層就會被加進去，「推論」的時候就關閉，保持原有的神經元數量。</p>
-<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">features</span><span class="p">,</span><span class="n">labels</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">,</span><span class="n">activation</span><span class="p">,</span><span class="n">dropout_ratio</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-
-        <span class="o">...</span> <span class="err">略</span> <span class="o">...</span>
-
-        <span class="c1"># layer 1</span>
-        <span class="n">fc1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;fc1&#39;</span><span class="p">],</span>
-                                 <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;fc1&#39;</span><span class="p">],</span> <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">train</span><span class="p">:</span>
-            <span class="n">fc1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">fc1</span><span class="p">,</span><span class="n">keep_prob</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">dropout_ratio</span><span class="p">)</span>
-
-        <span class="c1"># layer 2</span>
-        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">fc1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;fc2&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;fc2&#39;</span><span class="p">])</span>
-
-        <span class="o">...</span> <span class="err">略</span> <span class="o">...</span>
-</pre></div>
-
-
-<p><br/></p>
-<h5><u>Optimizer的選擇</u></h5>
-<p>我們可以自由的替換我們想要使用的Optimizer。</p>
-<div class="highlight"><pre><span></span><span class="c1"># define training operation</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">train_op</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
-</pre></div>
-
-
-<p>在Tensorflow中目前有以下十種Optimizer供我們使用。</p>
-<ul>
-<li>tf.train.GradientDescentOptimizer</li>
-<li>tf.train.AdadeltaOptimizer</li>
-<li>tf.train.AdagradOptimizer</li>
-<li>tf.train.AdagradDAOptimizer</li>
-<li>tf.train.MomentumOptimizer</li>
-<li>tf.train.AdamOptimizer</li>
-<li>tf.train.FtrlOptimizer</li>
-<li>tf.train.ProximalGradientDescentOptimizer</li>
-<li>tf.train.ProximalAdagradOptimizer</li>
-<li>tf.train.RMSPropOptimizer</li>
-</ul>
-<p>如果想要了解每個Optimizer的演算法可以參考<a href="http://ruder.io/optimizing-gradient-descent/">這篇有詳細的說明</a>。</p>
-<p><br/></p>
-<h5><u>來看看程式怎麼寫</u></h5>
-<p>講了那麼多，來看看完整的程式怎麼寫？照慣例，先畫個流程圖。</p>
-<p><img alt="DNNLogisticClassification" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.003.jpeg"></p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">random</span>
-
-<span class="c1"># Config the matplotlib backend as plotting inline in IPython</span>
-<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DNNLogisticClassification</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_features</span><span class="p">,</span><span class="n">n_labels</span><span class="p">,</span>
-                 <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">n_hidden</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">,</span>
-                 <span class="n">dropout_ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span> <span class="o">=</span> <span class="n">n_labels</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="bp">None</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span> <span class="c1"># initialize new graph</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">,</span><span class="n">activation</span><span class="p">,</span>
-                   <span class="n">dropout_ratio</span><span class="p">,</span><span class="n">alpha</span><span class="p">)</span> <span class="c1"># building graph</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span> <span class="c1"># create session by the graph </span>
-
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">learning_rate</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">,</span><span class="n">activation</span><span class="p">,</span><span class="n">dropout_ratio</span><span class="p">,</span><span class="n">alpha</span><span class="p">):</span>
-        <span class="c1"># Building Graph</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
-            <span class="c1">### Input</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span>   <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span>  <span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
-
-            <span class="c1">### Optimalization</span>
-            <span class="c1"># build neurel network structure and get their predictions and loss</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">original_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">,</span>
-                                                        <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">,</span>
-                                                        <span class="n">n_hidden</span><span class="o">=</span><span class="n">n_hidden</span><span class="p">,</span>
-                                                        <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">,</span>
-                                                        <span class="n">dropout_ratio</span><span class="o">=</span><span class="n">dropout_ratio</span><span class="p">,</span>
-                                                        <span class="n">train</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-            <span class="c1"># regularization loss</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">regularization</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
-                                   <span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">l2_loss</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">/</span><span class="n">tf</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">out_type</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-                                        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
-            <span class="c1"># total loss</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_loss</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">regularization</span>
-
-            <span class="c1"># define training operation</span>
-            <span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_op</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
-
-            <span class="c1">### Prediction</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span>   <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span>  <span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_y_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">,</span>
-                                                       <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span><span class="p">,</span>
-                                                       <span class="n">n_hidden</span><span class="o">=</span><span class="n">n_hidden</span><span class="p">,</span>
-                                                       <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">)</span> 
-
-            <span class="c1">### Initialization</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">features</span><span class="p">,</span><span class="n">labels</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">,</span><span class="n">activation</span><span class="p">,</span><span class="n">dropout_ratio</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">train</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="c1"># build neurel network structure and return their predictions and loss</span>
-        <span class="c1">### Variable</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">)</span> <span class="p">)),</span>
-                <span class="s1">&#39;fc2&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">)</span> <span class="p">)),</span>
-            <span class="p">}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">biases</span>  <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">)</span> <span class="p">)),</span>
-                <span class="s1">&#39;fc2&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">)</span> <span class="p">)),</span>
-            <span class="p">}</span> 
-        <span class="c1">### Structure</span>
-        <span class="c1"># layer 1</span>
-        <span class="n">fc1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;fc1&#39;</span><span class="p">],</span>
-                                 <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;fc1&#39;</span><span class="p">],</span> <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">train</span><span class="p">:</span>
-            <span class="n">fc1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">fc1</span><span class="p">,</span><span class="n">keep_prob</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">dropout_ratio</span><span class="p">)</span>
-
-        <span class="c1"># layer 2</span>
-        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">fc1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;fc2&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;fc2&#39;</span><span class="p">])</span>
-
-        <span class="n">y_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
-
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
-                 <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="n">logits</span><span class="o">=</span><span class="n">logits</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="p">(</span><span class="n">y_</span><span class="p">,</span><span class="n">loss</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">getDenseLayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_layer</span><span class="p">,</span><span class="n">weight</span><span class="p">,</span><span class="n">bias</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="c1"># fully connected layer</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">input_layer</span><span class="p">,</span><span class="n">weight</span><span class="p">),</span><span class="n">bias</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">activation</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">activation</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">x</span>
-
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">validation_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">test_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">batch_size</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-
-        <span class="n">N</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">9000</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">batch_size</span><span class="p">:</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">N</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_op</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Epoch </span><span class="si">%2d</span><span class="s2">/</span><span class="si">%2d</span><span class="s2">: &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">epochs</span><span class="p">))</span>
-
-            <span class="c1"># mini-batch gradient descent</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-            <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-                <span class="n">index_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-                <span class="n">batch_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span><span class="n">index_size</span><span class="p">))]</span>    
-
-                <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">:</span> <span class="n">X</span><span class="p">[</span><span class="n">batch_index</span><span class="p">,:],</span> 
-                    <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">:</span> <span class="n">y</span><span class="p">[</span><span class="n">batch_index</span><span class="p">],</span> 
-                <span class="p">}</span>
-                <span class="n">_</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">train_op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="n">feed_dict</span><span class="p">)</span>
-
-                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[</span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">] loss = </span><span class="si">%9.4f</span><span class="s2">     &quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">N</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="n">N</span><span class="p">,</span> <span class="n">loss</span> <span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
-
-
-            <span class="c1"># evaluate at the end of this epoch</span>
-            <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-            <span class="n">train_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">train_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;[</span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">] loss = </span><span class="si">%8.4f</span><span class="s2">, acc = </span><span class="si">%3.2f%%</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_acc</span><span class="o">*</span><span class="mi">100</span> <span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">validation_data</span><span class="p">:</span>
-                <span class="n">val_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">val_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;, val_loss = </span><span class="si">%8.4f</span><span class="s2">, val_acc = </span><span class="si">%3.2f%%</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">val_loss</span><span class="p">,</span> <span class="n">val_acc</span><span class="o">*</span><span class="mi">100</span> <span class="p">)</span>
-
-            <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
-
-        <span class="k">if</span> <span class="n">test_data</span><span class="p">:</span>
-            <span class="n">test_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">test_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;test_acc = </span><span class="si">%3.2f%%</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">test_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="n">predictions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_y_</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">:</span> <span class="n">X</span><span class="p">})</span>
-
-    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span> 
-                                                       <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span><span class="p">:</span> <span class="n">y</span><span class="p">})</span>
-
-    <span class="k">def</span> <span class="nf">_check_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ndarray</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ndarray</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-        <span class="k">return</span> <span class="n">ndarray</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tensorflow.examples.tutorials.mnist</span> <span class="kn">import</span> <span class="n">input_data</span>
-<span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s2">&quot;MNIST_data/&quot;</span><span class="p">,</span> <span class="n">one_hot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-<span class="n">train_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span>
-<span class="n">valid_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">validation</span>
-<span class="n">test_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>Extracting MNIST_data/train-images-idx3-ubyte.gz
-Extracting MNIST_data/train-labels-idx1-ubyte.gz
-Extracting MNIST_data/t10k-images-idx3-ubyte.gz
-Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">DNNLogisticClassification</span><span class="p">(</span>   <span class="n">n_features</span><span class="o">=</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span>
-                                     <span class="n">n_labels</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                     <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                                     <span class="n">n_hidden</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-                                     <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">,</span>
-                                     <span class="n">dropout_ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                                     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-                                 <span class="p">)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span>
-          <span class="n">y</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
-          <span class="n">epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-          <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">valid_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span><span class="n">valid_data</span><span class="o">.</span><span class="n">labels</span><span class="p">),</span>
-          <span class="n">test_data</span><span class="o">=</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span><span class="n">test_data</span><span class="o">.</span><span class="n">labels</span><span class="p">),</span>
-          <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-         <span class="p">)</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>Epoch  1/ 3: 
-[55000/55000] loss =   0.5235, acc = 88.03%, val_loss =   0.6335, val_acc = 88.22%
-Epoch  2/ 3: 
-[55000/55000] loss =   0.3493, acc = 91.90%, val_loss =   0.4541, val_acc = 91.62%
-Epoch  3/ 3: 
-[55000/55000] loss =   0.2653, acc = 93.22%, val_loss =   0.3612, val_acc = 92.68%
-test_acc = 92.02%
-</pre></div>
-
-
-<p>跟上次的結果比，你會發現有長足的進步，精確率來到90幾，大家可以<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py">下載程式碼</a>，試著調整參數使得DNN Model的精確率可以更高，參數包含：
-<em> Hidden Layer的神經元數量
-</em> 不同的Activation Function
-<em> 不同的Batch Size
-</em> 調整Weight Regularization的比例
-<em> 調整Dropout Ratio
-</em> 選擇不同Optimizer
-* 使得DNN更深</p>
-<p>調整Model是重要的工作，試著自己動手做做看，你可以讓你的Model有多準呢？</p></dd>
-                <dt>2017 / 10月 23</dt>
-                <dd><a href="./tensorflow-tutorial_1.html">實作Tensorflow (1)：Simple Logistic Classification on MNIST</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>Tensorflow Tutorial 1: Simple Logistic Classification on MNIST</p>
-<p>初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。</p>
-<p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/01_simple_logistic_classification_on_MNIST.py">Github</a>下載。</p>
-<h5><u>MNIST Dataset</u></h5>
-<p>首先，先<code>import</code>一些會用到的function，並且定義<code>summary</code> function以便於觀察ndarray。</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-
-<span class="c1"># Config the matplotlib backend as plotting inline in IPython</span>
-<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
-
-<span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;* shape: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ndarr</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;* min: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;* max: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;* avg: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;* std: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;* unique: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-</pre></div>
-
-
-<p>ndarray是numpy的基本元素，它非常便於我們做矩陣的運算。</p>
-<p>我們使用MNIST Dataset來當作我們練習的標的，MNIST包含一包手寫數字的圖片，每張圖片大小為28x28，每一張圖片都是一個手寫的阿拉伯數字包含0到9，並且標記上它所對應的數字。我們的目標就是要利用MNIST做到手寫數字辨識。</p>
-<p>在Tensorflow你可以很簡單的得到「處理過後的」MNIST，只要利用以下程式碼，</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tensorflow.examples.tutorials.mnist</span> <span class="kn">import</span> <span class="n">input_data</span>
-<span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s2">&quot;MNIST_data/&quot;</span><span class="p">,</span> <span class="n">one_hot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-<span class="n">train_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span>
-<span class="n">valid_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">validation</span>
-<span class="n">test_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>Extracting MNIST_data/train-images-idx3-ubyte.gz
-Extracting MNIST_data/train-labels-idx1-ubyte.gz
-Extracting MNIST_data/t10k-images-idx3-ubyte.gz
-Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
-</pre></div>
-
-
-<p>每個<code>train_data</code>、<code>valid_data</code>、<code>test_data</code>都包含兩部分：圖片和標籤。</p>
-<p>我們來看一下圖片的部分，<code>train_data.images</code>一共有55000張圖，每一張圖原本大小是28x28，不過特別注意這裡的Data已經先做過預先處理了，因此圖片已經被打平成28x28=784的一維矩陣了，另外每個Pixel的值也先做過「Normalization」了，通常會這樣處理，每個值減去128再除以128，所以你可以從以下的<code>summary</code>中看到它的最大最小值落在0到1之間，還有這個Dataset也已經做過亂數重排了。</p>
-<div class="highlight"><pre><span></span><span class="n">summary</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="k">[[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="na">..., </span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]]</span>
-<span class="na">* shape: (55000, 784)</span>
-<span class="na">* min: 0.0</span>
-<span class="na">* max: 1.0</span>
-<span class="na">* avg: 0.13070042431354523</span>
-<span class="na">* std: 0.30815958976745605</span>
-<span class="na">* unique: [ 0.          0.00392157  0.00784314  0.01176471  0.01568628  0.01960784</span>
-  <span class="na">0.02352941  0.02745098  0.03137255  0.03529412  0.03921569  0.04313726</span>
-  <span class="na">0.04705883  0.0509804   0.05490196  0.05882353  0.0627451   0.06666667</span>
-  <span class="na">0.07058824  0.07450981  0.07843138  0.08235294  0.08627451  0.09019608</span>
-  <span class="na">0.09411766  0.09803922  0.10196079  0.10588236  0.10980393  0.1137255</span>
-  <span class="na">0.11764707  0.12156864  0.1254902   0.12941177  0.13333334  0.13725491</span>
-  <span class="na">0.14117648  0.14509805  0.14901961  0.15294118  0.15686275  0.16078432</span>
-  <span class="na">0.16470589  0.16862746  0.17254902  0.17647059  0.18039216  0.18431373</span>
-  <span class="na">0.18823531  0.19215688  0.19607845  0.20000002  0.20392159  0.20784315</span>
-  <span class="na">0.21176472  0.21568629  0.21960786  0.22352943  0.227451    0.23137257</span>
-  <span class="na">0.23529413  0.2392157   0.24313727  0.24705884  0.25098041  0.25490198</span>
-  <span class="na">0.25882354  0.26274511  0.26666668  0.27058825  0.27450982  0.27843139</span>
-  <span class="na">0.28235295  0.28627452  0.29019609  0.29411766  0.29803923  0.3019608</span>
-  <span class="na">0.30588236  0.30980393  0.3137255   0.31764707  0.32156864  0.32549021</span>
-  <span class="na">0.32941177  0.33333334  0.33725491  0.34117648  0.34509805  0.34901962</span>
-  <span class="na">0.35294119  0.35686275  0.36078432  0.36470589  0.36862746  0.37254903</span>
-  <span class="na">0.37647063  0.38039219  0.38431376  0.38823533  0.3921569   0.39607847</span>
-  <span class="na">0.40000004  0.4039216   0.40784317  0.41176474  0.41568631  0.41960788</span>
-  <span class="na">0.42352945  0.42745101  0.43137258  0.43529415  0.43921572  0.44313729</span>
-  <span class="na">0.44705886  0.45098042  0.45490199  0.45882356  0.46274513  0.4666667</span>
-  <span class="na">0.47058827  0.47450984  0.4784314   0.48235297  0.48627454  0.49019611</span>
-  <span class="na">0.49411768  0.49803925  0.50196081  0.50588238  0.50980395  0.51372552</span>
-  <span class="na">0.51764709  0.52156866  0.52549022  0.52941179  0.53333336  0.53725493</span>
-  <span class="na">0.5411765   0.54509807  0.54901963  0.5529412   0.55686277  0.56078434</span>
-  <span class="na">0.56470591  0.56862748  0.57254905  0.57647061  0.58039218  0.58431375</span>
-  <span class="na">0.58823532  0.59215689  0.59607846  0.60000002  0.60392159  0.60784316</span>
-  <span class="na">0.61176473  0.6156863   0.61960787  0.62352943  0.627451    0.63137257</span>
-  <span class="na">0.63529414  0.63921571  0.64313728  0.64705884  0.65098041  0.65490198</span>
-  <span class="na">0.65882355  0.66274512  0.66666669  0.67058825  0.67450982  0.67843139</span>
-  <span class="na">0.68235296  0.68627453  0.6901961   0.69411767  0.69803923  0.7019608</span>
-  <span class="na">0.70588237  0.70980394  0.71372551  0.71764708  0.72156864  0.72549021</span>
-  <span class="na">0.72941178  0.73333335  0.73725492  0.74117649  0.74509805  0.74901962</span>
-  <span class="na">0.75294125  0.75686282  0.76078439  0.76470596  0.76862752  0.77254909</span>
-  <span class="na">0.77647066  0.78039223  0.7843138   0.78823537  0.79215693  0.7960785</span>
-  <span class="na">0.80000007  0.80392164  0.80784321  0.81176478  0.81568635  0.81960791</span>
-  <span class="na">0.82352948  0.82745105  0.83137262  0.83529419  0.83921576  0.84313732</span>
-  <span class="na">0.84705889  0.85098046  0.85490203  0.8588236   0.86274517  0.86666673</span>
-  <span class="na">0.8705883   0.87450987  0.87843144  0.88235301  0.88627458  0.89019614</span>
-  <span class="na">0.89411771  0.89803928  0.90196085  0.90588242  0.90980399  0.91372555</span>
-  <span class="na">0.91764712  0.92156869  0.92549026  0.92941183  0.9333334   0.93725497</span>
-  <span class="na">0.94117653  0.9450981   0.94901967  0.95294124  0.95686281  0.96078438</span>
-  <span class="na">0.96470594  0.96862751  0.97254908  0.97647065  0.98039222  0.98431379</span>
-  <span class="na">0.98823535  0.99215692  0.99607849  1.        ]</span>
-</pre></div>
-
-
-<p>來試著畫圖來看看，我們使用ndarray的index功能來選出第10張圖片，<code>train_data.images[10,:]</code>表示的是選第一軸的第10個和第二軸的全部。</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_fatten_img</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
-    <span class="n">img</span> <span class="o">=</span> <span class="n">ndarr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">img</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="n">plot_fatten_img</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">10</span><span class="p">,:])</span>
-</pre></div>
-
-
-<p><img alt="png" src="output_8_0.png"></p>
-<p>很顯而易見的，這是一個0。</p>
-<p>接下來來看標籤的部分，<code>train_data.labels</code>不意外的一樣的也是有相應的55000筆資料，所對應的就是前面的每一張圖片，總共有10種類型:0到9，所以大小為(55000, 10)。</p>
-<div class="highlight"><pre><span></span><span class="n">summary</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="k">[[ 0.  0.  0. ...,  1.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="na">..., </span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  1.  0.]]</span>
-<span class="na">* shape: (55000, 10)</span>
-<span class="na">* min: 0.0</span>
-<span class="na">* max: 1.0</span>
-<span class="na">* avg: 0.1</span>
-<span class="na">* std: 0.30000000000000004</span>
-<span class="na">* unique: [ 0.  1.]</span>
-</pre></div>
-
-
-<p>所以我們來看看上面那張圖片的標籤，</p>
-<div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>[ 1.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
-</pre></div>
-
-
-<p>看起來的確沒錯，在0的位置標示1.，而其他地方標示為0.，因此這是一個標示為0的label沒有錯，這種表示方法稱為One-Hot Encoding，它具有機率的涵義，所代表的是有100%的機會落在0的類別上。</p>
-<h5><u>Softmax</u></h5>
-<p>通常One-Hot Encoding會搭配Softmax一同服用，最後的Output結果如果是機率分布，那我也需要讓我的Neurel Network可以輸出機率分布。</p>
-<p><img alt="softmax" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.001.jpeg"></p>
-<p>通過Softmax這一層，我們就可以將輸出轉變為以「機率」表示。</p>
-<p>我們可以來手刻一個Softmax Function，不過直接套用Tensorflow中函數的也是可以的。</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-
-<span class="k">def</span> <span class="nf">softmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="c1"># avoid exp function go to too large,</span>
-    <span class="c1"># pre-reduce before applying exp function</span>
-    <span class="n">max_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">max_score</span>
-
-    <span class="n">exp_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">sum_exp_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exp_s</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">softmax</span> <span class="o">=</span> <span class="n">exp_s</span> <span class="o">/</span> <span class="n">sum_exp_s</span>
-    <span class="k">return</span> <span class="n">softmax</span>
-
-<span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]</span>
-<span class="k">print</span><span class="p">(</span><span class="n">softmax</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>[ 0.8360188   0.11314284  0.05083836]
-</pre></div>
-
-
-<h5><u>Cross-Entropy Loss</u></h5>
-<p>一旦我們要處理機率預測的問題，就不可以使用單純的「平方誤差」，而必須使用Cross-Entropy Loss，是這樣計算的：</p>
-<p>Cross-Entropy Loss = -𝚺<sub>i</sub> y<sub>i</sub> ln[ s<sub>i</sub> ]</p>
-<p>其中，y<sub>i</sub>為目標Label，s<sub>i</sub>為經過Softmax產生的預測值。</p>
-<p>至於如果你想要了解為何需要使用Cross-Entropy Loss？這我在機器學習基石的筆記中已經有提及過，請看<a href="http://www.ycc.idv.tw/YCNote/post/27">介紹Logistic Regression的部分</a>。</p>
-<h5><u>分離數據的重要性</u></h5>
-<p>在MNIST Dataset中，你會發現分為Training Dataset、Validation Dataset和Testing Dataset，這樣的作法在Machine Learning中是常見且必要的。</p>
-<p>流程是這樣的，我們會先使用Training Dataset來訓練Model，並且使用Validation Dataset來檢驗Model的好壞，我們會依據Validation Dataset的檢驗調整Model上的參數，試著盡可能的壓低Validation Dataset的Error，記住！在過程中所產生的所有Models都要保留下來，因為最後選擇的Model並不是Validation Dataset的Error最小的，而是要再由Testing Dataset來做最後的挑選，挑選出能使Testing Dataset的Error最小的Model。</p>
-<p>這所有的作法都是為了避免Overfitting的情況發生，也就是機器可能因為看過一筆Data，結果就把這筆Data給完整記了起來，而Data本身含有雜訊，雜訊就這樣滲透到Model裡，確實做到分離是很重要的，讓Model在測試階段時可以使用沒有看過的Data。</p>
-<p>因此，Validation Dataset的分離是為了避免讓Model在Training階段看到要驗證的資料，所以更能正確的評估Model的好壞。但這樣是不夠的，人為會根據Validation Dataset來調整Model，這樣無形之中已經將Validation Dataset的資訊間接的經由人傳給了Model，所以還是沒有徹底分離，因此在最後挑選Models時，我們會使用另外一筆從沒看過的資料Testing Dataset來做挑選，一旦挑選完就不能再去調整任何參數了。</p>
-<h5><u>Tensorflow工作流程</u></h5>
-<p>我們這一篇將會使用Tensorflow實作最簡單的單層Neurel Network，在這之前我們來看看Tensorflow是如何運作的？</p>
-<p>深度學習是由一層一層可以微分的神經元所連接而成，數學上可以表示為張量(Tensor)的表示式，我們一般講的矩陣運算是指2x2的矩陣運算，而張量(Tensor)則是拓寬到n維陣列做計算，在Machine Learning當中我們常常需要處理到相當高維度的計算，例如：有五張28x28的彩色圖的表示就必須使用到四維張量，第一維表示第幾張、第二、三維表示圖片的大小、第四維則表示RGB，如果你是物理系的學生應該也對張量不陌生，廣義相對論裡頭大量的使用四維張量運算，三維空間加一維時間。</p>
-<p>而在做Neurel Network時，我們會根據需求不同設計不同形式但合理的流程(Flow)，再使用數據來訓練我的Model。所以，這就是Tensorflow命名由來：Tensor+Flow。</p>
-<p>因此，一開始要先設計Model的結構，這在Tensorflow裡頭稱為Graph，Graph的作用是事先決定Neurel Network的結構，決定Neuron要怎麼連接？決定哪一些窗口是可以由外部置放數據的？決定哪一些變數是可以被訓練的？哪一些變數是不可以被訓練的？定義將要怎麼樣優化這個系統？...等等。</p>
-<div class="highlight"><pre><span></span><span class="n">my_graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span> <span class="c1"># Initialize a new graph</span>
-
-<span class="k">with</span> <span class="n">my_graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span> <span class="c1"># Create a scope to build graph</span>
-    <span class="c1"># ...</span>
-    <span class="c1"># detail of building graph</span>
-</pre></div>
-
-
-<p>Graph只是一個結構，它不具有有效的資訊，而當我們定義完成Graph之後，接下來我們需要創造一個環境叫做Session，Session會將Graph的結構複製一份，然後再放入資訊進行Training或是預測等等，因此Session是具有有效資訊的。</p>
-<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">my_graph</span><span class="p">)</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span> <span class="c1"># Copy graph into session</span>
-    <span class="c1"># ...</span>
-    <span class="c1"># detail of doing machine learning  </span>
-</pre></div>
-
-
-<p>還有另外一種寫法也是相同作用的，我個人比較喜歡下面這種寫法。</p>
-<div class="highlight"><pre><span></span><span class="n">my_session</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">my_graph</span><span class="p">)</span>
-<span class="n">my_session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-</pre></div>
-
-
-<h5><u>Tensorflow的基本「張量」元素</u></h5>
-<p>接下來我們就來看看有哪些構成Graph的基本元素可以使用。</p>
-<p>(1) 常數張量：</p>
-<p>一開始來看看「常數張量」，常數指的是在Model中不會改變的數值。</p>
-<div class="highlight"><pre><span></span><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-</pre></div>
-
-
-<p>(2) 變數張量：</p>
-<p>與常數截然不同的就是變數，「變數張量」是指在訓練當中可以改變的值，一般「變數張量」會用作於Machine Learning需要被訓練的參數，如果你沒有特別設定，在最佳化的過程中，Tensorflow會自動調整「變數張量」的數值來最佳化。</p>
-<div class="highlight"><pre><span></span><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span> <span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span> <span class="p">)</span>
-</pre></div>
-
-
-<p>因為變數通常是未知且待優化的參數，所以我們一般會使用Initalizer來設定它的初始值，<code>tf.truncated_normal(shape=(3,5))</code>會隨機產生大小3x5的矩陣，它的值呈常態分佈但只取兩個標準差以內的數值。</p>
-<p>如果今天你想要有一個「變數張量」但是又不希望它因為最佳化而改變，這時你要特別指定<code>trainable</code>為<code>False</code>。</p>
-<div class="highlight"><pre><span></span><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">trainable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-</pre></div>
-
-
-<p>(3) 置放張量：</p>
-<p>另外有一些張量負責擔任輸入窗口的角色，稱為Placeholder。</p>
-<div class="highlight"><pre><span></span><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="mi">1000</span><span class="p">))</span>
-</pre></div>
-
-
-<p>因為我們在訓練之前還尚未知道Data的數量，所以這裡使用None來表示未知。<code>tf.placeholder</code>在Graph階段是沒有數值的，必須等到Session階段才將數值給輸入進去。</p>
-<p>(4) 操作型張量：</p>
-<p>這類張量並不含有實際數值，而是一種操作，常用的「操作型張量」有兩種，第一種是作為最佳化使用，</p>
-<div class="highlight"><pre><span></span><span class="n">loss</span> <span class="o">=</span> <span class="o">...</span>
-<span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
-</pre></div>
-
-
-<p>選擇Optimizer和最佳化的方式來定義最佳化的操作方法，上述的例子是使用learning_rate為0.5的Gradient Descent來降低loss。</p>
-<p>另外一種是初始化的操作，</p>
-<div class="highlight"><pre><span></span><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
-</pre></div>
-
-
-<p>這一個步驟是必要的但常常被忽略，還記得剛剛我們定義「變數張量」時有用到Initalizer，這些Initalizer在Graph完成時還不具有數值，必須使用<code>init_op</code>來給予數值，所以記住一定要放<code>init_op</code>進去Graph裡頭，而且必須先定義完成所有會用到的Initalizer再來設定這個<code>init_op</code>。</p>
-<h5><u>Session的操作</u></h5>
-<p>「張量」元素具有兩個面向：功能和數值，在Graph階段「張量」只具有功能但不具有數值，只有到了Session階段才開始有數值，那如何將這些數值取出來呢？有兩種方法，以1+1當作範例來看看，</p>
-<div class="highlight"><pre><span></span><span class="n">g1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-<span class="k">with</span> <span class="n">g1</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">sol</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="c1"># add x and y</span>
-
-<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">g1</span><span class="p">)</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span> 
-    <span class="k">print</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="c1"># print tensor, not their value</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>Tensor(&quot;Add:0&quot;, shape=(), dtype=int32)
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">g1</span><span class="p">)</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span> 
-    <span class="k">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">eval</span><span class="p">())</span> <span class="c1"># evaluate their value</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>2
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="n">s1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">g1</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">s1</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">))</span> <span class="c1"># another way of evaluating value</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>2
-</pre></div>
-
-
-<p>那如果我想使用placeholder來做到x+y呢？</p>
-<div class="highlight"><pre><span></span><span class="n">g2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-<span class="k">with</span> <span class="n">g2</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-    <span class="n">sol</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="c1"># add x and y</span>
-
-<span class="n">s2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">g2</span><span class="p">)</span>
-
-<span class="c1"># if x = 2 and y = 3</span>
-<span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="mi">3</span><span class="p">}))</span> 
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>5
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="c1"># if x = 5 and y = 7</span>
-<span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="mi">7</span><span class="p">}))</span> 
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>12
-</pre></div>
-
-
-<p>因為x和y是placeholder，所以必須使用<code>feed_dict</code>來餵入相關資訊，否則會報錯。</p>
-<h5><u>第一個Tensorflow Model</u></h5>
-<p>有了以上的認識我們就可以來建立我們第一個Model。</p>
-<p>以下我會使用物件導向的寫法，讓程式碼更有條理。</p>
-<p>Machine Learning在操作上可以整理成三個大步驟：建構(Building)、訓練(Fitting)和推論(Inference)，所以我們將會使用這三大步驟來建製我們的Model。</p>
-<p>在<code>SimpleLogisticClassification</code>裡頭，「建構」的動作在<code>__init__</code>中會進行，由<code>build</code>函式來建立Graph，其中我將Neurel Network的結構分離存於<code>structure</code>裡。「訓練」的動作在<code>fit</code>中進行，這裡採用傳統的Gradient Descent的方法，將所有Data全部考慮進去最佳化，未來會再介紹Batch Gradient Descent。最後，「推論」的部分在<code>predict</code>和<code>evaluate</code>中進行。</p>
-<p><code>SimpleLogisticClassification</code>將會建構一個只有一層的Neurel Network，也就是說沒有Hidden Layer，畫個圖。</p>
-<p><img alt="Simple Logistic Classification" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.002.jpeg"></p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SimpleLogisticClassification</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_features</span><span class="p">,</span><span class="n">n_labels</span><span class="p">,</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span> <span class="o">=</span> <span class="n">n_labels</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span>  <span class="o">=</span> <span class="bp">None</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span> <span class="c1"># initialize new graph</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span> <span class="c1"># building graph</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span> <span class="c1"># create session by the graph     </span>
-
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">learning_rate</span><span class="p">):</span>
-        <span class="c1"># Building Graph</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
-            <span class="c1">### Input</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span>   <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span>  <span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
-
-            <span class="c1">### Optimalization</span>
-            <span class="c1"># build neurel network structure and get their predictions and loss</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">,</span>
-                                                        <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">)</span>
-            <span class="c1"># define training operation</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
-
-            <span class="c1">### Prediction</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span>   <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span>  <span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_y_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">,</span>
-                                                       <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span><span class="p">,)</span>
-
-            <span class="c1">### Initialization</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">features</span><span class="p">,</span><span class="n">labels</span><span class="p">):</span>
-        <span class="c1"># build neurel network structure and return their predictions and loss</span>
-        <span class="c1">### Variable</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">)</span> <span class="p">)),</span>
-            <span class="p">}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">biases</span>  <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">)</span> <span class="p">)),</span>
-            <span class="p">}</span> 
-
-        <span class="c1">### Structure   </span>
-        <span class="c1"># one fully connected layer</span>
-        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;fc1&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;fc1&#39;</span><span class="p">])</span>
-
-        <span class="c1"># predictions</span>
-        <span class="n">y_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
-
-        <span class="c1"># loss: softmax cross entropy</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
-                 <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="n">logits</span><span class="o">=</span><span class="n">logits</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="p">(</span><span class="n">y_</span><span class="p">,</span><span class="n">loss</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">getDenseLayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_layer</span><span class="p">,</span><span class="n">weight</span><span class="p">,</span><span class="n">bias</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="c1"># fully connected layer</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">input_layer</span><span class="p">,</span><span class="n">weight</span><span class="p">),</span><span class="n">bias</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">activation</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">activation</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">x</span>
-
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">validation_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">test_data</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_op</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Epoch </span><span class="si">%2d</span><span class="s2">/</span><span class="si">%2d</span><span class="s2">: &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">epochs</span><span class="p">))</span>
-
-            <span class="c1"># fully gradient descent</span>
-            <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">:</span> <span class="n">y</span><span class="p">}</span>
-            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="n">feed_dict</span><span class="p">)</span>
-
-            <span class="c1"># evaluate at the end of this epoch</span>
-            <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-            <span class="n">train_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">train_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot; loss = </span><span class="si">%8.4f</span><span class="s2">, acc = </span><span class="si">%3.2f%%</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_acc</span><span class="o">*</span><span class="mi">100</span> <span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">validation_data</span><span class="p">:</span>
-                <span class="n">val_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">val_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;, val_loss = </span><span class="si">%8.4f</span><span class="s2">, val_acc = </span><span class="si">%3.2f%%</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">val_loss</span><span class="p">,</span> <span class="n">val_acc</span><span class="o">*</span><span class="mi">100</span> <span class="p">)</span>
-
-            <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">test_data</span><span class="p">:</span>
-            <span class="n">test_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">test_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;test_acc = </span><span class="si">%3.2f%%</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">test_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="n">predictions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_y_</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">:</span> <span class="n">X</span><span class="p">})</span>
-
-    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span><span class="p">:</span> <span class="n">y</span><span class="p">})</span>
-
-    <span class="k">def</span> <span class="nf">_check_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ndarray</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ndarray</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-        <span class="k">return</span> <span class="n">ndarray</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">SimpleLogisticClassification</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span>
-                                     <span class="n">n_labels</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                     <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">0.5</span><span class="p">,)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span>
-          <span class="n">y</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
-          <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-          <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">valid_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span><span class="n">valid_data</span><span class="o">.</span><span class="n">labels</span><span class="p">),</span>
-          <span class="n">test_data</span><span class="o">=</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span><span class="n">test_data</span><span class="o">.</span><span class="n">labels</span><span class="p">),</span> <span class="p">)</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>Epoch  1/10: 
- loss =   9.4080, acc = 12.45%, val_loss =   9.3869, val_acc = 12.78%
-Epoch  2/10: 
- loss =   8.2898, acc = 14.57%, val_loss =   8.2863, val_acc = 14.66%
-Epoch  3/10: 
- loss =   7.4517, acc = 16.82%, val_loss =   7.4578, val_acc = 16.74%
-Epoch  4/10: 
- loss =   6.8298, acc = 19.23%, val_loss =   6.8352, val_acc = 19.10%
-Epoch  5/10: 
- loss =   6.3458, acc = 21.83%, val_loss =   6.3448, val_acc = 21.12%
-Epoch  6/10: 
- loss =   5.9372, acc = 24.16%, val_loss =   5.9287, val_acc = 23.64%
-Epoch  7/10: 
- loss =   5.5760, acc = 26.53%, val_loss =   5.5604, val_acc = 25.98%
-Epoch  8/10: 
- loss =   5.2527, acc = 28.88%, val_loss =   5.2306, val_acc = 28.42%
-Epoch  9/10: 
- loss =   4.9624, acc = 31.05%, val_loss =   4.9344, val_acc = 30.54%
-Epoch 10/10: 
- loss =   4.7012, acc = 33.06%, val_loss =   4.6681, val_acc = 32.52%
-test_acc = 32.77%
-</pre></div></dd>
-                <dt>2017 / 9月 05</dt>
-                <dd><a href="./stock-sell-point.html">股票策略：移動停損法</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>最近在研究股票，在網路上看到這篇文章</p>
-<p>https://m.mobile01.com/topicdetail.php?f=291&amp;t=3065829&amp;p=1</p>
-<p>覺得相當實用，在這邊跟大家分享，並且當作給自己參考的筆記。</p>
-<p>一般我們常常說玩股票要做好風險管理，最廣為人知的就是設停損點，假設今天我以20元買入一張股票，假如停損比率設10%好了，那我的停損點就是18元，股票一到這個價位就忍痛賣出，以做到風險管理，避免自己大賠。</p>
-<p>停損點的另外一個相反就是停利點，也就是當賺到某一個比例的金額時就獲利了結，假設一樣20元買入一張股票，設20%停利，也就是24元的時候賣出，設停利原本的目的是為了讓自己賣在高點，不過卻是有可能造成反效果。</p>
-<p>如果今天你幸運的買到一張飆股，一連兩天漲了兩根來到了24元，到了你設下的停利點，你不會真的就把它給賣了吧！正常人應該會等它漲到夠了，等它開始反轉時再考慮賣出。那究竟應該在反轉後跌多少才應該賣？這就變成了新的問題，總不能還是以停損點當作賣點吧！那你應該永遠賺不到錢～</p>
-<p>所以這篇的作者提供了一個方法，把停損點和停利點結合成為一點，而這一點會隨著股價上漲而移動上漲，所以下面的網友就稱這個叫做移動停損法。聽起來很神奇，其實概念很簡單，</p>
-<blockquote>
-<p>從買入當天開始算起，以過程的每天當中最高股價當作基準點，向下去設停損點，或是停利點，低於這點就當天賣，或隔天賣。</p>
-</blockquote>
-<p>這就是我們剛剛說的，等到股價反轉後再來賣，而這個方法也可以順便做到停損，所以這點既是停損點也是停利點，但行為上都一樣是賣出，差別只在於你有沒有賺到錢囉！所以接下來我會以「賣出點」來稱這一點，避免大家被混淆。</p>
-<p>舉個例子好了，如果第一天我以50元買入一張股票，當天最高價位來到了51元，所以過程中最高價位目前是51元，假設我停損停利設10%，所以如果第二天股價低於51*90%=45.9元就賣出，45.9元就是目前的賣出點，假設未來都沒有價位超出51元，那賣出點永遠都在45.9元不會變。好，如果到了第二天，它飆上去了，收盤54元，最高價位曾經來到了55元，此時賣出點也跟著增加，以買股以來的最高價55元當作新的基準向下10％算出新的賣出點，也就是55*90%=49.5元，第三天氣勢依舊，開盤直接跳空漲停，最高價位來到了59.4元，所以賣出點目前是59.4*90%=53.45元，第四天開始反轉，微微下跌，最低價來到55元，最高價為57元，沒有低於賣出點所以不賣，此時賣出點也沒有改變，因為最高價沒有超過第三天，所以一樣是用第三天當作基準點向下算出賣出點53.45元，第五天終於稱不住了，股價跌到了53.45元，然後就當天賣出或隔天賣出，假如當天賣出的話，那就是53.45元，所以最後我的投報率是(53.45 - 50) / 50 = 6.9 %。</p>
-<p>那這個停損停利的比例該怎麼訂呢？在這個作者寫這篇文章的時候漲跌停百分比為7%，所以他設10%很合理，不會只有一天跌停就賣出了，而目前的漲跌停百分比為10%，所以我認為應該設把停損停利百分比設更高一點，建議在10~15%之間。</p>
-<p>那如果遇到除息的話，當然要將你口袋裡的股息從最高價上扣掉，在重新計算賣出點，這樣的賣出點才合理。</p>
-<p>以上的策略在一種情形下會賺錢，那就是你投資的股票漲的比跌的還多，當然這是一句廢話啦！這讓我想起之前在跟我朋友聊股票，我朋友說他的股票都賠錢，我就跟他開玩笑，股票不就是買在低點，然後賣在高點，你怎麼不照做，難怪會賠錢。移動停損法提供一種紀律讓你不會賠太多，但如果真的要獲利的話，還是得從基本面或技術面去分析股票，並在低價買進好股票，然後等它上漲。</p></dd>
-                <dt>2017 / 8月 04</dt>
-                <dd><a href="./confusion-matrix.html">如何辨別機器學習模型的好壞？秒懂Confusion Matrix</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
-<p>​ 本篇介紹包含Confusion Matrix, True Positive, False Negative, False Positive, True Negative, Type I Error, Type II Error, Prevalence, Accuracy, Precision, Recall, F1 Measure, F Measure, Sensitivity, Specificity, ROC Curve, AUC, TPR, FNR, FPR, TNR, FDR, FOR, PPV, NPV, 算數平均, 幾何平均, 調和平均</p>
-</blockquote>
-<p>有時要鑑別一個模型的好或壞，並不能簡單的看出來，所以我們需要用一些指標去判定它的好壞，也作為我們挑選模型的依據。如果你稍微查一下有哪些指標，你就會發現指標多到讓人家眼花撩亂，一堆名詞就攤在那邊，讓人無從下手。有一種常用的指標稱之為Confusion Matrix，這個命名很有趣，這個表格的確是很讓人感到很困惑啊！至少在看完這篇之前。Confusion Matrix是用於分類問題的一種常用的指標，它衍生很多不同的指標，下面這張圖我將Confusion Matrix畫出來，並把一些比較重要的衍生指標給標出來。</p>
-<p><img alt="mechine_learning_measure.001" src="https://dl.dropboxusercontent.com/s/ty6qfmf3uj63of7/mechine_learning_measure.001.jpeg"></p>
-<p>我猜想，你一定看得很模糊吧！沒關係我在這篇文章中會帶大家認識這個圖裡的各個名詞。</p>
-<p>一開始我們從下面這個表格開始講起，這個表格就是所謂的Confusion Matrix，這個表格兩欄代表實際情形正向或反向，兩列代表預測情形正向或反向，舉iphone當例子，iphone具有指紋識別解鎖系統，假如iphone判定這個指紋是屬於使用者的，它就會解鎖，如果今天你找個朋友來一起測試這個解鎖系統，如果是由你來按壓，而iphone也順利解鎖了，那這種情形就屬於左上角的情況，稱為True Positive，也就是「正確的正向預測」，如果不幸的你按壓iphone，結果iphone認不得你的指紋，這就是左下角的情況，稱為False Negative，也就是「錯誤的負向預測」，接下來換你朋友來按按看，正常情形你朋友的指紋應該沒辦法解鎖，這是右下角的情況，稱為True Negative，也就是「正確的負向預測」，如果令人意外的是你朋友把你的手機解鎖了，那你最好改成用密碼解鎖...，這種情況就是右上角的狀況，稱為False Positive，也就是「錯誤的正向預測」。</p>
-<p><img alt="mechine_learning_measure.002" src="https://dl.dropboxusercontent.com/s/0q5hx5mt9tj10hx/mechine_learning_measure.002.jpeg"></p>
-<p>從上面的描述，我們當然希望我們的模型True Positive和True Negative都可以多多出現，而False Positive和False Negative可以盡量不要出現，因此這兩種狀況就稱之為Error，又各自又命名為Type I Error和Type II Error，這兩種錯誤，錯的很不一樣，如果今天指紋辨識不是放在iphone，而是放在你家大門鎖上，那你最不希望發生哪類錯誤？當然是Type I Error，我寧可被關在門外進不去，也不要有陌生人可以進我家囉！但如果今天這個辨別系統是用在Google廣告，Google Ad會預測一個產品的潛在客戶，並做廣告投放，這個時候反而是較不希望Type II Error發生，寧可錯殺一百個也不要放過一個。所以下次在建構你的模型時想想看你最不想要怎樣的錯誤，也許可以藉由放掉另外一種錯誤，來降低這個我們不希望發生的錯誤。</p>
-<p>Confusion Matrix還有衍生很多形形色色的指標，我接下來就一一的介紹。</p>
-<p><strong>我們把所有正確的情況，也就是True Positive和True Negative，把它加總起來除上所有情形個數，那就是Accuracy，這也是最常用的指標，但是在某些情形下這個指標會失效</strong>，如果今天實際正向的例子很少，譬如有一個聊天機器人和10000個人長談，藉由談話，機器人會預測這些人未來會不會當上CEO，那我只要簡單一步來設計我的模型就可以使它Accuracy達到99%以上，那就是通通預測你不會當上CEO就好了，顯然我們需要別種指標來應對這種情況。</p>
-<p>Precision（準確率）和Recall（召回率）這個時候就派上用場了，Precision和Recall同時關注的都是True Positive（都在分子），但是角度不一樣，<strong>Precision看的是在預測正向的情形下，實際的「精準度」是多少，而Recall則是看在實際情形為正向的狀況下，預測「能召回多少」正向的答案</strong>。一樣的，如果是門禁系統，我們希望Precision可以很高，Recall就相較比較不重要，如果是廣告投放，則Recall很重要，越大越好，Precision就顯得沒這麼重要了。<strong>Precision和Recall都不去考慮True Negative</strong>，以上面CEO的例子，大部分的人都不會當上CEO，所以預測這一塊並不是那麼重要，反而我們應該關心的是應該當上CEO的沒被預測到，以及沒當上CEO的卻被預測到了的兩種情形。</p>
-<p><img alt="mechine_learning_measure.003" src="https://dl.dropboxusercontent.com/s/c9bpinil22qf4kz/mechine_learning_measure.003.jpeg"></p>
-<p>如果今天我覺得Precision和Recall都同等重要，我想要用一個指標來統合標誌它，這就是F1 Score或稱F1 Measure，它是F Measure的一個特例，當belta=1時就是F1 Measure，代表Precision和Recall都同等重要，那如果我希望多看中一點Precision，那belta就可以選擇小一點，當belta=0時，F Measure就是Precision；如果我希望多看中一點Recall，那belta就可以選擇大一點，當belta無限大時，F Measure就是Recall。</p>
-<p>如果你仔細看F1 Measure，你會發現它的平均方法是「調和平均」，帶大家go-through三種平均方法，你就能明白為什麼要使用調和平均了。下圖列出了三種平均方法的使用時機，我們要去了解資料或數列的特性，我們才能知道要採取哪種平均方法較為恰當，大多情況算數平均都可以使用，因為我們都假設有線性關係存在，譬如說平均距離；幾何平均常用於人口計算，因為人口增加是成比例增加的；調和平均常用於計算平均速率，在固定距離下，所花時間就是平均速率，這數據成倒數關係，而F1 Measure也同樣是這樣的數據特性，在固定TP的情況下，有不同的分母，所以這裡使用調和平均較為適當。</p>
-<p><img alt="mechine_learning_measure.004" src="https://dl.dropboxusercontent.com/s/6cmlwypzla90u1v/mechine_learning_measure.004.jpeg"></p>
-<p>下圖的名詞看一下有印象就好。</p>
-<p><img alt="mechine_learning_measure.005" src="https://dl.dropboxusercontent.com/s/5w2mgom97wbey9t/mechine_learning_measure.005.jpeg"></p>
-<p>最後這頁來講一下醫學上常用的指標，首先是Prevalence（盛行率），如果以人口當作所有的樣本，實際得病的患者所佔的比例就代表這個病的盛行情況。如果今天有一個診斷方法可以判定病人是否有得此病，有兩個指標可以看，那就是Sensitivity和Specificity，Sensitivity就是Recall，它代表的是診斷方法是否夠靈敏可以將真正得病的人診斷出來，而Specificity則是代表診斷方法是否可以指出實際沒的此病的患者。兩種指標都是越高越好。</p>
-<p><img alt="mechine_learning_measure.006" src="https://dl.dropboxusercontent.com/s/dgynp8f0vo45kxy/mechine_learning_measure.006.jpeg"></p>
-<p>通常在醫學上，會通過一些閥值來斷定病人是否有得此病，而這個閥值就會影響Sensitivity和Specificity，這個不同閥值Sensitivity和Specificity的分布情況可以畫成ROC Curve，而ROC Curve底下的面積稱為AUC，最理想的情況是AUC=1，在這種情況下存在一種閥值，也就是左上角落，使得Sensitivity=1且Specificity=1。而AUC=0.5，則是代表隨機挑選的狀況，沒有預測能力。大部分情形都是落在這兩種之間，透過ROC和AUC我們就可以選出更為強健穩定的模型。</p>
-<p>想必這個時候你再回去看第一張圖就更加了解了，有了這些指標，我們就多一把尺來評斷我們的模型好還是不好了。</p></dd>
-            </dl>
-        </div>
+        
     </div>
-<!-- /Navigation -->
-<div class="container navigation">
-    	<a class="navigate pull-left" href="./index.html"><i class="fa fa-caret-left"></i> Previous</a>
-    	<a class="navigate pull-right" href="./index3.html">Next <i class="fa fa-caret-right"></i></a>
-</div>              
-<!-- /Navigation --> 
         <!-- /Content --> 
 
         <!-- Footer -->

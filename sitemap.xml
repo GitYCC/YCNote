@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/</loc>
-<lastmod>2018-05-18T13:59:20-00:00</lastmod>
+<lastmod>2018-05-18T16:19:09-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/archives.html</loc>
-<lastmod>2018-05-18T13:59:20-00:00</lastmod>
+<lastmod>2018-05-18T16:19:09-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/tags.html</loc>
-<lastmod>2018-05-18T13:59:20-00:00</lastmod>
+<lastmod>2018-05-18T16:19:09-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>YCNote/categories.html</loc>
-<lastmod>2018-05-18T13:59:20-00:00</lastmod>
+<lastmod>2018-05-18T16:19:09-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -60,6 +60,34 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>YCNote/tensorflow-tutorial_6.html</loc>
+<lastmod>2017-11-25T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/tensorflow-tutorial_5.html</loc>
+<lastmod>2017-11-19T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/tensorflow-tutorial_4.html</loc>
+<lastmod>2017-11-18T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/tensorflow-tutorial_3.html</loc>
+<lastmod>2017-11-12T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
 <loc>YCNote/uwarn-performance_1.html</loc>
 <lastmod>2017-11-09T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
@@ -74,8 +102,29 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>YCNote/tensorflow-tutorial_2.html</loc>
+<lastmod>2017-11-07T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/tensorflow-tutorial_1.html</loc>
+<lastmod>2017-10-23T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
 <loc>YCNote/stock-sell-point.html</loc>
 <lastmod>2017-09-05T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>YCNote/confusion-matrix.html</loc>
+<lastmod>2017-08-04T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
@@ -215,7 +264,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>YCNote/category/aiml.html</loc>
-<lastmod>2017-04-22T12:00:00+08:06</lastmod>
+<lastmod>2017-11-25T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -256,6 +305,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>YCNote/tag/pythonwan-shu-ju.html</loc>
+<lastmod>2017-05-06T12:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
 <loc>YCNote/tag/ruan-ti-she-ji.html</loc>
 <lastmod>2018-04-14T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
@@ -270,15 +326,15 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>YCNote/tag/ji-qi-xue-xi-ji-fa.html</loc>
-<lastmod>2017-04-22T12:00:00+08:06</lastmod>
+<loc>YCNote/tag/tensorflow.html</loc>
+<lastmod>2017-11-25T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>YCNote/tag/pythonwan-shu-ju.html</loc>
-<lastmod>2017-05-06T12:00:00+08:06</lastmod>
+<loc>YCNote/tag/ji-qi-xue-xi-ji-fa.html</loc>
+<lastmod>2017-04-22T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Autoencoder是一個Neurel Network重要的工具，我個人認為它還漂亮的呈現Neurel Network的強大。 本單元程式碼Autoencoder部分可於Github下載，De-noise Autoencoder部分可於Github下載。 Autoencoder觀念解析 在「機器學習技法」的系列文章，我也曾經介紹過Autoencoder，可以搭配這篇服用。...">
+        <meta name="keywords" content="Tensorflow">
+        <link rel="icon" href="./static/img/favicon.png">
+
+        <title>實作Tensorflow (4)：Autoencoder - YC Note</title>
+
+        <!-- Stylesheets -->
+        <link href="./theme/css/all.min.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Full Atom Feed" />
+        <link href="YCNote/feeds/aiml.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('./images/tensorflow-logo.jpg'); background-position: center; background-size: cover;">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="./"><img class="logo" src="./static/img/favicon.png" alt="logo">YC Note</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="./category/coding.html">Coding</a>
+                                <a href="./category/aiml.html">AI.ML</a>
+                                <a href="./category/reading.html">Reading</a>
+                                <a href="./category/recording.html">Recording</a>
+                                <a href="./about-me.html">About Me</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">實作Tensorflow (4)：Autoencoder</h1>
+                      <p class="header-date">By <a href="./author/yc-chen.html">YC Chen</a>, 2017 / 11月 18, in category <a href="./category/aiml.html">Ai.ml</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="./tag/tensorflow.html">Tensorflow</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <p>Autoencoder是一個Neurel Network重要的工具，我個人認為它還漂亮的呈現Neurel Network的強大。</p>
+<p>本單元程式碼Autoencoder部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/04_1_Autoencoder_on_MNIST.py">Github</a>下載，De-noise Autoencoder部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/04_2_DenoiseAutoencoder_on_MNIST.py">Github</a>下載。</p>
+<p><br/></p>
+<h3>Autoencoder觀念解析</h3>
+<p>在「機器學習技法」的系列文章，我也<a href="http://www.ycc.idv.tw/YCNote/post/35">曾經介紹過Autoencoder</a>，可以搭配這篇服用。</p>
+<p>Autoencoder概念很簡單，就是做資訊的壓縮，概念是這樣的，當我在一層當中使用神經元愈多，可以儲存的資訊量也就愈多，相反的神經元越少，可以儲存的資訊量越少，如果我要使用Neurel Network作資料壓縮的話，我希望的是可以使用比原本更少的資訊量來儲存，如果原本是一張MNIST的圖，有28x28=784個Pixels，所以可以想知，如果我要作壓縮就要使得壓縮後的神經元可以比784個更少。</p>
+<p>但是什麼都不做我們就可以平白無故的做到壓縮？當然不行，我們還得從資料中找到一些規律，套用這些規律把多餘的東西去除，留下精髓，我們才可以把資料作壓縮，所以在實作上我們會建立一個神經元由大到小的Neurel Network，逐步的轉換，逐步的壓縮資訊。</p>
+<p>那麼壓縮的目的是為了什麼？當然是有辦法還原回去原本狀態，這樣的壓縮才是有意義的，例如：將文檔打包成RAR，檔案大小會變小，但如果實際要再使用這個檔案，那就必須先做解壓縮，然後還原回去原本的檔案，這裡的還原率必須是百分之一百的，Autoencoder一樣的有一個機制可以還原，在實作上我們會建立一個神經元由小到大的Neurel Network，逐步的還原回去原本的狀態。</p>
+<p>因此一個Autoencoder的圖像就出現了，我們需要有一組「Encoder」來逐步的壓縮，最後留下非常精簡的「Embedding Code」，而這組「Embedding Code」可以再經由「Decoder」還原回去原本的樣子，那我們怎麼讓他自己產生「Encoder」和「Decoder」呢？把原本的Input當作Output的目標答案去訓練Neurel Network就可以了，這就是Autoencoder巧妙的地方。</p>
+<p>不管是「Encoder」還是「Decoder」他們的權重是可以調整的，所以如果你將Encoder+Decoder的結構建立好並搭配Input當作Output的目標答案，它在Training的過程，Autoencoder會試著找出最好的權重來使得資訊可以盡量完整還原回去，所以Autoencoder可以自行找出了Encoder和Decoder。</p>
+<p>Encoder的效果等同於做Dimension Reduction，Encoder轉換原本數據到一個新的空間，這個空間可以比原本Features描述的空間更能精簡的描述這群數據，而中間這層Layer的數值Embedding Code就是新空間裡頭的座標，有些時候我們會用這個新空間來判斷每筆Data之間彼此的接近程度。</p>
+<p><img alt="autoencoder" src="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/img/TensorflowTutorial.007.jpeg?raw=true"></p>
+<p><br/></p>
+<h3>Autoencoder程式碼</h3>
+<p>實現Autoencoder和之前DNN並沒有太大的差異，只有兩點要特別提醒一下。</p>
+<p>第一點，以下我會特別把<code>encoder</code>額外的在<code>structure</code>裡頭輸出出來，並且增加新的函數<code>encode</code>，讓使用者可以使用Train好的Encoder來做Encode。</p>
+<p>第二點，以下的Regularizer不是採用單純的L2 Regularizer，我將會使用Weight-Elimination L2 Regularizer，這個Regularizer的好處是會使得權重接近Sparse，也就是說權重會留下比較多的0，這有一個好處，就是每個神經元彼此之間的依賴減少了，因為內積(評估相依性)時有0的那個維度將不會有所貢獻。</p>
+<p>Weight-Elimination L2 Regularizer有這樣的效果原因是這樣的，L2 Regularizer在抑制W的方法是，如果W的分量大的話就抑制多一點，如果分量小就抑制少一點（因為W<sup>2</sup>微分為一次），所以最後會留下很多不為0的微小分量，不夠Sparse，這樣的Regularization顯然不夠好，L1 Regularizer可以解決這個問題（因為在大部分位置微分為常數），但不幸的是它無法微分，沒辦法作Backpropagation，所以就有了L2 Regularizer的衍生版本，</p>
+<p>Weight-elimination L2 regularizer: 𝚺[(W<sub>jk</sub>(ℓ))<sup>2</sup>]/[1+(W<sub>jk</sub>(ℓ))<sup>2</sup>]</p>
+<p>這麼一來不管W大或小，它受到抑制的值大小接近的 (Weight-elimination L2 regularizer微分為 -1次方)，因此就可以使得部分W可以為0，達成Sparse的目的。</p>
+<p>那為什麼我要特別在Autoencoder講究Sparse特性呢？原因是我們現在正在做的事是Dimension Reduction，做這件事就好像是替原本空間找出新的軸，而這個軸的數量比原本空間軸的數量來得小，達到Dimension Reduction的效果，所以我們會希望這個新的軸彼此間可以不要太多的依賴，什麼是不依賴呢？直角座標就是最不依賴的座標系，X軸和Y軸內積為0，這樣的軸展開的效率是最好的，所以我們希望在做Regularization的同時可以減少新軸的彼此間的依賴性。</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">random</span><span class="o">,</span> <span class="nn">time</span>
+
+<span class="c1"># Config the matplotlib backend as plotting inline in IPython</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Autoencoder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_features</span><span class="p">,</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">n_hidden</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span><span class="mi">250</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span> <span class="c1"># initialize new grap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">n_features</span><span class="p">,</span><span class="n">learning_rate</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">,</span><span class="n">alpha</span><span class="p">)</span> <span class="c1"># building graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span> <span class="c1"># create session by the graph </span>
+
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_features</span><span class="p">,</span><span class="n">learning_rate</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">,</span><span class="n">alpha</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
+            <span class="c1">### Input</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">n_features</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_targets</span>  <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">n_features</span><span class="p">))</span>
+
+            <span class="c1">### Optimalization</span>
+            <span class="c1"># build neurel network structure and get their predictions and loss</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_loss</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span>
+                                               <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">,</span>
+                                               <span class="n">targets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_targets</span><span class="p">,</span>
+                                               <span class="n">n_hidden</span><span class="o">=</span><span class="n">n_hidden</span><span class="p">)</span>
+
+            <span class="c1"># regularization loss</span>
+            <span class="c1"># weight elimination L2 regularizer</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">([</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span>
+                        <span class="n">tf</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">tf</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span> \
+                    <span class="o">/</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span>
+                     <span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">out_type</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+
+            <span class="c1"># total loss</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_loss</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span>
+
+            <span class="c1"># define training operation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
+
+            <span class="c1">### Prediction</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">n_features</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_targets</span>  <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">n_features</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_original_loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span>
+                                                          <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">,</span>
+                                                          <span class="n">targets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_targets</span><span class="p">,</span>
+                                                          <span class="n">n_hidden</span><span class="o">=</span><span class="n">n_hidden</span><span class="p">)</span>  
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_original_loss</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">regularizer</span>
+
+            <span class="c1">### Initialization</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>  
+
+    <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">features</span><span class="p">,</span><span class="n">targets</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">):</span>
+        <span class="c1">### Variable</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">n_encoder</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">]</span><span class="o">+</span><span class="n">n_hidden</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_encoder</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;encode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> \
+                    <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
+                        <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n_encoder</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]),</span><span class="n">stddev</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;encode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> \
+                    <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_encoder</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+            <span class="n">n_decoder</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">))</span><span class="o">+</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_decoder</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;decode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> \
+                    <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
+                        <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n_decoder</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]),</span><span class="n">stddev</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;decode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> \
+                    <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_decoder</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>                    
+
+        <span class="c1">### Structure</span>
+        <span class="n">activation</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span>
+
+        <span class="n">encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;encode1&#39;</span><span class="p">],</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;encode1&#39;</span><span class="p">],</span>
+                                     <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">encoder</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;encode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;encode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)],</span>
+                        <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">)</span>   
+
+        <span class="n">encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">encoder</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;encode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">))],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;encode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">))])</span> 
+
+        <span class="n">decoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">encoder</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;decode1&#39;</span><span class="p">],</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;decode1&#39;</span><span class="p">],</span>
+                                     <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">decoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">decoder</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;decode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;decode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)],</span>
+                        <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">)</span> 
+
+        <span class="n">y_</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">decoder</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;decode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">))],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;decode{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">))],</span>
+                        <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">)</span>      
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">targets</span> <span class="o">-</span> <span class="n">y_</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">y_</span><span class="p">,</span><span class="n">loss</span><span class="p">,</span><span class="n">encoder</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getDenseLayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_layer</span><span class="p">,</span><span class="n">weight</span><span class="p">,</span><span class="n">bias</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">input_layer</span><span class="p">,</span><span class="n">weight</span><span class="p">),</span><span class="n">bias</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">activation</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">activation</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">validation_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">test_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">batch_size</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+
+        <span class="n">N</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">9000</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">batch_size</span><span class="p">:</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">N</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_op</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Epoch </span><span class="si">%2d</span><span class="s2">/</span><span class="si">%2d</span><span class="s2">: &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">epochs</span><span class="p">))</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+            <span class="c1"># mini-batch gradient descent</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+            <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">index_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+                <span class="n">batch_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span><span class="n">index_size</span><span class="p">))]</span>     
+
+                <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">:</span> <span class="n">X</span><span class="p">[</span><span class="n">batch_index</span><span class="p">,:],</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">train_targets</span><span class="p">:</span> <span class="n">Y</span><span class="p">[</span><span class="n">batch_index</span><span class="p">,:]}</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">train_op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="n">feed_dict</span><span class="p">)</span>
+
+                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[</span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">] loss = </span><span class="si">%9.4f</span><span class="s2">     &quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">N</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="n">N</span><span class="p">,</span> <span class="n">loss</span> <span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+            <span class="c1"># evaluate at the end of this epoch</span>
+            <span class="n">msg_valid</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">validation_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">val_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">msg_valid</span> <span class="o">=</span> <span class="s2">&quot;, val_loss = </span><span class="si">%9.4f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">val_loss</span> <span class="p">)</span>
+
+            <span class="n">train_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[</span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">] </span><span class="si">%d</span><span class="s2">s loss = </span><span class="si">%9.4f</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span>
+                                                   <span class="n">train_loss</span><span class="p">,</span> <span class="n">msg_valid</span> <span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">test_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">test_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">test_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;test_loss = </span><span class="si">%9.4f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">test_loss</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_encoder</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">:</span> <span class="n">X</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_y_</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">:</span> <span class="n">X</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">new_targets</span><span class="p">:</span> <span class="n">Y</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">_check_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ndarray</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ndarray</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">ndarray</span>
+</pre></div>
+
+
+<p><br/></p>
+<h3>測試Autoencoder</h3>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tensorflow.examples.tutorials.mnist</span> <span class="kn">import</span> <span class="n">input_data</span>
+<span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s2">&quot;MNIST_data/&quot;</span><span class="p">,</span> <span class="n">one_hot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span>
+<span class="n">valid_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">validation</span>
+<span class="n">test_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">model_1</span> <span class="o">=</span> <span class="n">Autoencoder</span><span class="p">(</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span>
+                     <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">0.0005</span><span class="p">,</span>
+                     <span class="n">n_hidden</span><span class="o">=</span><span class="p">[</span><span class="mi">512</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+                     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                    <span class="p">)</span>
+<span class="n">model_1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span>
+           <span class="n">Y</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span>
+           <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+           <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">valid_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span><span class="n">valid_data</span><span class="o">.</span><span class="n">images</span><span class="p">),</span>
+           <span class="n">test_data</span><span class="o">=</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">),</span>
+           <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+          <span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">):</span>
+    <span class="n">img_original</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">],(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">))</span>
+    <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_original</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">model_1</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">]),(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">))</span>
+    <span class="n">axis</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Epoch  1/20: 
+[55000/55000] 98s loss =    0.0335 , val_loss =    0.0330
+Epoch  2/20: 
+[55000/55000] 98s loss =    0.0307 , val_loss =    0.0305
+Epoch  3/20: 
+[55000/55000] 99s loss =    0.0293 , val_loss =    0.0291
+Epoch  4/20: 
+[55000/55000] 96s loss =    0.0283 , val_loss =    0.0282
+Epoch  5/20: 
+[55000/55000] 96s loss =    0.0277 , val_loss =    0.0278
+Epoch  6/20: 
+[55000/55000] 98s loss =    0.0271 , val_loss =    0.0273
+
+...略...
+
+Epoch 15/20: 
+[55000/55000] 99s loss =    0.0250 , val_loss =    0.0258
+Epoch 16/20: 
+[55000/55000] 98s loss =    0.0246 , val_loss =    0.0255
+Epoch 17/20: 
+[55000/55000] 99s loss =    0.0246 , val_loss =    0.0256
+Epoch 18/20: 
+[55000/55000] 97s loss =    0.0247 , val_loss =    0.0256
+Epoch 19/20: 
+[55000/55000] 98s loss =    0.0246 , val_loss =    0.0256
+Epoch 20/20: 
+[55000/55000] 99s loss =    0.0244 , val_loss =    0.0255
+test_loss =    0.0261
+</pre></div>
+
+
+<p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/04_output_5_1.png"></p>
+<p>上面圖中上排是進去Autoencoder之前的圖片，下排是經過Autoencoder後的圖片，效果是不是很驚人！大致都有辦法還原回去原圖。唯一可能有缺陷的地方是，這個Autoencoder似乎會把5看成是6，做個Regularization看看能不能解決這個問題。</p>
+<div class="highlight"><pre><span></span><span class="n">model_2</span> <span class="o">=</span> <span class="n">Autoencoder</span><span class="p">(</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span>
+                     <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">0.0005</span><span class="p">,</span>
+                     <span class="n">n_hidden</span><span class="o">=</span><span class="p">[</span><span class="mi">512</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+                     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+                    <span class="p">)</span>
+<span class="n">model_2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span>
+           <span class="n">Y</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span>
+           <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+           <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">valid_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span><span class="n">valid_data</span><span class="o">.</span><span class="n">images</span><span class="p">),</span>
+           <span class="n">test_data</span><span class="o">=</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">),</span>
+           <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+          <span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">):</span>
+    <span class="n">img_original</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">],(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">))</span>
+    <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_original</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">model_2</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">]),(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">))</span>
+    <span class="n">axis</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Epoch  1/20: 
+[55000/55000] 88s loss =    0.0332 , val_loss =    0.0328
+Epoch  2/20: 
+[55000/55000] 90s loss =    0.0301 , val_loss =    0.0299
+Epoch  3/20: 
+[55000/55000] 90s loss =    0.0288 , val_loss =    0.0287
+Epoch  4/20: 
+[55000/55000] 88s loss =    0.0279 , val_loss =    0.0278
+Epoch  5/20: 
+[55000/55000] 89s loss =    0.0274 , val_loss =    0.0275
+Epoch  6/20: 
+[55000/55000] 91s loss =    0.0270 , val_loss =    0.0272
+
+...略...
+
+Epoch 15/20: 
+[55000/55000] 89s loss =    0.0247 , val_loss =    0.0255
+Epoch 16/20: 
+[55000/55000] 91s loss =    0.0245 , val_loss =    0.0253
+Epoch 17/20: 
+[55000/55000] 92s loss =    0.0244 , val_loss =    0.0253
+Epoch 18/20: 
+[55000/55000] 90s loss =    0.0244 , val_loss =    0.0253
+Epoch 19/20: 
+[55000/55000] 91s loss =    0.0244 , val_loss =    0.0254
+Epoch 20/20: 
+[55000/55000] 91s loss =    0.0242 , val_loss =    0.0252
+test_loss =    0.0258
+</pre></div>
+
+
+<p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/04_output_7_1.png"></p>
+<p>似乎看起來是有效果的，現在5會被完整還原了。</p>
+<p><br/></p>
+<h3>壓縮碼Code與視覺化</h3>
+<p>剛剛提到在Autoencoder前半段是一個Encoder，所以我們可以利用這個Encoder來做壓縮，會得到一個Code，在上面的這個例子，這個Code總共有4個值，因為中間層有4個神經元，可以把這個Code看成Dimension Reduction的結果，原本一張圖代表的是28x28=784個維度下的一個點，現在經過轉換後變成是4個維度下的一個點，而我們會直覺的認為同樣一群的數字圖形應該會有較高的相似度，所以在4個維度之下，同樣的數字圖片應該會彼此靠近的比較近，甚至聚成一團。</p>
+<p>我想要驗證一下這件事，我們需要先圖像化，不過卻卡在維度太高的問題，人類無法想像高於3個維度以上的空間，也沒辦法將它視覺化，這個時候我們需要再做一次的Dimension Reduction，將維度降到低於3才可以視覺化，那一般手法是使用PCA來做這件事，有關於PCA我之前已經介紹過，請參考<a href="http://www.ycc.idv.tw/YCNote/post/35">這篇</a>，如此一來就可以在4個維度中切一個重要的截面來視覺化這些數據。不過記得喔！4個維度才是真正可以表示這群資料，做PCA只是為了畫圖而做的粗略轉換而已。</p>
+<div class="highlight"><pre><span></span><span class="c1"># get code</span>
+<span class="n">encode</span> <span class="o">=</span> <span class="n">model_2</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
+
+<span class="c1"># PCA 2D visualization</span>
+<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
+<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">encode</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">Y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/04_output_9_0.png"></p>
+<p>上面我以不同顏色當作不同的數字圖形，我們可以看到同樣的數字圖形會彼此聚成一團，所以的確同樣的數字的族群會被歸類到具有相似的特性，因此在code裏頭距離是彼此靠近的，還記得一開始我們沒加Regularization時。Model會把5看成是6，在這張圖你就會到原因，因為5號藍綠色和6號黃色靠的很近，很容易誤判。</p>
+<p>這張圖同時揭露了Autoencoder的一個強大特性，注意喔!我們一開始Train這個Autoencoder的時候是沒有給它看任何Labels的，但他卻可以在壓縮資訊的同時找出規律，這個規律可以想成是我們人類在辨認每個不同數字的方法，所以Autoencoder可以在沒有Labels的情況下做歸納和學習，因此Autoencoder常常會被用在Unsupervised Learning (非監督式學習)。</p>
+<p>另外介紹一種也是很流行的方法叫做t-SNE (讀作"tee-snee") ，這裡不多著墨這個方法的原理，但是它卻是目前2D Visualization最流行的作法，PCA只用線性的方式去做座標轉換，也就是從一個橫切面去看數據，這樣粗略的轉換並不能讓我們在視覺化時看出資料和資料間彼此的距離，尤其是從高維度轉換過來，經常會失真，而t-SNE是針對數據和數據間的距離去做轉換，最後被攤成2維時正是顯示數據點的距離關係，更能描述群聚的現象。</p>
+<p>來看看t-SNE做起來效果如何。</p>
+<div class="highlight"><pre><span></span><span class="c1"># get code</span>
+<span class="n">encode</span> <span class="o">=</span> <span class="n">model_2</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
+
+<span class="c1"># TSNE 2D visualization</span>
+<span class="kn">from</span> <span class="nn">sklearn.manifold</span> <span class="kn">import</span> <span class="n">TSNE</span>
+<span class="n">tsne</span> <span class="o">=</span> <span class="n">TSNE</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">X_embedded</span> <span class="o">=</span> <span class="n">tsne</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">encode</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_embedded</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X_embedded</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">Y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/04_output_11_0.png"></p>
+<p><br/></p>
+<h3>去雜訊(De-noise) Autoencoder</h3>
+<p>我們巧妙的利用一下Autoencoder，我們將原本Autoencoder的前面加了一道人工雜訊的流程，但是最終又要讓Autoencoder試著去還原出原來沒有加入雜訊的資訊，這麼一來我們將可以找到一個Autoencoder是可以自行消除雜訊的，把這個Denoising Autoencoder加到正常Neural Network的前面，那這個Neural Network就擁有了抑制雜訊的功用，所以可以當作一種Regularization的方法。</p>
+<p>先將圖片加上雜訊。</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_noise</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
+    <span class="n">noise_factor</span> <span class="o">=</span> <span class="mf">0.3</span>
+    <span class="n">noisy_ndarr</span> <span class="o">=</span> <span class="n">ndarr</span> <span class="o">+</span> <span class="n">noise_factor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                                                          <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                                                          <span class="n">size</span><span class="o">=</span><span class="n">ndarr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">noisy_ndarr</span>
+
+<span class="n">noisy_train_img</span> <span class="o">=</span> <span class="n">add_noise</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
+<span class="n">noisy_valid_img</span> <span class="o">=</span> <span class="n">add_noise</span><span class="p">(</span><span class="n">valid_data</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
+<span class="n">noisy_test_img</span> <span class="o">=</span> <span class="n">add_noise</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">):</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">noisy_train_img</span><span class="p">[</span><span class="n">i</span><span class="p">],(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">))</span>
+    <span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/04_output_13_0.png"></p>
+<p>圖片現在看起來非常的髒。</p>
+<p>用這些髒圖片當作Input，正常圖當作Output的目標，我們就可以自然而然的Train出可以消除雜訊的Autoencoder。</p>
+<div class="highlight"><pre><span></span><span class="n">denoise_model</span> <span class="o">=</span> <span class="n">Autoencoder</span><span class="p">(</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span>
+                     <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">0.0003</span><span class="p">,</span>
+                     <span class="n">n_hidden</span><span class="o">=</span><span class="p">[</span><span class="mi">512</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+                     <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                    <span class="p">)</span>
+<span class="n">denoise_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">noisy_train_img</span><span class="p">,</span>
+                  <span class="n">Y</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span>
+                  <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                  <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">noisy_valid_img</span><span class="p">,</span><span class="n">valid_data</span><span class="o">.</span><span class="n">images</span><span class="p">),</span>
+                  <span class="n">test_data</span><span class="o">=</span><span class="p">(</span><span class="n">noisy_test_img</span><span class="p">,</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">),</span>
+                  <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+                 <span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">):</span>
+    <span class="n">img_original</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">],(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">))</span>
+    <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_original</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">img_noisy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">noisy_test_img</span><span class="p">[</span><span class="n">i</span><span class="p">],(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">))</span>
+    <span class="n">axis</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_noisy</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">denoise_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">noisy_test_img</span><span class="p">[</span><span class="n">i</span><span class="p">]),(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">))</span>
+    <span class="n">axis</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Epoch  1/20: 
+[55000/55000] 50s loss =    0.0402 , val_loss =    0.0398
+Epoch  2/20: 
+[55000/55000] 50s loss =    0.0361 , val_loss =    0.0360
+Epoch  3/20: 
+[55000/55000] 51s loss =    0.0341 , val_loss =    0.0341
+Epoch  4/20: 
+[55000/55000] 51s loss =    0.0328 , val_loss =    0.0330
+Epoch  5/20: 
+[55000/55000] 51s loss =    0.0319 , val_loss =    0.0322
+Epoch  6/20: 
+[55000/55000] 51s loss =    0.0313 , val_loss =    0.0319
+
+...略...
+
+Epoch 15/20: 
+[55000/55000] 52s loss =    0.0288 , val_loss =    0.0305
+Epoch 16/20: 
+[55000/55000] 51s loss =    0.0287 , val_loss =    0.0303
+Epoch 17/20: 
+[55000/55000] 51s loss =    0.0285 , val_loss =    0.0303
+Epoch 18/20: 
+[55000/55000] 51s loss =    0.0285 , val_loss =    0.0304
+Epoch 19/20: 
+[55000/55000] 52s loss =    0.0286 , val_loss =    0.0306
+Epoch 20/20: 
+[55000/55000] 52s loss =    0.0283 , val_loss =    0.0303
+test_loss =    0.0307
+</pre></div>
+
+
+<p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/04_output_15_1.png"></p>
+<p>上面圖片第一排為原圖，第二排是加完雜訊後的結果，第三排是經過Autoencoder後的圖，傑克真的是太神奇啦！所有的雜訊都被消除掉了，特別注意，這裡我的Regularization下的特別重，原因是雜訊增多了，也更容易Overfitting，所以要下更多的Regularization才能抑制它。</p>
+
+
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./archives.html">Archives</a></li>
+                            <li><a href="./tags.html">Tags</a></li>
+                            <li><a href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Contact Me</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
+                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
+                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; YC Note 2018</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>

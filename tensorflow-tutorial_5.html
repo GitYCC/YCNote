@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="機器有辦法自行從文本中觀察出詞彙間的相似度嗎？是可以的，word2vec是&#34;word to vector&#34;的縮寫，代表的正是將每個字轉換成向量，而一旦兩個字的向量越是靠近，就代表它的相似度越高，我們究竟要如何得到這些向量呢？方法簡單但出奇有效，文章的最後會向大家呈現它的精彩的結果。 本單元程式碼Skip-Gram Word2Vec部分可於Github下載，CBOW...">
+        <meta name="keywords" content="Tensorflow">
+        <link rel="icon" href="./static/img/favicon.png">
+
+        <title>實作Tensorflow (5)：Word2Vec - YC Note</title>
+
+        <!-- Stylesheets -->
+        <link href="./theme/css/all.min.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Full Atom Feed" />
+        <link href="YCNote/feeds/aiml.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('./images/tensorflow-logo.jpg'); background-position: center; background-size: cover;">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="./"><img class="logo" src="./static/img/favicon.png" alt="logo">YC Note</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="./category/coding.html">Coding</a>
+                                <a href="./category/aiml.html">AI.ML</a>
+                                <a href="./category/reading.html">Reading</a>
+                                <a href="./category/recording.html">Recording</a>
+                                <a href="./about-me.html">About Me</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">實作Tensorflow (5)：Word2Vec</h1>
+                      <p class="header-date">By <a href="./author/yc-chen.html">YC Chen</a>, 2017 / 11月 19, in category <a href="./category/aiml.html">Ai.ml</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="./tag/tensorflow.html">Tensorflow</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <p>機器有辦法自行從文本中觀察出詞彙間的相似度嗎？是可以的，word2vec是"word to vector"的縮寫，代表的正是將每個字轉換成向量，而一旦兩個字的向量越是靠近，就代表它的相似度越高，我們究竟要如何得到這些向量呢？方法簡單但出奇有效，文章的最後會向大家呈現它的精彩的結果。</p>
+<p>本單元程式碼Skip-Gram Word2Vec部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_1_word2vec_SkipGram.py">Github</a>下載，CBOW Word2Vec部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_2_word2vec_CBOW.py">Github</a>下載。</p>
+<p><br/></p>
+<h3>Word2Vec觀念解析</h3>
+<p>Word2Vec的形式和Autoencoder有點像，一樣是從高維度的空間轉換到低維度的空間，再轉換回去原本的維度，只是這一次轉回去的東西不再是原本一模一樣的東西了。</p>
+<p>Word2Vec的Input和Output這次變成是上下文的文字組合，舉個例子，"by the way"這個用法如果多次被機器看過的話，機器是有辦法去學習到這樣的規律的，此時"by"與"the"和"way"便會產生一個上下文的關聯性，為了將這樣的關聯性建立起來，我們希望當我輸入"by"時，機器有辦法預測並輸出"the"或"way"，這代表在機器內部它已經學習到了上下文的關聯性。</p>
+<p>那如果今天這個機器也同時看到很多次的"on the way"這種用法，所以當我輸入"on"時，機器要有辦法預測並輸出"the"或"way"，但是我們不希望"on"和"by"兩個詞在學習時是分開學習的，我們希望機器可以因為"by the way"和"on the way"的結構很相似，所以有辦法抓出"on"和"by"是彼此相似的結論。</p>
+<p>如何做到呢？答案就是限縮這個上下文的關聯性的儲存維度，如果我的字彙量有1000個，這1000個字彙彼此有上下文的關聯性，最完整表示上下文關聯性的方法就是設置一個1000x1000或者更大的表格，把所有字彙間的上下文關聯性全部存起來，但我們不想要這麼做，我要求機器用更小的表格來儲存上下文的關聯性，此時機器被迫將一些詞彙使用同樣的表格位置，同樣的轉換。一旦限縮了上下文關聯性的儲存維度，"on the way"和"by the way"中的"on"和"by"就會被迫分為同一類，因此我們成功的建立了字詞間的相似性關係。</p>
+<h3>Word2Vec的架構</h3>
+<p><img alt="word2vec" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.008.jpeg"></p>
+<p>實作上如上圖所示，我們輸入一個字詞，譬如"cat"，通常會將他轉成One-hot encoding表示，但要注意喔！文本的字彙量是非常龐大的，所以當我們使用One-hot encoding表示時，將會出現一個非常長但Sparse的向量，相同的輸出層也同樣是一個很長的One-hot encoding，它的維度會和輸入層一樣大，因為我們要分析的字彙在輸入和輸出是一樣多的。</p>
+<p>然後，和Autoencoder使用一樣的手法，中間的Hidden Layer放置低維度、少神經元的一層，但不同於Autoencoder，Word2Vec所有的轉換都是線性的，沒有非線性的Activation Function夾在其中，為什麼呢？因為我們的輸入是Sparse的而且只有0和1的差別，所以每一條通路就變成只有導通或不導通的差別，Activation Function有加等於沒加，使用線性就足夠了。</p>
+<p>這個中間的Hidden Layer被稱為Embedding Matrix，它做了一個線性的Dimension Reduction，將原本高維度的One-hot encoding降低成低維度，然後再透過一個線性模型轉換回去原本的維度。假設字彙的數量有N個，所以輸入矩陣X是一個1xN的矩陣，輸出的矩陣同樣也是1xN的矩陣，當我先做一個線性的Dimension Reduction，將維度降到d維，此時Embedding Matrix會是一個Nxd的矩陣V，然後再由線性模型轉換回去原本的維度，這個轉換矩陣W是一個Nxd矩陣，因此綜合上述，可用一個簡潔的表示式表示：Y=W<sup>T</sup>VX，我們的目標就是找出這個W和V矩陣的每個元素。</p>
+<p>你會想說線性模型很簡單啊！就是仿照Autoencoder的作法，然後把Activation Function拿掉不就了事了，並且因為輸出是One-hot Encoding所以最後套用Softmax，那不就輕鬆完成！但是真正的大魔王就出在字彙量，字彙量一旦很大，事情就變得不可收拾了，而且字彙量是一定小不得的，那怎麼辦？</p>
+<p>在Dimension Reduction我們可以採取一個快速的方法，因為除了我要表示的字的位置是1以外其他都是0，所以其他都可以不看，我們就直接看是在第幾個位置上是1，然後再到Embedding Matrix上找到相應的行直接取出就是答案了，這樣查詢的動作，在Tensorflow中可以使用<code>tf.nn.embedding_lookup</code>來辦到。</p>
+<p>再接下來最後的Cross-Entropy Loss計算也非常龐大，因為有幾個字彙就需要累加幾組數字，我們有一招偷吃步的方法叫做「Sampled Softmax」，作法是這樣的，我們不去計算全部詞彙的Cross-Entropy，而是選擇幾組詞彙來評估Cross-Entropy，在選擇上我們會隨機挑選一些Labels和預測結果差異度很大的詞彙(稱為Negative Examples)來算Cross-Entropy，我們在Tensorflow可以使用<code>tf.nn.sampled_softmax_loss</code>來辦到「Sampled Softmax」。</p>
+<p>我們先不管輸入和輸出究竟怎麼取得，如果我們成功的建立了輸入和輸出的上下文關係，此時中間的Embedding空間正是精華的所在，經過剛剛推論，我們預期在這個空間當中，相似的詞彙會彼此靠近，我們評估兩個向量的相似性可以使用Cosine來評估，當兩向量的夾角越小代表它們越是相似，待會的實作當中我們將會利用Cosine來建立Similarity的大小，藉此來找到前幾個和它很靠近的詞彙。</p>
+<p>另外，經研究指出這個Embedding空間的效果不只是可以算出詞彙間的相似性，還可以顯示詞彙間的比較關係，例如：北京之於中國，等同於台北之於台灣，這樣的比較關係也顯示在這個Embedding空間裡頭，所以在這空間裡會有以下的向量關係式：V<sub>北京</sub>-V<sub>中國</sub>+V<sub>台灣</sub>=V<sub>台北</sub>，是不是很神奇啊！</p>
+<p><br/></p>
+<h3>Word2Vec的兩種常用方法：Skip-Gram和CBOW</h3>
+<p><img alt="Skip-Gram和CBOW" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.009.jpeg"></p>
+<p>剛剛一直在講的是中間的結構應該怎麼建立，現在來看看我們可以輸入和輸出哪些詞彙來建立起上下文的關係，有兩種常用的類別：Skip-Gram和CBOW。</p>
+<p>Skip-Gram如上圖所示，當我輸入一個word(t)時，我希望它能輸出它的前文和後文，這是相當直覺的建立上下文的方法，所以如果我希望用前一個字和後一個字來訓練我的Word2Vec，我就會有兩組數據：(w(t),w(t-1))和(w(t),w(t+1))，相當好理解。</p>
+<p>而CBOW(Continuous Bag of Words)使用另外一種方法來建立上下文關係，它將一排字挖掉中間一個字，然後希望由上下文的關係有辦法猜出中間那個字，就像是填空題，此時輸入層就變成會有多於1個字，那該怎麼處理，答案是轉換到Embedding空間後再相加平均，因為是線性轉換，所以直接線性累加就可以了。</p>
+<p><br/></p>
+<h3>準備文本語料庫</h3>
+<p>先帶入一些待會會用到的函式庫，並且決定我們要取用多少<code>VOCABULARY_SIZE</code>個詞彙量來做訓練。</p>
+<div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">from</span> <span class="nn">six.moves.urllib.request</span> <span class="kn">import</span> <span class="n">urlretrieve</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">VOCABULARY_SIZE</span> <span class="o">=</span> <span class="mi">100000</span>
+</pre></div>
+
+
+<p>接下來下載Dataset，並做一些前處理。</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">maybe_download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span> <span class="n">expected_bytes</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Download a file if not present, and make sure it&#39;s the right size.&quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">filename</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+  <span class="n">statinfo</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span> <span class="o">==</span> <span class="n">expected_bytes</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Found and verified </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+      <span class="s1">&#39;Failed to verify &#39;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;. Can you get to it with a browser?&#39;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">filename</span>
+
+<span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Extract the first file enclosed in a zip file as a list of words&quot;&quot;&quot;</span>
+  <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">compat</span><span class="o">.</span><span class="n">as_str</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">namelist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">data</span>
+
+<span class="k">def</span> <span class="nf">build_dataset</span><span class="p">(</span><span class="n">words</span><span class="p">,</span><span class="n">vocabulary_size</span><span class="o">=</span><span class="n">VOCABULARY_SIZE</span><span class="p">):</span>
+  <span class="n">count</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;UNK&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+  <span class="n">count</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="n">words</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="n">vocabulary_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+  <span class="n">dictionary</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+  <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">count</span><span class="p">:</span>
+    <span class="n">dictionary</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+  <span class="n">unk_count</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
+      <span class="n">index</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="n">word</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># dictionary[&#39;UNK&#39;]</span>
+      <span class="n">unk_count</span> <span class="o">=</span> <span class="n">unk_count</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+  <span class="n">count</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">unk_count</span>
+  <span class="n">reverse_dictionary</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> 
+  <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">,</span> <span class="n">reverse_dictionary</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Downloading text8.zip&quot;</span><span class="p">)</span>
+<span class="n">filename</span> <span class="o">=</span> <span class="n">maybe_download</span><span class="p">(</span><span class="s1">&#39;http://mattmahoney.net/dc/text8.zip&#39;</span><span class="p">,</span><span class="s1">&#39;./text8.zip&#39;</span><span class="p">,</span> <span class="mi">31344016</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;=====&quot;</span><span class="p">)</span>
+<span class="n">words</span> <span class="o">=</span> <span class="n">read_data</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Data size </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;First 10 words: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">words</span><span class="p">[:</span><span class="mi">10</span><span class="p">]))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;=====&quot;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">,</span> <span class="n">reverse_dictionary</span> <span class="o">=</span> <span class="n">build_dataset</span><span class="p">(</span><span class="n">words</span><span class="p">,</span>
+                                                            <span class="n">vocabulary_size</span><span class="o">=</span><span class="n">VOCABULARY_SIZE</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">words</span>  <span class="c1"># Hint to reduce memory.</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Most common words (+UNK)&#39;</span><span class="p">,</span> <span class="n">count</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Sample data&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Downloading text8.zip
+Found and verified ./text8.zip
+=====
+Data size 17005207
+First 10 words: [&#39;anarchism&#39;, &#39;originated&#39;, &#39;as&#39;, &#39;a&#39;, &#39;term&#39;, &#39;of&#39;, &#39;abuse&#39;, &#39;first&#39;, &#39;used&#39;, &#39;against&#39;]
+=====
+Most common words (+UNK) [[&#39;UNK&#39;, 189230], (&#39;the&#39;, 1061396), (&#39;of&#39;, 593677), (&#39;and&#39;, 416629), (&#39;one&#39;, 411764)]
+Sample data [5234, 3081, 12, 6, 195, 2, 3134, 46, 59, 156]
+</pre></div>
+
+
+<p>我們取用<code>VOCABULARY_SIZE = 100000</code>，也是說我們將文本中的詞彙按出現次數的多寡來排列，取前面<code>VOCABULARY_SIZE</code>個保留，其餘詞彙皆歸類到「UNK Token」裡頭，UNK代表UNKnown的縮寫。</p>
+<p>我們文本的字詞數量總共有17005207個字，開頭前十個字的句子是'anarchism originated as a term of abuse first used against'。所有的這17005207個字會依照<code>dictionary</code>給予每個字Index，而文本會被表示為一個由整數所構成的List，這會放在<code>data</code>裡頭，而這個Index也就直接當作One-hot Encoding中代表這個詞彙的維度位置。當我想要把Index轉換回去我們看得懂的字的時候，就需要<code>reverse_dictionary</code>的幫忙，有了這些，我們的語料庫就已經建立完成了。</p>
+<p><br/></p>
+<h3>實作Skip-Gram</h3>
+<p>有了語料庫，我們就可以產生出我想要的輸入和輸出，在Skip-Gram方法，如果我的輸入是<code>target word</code>，我會先從<code>target word</code>向前、向後看出去<code>skip_window</code>的大小，所以可以選擇當作輸出的字有<code>skip_window*2</code>個，接下來我從這<code>skip_window*2</code>個中選擇<code>num_skips</code>個當作輸出，所以一個<code>target word</code>會產生<code>num_skips</code>筆數據，如果我一個batch需要<code>batch_size</code>筆數據，我就必須有<code>batch_size//num_skips</code>個<code>target word</code>，依照這樣的規則下面建立一個Generator來掃描文本，並輸出要訓練使用的Batch Data。</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">skip_gram_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">batch_size</span><span class="p">,</span><span class="n">num_skips</span><span class="p">,</span><span class="n">skip_window</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">batch_size</span> <span class="o">%</span> <span class="n">num_skips</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">num_skips</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">skip_window</span>
+
+    <span class="n">batch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">batch_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+    <span class="n">span</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">skip_window</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># [ skip_window target skip_window ]</span>
+    <span class="nb">buffer</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="n">span</span><span class="p">)</span>
+
+    <span class="c1"># initialization</span>
+    <span class="n">data_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">span</span><span class="p">):</span>
+        <span class="nb">buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data_index</span><span class="p">])</span>
+        <span class="n">data_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">data_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="c1"># generate</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">skip_window</span>  <span class="c1"># target label at the center of the buffer</span>
+        <span class="n">targets_to_avoid</span> <span class="o">=</span> <span class="p">[</span> <span class="n">target</span> <span class="p">]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_skips</span><span class="p">):</span>
+            <span class="k">while</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets_to_avoid</span><span class="p">:</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">span</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">targets_to_avoid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+            <span class="n">batch</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">buffer</span><span class="p">[</span><span class="n">skip_window</span><span class="p">]</span>
+            <span class="n">labels</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">buffer</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
+            <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Recycle </span>
+        <span class="k">if</span> <span class="n">data_index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span> <span class="n">data_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># scan data</span>
+        <span class="nb">buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data_index</span><span class="p">])</span>
+        <span class="n">data_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">data_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Enough num to output</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">batch_size</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">labels</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+<span class="c1"># demonstrate generator</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;data:&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">di</span><span class="p">]</span> <span class="k">for</span> <span class="n">di</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[:</span><span class="mi">10</span><span class="p">]])</span>
+
+<span class="k">for</span> <span class="n">num_skips</span><span class="p">,</span> <span class="n">skip_window</span> <span class="ow">in</span> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]:</span>
+    <span class="n">batch_generator</span> <span class="o">=</span> <span class="n">skip_gram_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">num_skips</span><span class="o">=</span><span class="n">num_skips</span><span class="p">,</span><span class="n">skip_window</span><span class="o">=</span><span class="n">skip_window</span><span class="p">)</span>
+    <span class="n">batch</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">batch_generator</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">with num_skips = </span><span class="si">%d</span><span class="s1"> and skip_window = </span><span class="si">%d</span><span class="s1">:&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">num_skips</span><span class="p">,</span> <span class="n">skip_window</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;    batch:&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">bi</span><span class="p">]</span> <span class="k">for</span> <span class="n">bi</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">])</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;    labels:&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">li</span><span class="p">]</span> <span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">8</span><span class="p">)])</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>data: [&#39;anarchism&#39;, &#39;originated&#39;, &#39;as&#39;, &#39;a&#39;, &#39;term&#39;, &#39;of&#39;, &#39;abuse&#39;, &#39;first&#39;, &#39;used&#39;, &#39;against&#39;]
+
+with num_skips = 2 and skip_window = 1:
+    batch: [&#39;originated&#39;, &#39;originated&#39;, &#39;as&#39;, &#39;as&#39;, &#39;a&#39;, &#39;a&#39;, &#39;term&#39;, &#39;term&#39;]
+    labels: [&#39;as&#39;, &#39;anarchism&#39;, &#39;originated&#39;, &#39;a&#39;, &#39;as&#39;, &#39;term&#39;, &#39;a&#39;, &#39;of&#39;]
+
+with num_skips = 4 and skip_window = 2:
+    batch: [&#39;as&#39;, &#39;as&#39;, &#39;as&#39;, &#39;as&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;, &#39;a&#39;]
+    labels: [&#39;term&#39;, &#39;anarchism&#39;, &#39;originated&#39;, &#39;a&#39;, &#39;originated&#39;, &#39;term&#39;, &#39;as&#39;, &#39;of&#39;]
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SkipGram</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_vocabulary</span><span class="p">,</span><span class="n">n_embedding</span><span class="p">,</span><span class="n">reverse_dictionary</span><span class="p">,</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_vocabulary</span> <span class="o">=</span> <span class="n">n_vocabulary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_embedding</span> <span class="o">=</span> <span class="n">n_embedding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reverse_dictionary</span> <span class="o">=</span> <span class="n">reverse_dictionary</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span> <span class="c1"># initialize new grap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span> <span class="c1"># building graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span> <span class="c1"># create session by the graph </span>
+
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">learning_rate</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
+            <span class="c1">### Input</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span>  <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+            <span class="c1">### Optimalization</span>
+            <span class="c1"># build neurel network structure and get their loss</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span> <span class="n">dataset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span><span class="p">,</span>
+                                        <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">,</span>
+                                      <span class="p">)</span>
+
+            <span class="c1"># normalize embeddings</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                          <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span>
+                            <span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">keep_dims</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">normalized_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span>
+
+            <span class="c1"># define training operation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdagradOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
+
+            <span class="c1">### Prediction</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span>  <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span> <span class="n">dataset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_dataset</span><span class="p">,</span>
+                                            <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span><span class="p">,</span>
+                                          <span class="p">)</span>
+
+            <span class="c1"># similarity</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_embed</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">embedding_lookup</span><span class="p">(</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">normalized_embeddings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_dataset</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_similarity</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_embed</span><span class="p">,</span> 
+                                            <span class="n">tf</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalized_embeddings</span><span class="p">))</span>
+
+            <span class="c1">### Initialization</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>  
+
+    <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dataset</span><span class="p">,</span><span class="n">labels</span><span class="p">):</span>
+        <span class="c1">### Variable</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;embeddings&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span>
+                                <span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_vocabulary</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_embedding</span><span class="p">],</span> 
+                                                  <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span>
+                <span class="s1">&#39;softmax&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span>
+                             <span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_vocabulary</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_embedding</span><span class="p">],</span>
+                               <span class="n">stddev</span><span class="o">=</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_embedding</span><span class="p">)))</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;softmax&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_vocabulary</span><span class="p">]))</span>
+            <span class="p">}</span>
+
+
+        <span class="c1">### Structure</span>
+        <span class="c1"># Look up embeddings for inputs.</span>
+        <span class="n">embed</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">embedding_lookup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">],</span> <span class="n">dataset</span><span class="p">)</span>
+
+        <span class="c1"># Compute the softmax loss, using a sample of the negative labels each time.</span>
+        <span class="n">num_softmax_sampled</span> <span class="o">=</span> <span class="mi">64</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
+                 <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sampled_softmax_loss</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;softmax&#39;</span><span class="p">],</span> 
+                                            <span class="n">biases</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;softmax&#39;</span><span class="p">],</span> 
+                                            <span class="n">inputs</span><span class="o">=</span><span class="n">embed</span><span class="p">,</span>
+                                            <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> 
+                                            <span class="n">num_sampled</span><span class="o">=</span><span class="n">num_softmax_sampled</span><span class="p">,</span> 
+                                            <span class="n">num_classes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_vocabulary</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">loss</span>
+
+
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_op</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">online_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>      
+        <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">:</span> <span class="n">Y</span><span class="p">}</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">train_op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="n">feed_dict</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">loss</span>
+
+    <span class="k">def</span> <span class="nf">nearest_words</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">top_nearest</span><span class="p">):</span>
+        <span class="n">similarity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_similarity</span><span class="p">,</span>
+                                   <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_dataset</span><span class="p">:</span> <span class="n">X</span><span class="p">})</span>
+        <span class="n">X_size</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">valid_words</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">nearests</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X_size</span><span class="p">):</span>
+            <span class="n">valid_word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_word</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">valid_words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">valid_word</span><span class="p">)</span>    
+
+            <span class="c1"># select highest similarity word</span>
+            <span class="n">nearest</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">similarity</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[</span><span class="mi">1</span><span class="p">:</span><span class="n">top_nearest</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>  
+            <span class="n">nearests</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">find_word</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">nearest</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">valid_words</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nearests</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_dataset</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span><span class="p">:</span> <span class="n">Y</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">embedding_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalized_embeddings</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">find_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</pre></div>
+
+
+<p>以上就是我建立的Model，這裡我採取<code>online_fit</code>的方法，不同於之前的<code>fit</code>，<code>online_fit</code>可以不用事先將所有Data一次餵進去，而是可以陸續的餵入Data，所以我會從上面的Generator陸續產生Batch Data並餵入Model裡來做訓練。</p>
+<div class="highlight"><pre><span></span><span class="c1"># build skip-gram batch generator</span>
+<span class="n">batch_generator</span> <span class="o">=</span> <span class="n">skip_gram_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                            <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+                                            <span class="n">num_skips</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                            <span class="n">skip_window</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># build skip-gram model</span>
+<span class="n">model_SkipGram</span> <span class="o">=</span> <span class="n">SkipGram</span><span class="p">(</span><span class="n">n_vocabulary</span><span class="o">=</span><span class="n">VOCABULARY_SIZE</span><span class="p">,</span>
+                          <span class="n">n_embedding</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                          <span class="n">reverse_dictionary</span><span class="o">=</span><span class="n">reverse_dictionary</span><span class="p">,</span>
+                          <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="c1"># initial model</span>
+<span class="n">model_SkipGram</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+
+<span class="c1"># online training</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">num_batchs_in_epoch</span> <span class="o">=</span> <span class="mi">5000</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">avg_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_batchs_in_epoch</span><span class="p">):</span>
+        <span class="n">batch</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">batch_generator</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">model_SkipGram</span><span class="o">.</span><span class="n">online_fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">batch</span><span class="p">,</span>
+                                         <span class="n">Y</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+        <span class="n">avg_loss</span> <span class="o">+=</span> <span class="n">loss</span>
+    <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">avg_loss</span> <span class="o">/</span> <span class="n">num_batchs_in_epoch</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Epoch </span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">: </span><span class="si">%d</span><span class="s2">s loss = </span><span class="si">%9.4f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span>
+                                                   <span class="n">avg_loss</span> <span class="p">))</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Epoch 1/50: 18s loss =    4.2115
+Epoch 2/50: 17s loss =    3.7554
+Epoch 3/50: 15s loss =    3.6211
+Epoch 4/50: 15s loss =    3.5072
+Epoch 5/50: 15s loss =    3.5084
+Epoch 6/50: 15s loss =    3.4988
+Epoch 7/50: 15s loss =    3.5165
+Epoch 8/50: 15s loss =    3.3949
+Epoch 9/50: 15s loss =    3.4382
+Epoch 10/50: 15s loss =    3.4121
+Epoch 11/50: 15s loss =    3.4027
+Epoch 12/50: 15s loss =    3.4074
+Epoch 13/50: 15s loss =    3.3222
+Epoch 14/50: 15s loss =    3.3448
+Epoch 15/50: 16s loss =    3.3616
+Epoch 16/50: 15s loss =    3.3389
+Epoch 17/50: 15s loss =    3.3729
+Epoch 18/50: 15s loss =    3.3911
+Epoch 19/50: 15s loss =    3.3512
+Epoch 20/50: 15s loss =    3.3107
+Epoch 21/50: 16s loss =    3.3046
+Epoch 22/50: 15s loss =    3.3103
+Epoch 23/50: 15s loss =    3.3042
+Epoch 24/50: 15s loss =    3.2634
+Epoch 25/50: 15s loss =    3.3181
+Epoch 26/50: 15s loss =    3.2808
+Epoch 27/50: 15s loss =    3.2464
+Epoch 28/50: 15s loss =    3.2246
+Epoch 29/50: 15s loss =    3.2666
+Epoch 30/50: 15s loss =    3.2275
+Epoch 31/50: 15s loss =    3.2312
+Epoch 32/50: 15s loss =    3.3022
+Epoch 33/50: 15s loss =    3.2504
+Epoch 34/50: 15s loss =    3.2484
+Epoch 35/50: 15s loss =    3.2368
+Epoch 36/50: 15s loss =    3.2693
+Epoch 37/50: 15s loss =    3.2177
+Epoch 38/50: 15s loss =    3.2395
+Epoch 39/50: 15s loss =    3.2151
+Epoch 40/50: 15s loss =    3.0505
+Epoch 41/50: 15s loss =    2.9364
+Epoch 42/50: 15s loss =    3.1546
+Epoch 43/50: 15s loss =    3.1810
+Epoch 44/50: 15s loss =    3.2778
+Epoch 45/50: 15s loss =    3.1340
+Epoch 46/50: 15s loss =    3.2218
+Epoch 47/50: 15s loss =    3.2395
+Epoch 48/50: 15s loss =    3.2422
+Epoch 49/50: 15s loss =    3.0131
+Epoch 50/50: 15s loss =    3.1287
+</pre></div>
+
+
+<p>我們來看看效果如何，我們使用Embedding Vectors彼此間的Cosine來定義出字詞間的相關性，並且列出8個最為靠近的字詞。</p>
+<div class="highlight"><pre><span></span><span class="n">valid_words_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">210</span><span class="p">,</span><span class="mi">239</span><span class="p">,</span><span class="mi">392</span><span class="p">,</span><span class="mi">396</span><span class="p">])</span>
+
+<span class="n">valid_words</span><span class="p">,</span> <span class="n">nearests</span> <span class="o">=</span> <span class="n">model_SkipGram</span><span class="o">.</span><span class="n">nearest_words</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">valid_words_index</span><span class="p">,</span><span class="n">top_nearest</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_words</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Nearest to &#39;{}&#39;: &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">valid_words</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span><span class="n">nearests</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Nearest to &#39;two&#39;:  [&#39;three&#39; &#39;four&#39; &#39;five&#39; &#39;eight&#39; &#39;six&#39; &#39;seven&#39; &#39;nine&#39; &#39;one&#39;]
+Nearest to &#39;that&#39;:  [&#39;which&#39; &#39;however&#39; &#39;eophona&#39; &#39;clemency&#39; &#39;invariants&#39; &#39;ratchet&#39; &#39;what&#39;
+ &#39;fiona&#39;]
+Nearest to &#39;his&#39;:  [&#39;her&#39; &#39;their&#39; &#39;my&#39; &#39;your&#39; &#39;its&#39; &#39;our&#39; &#39;thy&#39; &#39;witchcraft&#39;]
+Nearest to &#39;were&#39;:  [&#39;are&#39; &#39;was&#39; &#39;include&#39; &#39;have&#39; &#39;cyanobacterial&#39; &#39;seem&#39; &#39;be&#39; &#39;those&#39;]
+Nearest to &#39;all&#39;:  [&#39;both&#39; &#39;various&#39; &#39;many&#39; &#39;counting&#39; &#39;some&#39; &#39;every&#39; &#39;several&#39; &#39;risked&#39;]
+Nearest to &#39;area&#39;:  [&#39;region&#39; &#39;areas&#39; &#39;suctoria&#39; &#39;regions&#39; &#39;island&#39; &#39;pwned&#39; &#39;territory&#39;
+ &#39;plains&#39;]
+Nearest to &#39;east&#39;:  [&#39;west&#39; &#39;eastern&#39; &#39;southeast&#39; &#39;south&#39; &#39;southwest&#39; &#39;curable&#39; &#39;north&#39;
+ &#39;hispaniolan&#39;]
+Nearest to &#39;himself&#39;:  [&#39;him&#39; &#39;themselves&#39; &#39;them&#39; &#39;itself&#39; &#39;megalith&#39; &#39;herself&#39; &#39;successfully&#39;
+ &#39;armas&#39;]
+Nearest to &#39;white&#39;:  [&#39;red&#39; &#39;black&#39; &#39;blue&#39; &#39;yellow&#39; &#39;green&#39; &#39;overdraft&#39; &#39;horse&#39; &#39;dark&#39;]
+</pre></div>
+
+
+<p>結果相當驚人，與'two'靠近的真的都是數字類型的文字，與'that'靠近的都是文法功能性的詞彙，與'his'靠近的都是所有格代名詞，與'were'靠近的是be動詞，與'all'最靠近的是'both'，與'east'靠近的都是一些代表方向的詞彙，與'white'靠近的都是一些顏色的詞彙，真的是太神奇了！</p>
+<p>接下來直接來觀察Embedding空間，以下使用t-SNE來圖像化Embedding空間。</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pylab</span>
+<span class="kn">from</span> <span class="nn">sklearn.manifold</span> <span class="kn">import</span> <span class="n">TSNE</span>
+
+<span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="s1">&#39;More labels than embeddings&#39;</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>  <span class="c1"># in inches</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">embeddings</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span>
+        <span class="n">pylab</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+        <span class="n">pylab</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">textcoords</span><span class="o">=</span><span class="s1">&#39;offset points&#39;</span><span class="p">,</span>
+                   <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">visualization_words</span> <span class="o">=</span> <span class="mi">800</span>
+<span class="c1"># transform embeddings to 2D by t-SNE</span>
+<span class="n">embed</span> <span class="o">=</span> <span class="n">model_SkipGram</span><span class="o">.</span><span class="n">embedding_matrix</span><span class="p">()[</span><span class="mi">1</span><span class="p">:</span><span class="n">visualization_words</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]</span>
+<span class="n">tsne</span> <span class="o">=</span> <span class="n">TSNE</span><span class="p">(</span><span class="n">perplexity</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">&#39;pca&#39;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">)</span>
+<span class="n">two_d_embed</span> <span class="o">=</span> <span class="n">tsne</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">embed</span><span class="p">)</span>
+<span class="c1"># list labels</span>
+<span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">model_SkipGram</span><span class="o">.</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">visualization_words</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="c1"># plot</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">two_d_embed</span><span class="p">,</span><span class="n">words</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/05_output_13_0.png"></p>
+<p>如此一來你將可以簡單的看出，哪些詞彙彼此相似而靠近。</p>
+<p><br/></p>
+<h3>實作CBOW (Continuous Bag of Words)</h3>
+<p>接著看CBOW的方法，如果我預期輸出的字是<code>target word</code>，從<code>target word</code>向前向後看出去<code>context_window</code>的大小，看到的字都當作我的輸入，所以我輸入的字總共需要<code>context_window*2</code>個，一個<code>target word</code>只會產生一筆數據，如果我一個batch需要<code>batch_size</code>筆數據，我就必須有<code>batch_size</code>個<code>target word</code>，依照這樣的規則下面建立一個Generator來掃描文本，並輸出要訓練使用的Batch Data。</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cbow_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">batch_size</span><span class="p">,</span><span class="n">context_window</span><span class="p">):</span>
+    <span class="n">span</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">context_window</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># [ context_window target context_window ]</span>
+    <span class="n">num_bow</span> <span class="o">=</span> <span class="n">span</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="n">batch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_bow</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+    <span class="nb">buffer</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">(</span><span class="n">maxlen</span><span class="o">=</span><span class="n">span</span><span class="p">)</span>
+
+    <span class="c1"># initialization</span>
+    <span class="n">data_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">span</span><span class="p">):</span>
+        <span class="nb">buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data_index</span><span class="p">])</span>
+        <span class="n">data_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">data_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="c1"># generate</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">context_window</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>        
+        <span class="n">bow</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">buffer</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">bow</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bow</span><span class="p">):</span>
+            <span class="n">batch</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="n">labels</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">buffer</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
+        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Recycle </span>
+        <span class="k">if</span> <span class="n">data_index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span> <span class="n">data_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># scan data</span>
+        <span class="nb">buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data_index</span><span class="p">])</span>
+        <span class="n">data_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">data_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Enough num to output</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">batch_size</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+
+
+<span class="c1"># demonstrate generator</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;data:&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">di</span><span class="p">]</span> <span class="k">for</span> <span class="n">di</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[:</span><span class="mi">10</span><span class="p">]])</span>
+
+<span class="k">for</span> <span class="n">context_window</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+    <span class="n">batch_generator</span> <span class="o">=</span> <span class="n">cbow_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                           <span class="n">batch_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+                                           <span class="n">context_window</span><span class="o">=</span><span class="n">context_window</span><span class="p">)</span>
+    <span class="n">batch</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">batch_generator</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">with context_window = </span><span class="si">%d</span><span class="s1">:&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">context_window</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;batch:&#39;</span><span class="p">)</span>
+    <span class="n">show_batch</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">batch</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]])</span>
+        <span class="n">show_batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">show_batch</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;labels:&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">li</span><span class="p">]</span> <span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">8</span><span class="p">)])</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>data: [&#39;anarchism&#39;, &#39;originated&#39;, &#39;as&#39;, &#39;a&#39;, &#39;term&#39;, &#39;of&#39;, &#39;abuse&#39;, &#39;first&#39;, &#39;used&#39;, &#39;against&#39;]
+
+with context_window = 1:
+batch:
+[[&#39;anarchism&#39;, &#39;as&#39;], [&#39;originated&#39;, &#39;a&#39;], [&#39;as&#39;, &#39;term&#39;], [&#39;a&#39;, &#39;of&#39;], [&#39;term&#39;, &#39;abuse&#39;], [&#39;of&#39;, &#39;first&#39;], [&#39;abuse&#39;, &#39;used&#39;], [&#39;first&#39;, &#39;against&#39;]]
+labels: [&#39;originated&#39;, &#39;as&#39;, &#39;a&#39;, &#39;term&#39;, &#39;of&#39;, &#39;abuse&#39;, &#39;first&#39;, &#39;used&#39;]
+
+with context_window = 2:
+batch:
+[[&#39;anarchism&#39;, &#39;originated&#39;, &#39;a&#39;, &#39;term&#39;], [&#39;originated&#39;, &#39;as&#39;, &#39;term&#39;, &#39;of&#39;], [&#39;as&#39;, &#39;a&#39;, &#39;of&#39;, &#39;abuse&#39;], [&#39;a&#39;, &#39;term&#39;, &#39;abuse&#39;, &#39;first&#39;], [&#39;term&#39;, &#39;of&#39;, &#39;first&#39;, &#39;used&#39;], [&#39;of&#39;, &#39;abuse&#39;, &#39;used&#39;, &#39;against&#39;], [&#39;abuse&#39;, &#39;first&#39;, &#39;against&#39;, &#39;early&#39;], [&#39;first&#39;, &#39;used&#39;, &#39;early&#39;, &#39;working&#39;]]
+labels: [&#39;as&#39;, &#39;a&#39;, &#39;term&#39;, &#39;of&#39;, &#39;abuse&#39;, &#39;first&#39;, &#39;used&#39;, &#39;against&#39;]
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CBOW</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_vocabulary</span><span class="p">,</span><span class="n">n_embedding</span><span class="p">,</span><span class="n">context_window</span><span class="p">,</span><span class="n">reverse_dictionary</span><span class="p">,</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_vocabulary</span> <span class="o">=</span> <span class="n">n_vocabulary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_embedding</span> <span class="o">=</span> <span class="n">n_embedding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context_window</span> <span class="o">=</span> <span class="n">context_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reverse_dictionary</span> <span class="o">=</span> <span class="n">reverse_dictionary</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span> <span class="c1"># initialize new grap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span> <span class="c1"># building graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span> <span class="c1"># create session by the graph </span>
+
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">learning_rate</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
+            <span class="c1">### Input</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_window</span><span class="o">*</span><span class="mi">2</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span>  <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+            <span class="c1">### Optimalization</span>
+            <span class="c1"># build neurel network structure and get their predictions and loss</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span> <span class="n">dataset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span><span class="p">,</span>
+                                        <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">,</span>
+                                      <span class="p">)</span>
+
+            <span class="c1"># normalize embeddings</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                          <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span>
+                            <span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">keep_dims</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">normalized_embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span>
+
+            <span class="c1"># define training operation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdagradOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
+
+            <span class="c1">### Prediction</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span>  <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+            <span class="c1"># similarity</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_embed</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">embedding_lookup</span><span class="p">(</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">normalized_embeddings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_dataset</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_similarity</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_embed</span><span class="p">,</span> 
+                                            <span class="n">tf</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalized_embeddings</span><span class="p">))</span>
+
+            <span class="c1">### Initialization</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>  
+
+    <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dataset</span><span class="p">,</span><span class="n">labels</span><span class="p">):</span>
+        <span class="c1">### Variable</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;embeddings&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span>
+                                <span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_vocabulary</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_embedding</span><span class="p">],</span>
+                                                  <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span>
+                <span class="s1">&#39;softmax&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span>
+                             <span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_vocabulary</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_embedding</span><span class="p">],</span>
+                               <span class="n">stddev</span><span class="o">=</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_embedding</span><span class="p">)))</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;softmax&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_vocabulary</span><span class="p">]))</span>
+            <span class="p">}</span>
+
+
+        <span class="c1">### Structure</span>
+        <span class="c1"># Look up embeddings for inputs.</span>
+        <span class="n">embed_bow</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">embedding_lookup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">],</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="n">embed</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">embed_bow</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Compute the softmax loss, using a sample of the negative labels each time.</span>
+        <span class="n">num_softmax_sampled</span> <span class="o">=</span> <span class="mi">64</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
+                 <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sampled_softmax_loss</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">&#39;softmax&#39;</span><span class="p">],</span> 
+                                            <span class="n">biases</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">&#39;softmax&#39;</span><span class="p">],</span> 
+                                            <span class="n">inputs</span><span class="o">=</span><span class="n">embed</span><span class="p">,</span>
+                                            <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> 
+                                            <span class="n">num_sampled</span><span class="o">=</span><span class="n">num_softmax_sampled</span><span class="p">,</span> 
+                                            <span class="n">num_classes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_vocabulary</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">loss</span>
+
+
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_op</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">online_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>      
+        <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">:</span> <span class="n">Y</span><span class="p">}</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">train_op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="n">feed_dict</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">loss</span>
+
+    <span class="k">def</span> <span class="nf">nearest_words</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">top_nearest</span><span class="p">):</span>
+        <span class="n">similarity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_similarity</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_dataset</span><span class="p">:</span> <span class="n">X</span><span class="p">})</span>
+        <span class="n">X_size</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">valid_words</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">nearests</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X_size</span><span class="p">):</span>
+            <span class="n">valid_word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_word</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">valid_words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">valid_word</span><span class="p">)</span>    
+
+            <span class="c1"># select highest similarity word</span>
+            <span class="n">nearest</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">similarity</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[</span><span class="mi">1</span><span class="p">:</span><span class="n">top_nearest</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">nearests</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">find_word</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">nearest</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">valid_words</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nearests</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_dataset</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span><span class="p">:</span> <span class="n">Y</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">embedding_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalized_embeddings</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">find_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">context_window</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># build CBOW batch generator</span>
+<span class="n">batch_generator</span> <span class="o">=</span> <span class="n">cbow_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                       <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+                                       <span class="n">context_window</span><span class="o">=</span><span class="n">context_window</span><span class="p">)</span>
+
+<span class="c1"># build CBOW model</span>
+<span class="n">model_CBOW</span> <span class="o">=</span> <span class="n">CBOW</span><span class="p">(</span><span class="n">n_vocabulary</span><span class="o">=</span><span class="n">VOCABULARY_SIZE</span><span class="p">,</span>
+                  <span class="n">n_embedding</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                  <span class="n">context_window</span><span class="o">=</span><span class="n">context_window</span><span class="p">,</span>
+                  <span class="n">reverse_dictionary</span><span class="o">=</span><span class="n">reverse_dictionary</span><span class="p">,</span>
+                  <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># initialize model</span>
+<span class="n">model_CBOW</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+
+<span class="c1"># online training</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">num_batchs_in_epoch</span> <span class="o">=</span> <span class="mi">5000</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">avg_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_batchs_in_epoch</span><span class="p">):</span>
+        <span class="n">batch</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">batch_generator</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">model_CBOW</span><span class="o">.</span><span class="n">online_fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">batch</span><span class="p">,</span>
+                                     <span class="n">Y</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+        <span class="n">avg_loss</span> <span class="o">+=</span> <span class="n">loss</span>
+    <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">avg_loss</span> <span class="o">/</span> <span class="n">num_batchs_in_epoch</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Epoch </span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2">: </span><span class="si">%d</span><span class="s2">s loss = </span><span class="si">%9.4f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span>
+                                                   <span class="n">avg_loss</span> <span class="p">))</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Epoch 1/50: 14s loss =    3.8643
+Epoch 2/50: 14s loss =    3.2952
+Epoch 3/50: 14s loss =    3.1950
+Epoch 4/50: 14s loss =    3.1204
+Epoch 5/50: 14s loss =    3.0737
+Epoch 6/50: 14s loss =    3.0243
+Epoch 7/50: 14s loss =    2.9382
+Epoch 8/50: 14s loss =    2.9539
+Epoch 9/50: 14s loss =    2.9690
+Epoch 10/50: 14s loss =    2.9003
+Epoch 11/50: 14s loss =    2.8737
+Epoch 12/50: 14s loss =    2.8308
+Epoch 13/50: 14s loss =    2.8444
+Epoch 14/50: 14s loss =    2.7676
+Epoch 15/50: 14s loss =    2.7811
+Epoch 16/50: 14s loss =    2.7926
+Epoch 17/50: 14s loss =    2.7528
+Epoch 18/50: 14s loss =    2.7552
+Epoch 19/50: 14s loss =    2.7353
+Epoch 20/50: 14s loss =    2.6232
+Epoch 21/50: 14s loss =    2.5206
+Epoch 22/50: 14s loss =    2.7120
+Epoch 23/50: 14s loss =    2.6625
+Epoch 24/50: 14s loss =    2.7351
+Epoch 25/50: 14s loss =    2.5335
+Epoch 26/50: 14s loss =    2.6600
+Epoch 27/50: 14s loss =    2.6636
+Epoch 28/50: 14s loss =    2.5972
+Epoch 29/50: 14s loss =    2.5400
+Epoch 30/50: 14s loss =    2.6047
+Epoch 31/50: 14s loss =    2.5544
+Epoch 32/50: 14s loss =    2.5932
+Epoch 33/50: 14s loss =    2.5554
+Epoch 34/50: 14s loss =    2.5256
+Epoch 35/50: 14s loss =    2.5664
+Epoch 36/50: 14s loss =    2.5977
+Epoch 37/50: 14s loss =    2.5392
+Epoch 38/50: 14s loss =    2.5666
+Epoch 39/50: 14s loss =    2.5123
+Epoch 40/50: 14s loss =    2.5169
+Epoch 41/50: 14s loss =    2.4920
+Epoch 42/50: 14s loss =    2.4872
+Epoch 43/50: 14s loss =    2.5512
+Epoch 44/50: 14s loss =    2.4895
+Epoch 45/50: 14s loss =    2.5202
+Epoch 46/50: 14s loss =    2.5011
+Epoch 47/50: 14s loss =    2.2540
+Epoch 48/50: 14s loss =    2.4145
+Epoch 49/50: 14s loss =    2.4916
+Epoch 50/50: 14s loss =    2.4924
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">valid_words_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">210</span><span class="p">,</span><span class="mi">239</span><span class="p">,</span><span class="mi">392</span><span class="p">,</span><span class="mi">396</span><span class="p">])</span>
+
+<span class="n">valid_words</span><span class="p">,</span> <span class="n">nearests</span> <span class="o">=</span> <span class="n">model_CBOW</span><span class="o">.</span><span class="n">nearest_words</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">valid_words_index</span><span class="p">,</span><span class="n">top_nearest</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_words</span><span class="p">)):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Nearest to &#39;{}&#39;: &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">valid_words</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span><span class="n">nearests</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Nearest to &#39;two&#39;:  [&#39;three&#39; &#39;four&#39; &#39;five&#39; &#39;six&#39; &#39;seven&#39; &#39;eight&#39; &#39;one&#39; &#39;xx&#39;]
+Nearest to &#39;that&#39;:  [&#39;which&#39; &#39;however&#39; &#39;furthermore&#39; &#39;what&#39; &#39;nevertheless&#39; &#39;imaginable&#39;
+ &#39;assemblage&#39; &#39;where&#39;]
+Nearest to &#39;his&#39;:  [&#39;her&#39; &#39;their&#39; &#39;my&#39; &#39;your&#39; &#39;its&#39; &#39;whose&#39; &#39;our&#39; &#39;dufay&#39;]
+Nearest to &#39;were&#39;:  [&#39;are&#39; &#39;remain&#39; &#39;include&#39; &#39;have&#39; &#39;was&#39; &#39;tend&#39; &#39;those&#39; &#39;appear&#39;]
+Nearest to &#39;all&#39;:  [&#39;both&#39; &#39;various&#39; &#39;unacknowledged&#39; &#39;every&#39; &#39;faked&#39; &#39;aurangazeb&#39; &#39;some&#39;
+ &#39;many&#39;]
+Nearest to &#39;area&#39;:  [&#39;region&#39; &#39;areas&#39; &#39;regions&#39; &#39;land&#39; &#39;campus&#39; &#39;streets&#39; &#39;harbour&#39; &#39;tacos&#39;]
+Nearest to &#39;east&#39;:  [&#39;west&#39; &#39;south&#39; &#39;southwest&#39; &#39;north&#39; &#39;northeast&#39; &#39;eastern&#39; &#39;southeast&#39;
+ &#39;highlights&#39;]
+Nearest to &#39;himself&#39;:  [&#39;him&#39; &#39;themselves&#39; &#39;them&#39; &#39;itself&#39; &#39;herself&#39; &#39;papp&#39; &#39;aafk&#39; &#39;heartbroken&#39;]
+Nearest to &#39;white&#39;:  [&#39;red&#39; &#39;black&#39; &#39;blue&#39; &#39;dark&#39; &#39;yellow&#39; &#39;culturally&#39; &#39;dead&#39; &#39;angelman&#39;]
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pylab</span>
+<span class="kn">from</span> <span class="nn">sklearn.manifold</span> <span class="kn">import</span> <span class="n">TSNE</span>
+
+<span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="s1">&#39;More labels than embeddings&#39;</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>  <span class="c1"># in inches</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">embeddings</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span>
+        <span class="n">pylab</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+        <span class="n">pylab</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">textcoords</span><span class="o">=</span><span class="s1">&#39;offset points&#39;</span><span class="p">,</span>
+                   <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">visualization_words</span> <span class="o">=</span> <span class="mi">800</span>
+<span class="c1"># transform embeddings to 2D by t-SNE</span>
+<span class="n">embed</span> <span class="o">=</span> <span class="n">model_CBOW</span><span class="o">.</span><span class="n">embedding_matrix</span><span class="p">()[</span><span class="mi">1</span><span class="p">:</span><span class="n">visualization_words</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]</span>
+<span class="n">tsne</span> <span class="o">=</span> <span class="n">TSNE</span><span class="p">(</span><span class="n">perplexity</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">&#39;pca&#39;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">)</span>
+<span class="n">two_d_embed</span> <span class="o">=</span> <span class="n">tsne</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">embed</span><span class="p">)</span>
+<span class="c1"># list labels</span>
+<span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">model_CBOW</span><span class="o">.</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">visualization_words</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="c1"># plot</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">two_d_embed</span><span class="p">,</span><span class="n">words</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/05_output_20_0.png"></p>
+<p><br/></p>
+<h3>Reference</h3>
+<ul>
+<li>https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/5_word2vec.ipynb</li>
+</ul>
+
+
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./archives.html">Archives</a></li>
+                            <li><a href="./tags.html">Tags</a></li>
+                            <li><a href="YCNote/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Contact Me</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
+                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
+                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; YC Note 2018</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>
