@@ -88,22 +88,22 @@
 <p><span class="math">\(G_{SVM}\)</span>   <br/></p>
 <p><span class="math">\(= sign[WZ+b]\)</span> <br/></p>
 <p><span class="math">\(= sign{[𝚺_{n=sv} α_n y_n K(X_n,X)]+b}\)</span> <br/></p>
-<p><span class="math">\(⇒ G_{SVM} = sign{[𝚺_{n=sv} α_n y_n exp(-γ |X-X_n|^2)]+b}​\)</span> <br/></p>
+<p><span class="math">\(⇒ G_{SVM} = sign{[𝚺_{n=sv} α_n y_n exp(-γ |X-X_n|^2)]+b}\)</span> <br/></p>
 </blockquote>
 <p>看到這個式子你想到了什麼？有沒有融會貫通的感覺，你同樣的可以把上面的式子看成是Aggregation，又或者是Network。</p>
 <p>先來定義一下RBF Function， 其實就是Gaussian Function，</p>
-<p><strong>RBF Function: RBF(X,X<sub>n</sub>)=exp(-γ|X-X<sub>n</sub>|<sup>2</sup>)</strong></p>
+<p><strong>RBF Function: <span class="math">\(RBF(X,X_n)=exp(-γ|X-X_n|^2)\)</span></strong></p>
 <p>所以我們可以仿造SVM的形式來造一個Network，</p>
-<p><strong>G=Output{[𝚺<sub>m</sub> β<sub>m</sub>RBF(X,μ<sub>m</sub>)]+b}</strong></p>
-<p>當Output為sign Function、β<sub>m</sub>為α<sub>n</sub>y<sub>n</sub>就回到特例SVM了。</p>
-<p>我們來細看這個式子傳遞的概念，RBF Network的第一層是先產生M組RBF(X,μ<sub>m</sub>)，意味著以這M個位置μ<sub>m</sub>當作中心點來評估各個X與它的相似程度，RBF是有評估相似度的味道，越接近μ<sub>m</sub>的點，RBF越大，並隨著與μ<sub>m</sub>距離變大，RBF的值也快速遞減，所以這M個μ<sub>m</sub>是有象徵性的，越接近它你越受它的影響。</p>
-<p>決定了每一筆數據各是受哪些μ<sub>m</sub>影響，接下來第二層是由這M個代表性的位置來進行投票決定最後的結果，這意味的不同的地方μ<sub>m</sub>對最後結果也有不同的影響力，舉個例子，假設在SVM裡頭，某個μ<sub>m</sub>如果它的y<sub>m</sub>=+1，那它對最後的影響就會是正的；那如果某個μ<sub>m</sub>的y<sub>m</sub>=-1，那它對最後的影響就會是負的，所以一個點進來，先評估一下它和象徵性的幾個點μ<sub>m</sub>的距離，如果相鄰幾點都是正的，這個點最後的結果就會是正的。</p>
+<p><strong><span class="math">\(G=Output{[𝚺_m β_m RBF(X,μ_m)]+b}\)</span></strong></p>
+<p>當<span class="math">\(Output\)</span>為<span class="math">\(sign\)</span> Function、<span class="math">\(β_m\)</span>為<span class="math">\(α_n y_n\)</span>就回到特例SVM了。</p>
+<p>我們來細看這個式子傳遞的概念，RBF Network的第一層是先產生M組<span class="math">\(RBF(X,μ_m)\)</span>，意味著以這M個位置<span class="math">\(μ_m\)</span>當作中心點來評估各個X與它的相似程度，RBF是有評估相似度的味道，越接近<span class="math">\(μ_m\)</span>的點，RBF越大，並隨著與<span class="math">\(μ_m\)</span>距離變大，RBF的值也快速遞減，所以這M個<span class="math">\(μ_m\)</span>是有象徵性的，越接近它你越受它的影響。</p>
+<p>決定了每一筆數據各是受哪些<span class="math">\(μ_m\)</span>影響，接下來第二層是由這M個代表性的位置來進行投票決定最後的結果，這意味的不同的地方對<span class="math">\(μ_m\)</span>最後結果也有不同的影響力，舉個例子，假設在SVM裡頭，某個<span class="math">\(μ_m\)</span>如果它的<span class="math">\(y_m =+1\)</span>，那它對最後的影響就會是正的；那如果某個<span class="math">\(μ_m\)</span>的<span class="math">\(y_m=-1\)</span>，那它對最後的影響就會是負的，所以一個點進來，先評估一下它和象徵性的幾個點<span class="math">\(μ_m\)</span>的距離，如果相鄰幾點都是正的，這個點最後的結果就會是正的。</p>
 <p><img alt="RBF Network" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_05.png"></p>
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf</a></p>
 <p>RBF Network在歷史上是Neural Network的一個分支，不過從上面的介紹你就會發現，它們的結構是有差異的，演算法也就不一樣。</p>
-<p>通常最佳化RBF Network做法是這樣的，我們會先用一些方法將μ<sub>m</sub>決定，如果μ<sub>m</sub>很懶惰的就直接使用所有的Training Data，總共有N個μ<sub>m</sub>，這就叫做<strong>「Full RBF Network」</strong>。<strong>我們也可以使用一些歸納的演算法找出代表資料群體的幾個象徵性的中心點，例如待會會介紹的K-Means的方法</strong>，找出k個μ<sub>m</sub>再做計算，這樣的RBF Network稱為<strong>「k Nearest Neighbor RBF Network」</strong>。</p>
-<p>找到了μ<sub>m</sub>就已經決定了所有的RBF Function，接下來就可以線性組合這些RBF Function，我們可以使用Regression的方法來求取β<sub>m</sub>。</p>
-<p>而如果你使用「Full RBF Network」，你會發現做完Regression後E<sub>in</sub>=0，這是典型的Overfitting，那這時你可能就要採用有Regularization的Regression啦！譬如說Ridge Regression之類的。</p>
+<p>通常最佳化RBF Network做法是這樣的，我們會先用一些方法將<span class="math">\(μ_m\)</span>決定，如果<span class="math">\(μ_m\)</span>很懶惰的就直接使用所有的Training Data，總共有N個，這<span class="math">\(μ_m\)</span>就叫做<strong>「Full RBF Network」</strong>。<strong>我們也可以使用一些歸納的演算法找出代表資料群體的幾個象徵性的中心點，例如待會會介紹的K-Means的方法</strong>，找出k個<span class="math">\(μ_m\)</span>再做計算，這樣的RBF Network稱為<strong>「k Nearest Neighbor RBF Network」</strong>。</p>
+<p>找到了<span class="math">\(μ_m\)</span>就已經決定了所有的RBF Function，接下來就可以線性組合這些RBF Function，我們可以使用Regression的方法來求取<span class="math">\(β_m\)</span>。</p>
+<p>而如果你使用「Full RBF Network」，你會發現做完Regression後<span class="math">\(E_{in}=0\)</span>，這是典型的Overfitting，那這時你可能就要採用有Regularization的Regression啦！譬如說Ridge Regression之類的。</p>
 <p><br/></p>
 <h3>K-Means</h3>
 <p><img alt="K-Means" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_06.png"></p>
@@ -116,10 +116,10 @@
 <p>討論這麼久的ML，我們還沒有討論過假設遇到「類別」要怎麼處理！</p>
 <p><strong>通常遇到類別的狀況，我們還是需要把它轉換成數值或向量來處理，常見的方法叫做One-Hot Encoding。</strong></p>
 <p>舉個例子，如果要描述血型應該要怎麼做？我們可是無法拿字串下去Regression的啊～此時就需要One-Hot Encoding，假設血型有A, B, AB, O四種，我們可以這樣設定，</p>
-<p>A = [1, 0, 0, 0]<sup>T</sup></p>
-<p>B = [0, 1, 0, 0]<sup>T</sup></p>
-<p>AB = [0, 0, 1, 0]<sup>T</sup></p>
-<p>O = [0, 0, 0, 1]<sup>T</sup></p>
+<p><span class="math">\(A = [1, 0, 0, 0]^T\)</span></p>
+<p><span class="math">\(B = [0, 1, 0, 0]^T\)</span></p>
+<p><span class="math">\(AB = [0, 0, 1, 0]^T\)</span></p>
+<p><span class="math">\(O = [0, 0, 0, 1]^T\)</span></p>
 <p>就是這麼簡單，這個動作就叫做One-Hot Encoding。</p>
 <p><br/></p>
 <h3>Matrix Factorization</h3>
@@ -130,27 +130,30 @@
 <p><img alt="Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_07.png"></p>
 <p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf</a></p>
 <p>因為是線性模型的緣故，我們可以很簡單的使用矩陣來描述，</p>
-<p>Hypothesis: h(X) = W<sup>T</sup>VX</p>
+<p>Hypothesis: <span class="math">\(h(X) = W^TVX\)</span></p>
 <p>而如果是某一用戶，則</p>
-<p>h(X<sub>n</sub>) = W<sup>T</sup>V<sub>n</sub></p>
-<p>對某個用戶而言與他匹配的電影是一個向量，上面紀錄了他看過的電影，假設我再指定一部電影m，此時W<sub>m</sub><sup>T</sup>V<sub>n</sub>就代表這個用戶有沒有看過這部電影。</p>
-<p>用這個方法來想問題，假設今天你把用戶和電影填成一個大的表格，或是矩陣，有交集的部分就打個勾，這個矩陣的每個元素表示成r<sub>nm</sub>，有打勾的部分r<sub>nm</sub>=1，沒打勾的部分r<sub>nm</sub>=0，那我們做的轉換W和V最終就是為了讓</p>
-<p>W<sub>m</sub><sup>T</sup>V<sub>n</sub>≈r<sub>nm</sub></p>
+<p><span class="math">\(h(X_n) = W^TV_n\)</span></p>
+<p>對某個用戶而言與他匹配的電影是一個向量，上面紀錄了他看過的電影，假設我再指定一部電影m，此時<span class="math">\(W_m^T V_n\)</span>就代表這個用戶有沒有看過這部電影。</p>
+<p>用這個方法來想問題，假設今天你把用戶和電影填成一個大的表格，或是矩陣，有交集的部分就打個勾，這個矩陣的每個元素表示成<span class="math">\(r_{nm}\)</span>，有打勾的部分<span class="math">\(r_{nm}=1\)</span>，沒打勾的部分<span class="math">\(r_{nm}=0\)</span>，那我們做的轉換W和V最終就是為了讓</p>
+<p><span class="math">\(W_m^T V_n ≈r_{nm}\)</span></p>
 <p>為了評估匹配的好壞，我們定義Error Function為</p>
-<p>E<sub>in</sub>({W<sub>m</sub>},{V<sub>n</sub>}) = (1/𝚺<sub>m</sub> |D<sub>m</sub>|)×𝚺<sub>n,m</sub> (r<sub>nm</sub>-W<sub>m</sub><sup>T</sup>V<sub>n</sub>)<sup>2</sup></p>
+<p><span class="math">\(E_{in}({W_m},{V_n}) = (1/𝚺_m |D_m|)×𝚺_{n,m} (r_{nm}-W_{m}^TV_n)^2\)</span></p>
 <p>最佳化Matrix Factorization有兩個演算法，一個是Alternating Least Squares，另外一個是SGD。</p>
 <p><br/></p>
 <h3>Alternating Least Squares for Matrix Factorization</h3>
 <p><img alt="Alternating Least Squares for Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_08.png"></p>
 <p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf</a></p>
-<p>第一個方法是利用Linear Regression交互的優化W<sub>m</sub>和V<sub>n</sub>，我們的目標是使得W<sub>m</sub><sup>T</sup>V<sub>n</sub>=r<sub>nm</sub>，這式子可以用兩個角度看，如果固定W<sub>m</sub>，優化V<sub>n</sub>，那就是線性擬合{V<sub>n</sub>, r<sub>nm</sub>}的問題；那如果固定V<sub>n</sub>，優化W<sub>m</sub>，這就是線性擬合{W<sub>m</sub>, r<sub>nm</sub>}的問題。<strong>因此，交替優化W<sub>m</sub>和V<sub>n</sub>就可以使得W<sub>m</sub><sup>T</sup>V<sub>n</sub>越來越接近r<sub>nm</sub>了</strong>。</p>
+<p>第一個方法是利用Linear Regression交互的優化<span class="math">\(W_m\)</span>和<span class="math">\(V_n\)</span>，我們的目標是使得<span class="math">\(W_m^T V_n =r_{nm}\)</span>，這式子可以用兩個角度看，如果固定<span class="math">\(W_m\)</span>，優化<span class="math">\(V_n\)</span>，那就是線性擬合<span class="math">\(\{V_n, r_{nm}\}\)</span>的問題；那如果固定<span class="math">\(V_n\)</span>，優化<span class="math">\(W_m\)</span>，這就是線性擬合<span class="math">\(\{W_{m}, r_{nm}\}\)</span>的問題。<strong>因此，交替優化<span class="math">\(W_m\)</span>和<span class="math">\(V_n\)</span>就可以使得<span class="math">\(W_m^T V_n\)</span>越來越接近<span class="math">\(r_{nm}\)</span>了</strong>。</p>
 <p><br/></p>
 <h3>SGD for Matrix Factorization</h3>
 <p><img alt="SGD for Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_09.png"></p>
 <p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf</a></p>
 <p>第二個方法則是老招—Gradient Descent，這裡採用隨機的版本SGD，所以過程中我們會隨意的從(n,m)中挑點，然後根據Error Measure</p>
-<p>E<sub>in</sub>({W<sub>m</sub>},{V<sub>n</sub>}) = (1/𝚺<sub>m</sub> |D<sub>m</sub>|)×𝚺<sub>n,m</sub> (r<sub>nm</sub>-W<sub>m</sub><sup>T</sup>V<sub>n</sub>)<sup>2</sup></p>
-<p>我們就可以得到更新W<sub>m</sub>和V<sub>n</sub>的方法，詳細的方法見上圖所示。</p>
+<div class="math">$$
+E_{in}(\{W_m\},\{V_n\}) = (1/𝚺_m |D_m|) \times 𝚺_{n,m} (r_{nm}-W_{m}^T V_n )^2
+$$</div>
+<p>
+我們就可以得到更新<span class="math">\(W_m\)</span>和<span class="math">\(V_n\)</span>的方法，詳細的方法見上圖所示。</p>
 <p><strong>目前，SGD方法是處理大型Matrix Factorization最流行的作法。</strong></p>
 <p><br/></p>
 <h3>結語</h3>
