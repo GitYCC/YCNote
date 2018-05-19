@@ -137,7 +137,7 @@
 <p>用這個方法來想問題，假設今天你把用戶和電影填成一個大的表格，或是矩陣，有交集的部分就打個勾，這個矩陣的每個元素表示成<span class="math">\(r_{nm}\)</span>，有打勾的部分<span class="math">\(r_{nm}=1\)</span>，沒打勾的部分<span class="math">\(r_{nm}=0\)</span>，那我們做的轉換W和V最終就是為了讓</p>
 <p><span class="math">\(W_m^T V_n ≈r_{nm}\)</span></p>
 <p>為了評估匹配的好壞，我們定義Error Function為</p>
-<p><span class="math">\(E_{in}({W_m},{V_n}) = (1/𝚺_m |D_m|)×𝚺_{n,m} (r_{nm}-W_{m}^TV_n)^2\)</span></p>
+<p><span class="math">\(E_{in}(\{W_m\},\{V_n\}) = (1/𝚺_m |D_m|)×𝚺_{n,m} (r_{nm}-W_{m}^TV_n)^2\)</span></p>
 <p>最佳化Matrix Factorization有兩個演算法，一個是Alternating Least Squares，另外一個是SGD。</p>
 <p><br/></p>
 <h3>Alternating Least Squares for Matrix Factorization</h3>
@@ -220,6 +220,20 @@ $$</div>
 </script>
 
 
+    <div class="comments">
+        <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'http://www.ycc.idv.tw/';
+                var disqus_identifier = 'ml-course-techniques_7.html';
+                var disqus_url = './ml-course-techniques_7.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+        <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
         
     </div>
         <!-- /Content --> 

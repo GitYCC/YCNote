@@ -5421,7 +5421,7 @@ H = F + G&amp;quot;
 &lt;p&gt;用這個方法來想問題，假設今天你把用戶和電影填成一個大的表格，或是矩陣，有交集的部分就打個勾，這個矩陣的每個元素表示成&lt;span class="math"&gt;\(r_{nm}\)&lt;/span&gt;，有打勾的部分&lt;span class="math"&gt;\(r_{nm}=1\)&lt;/span&gt;，沒打勾的部分&lt;span class="math"&gt;\(r_{nm}=0\)&lt;/span&gt;，那我們做的轉換W和V最終就是為了讓&lt;/p&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(W_m^T V_n ≈r_{nm}\)&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;為了評估匹配的好壞，我們定義Error Function為&lt;/p&gt;
-&lt;p&gt;&lt;span class="math"&gt;\(E_{in}({W_m},{V_n}) = (1/𝚺_m |D_m|)×𝚺_{n,m} (r_{nm}-W_{m}^TV_n)^2\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(E_{in}(\{W_m\},\{V_n\}) = (1/𝚺_m |D_m|)×𝚺_{n,m} (r_{nm}-W_{m}^TV_n)^2\)&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;最佳化Matrix Factorization有兩個演算法，一個是Alternating Least Squares，另外一個是SGD。&lt;/p&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
 &lt;h3&gt;Alternating Least Squares for Matrix Factorization&lt;/h3&gt;
