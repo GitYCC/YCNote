@@ -103,7 +103,7 @@ $$</div>
 f_m = tanh (i \times W_{mi} + o \times W_{mo} + B_m)
 $$</div>
 <p>
-但接下來不同於RNN直接輸出，LSTM做了一個類似於轉換成「長期記憶」的機制，「長期記憶」在這裡稱為State，State的狀態由三道門所控制，Input Gate負責控管哪些「短期記憶」可以進到「長期記憶」，Forget Gate負責調配哪一些「長期記憶」需要被遺忘，Output Gate則負責去決定需要從「長期記憶」中輸出怎樣的內容，先不要管這些Gate怎麼來，我們可以把這樣的記憶機制寫成以下的式子，假設State為f<sub>state</sub>、Input Gate為G<sub>i</sub>、Forget Gate為G<sub>f</sub>和Output Gate為G<sub>o</sub>。
+但接下來不同於RNN直接輸出，LSTM做了一個類似於轉換成「長期記憶」的機制，「長期記憶」在這裡稱為State，State的狀態由三道門所控制，Input Gate負責控管哪些「短期記憶」可以進到「長期記憶」，Forget Gate負責調配哪一些「長期記憶」需要被遺忘，Output Gate則負責去決定需要從「長期記憶」中輸出怎樣的內容，先不要管這些Gate怎麼來，我們可以把這樣的記憶機制寫成以下的式子，假設State為<span class="math">\(f_{state}\)</span>、Input Gate為<span class="math">\(G_i\)</span>、Forget Gate為<span class="math">\(G_f\)</span>和Output Gate為<span class="math">\(G_o\)</span>。
 </p>
 <div class="math">$$
 f_{state,new} = G_i \times f_m + G_f \times f_{state}

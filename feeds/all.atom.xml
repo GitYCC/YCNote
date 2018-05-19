@@ -1366,7 +1366,7 @@ $$&lt;/div&gt;
 f_m = tanh (i \times W_{mi} + o \times W_{mo} + B_m)
 $$&lt;/div&gt;
 &lt;p&gt;
-但接下來不同於RNN直接輸出，LSTM做了一個類似於轉換成「長期記憶」的機制，「長期記憶」在這裡稱為State，State的狀態由三道門所控制，Input Gate負責控管哪些「短期記憶」可以進到「長期記憶」，Forget Gate負責調配哪一些「長期記憶」需要被遺忘，Output Gate則負責去決定需要從「長期記憶」中輸出怎樣的內容，先不要管這些Gate怎麼來，我們可以把這樣的記憶機制寫成以下的式子，假設State為f&lt;sub&gt;state&lt;/sub&gt;、Input Gate為G&lt;sub&gt;i&lt;/sub&gt;、Forget Gate為G&lt;sub&gt;f&lt;/sub&gt;和Output Gate為G&lt;sub&gt;o&lt;/sub&gt;。
+但接下來不同於RNN直接輸出，LSTM做了一個類似於轉換成「長期記憶」的機制，「長期記憶」在這裡稱為State，State的狀態由三道門所控制，Input Gate負責控管哪些「短期記憶」可以進到「長期記憶」，Forget Gate負責調配哪一些「長期記憶」需要被遺忘，Output Gate則負責去決定需要從「長期記憶」中輸出怎樣的內容，先不要管這些Gate怎麼來，我們可以把這樣的記憶機制寫成以下的式子，假設State為&lt;span class="math"&gt;\(f_{state}\)&lt;/span&gt;、Input Gate為&lt;span class="math"&gt;\(G_i\)&lt;/span&gt;、Forget Gate為&lt;span class="math"&gt;\(G_f\)&lt;/span&gt;和Output Gate為&lt;span class="math"&gt;\(G_o\)&lt;/span&gt;。
 &lt;/p&gt;
 &lt;div class="math"&gt;$$
 f_{state,new} = G_i \times f_m + G_f \times f_{state}
@@ -3909,7 +3909,7 @@ test_acc = 99.10%
 &lt;p&gt;&lt;img alt="png" src="data:image/png;base64,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%0A/j+3uXalz1k0gQAAAABJRU5ErkJggg==%0A"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
 &lt;h3&gt;Mini-Batch Gradient Descent&lt;/h3&gt;
-&lt;p&gt;在上一回當中，我們的Gradient Descent採用的是將所有的Data一次全考慮進去，評估完所有的Data在一次性的更新權重參數，這樣的作法好處是比較穩定，因為我考慮的是真正的Training Set的E&lt;sub&gt;in&lt;/sub&gt;，但缺點就是計算時間長，因為要考慮所有Training Set的每筆數據，需要做大矩陣的計算，而且通常Training Set的數據量也不可以太小，這麼一來計算時間就會拉的很長。&lt;/p&gt;
+&lt;p&gt;在上一回當中，我們的Gradient Descent採用的是將所有的Data一次全考慮進去，評估完所有的Data在一次性的更新權重參數，這樣的作法好處是比較穩定，因為我考慮的是真正的Training Set的&lt;span class="math"&gt;\(E_{in}\)&lt;/span&gt;，但缺點就是計算時間長，因為要考慮所有Training Set的每筆數據，需要做大矩陣的計算，而且通常Training Set的數據量也不可以太小，這麼一來計算時間就會拉的很長。&lt;/p&gt;
 &lt;p&gt;因此，有另外一種作法一次只考慮「一筆」數據，使用一筆數據來評估並更新權重參數，每一筆雖然更新結果都不怎麼準確，但是當我隨著時間看過整個Training Set後，就會有平均的效果，所以最後只要Learning Rate不要太大，最後的結果還是可以朝向最佳解的，這個手法會使得Gradient Descent具有隨機性，因此又被稱為Stochastic Gradient Descent，它所帶來的優點是計算時間變短了，我們將可以避免去涉及大矩陣的運算，但缺點是一次只評估一筆數據，將會非常的不穩定。&lt;/p&gt;
 &lt;p&gt;另外還有一種介於Gradient Descent和Stochastic Gradient Descent之間的作法，稱之為Mini-Batch Gradient Descent，它不像Stochastic Gradient Descent那麼極端，一次只評估一組Data，Mini-Batch Gradient Descent一次評估k組數據，並更新參數W，這是相當好的折衷方案，平衡計算時間和更新穩定度，而且在某些情形下，計算時間還比Stochastic Gradient Descent還快，為什麼呢？GPU的架構設計是非常有利於矩陣計算的，因為GPU會利用它強大的平行化將矩陣運算中每個元素平行計算，可以大大增進效率，所以如果一次只算一筆資料，反而是沒有利用到GPU的效率，所以如果你用GPU計算的話，依照你的GPU去設計適當的k值做Mini-Batch Gradient Descent，這個k值不要超過GPU平行計算所能容納的最大上限，這是個既有效率又更為穩定的作法，順道一提Tensorflow是可以支援GPU的計算的。&lt;/p&gt;
 &lt;p&gt;實務經驗告訴我們Mini-Batch Gradient Descent雖然穩定性比Gradient Descent差，但是收斂的速度卻一點都不輸給Gradient Descent，原因就出在更新的次數，Mini-Batch Gradient Descent一次看的數據筆數比較少，所以Mini-Batch一個Epoch可以更新參數好幾次，而Gradient Descent卻只能更新一次，Mini-Batch的靈敏性，使得它的收斂速度更為快速。打個比方，就好像是兩艘船在搜尋小島，Gradient Descent像是巡洋艦，它有更好設備可以有更好的觀測能力，但是因為它的笨重造成它反應不夠靈敏，Mini-Batch Gradient Descent就像是小船一樣，雖然觀測設備沒這麼好，但是反應靈敏，卻是可以更容易率先找到小島。&lt;/p&gt;
@@ -4250,7 +4250,62 @@ test_acc = 92.02%
 &lt;em&gt; 調整Dropout Ratio
 &lt;/em&gt; 選擇不同Optimizer
 * 使得DNN更深&lt;/p&gt;
-&lt;p&gt;調整Model是重要的工作，試著自己動手做做看，你可以讓你的Model有多準呢？&lt;/p&gt;</content><category term="Tensorflow"></category></entry><entry><title>實作Tensorflow (1)：Simple Logistic Classification on MNIST</title><link href="YCNote/tensorflow-tutorial_1.html" rel="alternate"></link><published>2017-10-23T12:00:00+08:00</published><updated>2017-10-23T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-10-23:YCNote/tensorflow-tutorial_1.html</id><summary type="html">&lt;p&gt;初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。&lt;/p&gt;
+&lt;p&gt;調整Model是重要的工作，試著自己動手做做看，你可以讓你的Model有多準呢？&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="Tensorflow"></category></entry><entry><title>實作Tensorflow (1)：Simple Logistic Classification on MNIST</title><link href="YCNote/tensorflow-tutorial_1.html" rel="alternate"></link><published>2017-10-23T12:00:00+08:00</published><updated>2017-10-23T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-10-23:YCNote/tensorflow-tutorial_1.html</id><summary type="html">&lt;p&gt;初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。&lt;/p&gt;
 &lt;p&gt;本單元程式碼可於&lt;a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/01_simple_logistic_classification_on_MNIST.py"&gt;Github&lt;/a&gt;下載。&lt;/p&gt;
 &lt;h3&gt;MNIST Dataset&lt;/h3&gt;
 &lt;p&gt;首先，先&lt;code&gt;import&lt;/code&gt;一些會用到的function，並且定義&lt;code&gt;summary&lt;/code&gt; function以便於觀察ndarray。&lt;/p&gt;
@@ -4444,8 +4499,11 @@ Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
 
 &lt;h3&gt;Cross-Entropy Loss&lt;/h3&gt;
 &lt;p&gt;一旦我們要處理機率預測的問題，就不可以使用單純的「平方誤差」，而必須使用Cross-Entropy Loss，是這樣計算的：&lt;/p&gt;
-&lt;p&gt;Cross-Entropy Loss = -𝚺&lt;sub&gt;i&lt;/sub&gt; y&lt;sub&gt;i&lt;/sub&gt; ln[ s&lt;sub&gt;i&lt;/sub&gt; ]&lt;/p&gt;
-&lt;p&gt;其中，y&lt;sub&gt;i&lt;/sub&gt;為目標Label，s&lt;sub&gt;i&lt;/sub&gt;為經過Softmax產生的預測值。&lt;/p&gt;
+&lt;div class="math"&gt;$$
+Loss_{cross-entropy} = - \sum_i y_i ln(s_i)
+$$&lt;/div&gt;
+&lt;p&gt;
+其中，&lt;span class="math"&gt;\(y_i\)&lt;/span&gt;為目標Label，&lt;span class="math"&gt;\(s_i\)&lt;/span&gt;為經過Softmax產生的預測值。&lt;/p&gt;
 &lt;p&gt;至於如果你想要了解為何需要使用Cross-Entropy Loss？這我在機器學習基石的筆記中已經有提及過，請看&lt;a href="http://www.ycc.idv.tw/YCNote/post/27"&gt;介紹Logistic Regression的部分&lt;/a&gt;。&lt;/p&gt;
 &lt;h3&gt;分離數據的重要性&lt;/h3&gt;
 &lt;p&gt;在MNIST Dataset中，你會發現分為Training Dataset、Validation Dataset和Testing Dataset，這樣的作法在Machine Learning中是常見且必要的。&lt;/p&gt;
@@ -4735,7 +4793,64 @@ Epoch  9/10:
 Epoch 10/10: 
  loss =   4.7012, acc = 33.06%, val_loss =   4.6681, val_acc = 32.52%
 test_acc = 32.77%
-&lt;/pre&gt;&lt;/div&gt;</content><category term="Tensorflow"></category></entry><entry><title>股票策略：移動停損法</title><link href="YCNote/stock-sell-point.html" rel="alternate"></link><published>2017-09-05T12:00:00+08:00</published><updated>2017-09-05T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-09-05:YCNote/stock-sell-point.html</id><summary type="html">&lt;p&gt;最近在研究股票，在網路上看到這篇文章&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="Tensorflow"></category></entry><entry><title>股票策略：移動停損法</title><link href="YCNote/stock-sell-point.html" rel="alternate"></link><published>2017-09-05T12:00:00+08:00</published><updated>2017-09-05T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-09-05:YCNote/stock-sell-point.html</id><summary type="html">&lt;p&gt;最近在研究股票，在網路上看到這篇文章&lt;/p&gt;
 &lt;p&gt;https://m.mobile01.com/topicdetail.php?f=291&amp;amp;t=3065829&amp;amp;p=1&lt;/p&gt;
 &lt;p&gt;覺得相當實用，在這邊跟大家分享，並且當作給自己參考的筆記。&lt;/p&gt;
 &lt;p&gt;一般我們常常說玩股票要做好風險管理，最廣為人知的就是設停損點，假設今天我以20元買入一張股票，假如停損比率設10%好了，那我的停損點就是18元，股票一到這個價位就忍痛賣出，以做到風險管理，避免自己大賠。&lt;/p&gt;
@@ -5131,22 +5246,76 @@ H = F + G&amp;quot;
 &lt;h3&gt;Radial Basis Function (RBF) Network&lt;/h3&gt;
 &lt;p&gt;回顧一下Gaussian Kernel SVM，&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;W = 𝚺&lt;sub&gt;n=sv&lt;/sub&gt; α&lt;sub&gt;n&lt;/sub&gt;y&lt;sub&gt;n&lt;/sub&gt;Z&lt;sub&gt;n&lt;/sub&gt;  &lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;G&lt;sub&gt;SVM&lt;/sub&gt;   &lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;= sign[WZ+b] &lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;= sign{[𝚺&lt;sub&gt;n=sv&lt;/sub&gt;α&lt;sub&gt;n&lt;/sub&gt;y&lt;sub&gt;n&lt;/sub&gt;K(X&lt;sub&gt;n&lt;/sub&gt;,X)]+b} &lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;⇒ G&lt;sub&gt;SVM&lt;/sub&gt; = sign{[𝚺&lt;sub&gt;n=sv&lt;/sub&gt;α&lt;sub&gt;n …&lt;/sub&gt;&lt;/p&gt;&lt;/blockquote&gt;</summary><content type="html">&lt;blockquote&gt;
+&lt;p&gt;$W = 𝚺_{n=sv}  α_n y_n Z_n  $&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(G_{SVM}\)&lt;/span&gt;   &lt;br/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(= sign[WZ+b]\)&lt;/span&gt; &lt;br/&gt;&lt;/p&gt;
+&lt;p&gt;$= sign{[𝚺_{n=sv} α_n y_n K(X_n,X)]+b} $ &lt;br/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(⇒ G_{SVM} = sign{[𝚺_{n=sv} α_n y_n exp(-γ |X-X_n …&lt;/span&gt;&lt;/p&gt;&lt;/blockquote&gt;&lt;script type='text/javascript'&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><content type="html">&lt;blockquote&gt;
 &lt;p&gt;本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
 &lt;h3&gt;Radial Basis Function (RBF) Network&lt;/h3&gt;
 &lt;p&gt;回顧一下Gaussian Kernel SVM，&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;W = 𝚺&lt;sub&gt;n=sv&lt;/sub&gt; α&lt;sub&gt;n&lt;/sub&gt;y&lt;sub&gt;n&lt;/sub&gt;Z&lt;sub&gt;n&lt;/sub&gt;  &lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;G&lt;sub&gt;SVM&lt;/sub&gt;   &lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;= sign[WZ+b] &lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;= sign{[𝚺&lt;sub&gt;n=sv&lt;/sub&gt;α&lt;sub&gt;n&lt;/sub&gt;y&lt;sub&gt;n&lt;/sub&gt;K(X&lt;sub&gt;n&lt;/sub&gt;,X)]+b} &lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;⇒ G&lt;sub&gt;SVM&lt;/sub&gt; = sign{[𝚺&lt;sub&gt;n=sv&lt;/sub&gt;α&lt;sub&gt;n&lt;/sub&gt;y&lt;sub&gt;n&lt;/sub&gt;exp(-γ|X-X&lt;sub&gt;n&lt;/sub&gt;|&lt;sup&gt;2&lt;/sup&gt;)]+b} &lt;br/&gt;&lt;/p&gt;
+&lt;p&gt;$W = 𝚺_{n=sv}  α_n y_n Z_n  $&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(G_{SVM}\)&lt;/span&gt;   &lt;br/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(= sign[WZ+b]\)&lt;/span&gt; &lt;br/&gt;&lt;/p&gt;
+&lt;p&gt;$= sign{[𝚺_{n=sv} α_n y_n K(X_n,X)]+b} $ &lt;br/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(⇒ G_{SVM} = sign{[𝚺_{n=sv} α_n y_n exp(-γ |X-X_n|^2)]+b}\)&lt;/span&gt; &lt;br/&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;看到這個式子你想到了什麼？有沒有融會貫通的感覺，你同樣的可以把上面的式子看成是Aggregation，又或者是Network。&lt;/p&gt;
 &lt;p&gt;先來定義一下RBF Function， 其實就是Gaussian Function，&lt;/p&gt;
@@ -5217,7 +5386,62 @@ H = F + G&amp;quot;
 &lt;p&gt;Matrix Factorization和Autoencoder有點類似，Autoencoder目標在於找出隱含在Data裡的特性，而Matrix Factorization則是找出隱含的匹配關係，並且介紹了兩種Matrix Factorization的演算法：Alternating Least Squares和SGD方法。&lt;/p&gt;
 &lt;p&gt;這系列的介紹文章，到這裡算是走到尾聲了，最後跟大家推薦一下老師的最後一堂課的投影片：&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/216_handout.pdf"&gt;https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/216_handout.pdf&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;這個投影片裡頭林軒田教授用心的彙整了一整個學期的內容，很值得一看。&lt;/p&gt;</content><category term="機器學習技法"></category></entry><entry><title>機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</title><link href="YCNote/ml-course-techniques_6.html" rel="alternate"></link><published>2017-04-17T12:00:00+08:00</published><updated>2017-04-17T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-04-17:YCNote/ml-course-techniques_6.html</id><summary type="html">&lt;blockquote&gt;
+&lt;p&gt;這個投影片裡頭林軒田教授用心的彙整了一整個學期的內容，很值得一看。&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="機器學習技法"></category></entry><entry><title>機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</title><link href="YCNote/ml-course-techniques_6.html" rel="alternate"></link><published>2017-04-17T12:00:00+08:00</published><updated>2017-04-17T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-04-17:YCNote/ml-course-techniques_6.html</id><summary type="html">&lt;blockquote&gt;
 &lt;p&gt;本篇內容涵蓋神經網路(Neural Network, NN)、深度學習(Deep Learning, DL)、反向傳播算法(Backpropagation, BP)、Weight-elimination Regularizer、Early Stop、Autoencoder、Principal Component Analysis (PCA)。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
