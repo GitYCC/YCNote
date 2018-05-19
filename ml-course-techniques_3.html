@@ -81,7 +81,7 @@
 <p>在上一篇當中我們看到了Kernel Trick的強大，我們繼續運用這個數學工具在其他的Regression上看看。</p>
 <p><br/></p>
 <h3>Soft-Margin SVM其實很像L2 Regularized Logistic Regression</h3>
-<p>上一篇中提到的Soft-Margin SVM其實很像<a href="http://www.ycc.idv.tw/tag__筆記：機器學習基石/">《機器學習基石》</a>裡頭提到的L2 Regularized Logistic Regression，如果你還記得的話，Logistic Regression是為了因應雜訊而給予每筆資料的描述賦予「機率」的性質，讓Model在看Data的時候不那麼的非黑及白，那時候有提到這叫做Soft Classification，而這個概念就非常接近於Soft-Margin的概念。</p>
+<p>上一篇中提到的Soft-Margin SVM其實很像<a href="https://gitycc.github.io/YCNote/tag/ji-qi-xue-xi-ji-shi.html">《機器學習基石》</a>裡頭提到的L2 Regularized Logistic Regression，如果你還記得的話，Logistic Regression是為了因應雜訊而給予每筆資料的描述賦予「機率」的性質，讓Model在看Data的時候不那麼的非黑及白，那時候有提到這叫做Soft Classification，而這個概念就非常接近於Soft-Margin的概念。</p>
 <p>從數學式來看會更清楚，</p>
 <blockquote>
 <p>Soft-Margin SVM：<br/></p>
@@ -101,7 +101,7 @@
 </blockquote>
 <p>你會發現Soft-Margin SVM和L2 Regularized Logistic Regression兩個式子的形式是很接近的，都有W<sup>T</sup>W這一項，只是意義上不同，在Soft-Margin SVM裡頭W<sup>T</sup>W所代表的是反比於空白區大小距離的函式，而在L2 Regularized Logistic Regression裡頭則是指Regularization。</p>
 <p>另外，我們來疊一下Err<sub>hinge,n</sub>和Err<sub>ce,n</sub>來看看這兩個函數像不像，</p>
-<p><img alt="compare:hinge and ce" src="https://dl.dropbox.com/s/qg2gyf8646cp3jh/MachineLearningTechniques.000_03.png"></p>
+<p><img alt="compare:hinge and ce" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_03.png"></p>
 <p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf</a></p>
 <p><strong>Err<sub>hinge,n</sub>和Err<sub>ce,n</sub>是非常接近的，所以我們可以說做Soft-Margin SVM，很像是在做L2 Regularized Logistic Regression。</strong></p>
 <p><strong>雖然說Soft-Margin SVM和L2 Regularized Logistic Regression非常的像，但是我在做完Soft-Margin SVM後，仍然沒辦法像Logistic Regression一樣得到一個具有機率分布的Target Function，以下提供了兩種方法，第一種是間接的方法，使用兩階段學習來達成Logistic的效果；第二種是直接將L2 Regularized Logistic Regression加入有如Soft-Margin SVM的Kernel性質。</strong></p>
@@ -133,7 +133,7 @@
 <p>其中W可以想成是由Z<sub>n</sub>所組合而成的，而決定貢獻程度則反應在放在它前面的係數(α<sub>n</sub>y<sub>n</sub>)，y<sub>n</sub>決定貢獻的方向，α<sub>n</sub>決定影響的程度。</p>
 <p><strong>數學上，有個理論Representer Theorem可以告訴我們，所有的最佳化問題中，W的最佳解都是由Z<sub>n</sub>所組合而成的，以線性代數的角度，就是W由Z<sub>n</sub>所展開(span)，數學上表示成W*=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>。</strong></p>
 <p>這個性質為Kernel Trick提供了一個良好的基礎，每次我們只要遇到W*<sup>T</sup>Z的部分，我們就可以使用Representer Theorem把問題轉換成W*<sup>T</sup>Z=𝚺<sub>n</sub> β<sub>n</sub>Z<sub>n</sub>Z=𝚺<sub>n</sub> β<sub>n</sub>K(X<sub>n</sub>,X)，就可以使用Kernel Function了。</p>
-<p><img alt="kernel trick" src="https://dl.dropbox.com/s/zba8381572jub0r/MachineLearningTechniques.000_04.png"></p>
+<p><img alt="kernel trick" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_04.png"></p>
 <p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/205_handout.pdf</a></p>
 <p>上圖是老師在上課時列出來SVM、PLA和Logistic Regression的W的展開式，你會發現都可以表現成Representer Theorem的形式。</p>
 <p>有了這個概念，我們就可以把很多問題都利用Representer Theorem來轉換，並且套上Kernel Trick。</p>
@@ -180,7 +180,7 @@
 <p>其實，不管是Kernel Logistic Regression還是Kernel Ridge Regression，這種直接套用Representer Theorem在Regression上的都有一個缺點。</p>
 <p>那就是它們的<strong>β<sub>n</sub>並不確保大多數是0</strong>，如果Data筆數非常多的話，這在計算上會是一種負荷。在之前我們討論Kernel SVM時有提到只有Support Vector的數據才會對Model最後的結果有所貢獻，Support Vector的α<sub>n</sub>&gt;0；而不是Support Vector的數據則沒有貢獻，Non-Support Vector的α<sub>n</sub>=0。所以你可以想見的是，<strong>α<sub>n</sub>大多數是0除了Support Vector外，我們稱這叫做「Sparse α<sub>n</sub>」性質</strong>，有這樣的性質可以大大的減少計算量。</p>
 <p>因此接下來我們打算<strong>讓Regression具有Support Vector的性質，稱之為Support Vector Regression (SVR)</strong>。</p>
-<p><img alt="SVR" src="https://dl.dropbox.com/s/76wyl84tdhj9r7a/MachineLearningTechniques.006.jpeg"></p>
+<p><img alt="SVR" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.006.jpeg"></p>
 <p>見上圖說明，Support Vector Regression簡稱SVR，以往的Linear Regression是求一條擬合直線能使所有數據點到直線的Error最小，而現在我們賦予它Soft-Margin的能力，<strong>SVR將擬合直線向外擴張距離ε，在這個擴張的區域裡頭的數據點不去計算它的Error，只有在超出距離ε外的才去計算Error</strong>，此時這個擬合直線有點像一條水管，水管外我們才計算Error，所以又稱之為Tube Regression。</p>
 <p>這個概念和Soft-Margin SVM有點像，都是在邊界給予犯錯的機會，不同的是Soft-Margin SVM因為是分類問題，所以不允許錯誤的數據超過界，所以評估Error的方向是向內的，而SVR是向外評估Error，超出水管之上的Error我們記作ξ<sub>n</sub><sup>⋀</sup>，低於水管之下的Error我們記作ξ<sub>n</sub><sup>⋁</sup>，<strong>所以SVR的目的就是在Regularization之下使得ξ<sub>n</sub><sup>⋀</sup>+ξ<sub>n</sub><sup>⋁</sup>最小，並且調整距離ε和C來決定對Error的容忍程度</strong>。</p>
 <p>這個問題同樣的可以化作Dual問題，問題變成只需要最佳化α<sub>n</sub><sup>⋀</sup>和α<sub>n</sub><sup>⋁</sup>，再使用最佳化後的α<sub>n</sub><sup>⋀</sup>和α<sub>n</sub><sup>⋁</sup>就可以得到W和b。其中W=𝚺<sub>n</sub> (α<sub>n</sub><sup>⋀</sup>-α<sub>n</sub><sup>⋁</sup>) Z<sub>n</sub>這式子裡頭隱含著Representer Theorem，每筆數據的貢獻程度β<sub>n</sub>=(α<sub>n</sub><sup>⋀</sup>-α<sub>n</sub><sup>⋁</sup>)，<strong>因此在管子內的α<sub>n</sub><sup>⋀</sup>=0且α<sub>n</sub><sup>⋁</sup>=0，不會有所貢獻，這使得SVR具有Sparse的性質，可以大大的減少計算</strong>。</p>

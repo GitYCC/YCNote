@@ -87,7 +87,7 @@
 <h5><u>綜觀Aggregation Models</u></h5>
 <p>如果今天我有很多支的Model，我有辦法融合他們得到更好的效果嗎？</p>
 <p>這就是Aggregation Models的精髓，Aggregation Models藉由類似於投票的方法綜合各個子Models的結果得到效果更好的Model。換個角度看，你可以把整個體系看成一個新的Model，而原本這些子Models當作轉換過後的新Features，<strong>所以Aggregation Model裡頭做了「特徵轉換」，這個特徵轉換產生出許多有預測答案能力的Features，稱為Predictive Features，然後再綜合它們得到最後的Model</strong>。</p>
-<p><img alt="Aggregation Models" src="https://dl.dropbox.com/s/ibdowsfjwy0z7zm/MachineLearningTechniques.007.jpeg"></p>
+<p><img alt="Aggregation Models" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.007.jpeg"></p>
 <p>Aggregation Models可以分成兩大類，第一種的作法比較簡單，先Train出一個一個獨立的Predictive Features，然後在綜合它們，<strong>「集合」的動作是發生在得到Train好的Predictive Feature之後，這叫做「Blending Models」</strong>；第二種作法則是，<strong>「集合」的動作和Training同步進行，這叫做「Aggregation-Learning Models」</strong>，Aggregation-Learning Models有一個特殊的例子叫做Boost，翻開字典查Boost的意思是「促進」，在這邊的意義是<strong>假設在Training過程所產生的Predictive Feature朝著改善Model的方向前進就叫做Boost</strong>。</p>
 <p>從「集合 …</p></dd>
                 <dt>2017 / 3月 24</dt>
@@ -122,7 +122,7 @@
 <p>在上一篇當中我們看到了Kernel Trick的強大，我們繼續運用這個數學工具在其他的Regression上看看。</p>
 <p><br/></p>
 <h5><u>Soft-Margin SVM其實很像L2 Regularized Logistic Regression</u></h5>
-<p>上一篇中提到的Soft-Margin SVM其實很像<a href="http://www.ycc.idv.tw/tag__筆記：機器學習基石/">《機器學習基石》</a>裡頭提到的L2 Regularized Logistic Regression，如果你還記得的話，Logistic Regression是為了因應雜訊而給予每筆資料的描述賦予「機率」的性質，讓Model在看Data的時候不那麼的非黑及白，那時候有提到這叫做Soft Classification，而這個概念就非常接近於Soft-Margin的概念。</p>
+<p>上一篇中提到的Soft-Margin SVM其實很像<a href="https://gitycc.github.io/YCNote/tag/ji-qi-xue-xi-ji-shi.html">《機器學習基石》</a>裡頭提到的L2 Regularized Logistic Regression，如果你還記得的話，Logistic Regression是為了因應雜訊而給予每筆資料的描述賦予「機率」的性質，讓Model在看Data的時候不那麼的非黑及白，那時候有提到這叫做Soft Classification，而這個概念就非常接近於Soft-Margin的概念。</p>
 <p>從數學式來看會更清楚，</p>
 <blockquote>
 <p>Soft-Margin SVM：<br/></p>
@@ -132,7 +132,7 @@
                 <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
 <p>本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem。</p>
 </blockquote>
-<p>在<a href="http://www.ycc.idv.tw/YCNote/post/29">上一篇文章</a>當中，我們掃過了《機器學習技法》 將會包含的內容，今天我們正式來看SVM。</p>
+<p>在<a href="http://www.ycc.idv.tw/ml-course-techniques_1.html">上一篇文章</a>當中，我們掃過了《機器學習技法》 將會包含的內容，今天我們正式來看SVM。</p>
 <p>如果我想要使用無窮次高次方的非線性轉換加入我的Model，可以做到嗎？上一篇，我告訴大家，只要使用Dual Transformation加上Kernel Function等數學技巧就可以做到，我們今天就來看一下這是怎麼一回事。</p>
 <p>本篇文章分為兩個部分，第一部分我盡量不牽扯太多數學計算，而將數學證明放在第二個部分，數學證明的部分非常複雜，但我並不打算把它們忽略掉，因為這些數學計算是相當重要的，它所帶來的方法和概念是可以重複使用的，也有助於你了解和創造其他演算法，所以有心想要成為專家的你請耐心的把後半段的數學看完。</p>
 <p><br/></p>
@@ -140,7 +140,7 @@
                 <dt>2017 / 1月 12</dt>
                 <dd><a href="./ml-course-techniques_1.html">機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹</a></dd>
                 <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>在之前四篇文章中，我總結了台大教授林軒田在Coursera上的《機器學習基石》16堂課程，我覺得這是機器學習初學很重要的基礎課程，接下來我要接續更進階的課程。</p>
-<p>林軒田教授的機器學習是兩學期的課，第一學期是《機器學習基石》，第二學期就是接下來這個系列要講的《機器學習技法》，這兩堂課程是有相當大的銜接關係的，所以如果想看這系列的文章，請先看<a href="http://www.ycc.idv.tw/tag__筆記：機器學習基石/">這四篇《機器學習基石》的介紹</a>或者<a href="https://www.coursera.org/learn/ntumlone-mathematicalfoundations">直接到Coursera上學習</a>。</p>
+<p>林軒田教授的機器學習是兩學期的課，第一學期是《機器學習基石》，第二學期就是接下來這個系列要講的《機器學習技法》，這兩堂課程是有相當大的銜接關係的，所以如果想看這系列的文章，請先看<a href="http://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">這四篇《機器學習基石》的介紹</a>或者<a href="https://www.coursera.org/learn/ntumlone-mathematicalfoundations">直接到Coursera上學習</a>。</p>
 <p>《機器學習技法》課程影片可以到老師的Youtube [ <a href="https://www.youtube.com/playlist?list=PLXVfgk9fNX2IQOYPmqjqWsNUFl2kpk1U2">https://www.youtube.com/playlist?list=PLXVfgk9fNX2IQOYPmqjqWsNUFl2kpk1U2</a> ]上收看，投影片可以到老師的個人網站上下載 [ <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/</a> ]。</p>
 <p>以前，我曾經和實驗室的英國學長聊英國的教育方法，然後我驚人的發現，他的學校在大一就已經學過量子場論（物理上很難的學科XDD）了，我就很好奇量子場論不是需要很深厚的數學基礎嗎？大一是要怎麼教啊？他告訴我，他們大一就會完整走過物理的各大領域，不過是用非常概念的方式來學習 …</p></dd>
                 <dt>2016 / 9月 18</dt>
@@ -149,7 +149,7 @@
 <p>在上一回中，我們已經了解了機器學習基本的操作該怎麼做。而這一篇中，我們來看<strong>機器可以怎麼學得更好?</strong> 基本上有三招：Feature Transformation（特徵轉換）、Regularization（正規化）和Validation（驗證），我們來看看。</p>
 <p><br/></p>
 <h5><u>Feature Transformation（特徵轉換）</u></h5>
-<p><img alt="ML" src="https://dl.dropbox.com/s/vutayryjaw27ckp/MachineLearningFoundations.013.jpeg"></p>
+<p><img alt="ML" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.013.jpeg"></p>
 <p>在上一回當中我們講了很多的線性模型，大家有沒有懷疑說，數據呈現的方式一定可以用線性描述嗎？我的答案是通常線性描述會表現不錯，但不是絕對，<strong>那我們怎麼用非線性的方法來描述我們的數據，這邊提供一個方法叫做「非線性轉換」，或者又稱為「特徵轉換」（還記得變數x又可以稱為特徵Features）</strong>，聽起來有點困難齁～其實不會啦！</p>
 <p>假設今天你的Data分布是圓圈狀的分布，顯而易見的你很難用一條線去區分他們，那我們應該怎麼做呢？假設今天有一個轉換可以把這個圓圈狀分布的空間轉換到另外一個空間，在這個新的空間可以做到線性可分，這樣的問題不就解決了嗎，我們會做線性可分的問題啊！</p>
 <p>這個轉換就叫做「非線性轉換」，那這個轉換要怎麼得到呢？可以用人為定義，譬如你知道這個空間的分布狀況是圓圈分布，記作 </p>

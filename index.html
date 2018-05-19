@@ -76,7 +76,7 @@
                 <dt>2018 / 4月 14</dt>
                 <dd><a href="./introduction-object-oriented-programming_3.html">物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID</a></dd>
                 <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>物件導向怎麼用才能成就好的程式碼？</u></h5>
-<p>一個好的工具，也要配合對於工具的理解，才能發揮效用。<a href="http://www.ycc.idv.tw/YCNote/post/48">在上一回中</a>，我們完整介紹了Java和Python的物件導向實現方式，我們講到了「封裝」、「繼承」、「多型」等等物件導向的特色，也講了「抽象類別」、「接口」等抽象化的方法，不過我並沒有告訴大家該怎麼用這些工具？使用這些工具是不是有什麼樣的法則？</p>
+<p>一個好的工具，也要配合對於工具的理解，才能發揮效用。<a href="http://www.ycc.idv.tw/introduction-object-oriented-programming_2.html">在上一回中</a>，我們完整介紹了Java和Python的物件導向實現方式，我們講到了「封裝」、「繼承」、「多型」等等物件導向的特色，也講了「抽象類別」、「接口」等抽象化的方法，不過我並沒有告訴大家該怎麼用這些工具？使用這些工具是不是有什麼樣的法則？</p>
 <p>在接下來的這一篇，我將會介紹物件導向的使用方式，我會提到物件導向著名的六大法則：</p>
 <ol>
 <li>單一職責原理</li>
@@ -106,7 +106,7 @@
                 <dt>2018 / 4月 10</dt>
                 <dd><a href="./introduction-object-oriented-programming_2.html">物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹</a></dd>
                 <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>物件導向編程</u></h5>
-<p><a href="http://www.ycc.idv.tw/YCNote/post/47">在上一章當中</a>，我們藉由好的程式碼的特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，自然而然引出物件導向的概念。在這一章當中YC會接續介紹完整的物件導向要如何實現，包括物件導向三大特性：封裝、繼承和多型。</p>
+<p><a href="http://www.ycc.idv.tw/introduction-object-oriented-programming_1.html">在上一章當中</a>，我們藉由好的程式碼的特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，自然而然引出物件導向的概念。在這一章當中YC會接續介紹完整的物件導向要如何實現，包括物件導向三大特性：封裝、繼承和多型。</p>
 <p>在本章我會採用兩種語言交叉作說明，一種是靜態型別的語言Java，另一種是動態型別的語言Python，這兩種語言都是可以實現物件導向的語言，而所謂型別的動態與靜態可以用一個簡單的方法來區分：型別檢查(Type Checking)發生在什麼時候？像Java這類的靜態型別語言，它的型別檢查是在編譯時期(Compile Time)完成的，而像是Python這類的動態型別語言，它的型別檢查則是在執行時期(Runtime)才去做，所以Python可以不事先宣告變數型別，這點使得Python在開發上方便許多。</p>
 <p>雖然Python和Java都是支援物件導向的語言，但在使用上有很大的差異，首先，因為Python的動態型別，所以有些物件導向的性質對它來說就不是那麼重要，另外，因為Python追求簡潔，簡化了相當多的東西，所以很多的使用方法不同於傳統的物件導向，需要認識到這些差異才可以讓你使用Python的物件導向不會顯得很彆扭。Java是一套對物件導向支援非常完整的語言，而Python是一套易於快速開發的語言，使用兩種語言說明物件導向是為了讓讀者更能了解物件導向的本質，而非語言本身。</p>
 <p>本篇採用『<a href="https://www.tenlong.com.tw/products/9789866761799">大話設計模式</a>』書中的物件導向篇範例 …</p></dd>
@@ -208,7 +208,7 @@ $$</div>
 <p>本單元程式碼Autoencoder部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/04_1_Autoencoder_on_MNIST.py">Github</a>下載，De-noise Autoencoder部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/04_2_DenoiseAutoencoder_on_MNIST.py">Github</a>下載。</p>
 <p><br/></p>
 <h5><u>Autoencoder觀念解析</u></h5>
-<p>在「機器學習技法」的系列文章，我也<a href="http://www.ycc.idv.tw/YCNote/post/35">曾經介紹過Autoencoder</a>，可以搭配這篇服用。</p>
+<p>在「機器學習技法」的系列文章，我也<a href="http://www.ycc.idv.tw/tensorflow-tutorial_4.html">曾經介紹過Autoencoder</a>，可以搭配這篇服用。</p>
 <p>Autoencoder概念很簡單，就是做資訊的壓縮，概念是這樣的，當我在一層當中使用神經元愈多，可以儲存的資訊量也就愈多，相反的神經元越少，可以儲存的資訊量越少，如果我要使用Neurel Network作資料壓縮的話，我希望的是可以使用比原本更少的資訊量來儲存，如果原本是一張MNIST的圖，有28x28=784個Pixels，所以可以想知，如果我要作壓縮就要使得壓縮後的神經元可以比784個更少。</p>
 <p>但是什麼都不做我們就可以平白無故的做到壓縮？當然不行，我們還得從資料中找到一些規律，套用這些規律把多餘的東西去除，留下精髓，我們才可以把資料作壓縮，所以在實作上我們會建立一個神經元由大到小的Neurel Network，逐步的轉換，逐步的壓縮資訊。</p>
 <p>那麼壓縮的目的是為了什麼？當然是有辦法還原回去原本狀態，這樣的壓縮才是有意義的，例如：將文檔打包成RAR，檔案大小會變小，但如果實際要再使用這個檔案 …</p></dd>

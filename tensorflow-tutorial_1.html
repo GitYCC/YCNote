@@ -261,7 +261,7 @@ Loss_{cross-entropy} = - \sum_i y_i ln(s_i)
 $$</div>
 <p>
 其中，<span class="math">\(y_i\)</span>為目標Label，<span class="math">\(s_i\)</span>為經過Softmax產生的預測值。</p>
-<p>至於如果你想要了解為何需要使用Cross-Entropy Loss？這我在機器學習基石的筆記中已經有提及過，請看<a href="http://www.ycc.idv.tw/YCNote/post/27">介紹Logistic Regression的部分</a>。</p>
+<p>至於如果你想要了解為何需要使用Cross-Entropy Loss？這我在機器學習基石的筆記中已經有提及過，請看<a href="http://www.ycc.idv.tw/ml-course-foundations_3.html">介紹Logistic Regression的部分</a>。</p>
 <h3>分離數據的重要性</h3>
 <p>在MNIST Dataset中，你會發現分為Training Dataset、Validation Dataset和Testing Dataset，這樣的作法在Machine Learning中是常見且必要的。</p>
 <p>流程是這樣的，我們會先使用Training Dataset來訓練Model，並且使用Validation Dataset來檢驗Model的好壞，我們會依據Validation Dataset的檢驗調整Model上的參數，試著盡可能的壓低Validation Dataset的Error，記住！在過程中所產生的所有Models都要保留下來，因為最後選擇的Model並不是Validation Dataset的Error最小的，而是要再由Testing Dataset來做最後的挑選，挑選出能使Testing Dataset的Error最小的Model。</p>

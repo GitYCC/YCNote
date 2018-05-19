@@ -75,11 +75,11 @@
 
         <!-- Content -->
     <div class="container content">
-        <p>接續著<a href="http://www.ycc.idv.tw/YCNote/post/38">上一回</a>，我們已經有一個單層的Neurel Network，緊接著我們來試著一步一步改造它，讓它成為我們常使用的Deep Neurel Network的形式。</p>
+        <p>接續著<a href="http://www.ycc.idv.tw/tensorflow-tutorial_1.html">上一回</a>，我們已經有一個單層的Neurel Network，緊接著我們來試著一步一步改造它，讓它成為我們常使用的Deep Neurel Network的形式。</p>
 <p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py">Github</a>下載。</p>
 <p><br/></p>
 <h3>增加Hidden Layer</h3>
-<p>在上一回當中，我們只有一層Neurel Network，也就是做完一個線性轉換後，就直接使用Softmax Layer來轉換成機率表示方式，這樣的結構並不夠powerful，我們需要把它的結構弄的又窄又深，這樣效果才會好，詳細原因請參考<a href="http://www.ycc.idv.tw/YCNote/post/35">這一篇的介紹</a>。</p>
+<p>在上一回當中，我們只有一層Neurel Network，也就是做完一個線性轉換後，就直接使用Softmax Layer來轉換成機率表示方式，這樣的結構並不夠powerful，我們需要把它的結構弄的又窄又深，這樣效果才會好，詳細原因請參考<a href="http://www.ycc.idv.tw/ml-course-techniques_6.html">這一篇的介紹</a>。</p>
 <p>因此，我們來試著加入一層Hidden Layer，來打造成兩層的Neurel Network，並在兩層之間加入Activation Function，為我的Model增加非線性因子。</p>
 <div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">features</span><span class="p">,</span><span class="n">labels</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">,</span><span class="n">activation</span><span class="p">):</span>
         <span class="c1"># build neurel network structure and return their predictions and loss</span>

@@ -80,7 +80,7 @@
 <p>在這一篇中，我會帶大家初探：<strong>機器可以怎麼樣學習?</strong> 內容包括：Gradient Descent、Linear Regression、Logistic Regression、使用迴歸法做二元分類問題等等。</p>
 <p><br/></p>
 <h3>Gradient Descent（梯度下降）</h3>
-<p><img alt="ML" src="https://dl.dropbox.com/s/9wwibe1ix3cs1od/MachineLearningFoundations.009.jpeg"></p>
+<p><img alt="ML" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.009.jpeg"></p>
 <p>還記得上一回我們歸納出了一套ML的流程，複習一下</p>
 <ol>
 <li>準備好足夠的數據</li>
@@ -113,7 +113,7 @@
 <p>好！我們已經了解了怎麼使用Gradient Descent去找到E<sub>in</sub>最小的最佳參數，那我們可以回頭看Model有哪一些？Error Measure該怎麼定？</p>
 <p><br/></p>
 <h3>Linear Regression</h3>
-<p><img alt="ML" src="https://dl.dropbox.com/s/prx1u719y743s56/MachineLearningFoundations.010.jpeg"></p>
+<p><img alt="ML" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.010.jpeg"></p>
 <p>先從最簡單的看起，那就是線性迴歸（Linear Regression），假設今天我要用三種變數(x<sub>1</sub>, x<sub>2</sub>, x<sub>3</sub>)來建立一個簡單的線性模型，那就是</p>
 <p>w<sub>0</sub>+w<sub>1</sub>x<sub>1</sub>+w<sub>2</sub>x<sub>2</sub>+w<sub>3</sub>x<sub>3</sub>，</p>
 <p>這個又稱為Score，標為s，為了方便起見，我們會額外增加x<sub>0</sub>=1的參數，這麼一來Score就可以寫成矩陣形式</p>
@@ -124,7 +124,7 @@
 <p>Squared Error的E<sub>in</sub>平面比較簡單，就是一個單純的開口向上的拋物線，所以它的最低點其實是有解析解的，我們可以靠著數學上的<strong>Pseudo-Inverse方法</strong>在評估完全部的Data之後把最佳參數給算出來，這麼簡單的E<sub>in</sub>平面是很難見到的，我們之前介紹的Gradient Descent則是靠著逐步更新的方式去尋找近似解，這個方法是不管E<sub>in</sub>平面有多麼複雜都可以處理，但是需要特別注意別卡在Local Minimum和Saddle Point。</p>
 <p><br/></p>
 <h3>Logistic Regression</h3>
-<p><img alt="ML" src="https://dl.dropbox.com/s/ugchv7yzd1bcm1a/MachineLearningFoundations.011.jpeg"></p>
+<p><img alt="ML" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.011.jpeg"></p>
 <p>在上一回討論二元分類問題時，我們考慮的狀況是「沒有雜訊」的情形，不過在實際情況下，「雜訊」是一定需要考慮的。在「沒有雜訊」的情形下，一筆Data只會有一個確定的答案，<strong>如果考慮「雜訊」，一筆Data有可能有多個答案，呈現機率分布</strong>，對於正確答案的機率也許會高一點，但因為雜訊的干擾的原因並非能百分之一百的出現正確答案。</p>
 <p>在二元分類的答案因為雜訊出現了機率分布，可能會產生像下面一樣的情況，</p>
 <p>ℙ(◯|X<sup>1</sup>) = 0.9 ;   ℙ(✕|X<sup>1</sup>) = 0.1</p>
@@ -146,10 +146,10 @@
 <p><strong>我們可以使用Gradient Descent來降低Cross-Entropy，這又稱為Logistic Regression，在這個問題中就沒有簡單的解析解可以直接算，只能使用近似解來處理。</strong></p>
 <p><br/></p>
 <h3>使用迴歸法做二元分類問題</h3>
-<p><img alt="ML" src="https://dl.dropbox.com/s/01zyuaqal2achqu/MachineLearningFoundations.012.jpeg"></p>
+<p><img alt="ML" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.012.jpeg"></p>
 <p>剛剛介紹了Logistic Regression，我們可以使用Regression方式來做二元分類問題，我們來看一下實際上該怎麼做？</p>
 <p>線性模型的標準方法，我們會將變數x做線性組合得到Linear Scoring Function — s，線性組合的係數和Threshold稱為權重W，我們可以調整權重W來改變Model，那針對看待s的不同方式就衍生出不同的方法。那為了可以將Regression問題轉換成二元分類問題，所以通常我們會假設(y=+1)為◯，(y=-1)為✕。</p>
-<p>先回顧一下之前<a href="http://www.ycc.idv.tw/YCNote/post/25">PLA的作法</a>，我們把 <code>s&gt;0</code> 的狀況視為◯，也就是(y=+1)；然後把 <code>s&lt;0</code> 的狀況視為✕，也就是(y=-1)，把這個概念畫成上圖右側的圖，圖中藍色的階梯函數就是PLA的Error Measurement，正是因為它是一個階梯函數，所以我們不能使用Gradient Descent等Regression方法來處理，<strong>因為在階梯的每一點∇E<sub>in</sub>都是0（除了原點外），也就是如此PLA在更新的過程才無法確保趨近於最佳解，而需要使用Pocket PLA來解決這個問題</strong>。</p>
+<p>先回顧一下之前<a href="http://www.ycc.idv.tw/ml-course-foundations_1.html">PLA的作法</a>，我們把 <code>s&gt;0</code> 的狀況視為◯，也就是(y=+1)；然後把 <code>s&lt;0</code> 的狀況視為✕，也就是(y=-1)，把這個概念畫成上圖右側的圖，圖中藍色的階梯函數就是PLA的Error Measurement，正是因為它是一個階梯函數，所以我們不能使用Gradient Descent等Regression方法來處理，<strong>因為在階梯的每一點∇E<sub>in</sub>都是0（除了原點外），也就是如此PLA在更新的過程才無法確保趨近於最佳解，而需要使用Pocket PLA來解決這個問題</strong>。</p>
 <p>那如果我們用Linear Regression來做這件事呢？我們把Squared Error畫在上圖右側小圖的紅線，你會發現它的低點會落在ys=1的地方，這應該不是我們要的結果，雖然它一樣可以把錯誤的判斷修正回正確，但是面對過度確定的正確答案，它反而會去修正它往錯誤的方向，很顯然這不是我們想要的。</p>
 <p>最好的方式就是Logistic Regression了，我們將s做Logistic Function的轉換，轉換成機率，並在評估最大化Likelihood的條件下定義出Cross-Entropy來當作Error Measurement，在上圖右側的小圖，我們稍微調整Cross-Entropy，使得它的Error Function可以在ys=0的地方和Squared Error相切，<strong>這張圖告訴我們的是隨著Grandient Descent每次的更新，Logistic Regression會把分類做的越來越好，把◯和✕拉的更遠</strong>。</p>
 <p><br /></p>

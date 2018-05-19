@@ -78,12 +78,12 @@
         <blockquote>
 <p>本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem。</p>
 </blockquote>
-<p>在<a href="http://www.ycc.idv.tw/YCNote/post/29">上一篇文章</a>當中，我們掃過了《機器學習技法》 將會包含的內容，今天我們正式來看SVM。</p>
+<p>在<a href="http://www.ycc.idv.tw/ml-course-techniques_1.html">上一篇文章</a>當中，我們掃過了《機器學習技法》 將會包含的內容，今天我們正式來看SVM。</p>
 <p>如果我想要使用無窮次高次方的非線性轉換加入我的Model，可以做到嗎？上一篇，我告訴大家，只要使用Dual Transformation加上Kernel Function等數學技巧就可以做到，我們今天就來看一下這是怎麼一回事。</p>
 <p>本篇文章分為兩個部分，第一部分我盡量不牽扯太多數學計算，而將數學證明放在第二個部分，數學證明的部分非常複雜，但我並不打算把它們忽略掉，因為這些數學計算是相當重要的，它所帶來的方法和概念是可以重複使用的，也有助於你了解和創造其他演算法，所以有心想要成為專家的你請耐心的把後半段的數學看完。</p>
 <p><br/></p>
 <h3>Hard-Margin Support Vector Machine (SVM)</h3>
-<p><img alt="Hard-Margin SVM" src="https://dl.dropbox.com/s/tknka2p5a7qcqcn/MachineLearningTechniques.001.jpeg"></p>
+<p><img alt="Hard-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.001.jpeg"></p>
 <p>回到我們最熟悉的二元分類問題，如果問題的答案是線性可分的話，我們可以找到一條直線把兩類Data給切開來，而在以前PLA的方法，切在哪裡其實是沒辦法決定的，PLA只能幫你找到可以分開兩類的一刀，但不能幫你把這刀切的更好。</p>
 <p><strong>我們希望這個切開兩類的邊界可以離兩類Data越遠越好，讓邊界到Data有一個較大的空白區，這就是Hard-Margin SVM做的事</strong>。</p>
 <p>我們先來看一下如何計算切平面到任意Data的距離，首先我先假設切平面的方程式為</p>
@@ -116,7 +116,7 @@
 <p><strong>最後給予Kernel Function一個物理解釋，Kernel Function說穿了就是兩個向量轉換到Z空間後的「內積」，「內積」可以約略想成是「相似程度」，當兩個向量同向，內積是正的，相似度高，但當兩個向量反向，內積是負的，相似度極低，所以你會發現Guassian Kernel在X<sub>n</sub>=X<sub>m</sub>會出現最大值，因為代表這兩個位置相似度極高。</strong></p>
 <p><br/></p>
 <h3>Kernel Hard-Margin SVM</h3>
-<p><img alt="Kernel Hard-Margin SVM" src="https://dl.dropbox.com/s/dpyh8stjm665zxd/MachineLearningTechniques.002.jpeg"></p>
+<p><img alt="Kernel Hard-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.002.jpeg"></p>
 <p>那我們如何使用Kernel Function來使得Hard-Margin SVM更厲害呢？我們必須額外引入另外的數學工具，包括：Lagrange Multiplier和Lagrange Dual Problem，才有辦法把Kernel Function用上，不過這部份的數學有一些複雜，我將這部份的證明放在後面的附錄上，這邊就直接從結果講起。</p>
 <p>Kernel Hard-Margin SVM的公式是，在α<sub>n</sub>  ≥ 0; 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub> = 0的限制條件下，求解α<sub>n</sub></p>
 <p>使得 [(1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)-𝚺<sub>n</sub> α<sub>n</sub>]為最小值，</p>
@@ -128,17 +128,17 @@
 <p><br/></p>
 <h3>Kernel Hard-Margin SVM: 無窮次方的特徵轉換效果如何?</h3>
 <p>終於我們可以使用無窮次方的特徵轉換了，只要使用Kernel Hard-Margin SVM搭配上Guassian Kernel：K(X<sub>n</sub>,X<sub>m</sub>)=exp(-γ|X<sub>n</sub>-X<sub>m</sub>|<sup>2</sup>)就可以辦到，下圖是模擬的結果，是不是看起來很強大，隨著γ的不同會有不一樣的切分方法，<strong>你會發現γ越大時看起來的結果越接近Overfitting，所以必須小心挑選γ的大小。</strong></p>
-<p><img alt="Guassian Kernel in Hard-Margin SVM" src="https://dl.dropbox.com/s/nzl29z7z8cveefx/MachineLearningTechniques.000_01.png"></p>
+<p><img alt="Guassian Kernel in Hard-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_01.png"></p>
 <p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/203_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/203_handout.pdf</a></p>
 <p><br/></p>
 <h3>Soft-Margin SVM</h3>
-<p><img alt="Soft-Margin SVM" src="https://dl.dropbox.com/s/ipimu7we3zd8vho/MachineLearningTechniques.003.jpeg"></p>
+<p><img alt="Soft-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.003.jpeg"></p>
 <p>剛剛Hard-Margin SVM會很容易Overfitting的原因在於它的機制無法<strong>容忍雜訊</strong>，所以接下來要講的Soft-Margin SVM可以容忍部份的Data違反規則，讓它們可以超出空白區的邊界。</p>
 <p>見上圖，可以發現我們稍微修改了Hard-Margin SVM，加入了參數ξ<sub>n</sub>，ξ<sub>n</sub>代表錯誤的Data離空白區邊界有多遠，而我們將ξ<sub>n</sub>的總和加進去Cost裡面，在優化的過程中將使違反的狀況不會太多和離邊界太遠，<strong>而參數C負責控制ξ<sub>n</sub>總和的影響程度，如果C很大，代表不大能容忍雜訊；如果C很小，則代表對雜訊的容忍很寬鬆</strong>。</p>
 <p><strong>因此我們現在有兩種Support Vector，一種是剛好落在空白區邊界的，稱為Free Support Vector；另外一種是違反規則並超出空白區的，稱為Bounded Support Vector，切平面一樣是由這些Support Vector所決定。</strong></p>
 <p><br/></p>
 <h3>Kernel Soft-Margin SVM</h3>
-<p><img alt="Kernel Soft-Margin SVM" src="https://dl.dropbox.com/s/opndal9c0nhbo9p/MachineLearningTechniques.004.jpeg"></p>
+<p><img alt="Kernel Soft-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.004.jpeg"></p>
 <p>接下來同樣的對Soft-Margin SVM做數學上Lagrange Multiplier和Lagrange Dual Problem的轉換，再將Kernel Function用上，一樣的，我將這部份的證明放在後面的附錄上，這邊就直接從結果講起。</p>
 <p>Kernel Soft-Margin SVM的公式是，在0 ≤ <strong>α<sub>n</sub> ≤ C</strong>; 𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub> = 0的限制條件下，求解α<sub>n</sub></p>
 <p>使得 [(1/2)𝚺<sub>n</sub>𝚺<sub>m</sub> α<sub>n</sub>α<sub>m</sub>y<sub>n</sub>y<sub>m</sub>K(X<sub>n</sub>,X<sub>m</sub>)-𝚺<sub>n</sub> α<sub>n</sub>]為最小值，</p>
@@ -148,7 +148,7 @@
 <p><strong>b=y<sub>sv</sub>-𝚺<sub>n</sub> α<sub>n</sub>y<sub>n</sub>K(X<sub>n</sub>,X<sub>sv</sub>)</strong></p>
 <p><br/></p>
 <h3>Kernel Soft-Margin SVM: 容忍雜訊的無窮次方特徵轉換</h3>
-<p><img alt="Guassian Kernel in Soft-Margin SVM" src="https://dl.dropbox.com/s/aw9v5e2tr9onqfy/MachineLearningTechniques.000_02.png"></p>
+<p><img alt="Guassian Kernel in Soft-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_02.png"></p>
 <p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/204_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/204_handout.pdf</a></p>
 <p>來看看Kernel Soft-Margin SVM搭配上Guassian Kernel的效果如何，上圖是模擬的結果，我們會發現有部分Data違反分類規則，所以Soft-Margin SVM確實可以容忍雜訊，而且C越小，容忍雜訊的能力越強，所以要特別注意C的選取，如果沒有選好還是可能造成Overfitting的。</p>
 <p><br/></p>
@@ -194,7 +194,7 @@
 <li>|W|<sup>2</sup> - C ≤ 0  [Primal Feasibility Condition]</li>
 <li>μ × ( C - |W|<sup>2</sup> ) = 0  [Complementary Slackness Condition]</li>
 </ol>
-<p>Stationarity Condition的結果就是Regularization的結果了，可以<a href="http://www.ycc.idv.tw/YCNote/post/28">回去參照一下</a>。</p>
+<p>Stationarity Condition的結果就是Regularization的結果了，可以<a href="http://www.ycc.idv.tw/ml-course-foundations_4.html">回去參照一下</a>。</p>
 <p><br/></p>
 <h3>[進階] Lagrangian Dual Problem</h3>
 <p>接下來來講對偶問題，這個部分很難，我也是反覆在網路上看了很多篇介紹才弄懂，推薦大家看<a href="http://www.eng.newcastle.edu.au/eecs/cdsc/books/cce/Slides/Duality.pdf">這一篇</a>，這篇介紹的很清楚，應該會對大家理解Lagrangian Dual有幫助。</p>
@@ -209,7 +209,7 @@
 <p>而上面式子右側的求法，我們可以先求出Θ(λ<sub>i</sub>,μ<sub>j</sub>) = given λ<sub>i</sub>,μ<sub>j</sub> to find min. L(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>, λ<sub>i</sub>,μ<sub>j</sub>) ，作法是使用∇L = 0所產生符合極值的參數代入L(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>, λ<sub>i</sub>,μ<sub>j</sub>)，換成以λ<sub>i</sub>,μ<sub>j</sub>表示的Θ(λ<sub>i</sub>,μ<sub>j</sub>)。然後，再求Θ(λ<sub>i</sub>,μ<sub>j</sub>)的最大值，就可以了。</p>
 <p><strong>經過Dual轉換後，我們將原本在x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>的問題轉換到λ<sub>i</sub>,μ<sub>j</sub>的空間上。</strong></p>
 <p>這個轉換我們可以使用下面的圖來解釋，</p>
-<p><img alt="Lagrangian Dual Geometric Interpretation" src="https://dl.dropbox.com/s/xbham8glnwivfzz/MachineLearningTechniques.005.jpeg"></p>
+<p><img alt="Lagrangian Dual Geometric Interpretation" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.005.jpeg"></p>
 <p>我們先不管g(x)的部分只看f(x)和h(x)的部分，假設所有的Data x映射到f(x)和h(x)會產生一塊區域G。</p>
 <p>在Primal Problem中我們可以很容易的找出h<sub>j</sub>(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) ≤ 0的限制之下f(x<sub>1</sub>,x<sub>2</sub>, … , x<sub>n</sub>) 的最小值，見上圖左側。</p>
 <p>見上圖中間，Dual Problem採取另外一個方法，它先去找</p>
