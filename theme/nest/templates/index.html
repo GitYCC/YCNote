@@ -36,6 +36,7 @@
                 {% for article in articles_page.object_list %}
                 <dt>{{ article.locale_date}}</dt>
                 <dd><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);">{{article.summary|replace('<h2>','<h5><u>')|replace('</h2>','</u></h5>')|replace('<h3>','<h5><u>')|replace('</h3>','</u></h5>')}}</dd>
                 {% endfor %}
             </dl>
         </div>
@@ -49,6 +50,7 @@
                 {% for article in articles %}
                 <dt>{{ article.locale_date}}</dt>
                 <dd><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></dd>
+
                 {% endfor %}
             </dl>
         </div>
