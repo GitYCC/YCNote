@@ -3657,10 +3657,10 @@ test_acc = 32.77%
 &lt;h3&gt;Radial Basis Function (RBF) Network&lt;/h3&gt;
 &lt;p&gt;回顧一下Gaussian Kernel SVM，&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;$W = 𝚺_{n=sv}  α_n y_n Z_n  $&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(W = 𝚺_{n=sv}  α_n y_n Z_n\)&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(G_{SVM}\)&lt;/span&gt;   &lt;br/&gt;&lt;/p&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(= sign[WZ+b]\)&lt;/span&gt; &lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;$= sign{[𝚺_{n=sv} α_n y_n K(X_n,X)]+b} $ &lt;br/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(= sign{[𝚺_{n=sv} α_n y_n K(X_n,X)]+b}\)&lt;/span&gt; &lt;br/&gt;&lt;/p&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(⇒ G_{SVM} = sign{[𝚺_{n=sv} α_n y_n exp(-γ |X-X_n …&lt;/span&gt;&lt;/p&gt;&lt;/blockquote&gt;&lt;script type='text/javascript'&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -3722,11 +3722,11 @@ test_acc = 32.77%
 &lt;h3&gt;Radial Basis Function (RBF) Network&lt;/h3&gt;
 &lt;p&gt;回顧一下Gaussian Kernel SVM，&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;$W = 𝚺_{n=sv}  α_n y_n Z_n  $&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(W = 𝚺_{n=sv}  α_n y_n Z_n\)&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(G_{SVM}\)&lt;/span&gt;   &lt;br/&gt;&lt;/p&gt;
 &lt;p&gt;&lt;span class="math"&gt;\(= sign[WZ+b]\)&lt;/span&gt; &lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;$= sign{[𝚺_{n=sv} α_n y_n K(X_n,X)]+b} $ &lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class="math"&gt;\(⇒ G_{SVM} = sign{[𝚺_{n=sv} α_n y_n exp(-γ |X-X_n|^2)]+b}\)&lt;/span&gt; &lt;br/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(= sign{[𝚺_{n=sv} α_n y_n K(X_n,X)]+b}\)&lt;/span&gt; &lt;br/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(⇒ G_{SVM} = sign{[𝚺_{n=sv} α_n y_n exp(-γ |X-X_n|^2)]+b}​\)&lt;/span&gt; &lt;br/&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;看到這個式子你想到了什麼？有沒有融會貫通的感覺，你同樣的可以把上面的式子看成是Aggregation，又或者是Network。&lt;/p&gt;
 &lt;p&gt;先來定義一下RBF Function， 其實就是Gaussian Function，&lt;/p&gt;

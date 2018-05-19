@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization。 Radial Basis Function (RBF) Network 回顧一下Gaussian Kernel SVM， $W = 𝚺_{n=sv} α_n y_n Z_n $ \(G_{SVM}\) \(=...">
+        <meta name="description" content="本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization。 Radial Basis Function (RBF) Network 回顧一下Gaussian Kernel SVM， \(W = 𝚺_{n=sv} α_n y_n Z_n\) \(G_{SVM}\) \(=...">
         <meta name="keywords" content="機器學習技法">
         <link rel="icon" href="./static/img/favicon.png">
 
@@ -84,11 +84,11 @@
 <h3>Radial Basis Function (RBF) Network</h3>
 <p>回顧一下Gaussian Kernel SVM，</p>
 <blockquote>
-<p>$W = 𝚺_{n=sv}  α_n y_n Z_n  $</p>
+<p><span class="math">\(W = 𝚺_{n=sv}  α_n y_n Z_n\)</span></p>
 <p><span class="math">\(G_{SVM}\)</span>   <br/></p>
 <p><span class="math">\(= sign[WZ+b]\)</span> <br/></p>
-<p>$= sign{[𝚺_{n=sv} α_n y_n K(X_n,X)]+b} $ <br/></p>
-<p><span class="math">\(⇒ G_{SVM} = sign{[𝚺_{n=sv} α_n y_n exp(-γ |X-X_n|^2)]+b}\)</span> <br/></p>
+<p><span class="math">\(= sign{[𝚺_{n=sv} α_n y_n K(X_n,X)]+b}\)</span> <br/></p>
+<p><span class="math">\(⇒ G_{SVM} = sign{[𝚺_{n=sv} α_n y_n exp(-γ |X-X_n|^2)]+b}​\)</span> <br/></p>
 </blockquote>
 <p>看到這個式子你想到了什麼？有沒有融會貫通的感覺，你同樣的可以把上面的式子看成是Aggregation，又或者是Network。</p>
 <p>先來定義一下RBF Function， 其實就是Gaussian Function，</p>
