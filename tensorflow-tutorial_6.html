@@ -85,8 +85,11 @@
 <p>這種將舊有資訊保留的Neurel Network統稱為Recurrent Neural Networks (RNN)，這種不斷回饋的網路可以攤開來處理，如上圖，如果我有5筆數據，拿訓練一個RNN 5個回合並做了5次更新，其實就等效於攤開來一次處理5筆數據並做1次更新，這樣的手法叫做Unrolling，我們實作上會使用Unrolling的手法來增加計算效率。</p>
 <p><img alt="RNN" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.011.jpeg"></p>
 <p>接下來來看RNN內部怎麼實現的，上圖是最簡單的RNN形式，我們將上一回產生的Output和這一回的Input一起評估出這一回的Output，詳細式子如下：</p>
-<p>new_o = tanh( i*W<sub>i</sub> + o*W<sub>o</sub> + B )</p>
-<p>如此一來RNN就具有時序性了，舊的歷史資料將可以被「記憶」起來，你可以把RNN的「記憶」看成是「短期記憶」，因為它只會記得上一回的Output而已。</p>
+<div class="math">$$
+o_{new}=tanh(i \times W_i + o \times W_o + B)
+$$</div>
+<p>
+如此一來RNN就具有時序性了，舊的歷史資料將可以被「記憶」起來，你可以把RNN的「記憶」看成是「短期記憶」，因為它只會記得上一回的Output而已。</p>
 <h3>梯度消失與梯度爆炸</h3>
 <p>但這種形式的RNN在實作上會遇到很大的問題，還記得第二章當中，我們有講過像是tanh這類有飽和區的函數，會造成梯度消失的問題，而我們如果使用Unrolling的觀點來看RNN，將會發現這是一個超級深的網路，Backpapagation必須一路通到t0的RNN，想當然爾，有些梯度將會消失，部分權重就更新不到了，那有一些聰明的讀者一定會想到，那就使用Relu就好啦！不過其實還有一個重要的因素造成梯度消失，同時也造成梯度爆炸。</p>
 <p>注意喔！雖然我們使用Unrolling的觀點，把網路看成是一個Deep網路的連接，但是和之前DNN不同之處，這些RNN彼此間是共享同一組權重的，這會造成梯度消失和梯度爆炸兩個問題，在RNN的結構裡頭，一個權重會隨著時間不斷的加強影響一個單一特徵，因為不同時間之下的RNN Cell共用同一個權重，這麼一來若是權重大於1，影響將會隨時間放大到梯度爆炸，若是權重小於1，影響將會隨時間縮小到梯度消失，就像是蝴蝶效應一般，微小的差異因為回饋的機制，而不合理的放大或是消失，因此RNN的Error Surface將會崎嶇不平，這會造成我們無法穩定的找到最佳解，難以收斂。這才是RNN難以使用的重要原因，把Activation Function換成Relu不會解決問題，文獻上反而告訴我們會變更差。</p>
@@ -96,14 +99,37 @@
 <p>LSTM是現今RNN的主流，它可以解決梯度消失的問題，我們先來看看結構，先預告一下，LSTM是迄今為止這系列課程當中看過最複雜的Neurel Network。</p>
 <p><img alt="LSTM" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.012.jpeg"></p>
 <p>最一開始和RNN一樣，Input會和上一回的Output一起評估一個「短期記憶」，</p>
-<p>f<sub>m</sub> = tanh( i*W<sub>mi</sub> + o*W<sub>mo</sub> + B<sub>m</sub> )</p>
-<p>但接下來不同於RNN直接輸出，LSTM做了一個類似於轉換成「長期記憶」的機制，「長期記憶」在這裡稱為State，State的狀態由三道門所控制，Input Gate負責控管哪些「短期記憶」可以進到「長期記憶」，Forget Gate負責調配哪一些「長期記憶」需要被遺忘，Output Gate則負責去決定需要從「長期記憶」中輸出怎樣的內容，先不要管這些Gate怎麼來，我們可以把這樣的記憶機制寫成以下的式子，假設State為f<sub>state</sub>、Input Gate為G<sub>i</sub>、Forget Gate為G<sub>f</sub>和Output Gate為G<sub>o</sub>。</p>
-<p>new_f<sub>state</sub> = G<sub>i</sub> * f<sub>m</sub> + G<sub>f</sub> * f<sub>state</sub></p>
-<p>new_o = G<sub>o</sub>*tanh( new_f<sub>state</sub> )</p>
-<p>如果我們要使得上面中Gates的部分具有開關的功能的話，我們會希望Gates可以是0到1的值，0代表全關，1代表全開，sigmoid正可以幫我們做到這件事，那哪些因素會決定Gates的關閉與否呢？不妨考慮所有可能的因素，也就是所有輸入這個Cell的資訊都考慮進去，但上一回的State必須被剔除於外，因為上一回的State來決定下一個State的操作是不合理的，因此我們就可以寫下所有Gates的表示式了。</p>
-<p>G<sub>i</sub> = Sigmoid(i*W<sub>ii</sub> + o*W<sub>io</sub> + B<sub>i</sub>)</p>
-<p>G<sub>f</sub> = Sigmoid(i*W<sub>fi</sub> + o*W<sub>fo</sub> + B<sub>f</sub>)</p>
-<p>G<sub>o</sub> = Sigmoid(i*W<sub>oi</sub> + o*W<sub>oo</sub> + B<sub>o</sub>)</p>
+<div class="math">$$
+f_m = tanh (i \times W_{mi} + o \times W_{mo} + B_m)
+$$</div>
+<p>
+但接下來不同於RNN直接輸出，LSTM做了一個類似於轉換成「長期記憶」的機制，「長期記憶」在這裡稱為State，State的狀態由三道門所控制，Input Gate負責控管哪些「短期記憶」可以進到「長期記憶」，Forget Gate負責調配哪一些「長期記憶」需要被遺忘，Output Gate則負責去決定需要從「長期記憶」中輸出怎樣的內容，先不要管這些Gate怎麼來，我們可以把這樣的記憶機制寫成以下的式子，假設State為</p>
+<div class="math">$$f_{state}$$</div>
+<p>、Input Gate為</p>
+<div class="math">$$G_i$$</div>
+<p>、Forget Gate為</p>
+<div class="math">$$G_f$$</div>
+<p>和Output Gate為</p>
+<div class="math">$$G_o$$</div>
+<p>。
+</p>
+<div class="math">$$
+f_{state,new} = G_i \times f_m + G_f \times f_{state}
+$$</div>
+<div class="math">$$
+o_{new} = G_o \times tanh(f_{state,new})
+$$</div>
+<p>如果我們要使得上面中Gates的部分具有開關的功能的話，我們會希望Gates可以是0到1的值，0代表全關，1代表全開，sigmoid正可以幫我們做到這件事，那哪些因素會決定Gates的關閉與否呢？不妨考慮所有可能的因素，也就是所有輸入這個Cell的資訊都考慮進去，但上一回的State必須被剔除於外，因為上一回的State來決定下一個State的操作是不合理的，因此我們就可以寫下所有Gates的表示式了。
+</p>
+<div class="math">$$
+G_i = Sigmoid (i \times W_{ii} + o \times W_{io} + B_i)
+$$</div>
+<div class="math">$$
+G_f = Sigmoid (i \times W_{fi} + o \times W_{fo} + B_f)
+$$</div>
+<div class="math">$$
+G_o = Sigmoid(i \times W_{oi} + o \times W_{oo} + B_o)
+$$</div>
 <p>這就是LSTM，「長期記憶」的出現可以解決掉梯度消失的問題，RNN只有「短期記憶」，所以一旦認為一個特徵不重要，經過幾回連乘，這個特徵的梯度就會消失殆盡，但是LSTM保留State，並且使用「加」的方法更新State，所以有一些重要的State得以留下來持續影響著Output，解決了梯度消失的問題。但是，不幸的LSTM還是免不了梯度爆炸，為什麼呢？如果一個特徵真的很重要，State會記住，Input也會強調，所以幾輪下來還是有可能出現爆炸的情況，這時候我們就需要Gradient Clipping的幫忙。</p>
 <h3>使用LSTM實作文章產生器</h3>
 <p>接下來我們來實作LSTM，目標是做一個文章產生器，我們希望機器可以不斷的根據前文猜測下一個「字母」(Letters)應該要下什麼，如此一來我只要給個開頭字母，LSTM就可以幫我腦補成一篇文章。</p>
@@ -620,6 +646,61 @@ Generate From &#39;m&#39;:   man one nine zero eight moming between language yea
 
 
 <p>看得出來LSTM想表達什麼嗎，哈哈！</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
 
 
         

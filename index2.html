@@ -87,8 +87,7 @@
         <span class="c1">### Variable …</span></pre></div></dd>
                 <dt>2017 / 10月 23</dt>
                 <dd><a href="./tensorflow-tutorial_1.html">實作Tensorflow (1)：Simple Logistic Classification on MNIST</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>Tensorflow Tutorial 1: Simple Logistic Classification on MNIST</p>
-<p>初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。</p>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。</p>
 <p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/01_simple_logistic_classification_on_MNIST.py">Github</a>下載。</p>
 <h5><u>MNIST Dataset</u></h5>
 <p>首先，先<code>import</code>一些會用到的function，並且定義<code>summary</code> function以便於觀察ndarray。</p>
@@ -97,7 +96,11 @@
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
-<span class="c1"># Config the matplotlib backend as plotting inline …</span></pre></div></dd>
+<span class="c1"># Config the matplotlib backend as plotting inline in IPython</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+
+<span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
+    <span class="k">print …</span></pre></div></dd>
                 <dt>2017 / 9月 05</dt>
                 <dd><a href="./stock-sell-point.html">股票策略：移動停損法</a></dd>
                 <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>最近在研究股票，在網路上看到這篇文章</p>

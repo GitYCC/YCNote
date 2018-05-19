@@ -1282,8 +1282,65 @@
 &lt;p&gt;這種將舊有資訊保留的Neurel Network統稱為Recurrent Neural Networks (RNN)，這種不斷回饋的網路可以攤開來處理，如上圖，如果我有5筆數據，拿訓練一個RNN 5個回合並做了5次更新，其實就等效於攤開來一次處理5筆數據並做1次更新，這樣的手法叫做Unrolling，我們實作上會使用Unrolling的手法來增加計算效率。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="RNN" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.011.jpeg"&gt;&lt;/p&gt;
 &lt;p&gt;接下來來看RNN內部怎麼實現的，上圖是最簡單的RNN形式，我們將上一回產生的Output和這一回的Input一起評估出這一回的Output，詳細式子如下：&lt;/p&gt;
-&lt;p&gt;new_o = tanh( i*W&lt;sub&gt;i&lt;/sub&gt; + o*W&lt;sub&gt;o&lt;/sub&gt; + B )&lt;/p&gt;
-&lt;p&gt;如此一來RNN就具有時序性了，舊的歷史資料將可以被「記憶」起來，你可以把RNN的「記憶 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;如果我們想要處理的問題是具有時序性的，該怎麼辦呢？本章將會介紹有時序性的Neurel Network。&lt;/p&gt;
+&lt;div class="math"&gt;$$
+o_{new}=tanh(i \times W_i + o \times W_o + B)
+$$&lt;/div&gt;
+&lt;p&gt;
+如此一來RNN就具有時序性了，舊的歷史資料將可以被「記憶」起來，你可以把RNN的 …&lt;/p&gt;&lt;script type='text/javascript'&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><content type="html">&lt;p&gt;如果我們想要處理的問題是具有時序性的，該怎麼辦呢？本章將會介紹有時序性的Neurel Network。&lt;/p&gt;
 &lt;p&gt;本單元程式碼LSTM部分可於&lt;a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/06_LSTM.py"&gt;Github&lt;/a&gt;下載。&lt;/p&gt;
 &lt;h3&gt;概論RNN&lt;/h3&gt;
 &lt;p&gt;當我們想使得Neurel Network具有時序性，我們的Neurel Network就必須有記憶的功能，然後在我不斷的輸入新資訊時，也能同時保有歷史資訊的影響，最簡單的作法就是將Output的結果保留，等到新資訊進來時，將新的資訊和舊的Output一起考量來訓練Neurel Network。&lt;/p&gt;
@@ -1291,8 +1348,11 @@
 &lt;p&gt;這種將舊有資訊保留的Neurel Network統稱為Recurrent Neural Networks (RNN)，這種不斷回饋的網路可以攤開來處理，如上圖，如果我有5筆數據，拿訓練一個RNN 5個回合並做了5次更新，其實就等效於攤開來一次處理5筆數據並做1次更新，這樣的手法叫做Unrolling，我們實作上會使用Unrolling的手法來增加計算效率。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="RNN" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.011.jpeg"&gt;&lt;/p&gt;
 &lt;p&gt;接下來來看RNN內部怎麼實現的，上圖是最簡單的RNN形式，我們將上一回產生的Output和這一回的Input一起評估出這一回的Output，詳細式子如下：&lt;/p&gt;
-&lt;p&gt;new_o = tanh( i*W&lt;sub&gt;i&lt;/sub&gt; + o*W&lt;sub&gt;o&lt;/sub&gt; + B )&lt;/p&gt;
-&lt;p&gt;如此一來RNN就具有時序性了，舊的歷史資料將可以被「記憶」起來，你可以把RNN的「記憶」看成是「短期記憶」，因為它只會記得上一回的Output而已。&lt;/p&gt;
+&lt;div class="math"&gt;$$
+o_{new}=tanh(i \times W_i + o \times W_o + B)
+$$&lt;/div&gt;
+&lt;p&gt;
+如此一來RNN就具有時序性了，舊的歷史資料將可以被「記憶」起來，你可以把RNN的「記憶」看成是「短期記憶」，因為它只會記得上一回的Output而已。&lt;/p&gt;
 &lt;h3&gt;梯度消失與梯度爆炸&lt;/h3&gt;
 &lt;p&gt;但這種形式的RNN在實作上會遇到很大的問題，還記得第二章當中，我們有講過像是tanh這類有飽和區的函數，會造成梯度消失的問題，而我們如果使用Unrolling的觀點來看RNN，將會發現這是一個超級深的網路，Backpapagation必須一路通到t0的RNN，想當然爾，有些梯度將會消失，部分權重就更新不到了，那有一些聰明的讀者一定會想到，那就使用Relu就好啦！不過其實還有一個重要的因素造成梯度消失，同時也造成梯度爆炸。&lt;/p&gt;
 &lt;p&gt;注意喔！雖然我們使用Unrolling的觀點，把網路看成是一個Deep網路的連接，但是和之前DNN不同之處，這些RNN彼此間是共享同一組權重的，這會造成梯度消失和梯度爆炸兩個問題，在RNN的結構裡頭，一個權重會隨著時間不斷的加強影響一個單一特徵，因為不同時間之下的RNN Cell共用同一個權重，這麼一來若是權重大於1，影響將會隨時間放大到梯度爆炸，若是權重小於1，影響將會隨時間縮小到梯度消失，就像是蝴蝶效應一般，微小的差異因為回饋的機制，而不合理的放大或是消失，因此RNN的Error Surface將會崎嶇不平，這會造成我們無法穩定的找到最佳解，難以收斂。這才是RNN難以使用的重要原因，把Activation Function換成Relu不會解決問題，文獻上反而告訴我們會變更差。&lt;/p&gt;
@@ -1302,14 +1362,37 @@
 &lt;p&gt;LSTM是現今RNN的主流，它可以解決梯度消失的問題，我們先來看看結構，先預告一下，LSTM是迄今為止這系列課程當中看過最複雜的Neurel Network。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="LSTM" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.012.jpeg"&gt;&lt;/p&gt;
 &lt;p&gt;最一開始和RNN一樣，Input會和上一回的Output一起評估一個「短期記憶」，&lt;/p&gt;
-&lt;p&gt;f&lt;sub&gt;m&lt;/sub&gt; = tanh( i*W&lt;sub&gt;mi&lt;/sub&gt; + o*W&lt;sub&gt;mo&lt;/sub&gt; + B&lt;sub&gt;m&lt;/sub&gt; )&lt;/p&gt;
-&lt;p&gt;但接下來不同於RNN直接輸出，LSTM做了一個類似於轉換成「長期記憶」的機制，「長期記憶」在這裡稱為State，State的狀態由三道門所控制，Input Gate負責控管哪些「短期記憶」可以進到「長期記憶」，Forget Gate負責調配哪一些「長期記憶」需要被遺忘，Output Gate則負責去決定需要從「長期記憶」中輸出怎樣的內容，先不要管這些Gate怎麼來，我們可以把這樣的記憶機制寫成以下的式子，假設State為f&lt;sub&gt;state&lt;/sub&gt;、Input Gate為G&lt;sub&gt;i&lt;/sub&gt;、Forget Gate為G&lt;sub&gt;f&lt;/sub&gt;和Output Gate為G&lt;sub&gt;o&lt;/sub&gt;。&lt;/p&gt;
-&lt;p&gt;new_f&lt;sub&gt;state&lt;/sub&gt; = G&lt;sub&gt;i&lt;/sub&gt; * f&lt;sub&gt;m&lt;/sub&gt; + G&lt;sub&gt;f&lt;/sub&gt; * f&lt;sub&gt;state&lt;/sub&gt;&lt;/p&gt;
-&lt;p&gt;new_o = G&lt;sub&gt;o&lt;/sub&gt;*tanh( new_f&lt;sub&gt;state&lt;/sub&gt; )&lt;/p&gt;
-&lt;p&gt;如果我們要使得上面中Gates的部分具有開關的功能的話，我們會希望Gates可以是0到1的值，0代表全關，1代表全開，sigmoid正可以幫我們做到這件事，那哪些因素會決定Gates的關閉與否呢？不妨考慮所有可能的因素，也就是所有輸入這個Cell的資訊都考慮進去，但上一回的State必須被剔除於外，因為上一回的State來決定下一個State的操作是不合理的，因此我們就可以寫下所有Gates的表示式了。&lt;/p&gt;
-&lt;p&gt;G&lt;sub&gt;i&lt;/sub&gt; = Sigmoid(i*W&lt;sub&gt;ii&lt;/sub&gt; + o*W&lt;sub&gt;io&lt;/sub&gt; + B&lt;sub&gt;i&lt;/sub&gt;)&lt;/p&gt;
-&lt;p&gt;G&lt;sub&gt;f&lt;/sub&gt; = Sigmoid(i*W&lt;sub&gt;fi&lt;/sub&gt; + o*W&lt;sub&gt;fo&lt;/sub&gt; + B&lt;sub&gt;f&lt;/sub&gt;)&lt;/p&gt;
-&lt;p&gt;G&lt;sub&gt;o&lt;/sub&gt; = Sigmoid(i*W&lt;sub&gt;oi&lt;/sub&gt; + o*W&lt;sub&gt;oo&lt;/sub&gt; + B&lt;sub&gt;o&lt;/sub&gt;)&lt;/p&gt;
+&lt;div class="math"&gt;$$
+f_m = tanh (i \times W_{mi} + o \times W_{mo} + B_m)
+$$&lt;/div&gt;
+&lt;p&gt;
+但接下來不同於RNN直接輸出，LSTM做了一個類似於轉換成「長期記憶」的機制，「長期記憶」在這裡稱為State，State的狀態由三道門所控制，Input Gate負責控管哪些「短期記憶」可以進到「長期記憶」，Forget Gate負責調配哪一些「長期記憶」需要被遺忘，Output Gate則負責去決定需要從「長期記憶」中輸出怎樣的內容，先不要管這些Gate怎麼來，我們可以把這樣的記憶機制寫成以下的式子，假設State為&lt;/p&gt;
+&lt;div class="math"&gt;$$f_{state}$$&lt;/div&gt;
+&lt;p&gt;、Input Gate為&lt;/p&gt;
+&lt;div class="math"&gt;$$G_i$$&lt;/div&gt;
+&lt;p&gt;、Forget Gate為&lt;/p&gt;
+&lt;div class="math"&gt;$$G_f$$&lt;/div&gt;
+&lt;p&gt;和Output Gate為&lt;/p&gt;
+&lt;div class="math"&gt;$$G_o$$&lt;/div&gt;
+&lt;p&gt;。
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+f_{state,new} = G_i \times f_m + G_f \times f_{state}
+$$&lt;/div&gt;
+&lt;div class="math"&gt;$$
+o_{new} = G_o \times tanh(f_{state,new})
+$$&lt;/div&gt;
+&lt;p&gt;如果我們要使得上面中Gates的部分具有開關的功能的話，我們會希望Gates可以是0到1的值，0代表全關，1代表全開，sigmoid正可以幫我們做到這件事，那哪些因素會決定Gates的關閉與否呢？不妨考慮所有可能的因素，也就是所有輸入這個Cell的資訊都考慮進去，但上一回的State必須被剔除於外，因為上一回的State來決定下一個State的操作是不合理的，因此我們就可以寫下所有Gates的表示式了。
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+G_i = Sigmoid (i \times W_{ii} + o \times W_{io} + B_i)
+$$&lt;/div&gt;
+&lt;div class="math"&gt;$$
+G_f = Sigmoid (i \times W_{fi} + o \times W_{fo} + B_f)
+$$&lt;/div&gt;
+&lt;div class="math"&gt;$$
+G_o = Sigmoid(i \times W_{oi} + o \times W_{oo} + B_o)
+$$&lt;/div&gt;
 &lt;p&gt;這就是LSTM，「長期記憶」的出現可以解決掉梯度消失的問題，RNN只有「短期記憶」，所以一旦認為一個特徵不重要，經過幾回連乘，這個特徵的梯度就會消失殆盡，但是LSTM保留State，並且使用「加」的方法更新State，所以有一些重要的State得以留下來持續影響著Output，解決了梯度消失的問題。但是，不幸的LSTM還是免不了梯度爆炸，為什麼呢？如果一個特徵真的很重要，State會記住，Input也會強調，所以幾輪下來還是有可能出現爆炸的情況，這時候我們就需要Gradient Clipping的幫忙。&lt;/p&gt;
 &lt;h3&gt;使用LSTM實作文章產生器&lt;/h3&gt;
 &lt;p&gt;接下來我們來實作LSTM，目標是做一個文章產生器，我們希望機器可以不斷的根據前文猜測下一個「字母」(Letters)應該要下什麼，如此一來我只要給個開頭字母，LSTM就可以幫我腦補成一篇文章。&lt;/p&gt;
@@ -1825,7 +1908,62 @@ Generate From &amp;#39;m&amp;#39;:   man one nine zero eight moming between lang
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;看得出來LSTM想表達什麼嗎，哈哈！&lt;/p&gt;</content><category term="Tensorflow"></category></entry><entry><title>實作Tensorflow (5)：Word2Vec</title><link href="YCNote/tensorflow-tutorial_5.html" rel="alternate"></link><published>2017-11-19T12:00:00+08:00</published><updated>2017-11-19T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-11-19:YCNote/tensorflow-tutorial_5.html</id><summary type="html">&lt;p&gt;機器有辦法自行從文本中觀察出詞彙間的相似度嗎？是可以的，word2vec是"word to vector"的縮寫，代表的正是將每個字轉換成向量，而一旦兩個字的向量越是靠近，就代表它的相似度越高，我們究竟要如何得到這些向量呢？方法簡單但出奇有效，文章的最後會向大家呈現它的精彩的結果。&lt;/p&gt;
+&lt;p&gt;看得出來LSTM想表達什麼嗎，哈哈！&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="Tensorflow"></category></entry><entry><title>實作Tensorflow (5)：Word2Vec</title><link href="YCNote/tensorflow-tutorial_5.html" rel="alternate"></link><published>2017-11-19T12:00:00+08:00</published><updated>2017-11-19T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-11-19:YCNote/tensorflow-tutorial_5.html</id><summary type="html">&lt;p&gt;機器有辦法自行從文本中觀察出詞彙間的相似度嗎？是可以的，word2vec是"word to vector"的縮寫，代表的正是將每個字轉換成向量，而一旦兩個字的向量越是靠近，就代表它的相似度越高，我們究竟要如何得到這些向量呢？方法簡單但出奇有效，文章的最後會向大家呈現它的精彩的結果。&lt;/p&gt;
 &lt;p&gt;本單元程式碼Skip-Gram Word2Vec部分可於&lt;a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_1_word2vec_SkipGram.py"&gt;Github&lt;/a&gt;下載，CBOW Word2Vec部分可於&lt;a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_2_word2vec_CBOW.py"&gt;Github&lt;/a&gt;下載。&lt;/p&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
 &lt;h3&gt;Word2Vec觀念解析&lt;/h3&gt;
@@ -4061,8 +4199,7 @@ test_acc = 92.02%
 &lt;em&gt; 調整Dropout Ratio
 &lt;/em&gt; 選擇不同Optimizer
 * 使得DNN更深&lt;/p&gt;
-&lt;p&gt;調整Model是重要的工作，試著自己動手做做看，你可以讓你的Model有多準呢？&lt;/p&gt;</content><category term="Tensorflow"></category></entry><entry><title>實作Tensorflow (1)：Simple Logistic Classification on MNIST</title><link href="YCNote/tensorflow-tutorial_1.html" rel="alternate"></link><published>2017-10-23T12:00:00+08:00</published><updated>2017-10-23T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-10-23:YCNote/tensorflow-tutorial_1.html</id><summary type="html">&lt;p&gt;Tensorflow Tutorial 1: Simple Logistic Classification on MNIST&lt;/p&gt;
-&lt;p&gt;初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。&lt;/p&gt;
+&lt;p&gt;調整Model是重要的工作，試著自己動手做做看，你可以讓你的Model有多準呢？&lt;/p&gt;</content><category term="Tensorflow"></category></entry><entry><title>實作Tensorflow (1)：Simple Logistic Classification on MNIST</title><link href="YCNote/tensorflow-tutorial_1.html" rel="alternate"></link><published>2017-10-23T12:00:00+08:00</published><updated>2017-10-23T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-10-23:YCNote/tensorflow-tutorial_1.html</id><summary type="html">&lt;p&gt;初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。&lt;/p&gt;
 &lt;p&gt;本單元程式碼可於&lt;a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/01_simple_logistic_classification_on_MNIST.py"&gt;Github&lt;/a&gt;下載。&lt;/p&gt;
 &lt;h3&gt;MNIST Dataset&lt;/h3&gt;
 &lt;p&gt;首先，先&lt;code&gt;import&lt;/code&gt;一些會用到的function，並且定義&lt;code&gt;summary&lt;/code&gt; function以便於觀察ndarray。&lt;/p&gt;
@@ -4071,8 +4208,11 @@ test_acc = 92.02%
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;tensorflow&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;tf&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;matplotlib.pyplot&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;plt&lt;/span&gt;
 
-&lt;span class="c1"&gt;# Config the matplotlib backend as plotting inline …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Tensorflow Tutorial 1: Simple Logistic Classification on MNIST&lt;/p&gt;
-&lt;p&gt;初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。&lt;/p&gt;
+&lt;span class="c1"&gt;# Config the matplotlib backend as plotting inline in IPython&lt;/span&gt;
+&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;matplotlib&lt;/span&gt; &lt;span class="n"&gt;inline&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;summary&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ndarr&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;print …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。&lt;/p&gt;
 &lt;p&gt;本單元程式碼可於&lt;a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/01_simple_logistic_classification_on_MNIST.py"&gt;Github&lt;/a&gt;下載。&lt;/p&gt;
 &lt;h3&gt;MNIST Dataset&lt;/h3&gt;
 &lt;p&gt;首先，先&lt;code&gt;import&lt;/code&gt;一些會用到的function，並且定義&lt;code&gt;summary&lt;/code&gt; function以便於觀察ndarray。&lt;/p&gt;
