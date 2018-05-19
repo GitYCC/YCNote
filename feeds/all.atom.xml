@@ -2837,7 +2837,7 @@ Nearest to &amp;#39;white&amp;#39;:  [&amp;#39;red&amp;#39; &amp;#39;black&amp;#
 &lt;p&gt;Weight-elimination L2 regularizer: 
 &lt;/p&gt;
 &lt;div class="math"&gt;$$
-\sum_{ij} (W_{jk} (ℓ))^2 / [1+ (W_{jk} (ℓ) )^2]
+\sum_{jk} (W_{jk} (ℓ))^2 / [1+ (W_{jk} (ℓ) )^2]
 $$&lt;/div&gt;
 &lt;p&gt;這麼一來不管W大或小，它受到抑制的值大小接近的 (Weight-elimination L2 regularizer微分為 -1次方)，因此就可以使得部分W可以為0，達成Sparse的目的。&lt;/p&gt;
 &lt;p&gt;那為什麼我要特別在Autoencoder講究Sparse特性呢？原因是我們現在正在做的事是Dimension Reduction，做這件事就好像是替原本空間找出新的軸，而這個軸的數量比原本空間軸的數量來得小，達到Dimension Reduction的效果，所以我們會希望這個新的軸彼此間可以不要太多的依賴，什麼是不依賴呢？直角座標就是最不依賴的座標系，X軸和Y軸內積為0，這樣的軸展開的效率是最好的，所以我們希望在做Regularization的同時可以減少新軸的彼此間的依賴性。&lt;/p&gt;
@@ -4297,14 +4297,16 @@ test_acc = 92.02%
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;跟上次的結果比，你會發現有長足的進步，精確率來到90幾，大家可以&lt;a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py"&gt;下載程式碼&lt;/a&gt;，試著調整參數使得DNN Model的精確率可以更高，參數包含：
-&lt;em&gt; Hidden Layer的神經元數量
-&lt;/em&gt; 不同的Activation Function
-&lt;em&gt; 不同的Batch Size
-&lt;/em&gt; 調整Weight Regularization的比例
-&lt;em&gt; 調整Dropout Ratio
-&lt;/em&gt; 選擇不同Optimizer
-* 使得DNN更深&lt;/p&gt;
+&lt;p&gt;跟上次的結果比，你會發現有長足的進步，精確率來到90幾，大家可以&lt;a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py"&gt;下載程式碼&lt;/a&gt;，試著調整參數使得DNN Model的精確率可以更高，參數包含：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hidden Layer的神經元數量&lt;/li&gt;
+&lt;li&gt;不同的Activation Function&lt;/li&gt;
+&lt;li&gt;不同的Batch Size&lt;/li&gt;
+&lt;li&gt;調整Weight Regularization的比例&lt;/li&gt;
+&lt;li&gt;調整Dropout Ratio&lt;/li&gt;
+&lt;li&gt;選擇不同Optimizer&lt;/li&gt;
+&lt;li&gt;使得DNN更深&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;調整Model是重要的工作，試著自己動手做做看，你可以讓你的Model有多準呢？&lt;/p&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",

@@ -98,7 +98,7 @@
 <p>Weight-elimination L2 regularizer: 
 </p>
 <div class="math">$$
-\sum_{ij} (W_{jk} (ℓ))^2 / [1+ (W_{jk} (ℓ) )^2]
+\sum_{jk} (W_{jk} (ℓ))^2 / [1+ (W_{jk} (ℓ) )^2]
 $$</div>
 <p>這麼一來不管W大或小，它受到抑制的值大小接近的 (Weight-elimination L2 regularizer微分為 -1次方)，因此就可以使得部分W可以為0，達成Sparse的目的。</p>
 <p>那為什麼我要特別在Autoencoder講究Sparse特性呢？原因是我們現在正在做的事是Dimension Reduction，做這件事就好像是替原本空間找出新的軸，而這個軸的數量比原本空間軸的數量來得小，達到Dimension Reduction的效果，所以我們會希望這個新的軸彼此間可以不要太多的依賴，什麼是不依賴呢？直角座標就是最不依賴的座標系，X軸和Y軸內積為0，這樣的軸展開的效率是最好的，所以我們希望在做Regularization的同時可以減少新軸的彼此間的依賴性。</p>
