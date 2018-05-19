@@ -2778,8 +2778,12 @@ Nearest to &amp;#39;white&amp;#39;:  [&amp;#39;red&amp;#39; &amp;#39;black&amp;#
 &lt;p&gt;實現Autoencoder和之前DNN並沒有太大的差異，只有兩點要特別提醒一下。&lt;/p&gt;
 &lt;p&gt;第一點，以下我會特別把&lt;code&gt;encoder&lt;/code&gt;額外的在&lt;code&gt;structure&lt;/code&gt;裡頭輸出出來，並且增加新的函數&lt;code&gt;encode&lt;/code&gt;，讓使用者可以使用Train好的Encoder來做Encode。&lt;/p&gt;
 &lt;p&gt;第二點，以下的Regularizer不是採用單純的L2 Regularizer，我將會使用Weight-Elimination L2 Regularizer，這個Regularizer的好處是會使得權重接近Sparse，也就是說權重會留下比較多的0，這有一個好處，就是每個神經元彼此之間的依賴減少了，因為內積(評估相依性)時有0的那個維度將不會有所貢獻。&lt;/p&gt;
-&lt;p&gt;Weight-Elimination L2 Regularizer有這樣的效果原因是這樣的，L2 Regularizer在抑制W的方法是，如果W的分量大的話就抑制多一點，如果分量小就抑制少一點（因為W&lt;sup&gt;2&lt;/sup&gt;微分為一次），所以最後會留下很多不為0的微小分量，不夠Sparse，這樣的Regularization顯然不夠好，L1 Regularizer可以解決這個問題（因為在大部分位置微分為常數），但不幸的是它無法微分，沒辦法作Backpropagation，所以就有了L2 Regularizer的衍生版本，&lt;/p&gt;
-&lt;p&gt;Weight-elimination L2 regularizer: 𝚺[(W&lt;sub&gt;jk&lt;/sub&gt;(ℓ))&lt;sup&gt;2&lt;/sup&gt;]/[1+(W&lt;sub&gt;jk&lt;/sub&gt;(ℓ))&lt;sup&gt;2&lt;/sup&gt;]&lt;/p&gt;
+&lt;p&gt;Weight-Elimination L2 Regularizer有這樣的效果原因是這樣的，L2 Regularizer在抑制W的方法是，如果W的分量大的話就抑制多一點，如果分量小就抑制少一點（因為&lt;span class="math"&gt;\(W^2\)&lt;/span&gt;微分為一次），所以最後會留下很多不為0的微小分量，不夠Sparse，這樣的Regularization顯然不夠好，L1 Regularizer可以解決這個問題（因為在大部分位置微分為常數），但不幸的是它無法微分，沒辦法作Backpropagation，所以就有了L2 Regularizer的衍生版本，&lt;/p&gt;
+&lt;p&gt;Weight-elimination L2 regularizer: 
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\sum_{ij} (W_{jk} (ℓ))^2 / [1+ (W_{jk} (ℓ) )^2]
+$$&lt;/div&gt;
 &lt;p&gt;這麼一來不管W大或小，它受到抑制的值大小接近的 (Weight-elimination L2 regularizer微分為 -1次方)，因此就可以使得部分W可以為0，達成Sparse的目的。&lt;/p&gt;
 &lt;p&gt;那為什麼我要特別在Autoencoder講究Sparse特性呢？原因是我們現在正在做的事是Dimension Reduction，做這件事就好像是替原本空間找出新的軸，而這個軸的數量比原本空間軸的數量來得小，達到Dimension Reduction的效果，所以我們會希望這個新的軸彼此間可以不要太多的依賴，什麼是不依賴呢？直角座標就是最不依賴的座標系，X軸和Y軸內積為0，這樣的軸展開的效率是最好的，所以我們希望在做Regularization的同時可以減少新軸的彼此間的依賴性。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;print_function&lt;/span&gt;
@@ -3222,7 +3226,62 @@ test_loss =    0.0307
 
 
 &lt;p&gt;&lt;img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/04_output_15_1.png"&gt;&lt;/p&gt;
-&lt;p&gt;上面圖片第一排為原圖，第二排是加完雜訊後的結果，第三排是經過Autoencoder後的圖，傑克真的是太神奇啦！所有的雜訊都被消除掉了，特別注意，這裡我的Regularization下的特別重，原因是雜訊增多了，也更容易Overfitting，所以要下更多的Regularization才能抑制它。&lt;/p&gt;</content><category term="Tensorflow"></category></entry><entry><title>實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)</title><link href="YCNote/tensorflow-tutorial_3.html" rel="alternate"></link><published>2017-11-12T12:00:00+08:00</published><updated>2017-11-12T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-11-12:YCNote/tensorflow-tutorial_3.html</id><summary type="html">&lt;p&gt;這一章我們終於要討論到影像辨識的重頭戲啦！通常，處理影像類別我們會用Convolutional Neurel Network，聽起來很難很厲害，不過只要了解背後概念你就知道為什麼要這麼做了，讓我們看下去。&lt;/p&gt;
+&lt;p&gt;上面圖片第一排為原圖，第二排是加完雜訊後的結果，第三排是經過Autoencoder後的圖，傑克真的是太神奇啦！所有的雜訊都被消除掉了，特別注意，這裡我的Regularization下的特別重，原因是雜訊增多了，也更容易Overfitting，所以要下更多的Regularization才能抑制它。&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="Tensorflow"></category></entry><entry><title>實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)</title><link href="YCNote/tensorflow-tutorial_3.html" rel="alternate"></link><published>2017-11-12T12:00:00+08:00</published><updated>2017-11-12T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:None,2017-11-12:YCNote/tensorflow-tutorial_3.html</id><summary type="html">&lt;p&gt;這一章我們終於要討論到影像辨識的重頭戲啦！通常，處理影像類別我們會用Convolutional Neurel Network，聽起來很難很厲害，不過只要了解背後概念你就知道為什麼要這麼做了，讓我們看下去。&lt;/p&gt;
 &lt;p&gt;本單元程式碼可於&lt;a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/03_CNN_classification_on_MNIST.py"&gt;Github&lt;/a&gt;下載。&lt;/p&gt;
 &lt;h3&gt;影像有什麼特性&lt;/h3&gt;
 &lt;p&gt;來想一下，影像具備了什麼特性？&lt;/p&gt;

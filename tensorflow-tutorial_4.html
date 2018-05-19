@@ -94,8 +94,12 @@
 <p>實現Autoencoder和之前DNN並沒有太大的差異，只有兩點要特別提醒一下。</p>
 <p>第一點，以下我會特別把<code>encoder</code>額外的在<code>structure</code>裡頭輸出出來，並且增加新的函數<code>encode</code>，讓使用者可以使用Train好的Encoder來做Encode。</p>
 <p>第二點，以下的Regularizer不是採用單純的L2 Regularizer，我將會使用Weight-Elimination L2 Regularizer，這個Regularizer的好處是會使得權重接近Sparse，也就是說權重會留下比較多的0，這有一個好處，就是每個神經元彼此之間的依賴減少了，因為內積(評估相依性)時有0的那個維度將不會有所貢獻。</p>
-<p>Weight-Elimination L2 Regularizer有這樣的效果原因是這樣的，L2 Regularizer在抑制W的方法是，如果W的分量大的話就抑制多一點，如果分量小就抑制少一點（因為W<sup>2</sup>微分為一次），所以最後會留下很多不為0的微小分量，不夠Sparse，這樣的Regularization顯然不夠好，L1 Regularizer可以解決這個問題（因為在大部分位置微分為常數），但不幸的是它無法微分，沒辦法作Backpropagation，所以就有了L2 Regularizer的衍生版本，</p>
-<p>Weight-elimination L2 regularizer: 𝚺[(W<sub>jk</sub>(ℓ))<sup>2</sup>]/[1+(W<sub>jk</sub>(ℓ))<sup>2</sup>]</p>
+<p>Weight-Elimination L2 Regularizer有這樣的效果原因是這樣的，L2 Regularizer在抑制W的方法是，如果W的分量大的話就抑制多一點，如果分量小就抑制少一點（因為<span class="math">\(W^2\)</span>微分為一次），所以最後會留下很多不為0的微小分量，不夠Sparse，這樣的Regularization顯然不夠好，L1 Regularizer可以解決這個問題（因為在大部分位置微分為常數），但不幸的是它無法微分，沒辦法作Backpropagation，所以就有了L2 Regularizer的衍生版本，</p>
+<p>Weight-elimination L2 regularizer: 
+</p>
+<div class="math">$$
+\sum_{ij} (W_{jk} (ℓ))^2 / [1+ (W_{jk} (ℓ) )^2]
+$$</div>
 <p>這麼一來不管W大或小，它受到抑制的值大小接近的 (Weight-elimination L2 regularizer微分為 -1次方)，因此就可以使得部分W可以為0，達成Sparse的目的。</p>
 <p>那為什麼我要特別在Autoencoder講究Sparse特性呢？原因是我們現在正在做的事是Dimension Reduction，做這件事就好像是替原本空間找出新的軸，而這個軸的數量比原本空間軸的數量來得小，達到Dimension Reduction的效果，所以我們會希望這個新的軸彼此間可以不要太多的依賴，什麼是不依賴呢？直角座標就是最不依賴的座標系，X軸和Y軸內積為0，這樣的軸展開的效率是最好的，所以我們希望在做Regularization的同時可以減少新軸的彼此間的依賴性。</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
@@ -539,6 +543,61 @@ test_loss =    0.0307
 
 <p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/04_output_15_1.png"></p>
 <p>上面圖片第一排為原圖，第二排是加完雜訊後的結果，第三排是經過Autoencoder後的圖，傑克真的是太神奇啦！所有的雜訊都被消除掉了，特別注意，這裡我的Regularization下的特別重，原因是雜訊增多了，也更容易Overfitting，所以要下更多的Regularization才能抑制它。</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
 
 
         
