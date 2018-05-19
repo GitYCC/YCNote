@@ -89,17 +89,17 @@
 <p><img alt="word2vec" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.008.jpeg"></p>
 <p>實作上如上圖所示，我們輸入一個字詞，譬如"cat"，通常會將他轉成One-hot encoding表示，但要注意喔！文本的字彙量是非常龐大的，所以當我們使用One-hot encoding表示時，將會出現一個非常長但Sparse的向量，相同的輸出層也同樣是一個很長的One-hot encoding，它的維度會和輸入層一樣大，因為我們要分析的字彙在輸入和輸出是一樣多的。</p>
 <p>然後，和Autoencoder使用一樣的手法，中間的Hidden Layer放置低維度、少神經元的一層，但不同於Autoencoder，Word2Vec所有的轉換都是線性的，沒有非線性的Activation Function夾在其中，為什麼呢？因為我們的輸入是Sparse的而且只有0和1的差別，所以每一條通路就變成只有導通或不導通的差別，Activation Function有加等於沒加，使用線性就足夠了。</p>
-<p>這個中間的Hidden Layer被稱為Embedding Matrix，它做了一個線性的Dimension Reduction，將原本高維度的One-hot encoding降低成低維度，然後再透過一個線性模型轉換回去原本的維度。假設字彙的數量有N個，所以輸入矩陣X是一個1xN的矩陣，輸出的矩陣同樣也是1xN的矩陣，當我先做一個線性的Dimension Reduction，將維度降到d維，此時Embedding Matrix會是一個Nxd的矩陣V，然後再由線性模型轉換回去原本的維度，這個轉換矩陣W是一個Nxd矩陣，因此綜合上述，可用一個簡潔的表示式表示：Y=W<sup>T</sup>VX，我們的目標就是找出這個W和V矩陣的每個元素。</p>
+<p>這個中間的Hidden Layer被稱為Embedding Matrix，它做了一個線性的Dimension Reduction，將原本高維度的One-hot encoding降低成低維度，然後再透過一個線性模型轉換回去原本的維度。假設字彙的數量有N個，所以輸入矩陣X是一個1xN的矩陣，輸出的矩陣同樣也是1xN的矩陣，當我先做一個線性的Dimension Reduction，將維度降到d維，此時Embedding Matrix會是一個Nxd的矩陣V，然後再由線性模型轉換回去原本的維度，這個轉換矩陣W是一個Nxd矩陣，因此綜合上述，可用一個簡潔的表示式表示：<span class="math">\(Y=W^T VX\)</span>，我們的目標就是找出這個W和V矩陣的每個元素。</p>
 <p>你會想說線性模型很簡單啊！就是仿照Autoencoder的作法，然後把Activation Function拿掉不就了事了，並且因為輸出是One-hot Encoding所以最後套用Softmax，那不就輕鬆完成！但是真正的大魔王就出在字彙量，字彙量一旦很大，事情就變得不可收拾了，而且字彙量是一定小不得的，那怎麼辦？</p>
 <p>在Dimension Reduction我們可以採取一個快速的方法，因為除了我要表示的字的位置是1以外其他都是0，所以其他都可以不看，我們就直接看是在第幾個位置上是1，然後再到Embedding Matrix上找到相應的行直接取出就是答案了，這樣查詢的動作，在Tensorflow中可以使用<code>tf.nn.embedding_lookup</code>來辦到。</p>
 <p>再接下來最後的Cross-Entropy Loss計算也非常龐大，因為有幾個字彙就需要累加幾組數字，我們有一招偷吃步的方法叫做「Sampled Softmax」，作法是這樣的，我們不去計算全部詞彙的Cross-Entropy，而是選擇幾組詞彙來評估Cross-Entropy，在選擇上我們會隨機挑選一些Labels和預測結果差異度很大的詞彙(稱為Negative Examples)來算Cross-Entropy，我們在Tensorflow可以使用<code>tf.nn.sampled_softmax_loss</code>來辦到「Sampled Softmax」。</p>
 <p>我們先不管輸入和輸出究竟怎麼取得，如果我們成功的建立了輸入和輸出的上下文關係，此時中間的Embedding空間正是精華的所在，經過剛剛推論，我們預期在這個空間當中，相似的詞彙會彼此靠近，我們評估兩個向量的相似性可以使用Cosine來評估，當兩向量的夾角越小代表它們越是相似，待會的實作當中我們將會利用Cosine來建立Similarity的大小，藉此來找到前幾個和它很靠近的詞彙。</p>
-<p>另外，經研究指出這個Embedding空間的效果不只是可以算出詞彙間的相似性，還可以顯示詞彙間的比較關係，例如：北京之於中國，等同於台北之於台灣，這樣的比較關係也顯示在這個Embedding空間裡頭，所以在這空間裡會有以下的向量關係式：V<sub>北京</sub>-V<sub>中國</sub>+V<sub>台灣</sub>=V<sub>台北</sub>，是不是很神奇啊！</p>
+<p>另外，經研究指出這個Embedding空間的效果不只是可以算出詞彙間的相似性，還可以顯示詞彙間的比較關係，例如：北京之於中國，等同於台北之於台灣，這樣的比較關係也顯示在這個Embedding空間裡頭，所以在這空間裡會有以下的向量關係式：<span class="math">\(V_{北京} - V_{中國}+V_{台灣}=V_{台北}\)</span>，是不是很神奇啊！</p>
 <p><br/></p>
 <h3>Word2Vec的兩種常用方法：Skip-Gram和CBOW</h3>
 <p><img alt="Skip-Gram和CBOW" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.009.jpeg"></p>
 <p>剛剛一直在講的是中間的結構應該怎麼建立，現在來看看我們可以輸入和輸出哪些詞彙來建立起上下文的關係，有兩種常用的類別：Skip-Gram和CBOW。</p>
-<p>Skip-Gram如上圖所示，當我輸入一個word(t)時，我希望它能輸出它的前文和後文，這是相當直覺的建立上下文的方法，所以如果我希望用前一個字和後一個字來訓練我的Word2Vec，我就會有兩組數據：(w(t),w(t-1))和(w(t),w(t+1))，相當好理解。</p>
+<p>Skip-Gram如上圖所示，當我輸入一個<span class="math">\(word(t)\)</span>時，我希望它能輸出它的前文和後文，這是相當直覺的建立上下文的方法，所以如果我希望用前一個字和後一個字來訓練我的Word2Vec，我就會有兩組數據：<span class="math">\((w(t),w(t-1))\)</span>和<span class="math">\((w(t),w(t+1))\)</span>，相當好理解。</p>
 <p>而CBOW(Continuous Bag of Words)使用另外一種方法來建立上下文關係，它將一排字挖掉中間一個字，然後希望由上下文的關係有辦法猜出中間那個字，就像是填空題，此時輸入層就變成會有多於1個字，那該怎麼處理，答案是轉換到Embedding空間後再相加平均，因為是線性轉換，所以直接線性累加就可以了。</p>
 <p><br/></p>
 <h3>準備文本語料庫</h3>
@@ -871,6 +871,61 @@ Nearest to &#39;white&#39;:  [&#39;red&#39; &#39;black&#39; &#39;blue&#39; &#39;
 <ul>
 <li>https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/5_word2vec.ipynb</li>
 </ul>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
 
 
         
