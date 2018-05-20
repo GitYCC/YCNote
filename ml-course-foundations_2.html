@@ -100,7 +100,7 @@
 <p><strong>總結一下機器學習的條件，我們必須建立一個 Learning Model可以確保<span class="math">\(E_{in}\approx E_{out}\)</span>，所以在Learning Algorithm選出最小<span class="math">\(E_{in}\)</span>的Hypothesis，同時這組Hypothesis也可以很好的預測Out-sample，我們就可以說機器已經會學習了。</strong></p>
 <h3><span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異</h3>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.005.jpeg"></p>
-<p>剛剛我們已經提到了如果機器能學習，那就必須先確保<span class="math">\(E_{in} \approx E_{out}\)</span>，下面我會引入Hoeffding不等式來說明這個條件怎麼成立。</p>
+<p>剛剛我們已經提到了如果機器能學習，那就必須先確保<span class="math">\(E_{in} \approx E_{out}​\)</span>，下面我會引入Hoeffding不等式來說明這個條件怎麼成立。</p>
 <p>先想像一下我有一個桶子，這個桶子裝了兩種顏色的小球，分別為橘色和綠色，今天如果桶子內橘色球佔的比例為<span class="math">\(μ\)</span>，而今天我們從中隨機抽樣出<span class="math">\(N\)</span>顆小球，並且計算出這<span class="math">\(N\)</span>顆小球中橘色佔的比例為<span class="math">\(ν\)</span>，此時我們可以想像的到，<span class="math">\(μ=ν\)</span>不一定會成立，但<span class="math">\(μ\)</span>也不至於離<span class="math">\(ν\)</span>太遠，所以Hoeffding不等式就告訴我們<span class="math">\(|μ-ν|\)</span>會被限制在一個範圍內，表示為：
 </p>
 <div class="math">$$
