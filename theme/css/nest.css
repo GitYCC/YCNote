@@ -442,6 +442,6 @@ blockquote{
     color: #fff;
 }
 
-.MathJax{
+.MathJax .math .{
     font-size: 80%;
 }
