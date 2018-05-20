@@ -100,7 +100,7 @@
 <p><strong>總結一下機器學習的條件，我們必須建立一個 Learning Model可以確保<span class="math">\(E_{in}\approx E_{out}\)</span>，所以在Learning Algorithm選出最小<span class="math">\(E_{in}\)</span>的Hypothesis，同時這組Hypothesis也可以很好的預測Out-sample，我們就可以說機器已經會學習了。</strong></p>
 <h3><span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異</h3>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.005.jpeg"></p>
-<p>剛剛我們已經提到了如果機器能學習，那就必須先確保<span class="math">\(E_{in} \approx E_{out}​\)</span>，下面我會引入Hoeffding不等式來說明這個條件怎麼成立。</p>
+<p>剛剛我們已經提到了如果機器能學習，那就必須先確保<span class="math">\(E_{in} \approx E_{out}\)</span>，下面我會引入Hoeffding不等式來說明這個條件怎麼成立。</p>
 <p>先想像一下我有一個桶子，這個桶子裝了兩種顏色的小球，分別為橘色和綠色，今天如果桶子內橘色球佔的比例為<span class="math">\(μ\)</span>，而今天我們從中隨機抽樣出<span class="math">\(N\)</span>顆小球，並且計算出這<span class="math">\(N\)</span>顆小球中橘色佔的比例為<span class="math">\(ν\)</span>，此時我們可以想像的到，<span class="math">\(μ=ν\)</span>不一定會成立，但<span class="math">\(μ\)</span>也不至於離<span class="math">\(ν\)</span>太遠，所以Hoeffding不等式就告訴我們<span class="math">\(|μ-ν|\)</span>會被限制在一個範圍內，表示為：
 </p>
 <div class="math">$$
@@ -140,14 +140,25 @@ $$</div>
 <h3>VC Generalization Bound</h3>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.007.jpeg"></p>
 <p>問題出在這裡，我們在Multi-Bin Hoeffding’s Inequality中採用了一個假設，就是假設每組Hypotheses的Bad Data彼此間都沒有重疊，所以在<span class="math">\(M→∞\)</span>的情況下，當然會有一個無限大的上限值，但如果考慮了Bad Data重疊的情形，縱使<span class="math">\(M→∞\)</span>的情況下還是有機會把Bad Data的出現機率壓在一個有限的定值之下。</p>
-<p>我們回到二元分類問題，看一下上圖中左側的圖例，如果今天在二維平面上做二元分類，當<span class="math">\(n=1\)</span>時，就算你的Hypotheses有無限多組，對於一組Data來說就只有兩種而已，再來看<span class="math">\(n=2\)</span>的情況，一樣的無限多組的Hypotheses也只能分類成4種。</p>
-<p>因此Hypotheses彼此之間因為Data數量的關係，而出現重疊的狀況。但聰明的你一定想到，如果今天n的數量不斷的增加，則Hypotheses被分類的數量就會增加，Hypotheses彼此之間的重疊就會漸漸減少，我們還是無法限制住Bad Data出現的機率。</p>
-<p>我們繼續看下去，當<span class="math">\(n=3\)</span>，沒有意外的Hypotheses會被分類為8種，那接下來<span class="math">\(n=4\)</span>時，你就會發現一個有趣的現象，開始有一些情況是不會出現在這一組Hypothesis Set的，因此我們擔心因為Data數量增加而造成Hypotheses的種類暴增的情形被排除了，有一些狀況是不會出現的。</p>
-<p>剛剛所提到的分類方式的數量又稱為Dichotomy。在<span class="math">\(n=1\)</span>、<span class="math">\(n=2\)</span>到<span class="math">\(n=3\)</span>的情形，所有列得出來的方式都可被完整分類開來，我們稱這情形為Shatter，但是到了n=4的時候，有些不可能被分類的情形出現了，稱為不可被Shatter，另外又稱此情形開始發生的那點為Break Point，這邊注意一下喔! 會不會有Break Point取決於你的Hypothesis Set長怎麼樣，現在是因為線性二元分類的Hypothesis Set，所以Break Point才會在<span class="math">\(n=4\)</span>，其他的Hypothesis Set就不一定了。</p>
-<p>Break Point的出現非常重要，他所代表的是Bad Data的出現機率不會無所限制的大下去，因此把這概念帶入Multi-Bin Hoeffding’s Inequality，經過繁複的計算，就可以得到上圖右側的公式，原本的M消失了，取而代之的是Growth Function，Growth Function與Data數量<span class="math">\(N\)</span>有關，這就是我們剛剛解說的，決定Hypothesis Set的種類的其實是 Data的數量<span class="math">\(N\)</span>。</p>
+<p>我們回到二元分類問題，看一下上圖中左側的圖例，如果今天在二維平面上做二元分類，當數據量只有1個<span class="math">\(n=1\)</span>時，就算你的切法有無窮多種，但對於一組Data來說就只有兩類Hypotheses而已，再來看<span class="math">\(n=2\)</span>的情況，一樣的無限多組的切法但Hypotheses也只能歸類成4類。</p>
+<p>因此Hypotheses的彼此之間是有重疊的，聰明的你一定想到，如果今天<span class="math">\(n\)</span>的數量不斷的增加，則Hypotheses被分類的數量就會增加，Hypotheses彼此之間的重疊就會漸漸減少，我們還是無法限制住Bad Data的數量。</p>
+<p>先別緊張，我們繼續看下去，當<span class="math">\(n=3\)</span>，沒有意外的Hypotheses會被分類為8類，那接下來<span class="math">\(n=4\)</span>時，你就會發現一個有趣的現象，開始有一些分類情況是不會出現的，因為它無法被一分為二，因此我們擔心因為Data數量增加而造成Hypotheses的種類暴增的情形被排除了，有一些狀況是不會出現的，Hypotheses是有重疊的。</p>
+<p>剛剛所提到的分類方式的數量稱為Dichotomy。在<span class="math">\(n=1\)</span>、<span class="math">\(n=2\)</span>到<span class="math">\(n=3\)</span>的情形，所有列得出來的方式都可被完整分類開來，我們稱這情形為Shatter，但是到了<span class="math">\(n=4\)</span>的時候，有些不可能被分類的情形出現了，稱為不可被Shatter，另外我們又稱此情形開始發生的那點為Break Point，這邊注意一下喔! 會不會存有Break Point取決於你的Hypothesis Set長怎麼樣，現在是因為線性二元分類的Hypothesis Set，所以Break Point才會在<span class="math">\(n=4\)</span>，其他的Hypothesis Set就不一定了。</p>
+<p>Break Point的出現非常重要，他所代表的是Bad Data的出現機率不會無所限制的大下去，因此把這概念帶入Multi-Bin Hoeffding’s Inequality，經過繁複的計算，就可以得到以下公式：
+</p>
+<div class="math">$$
+\mathbb{P}[\exists h\in \mathbb{H}\ s.t.\ |E_{in}(h)-E_{out}(h)|&gt;ε] \leq 4m_{\mathbb{H}}(2N) exp(-ε^2N/8)
+$$</div>
+<p>
+，原本的<span class="math">\(M\)</span>消失了，取而代之的是Growth Function  <span class="math">\(m_{\mathbb{H}}(2N)\)</span>，Growth Function與Data數量<span class="math">\(N\)</span>有關，這就是我們剛剛解說的，決定Hypothesis Set的種類的其實是 Data的數量<span class="math">\(N\)</span>。</p>
 <p>那麼Growth Function要怎麼和Break Point連結起來呢？</p>
-<p>先定義一下VC Dimension：<span class="math">\(d_{VC}= Break Point-1\)</span>，Break Point代表首次出現不Shatter的情況，那比它小一級代表的正是最大可以Shatter的點，上面的例子中<span class="math">\(d_{VC}=3\)</span>。而這個VC Dimension就可以和我們在意的Growth Function連接起來，經過數學推倒可以得到上圖右側下方的關係式。</p>
-<p>所以我們就知道啦！<strong>只要有Break Point存在，VC Dimension就是一個有限的值，也因此Growth Function是一個有限的值，VC Bound就產生了，就可以確保Bad Data出現的機率被壓在一個定值之下，所以一樣的只要資料量<span class="math">\(N\)</span>夠多就可以確保<span class="math">\(E_{in} \approx E_{out}\)</span>，機器將可以學習。</strong></p>
+<p>先定義一下VC Dimension：<span class="math">\(d_{VC}= Break Point-1\)</span>，Break Point代表首次出現不Shatter的情況，那比它小一級代表的正是最大可以Shatter的點，上面的例子中<span class="math">\(d_{VC}=3\)</span>。而這個VC Dimension就可以和我們在意的Growth Function連接起來，經過數學推倒可以得到以下關係式：
+</p>
+<div class="math">$$
+m_{\mathbb{H}}(n) = n^{d_{VC}},\ d_{VC} = BreakPoint-1
+$$</div>
+<p>
+所以我們就知道啦！<strong>只要有Break Point存在，VC Dimension就是一個有限的值，也因此Growth Function是一個有限的值，VC Bound就產生了，就可以確保Bad Data出現的機率被壓在一個定值之下，所以一樣的只要資料量<span class="math">\(N\)</span>夠多就可以確保<span class="math">\(E_{in} \approx E_{out}\)</span>，機器將可以學習。</strong></p>
 <p>另外一件重要的事，VC Dimension在數學上是有意義的，<strong><span class="math">\(d_{VC} \approx 可調控變數的個數\)</span></strong>，像是上述的二維二元分類問題，它的可調控變數有<span class="math">\(w_0\)</span>, <span class="math">\(w_1\)</span> 和 <span class="math">\(w_2\)</span>，總共3個，所以<span class="math">\(d_{VC}=3\)</span>。<strong>也就是說Hypothesis Set的可調變參數如果是有限，大部分都可以做機器學習。</strong></p>
 <h3>機器要能學習的三要素</h3>
 <p>前面拉哩拉雜的講了一堆，終於要推出我們的結論了! 所以如果剛剛的數學讓你感到很挫敗，沒關係，讀懂這段那就足夠了。</p>
@@ -160,14 +171,14 @@ $$</div>
 <p>眼尖的你有沒有發現矛盾啊! 可以調控的變數很少，我們能確保<span class="math">\(E_{in} \approx E_{out}​\)</span>，但是如果我想要找到更小的<span class="math">\(E_{in}​\)</span> 又必須有更多的調控變數，這個矛盾是機器學習上一個重要的課題，<strong>解法是我們必須要能找到適當的調控變數數量，也就是適當大小的<span class="math">\(d_{VC}\)</span> </strong>。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.02.jpeg"></p>
 <p>from: <a href="https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf">https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf</a></p>
-<p>上圖中，我們把VC Generalization Bound公式帶入Growth Function和<span class="math">\(d_{VC}\)</span>的關係式，並且設<span class="math">\(δ\)</span> 為最大可以容忍的Bad Data出現機率，把它帶入取代掉<span class="math">\(ε\)</span>，整理一下，就可以推出上圖的公式，後面帶根號的紅字稱為Model Complexity，這一項代表的是Hypothesis Set造成的模型複雜度，我們可以看到它隨著<span class="math">\(d_{VC}\)</span>增加而增加。Model Complexity越大代表Bad Data更容易出現，所以<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>開始被帶開了。</p>
+<p>上圖中，我們把VC Generalization Bound公式帶入Growth Function和<span class="math">\(d_{VC}\)</span>的關係式，並且設<span class="math">\(δ\)</span> 為最大可以容忍的Bad Data出現機率，把它帶入取代掉<span class="math">\(ε\)</span>，整理一下，就可以推出上圖的公式，<span class="math">\(\Omega (N,\mathbb{H},δ)\)</span>稱為Model Complexity，這一項代表的是Hypothesis Set的大小造成的模型複雜度，它隨著<span class="math">\(d_{VC}\)</span>增加而增加。Model Complexity越大代表Bad Data更容易出現，所以<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>開始被帶開了。</p>
 <p><strong>這個現象有一個很常見的名字叫做Overfitting，指的是使用非常複雜的Model來Fitting，雖然可以把手頭上的數據Fit的很漂亮，但是拿到其他的數據來看就會發現這Model的預測性非常的差，原因就是因為Model Complexity造成<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>脫鉤了，所以選擇一個複雜度適中的Model是很重要的。</strong></p>
 <h3>機器學習架構一般化</h3>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.008.jpeg"></p>
-<p>最後我們來總結一下機器學習的流程，上圖中是之前提到的機器學習的架構，額外的我們還需要考慮到一些真實情形，</p>
+<p>最後我們來總結一下機器學習的流程，上圖中是之前提到的機器學習的架構並額外考慮一些真實情形，</p>
 <ol>
 <li>每筆Data出現的機會不一定，同樣的採樣結果也是會受機率的影響，所以上圖中標示為<span class="math">\(\mathbb{P} (x)\)</span>，這個修改並不會影響機器學習的流程和結果。</li>
-<li>Data可能會受到Noise的影響，所以給定<span class="math">\(X_n​\)</span>並不一定會百分之一百得到<span class="math">\(y_n​\)</span>，他存在著可能會出錯，上圖標示為<span class="math">\(\mathbb{P}(y|x)​\)</span>，我們可以增大我們採樣的數量<span class="math">\(N​\)</span>來減少Noise的影響。</li>
+<li>Data可能會受到Noise的影響，所以給定<span class="math">\(X_n\)</span>並不一定會百分之一百得到<span class="math">\(y_n\)</span>，他存在著可能會出錯，上圖標示為<span class="math">\(\mathbb{P}(y|x)\)</span>，我們可以增大我們採樣的數量<span class="math">\(N\)</span>來減少Noise的影響。</li>
 <li>我們是採用<span class="math">\(E_{in}\)</span>來當作選擇Model參數的指標，因此我們需要訂出Error的評估方式，常見的有<span class="math">\(E_{squared} = (y_n - y_{prediction})^2\)</span>。</li>
 </ol>
 <p>跟著架構我們就有一套機器學習的<strong>標準流程</strong>，</p>
