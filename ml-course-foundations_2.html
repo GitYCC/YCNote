@@ -89,21 +89,44 @@
 <h3>機器可以學習嗎?</h3>
 <p><img alt="MachineLearningFoundations.001" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.001.jpeg"></p>
 <p>還記得上面這張圖嗎? 上次帶大家初探了Machine Learning(ML)的基本架構，可以把整個概念總結成上面這張圖。</p>
-<p>我們來複習一下，先從最上面的盆子開始看起，我們用Target Function代表你想要學習的技能，在非常理想的情況下，也就是沒有noise的情況，每組輸入變數 <span class="math">\(X_n\)</span>都會找到一組精確的輸出 <span class="math">\(y_n\)</span>，而這個Target Function能產生多個Data，圖中那些小球就是代表各個單筆的Data，今天我從中隨機抽取出N組Data來做機器學習，接下來Learning Algorithm會利用這些取出的Data去從Hypothesis Set中找出最像Target Function的Hypothesis，那這組Hypothesis就成了我們學習出來的結果，我們可以利用這個結果來預測新的問題。</p>
+<p>我們來複習一下，先從最上面的盆子開始看起，我們用Target Function代表你想要學習的技能，在非常理想的情況下，也就是沒有noise的情況，每組輸入變數 <span class="math">\(X_n\)</span>都會找到一組精確的輸出 <span class="math">\(y_n\)</span>，而這個Target Function能產生多個Data，圖中那些小球就是代表由Target Function產生的Data，今天我從中隨機抽取出<span class="math">\(N\)</span>組Data來做機器學習，接下來Learning Algorithm會利用這些取出的Data去找出最吻合的Hypothesis，那這組Hypothesis就成了我們學習出來的結果，我們可以利用這個結果來預測新的問題。</p>
 <p>那麼上面這張圖真的合理嗎? 我們真的有辦法用上面的方法讓機器學習嗎? </p>
-<p>先介紹幾個名詞，我們會稱<strong>抽樣的Data為In-sample Data</strong>，並且稱<strong>Hypothesis預測In-sample Data的誤差為In-sample Error，表示為<span class="math">\(E_{in}\)</span></strong>，因此Learning Algorithm的目的就是找出那組Hypothesis使得<span class="math">\(E_{in}\)</span>最小。</p>
-<p>回想一下二元分類問題，在上一篇當中我們使用PLA來挑選Hypothesis Set，還記得我們做了什麼事來確保我們可以得到最佳解嗎? 那就是Pocket的方法，Pocket的目的就是去留住一組能預測最好的Hypothesis，也就是能保留一組參數使得<span class="math">\(E_{in}\)</span>最小。</p>
+<p>先介紹幾個名詞，我們會稱<strong>抽樣的Data為In-sample Data</strong>，並且稱<strong>Hypothesis預測In-sample Data的誤差為In-sample Error，記作<span class="math">\(E_{in}\)</span></strong>，因此Learning Algorithm的目的就是找出那組Hypothesis使得<span class="math">\(E_{in}\)</span>最小。</p>
+<p>回想一下二元分類問題，在上一篇當中我們使用PLA來挑選Hypothesis Set，還記得我們做了什麼事來確保我們可以得到最佳解嗎? 那就是Pocket的方法，Pocket的目的就是去留住一組能預測最好的Hypothesis，也就是能保留一組最佳參數使得<span class="math">\(E_{in}\)</span>最小。</p>
 <p>但如果<span class="math">\(E_{in}\)</span>真的已經可以壓到0了，我們就可以說機器學習已經完成了嗎？</p>
-<p>並不是這樣的，回到目的，我們真正希望的是機器有辦法預測新的問題，所以真正的目標是將取樣前的母群體給預測好。</p>
-<p>我們會稱<strong>抽樣前的母群體為Out-sample Data</strong>，並且稱<strong>Hypothesis預測Out-sample Data的誤差為Out-sample Error，表示為<span class="math">\(E_{out}\)</span>，我們最終目的就是把<span class="math">\(E_{out}\)</span>壓下來</strong>。</p>
-<p>但遺憾的是我們不會真正知道<span class="math">\(E_{out}\)</span>的大小，所以我們只能評估<span class="math">\(E_{in}\)</span>來選取Model參數，因此重要的是需要<span class="math">\(E_{in} \approx E_{out}\)</span>這個條件成立，否則一切的學習都是無效的。</p>
-<p><strong>總結一下機器學習的條件，我們必須建立一個 Learning Model在N筆資料輸入的情況下可以確保<span class="math">\(E_{in}\approx E_{out}\)</span>，所以在Learning Algorithm選出最小<span class="math">\(E_{in}\)</span>的Hypothesis，同時這組Hypothesis也可以很好的預測Out-sample，我們就可以說機器已經會學習了。</strong></p>
+<p>並不是這樣的，回到目的，我們真正希望的是機器有辦法預測新的問題，所以真正的目標是能將「沒有看過的Data」也可以預測好，而不是單單將取樣的Data預測好就夠了。</p>
+<p>我們會稱<strong>未被取樣的Data為Out-sample Data</strong>，並且稱<strong>Hypothesis預測Out-sample Data的誤差為Out-sample Error，記作<span class="math">\(E_{out}\)</span>，我們最終目的就是把<span class="math">\(E_{out}\)</span>壓下來，也就代表可以預測新的問題</strong>。</p>
+<p>但遺憾的是我們不會真正知道<span class="math">\(E_{out}\)</span>，除非我們知道Target Function，所以我們只能評估<span class="math">\(E_{in}\)</span>來選取Model參數，因此重要的是需要<span class="math">\(E_{in} \approx E_{out}\)</span>這個條件要成立，否則一切的學習都是無效的。</p>
+<p><strong>總結一下機器學習的條件，我們必須建立一個 Learning Model可以確保<span class="math">\(E_{in}\approx E_{out}\)</span>，所以在Learning Algorithm選出最小<span class="math">\(E_{in}\)</span>的Hypothesis，同時這組Hypothesis也可以很好的預測Out-sample，我們就可以說機器已經會學習了。</strong></p>
 <h3><span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異</h3>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.005.jpeg"></p>
 <p>剛剛我們已經提到了如果機器能學習，那就必須先確保<span class="math">\(E_{in} \approx E_{out}\)</span>，下面我會引入Hoeffding不等式來說明這個條件怎麼成立。</p>
-<p>我們先想像一下我有一個桶子，這個桶子裝了兩種顏色的很多顆小球，分別為橘色和綠色，今天如果桶子內橘色球佔的比例為μ，而今天我們從中隨機抽樣出<span class="math">\(N\)</span>顆小球，並且計算出這<span class="math">\(N\)</span>顆小球中橘色佔的比例為<span class="math">\(ν\)</span>，此時我們可以想像的到，<span class="math">\(μ=ν\)</span>不一定會成立，但μ也不至於離<span class="math">\(ν\)</span>太遠，所以Hoeffding不等式就告訴我們<span class="math">\(|μ-ν|\)</span>會被限制在一個範圍內，大家可以看一下上圖中左側的圖例。</p>
-<p>接下來我們再把橘球和綠球的意義換成是，一組Hypothesis預測每筆Data的好或壞，預測正確的是綠球，預測失敗的是橘球，所以橘球的比例正是一組Hypothesis的預測誤差，所以在Out-sample就是<span class="math">\(E_{out}\)</span>，在In-sample就是<span class="math">\(E_{in}\)</span>，也就得到上圖右側的公式。</p>
-<p>如果我們定義<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>差異大於 <span class="math">\(ε\)</span> 的情形為Bad Data(不好的數據)，則上述式子保證的是出現這樣Bad Data的機率將被一個定值給限制住，所以只要出現Bad Data的機率不是太大，基本上我們就可以說<span class="math">\(E_{in} \approx E_{out}\)</span>。</p>
+<p>先想像一下我有一個桶子，這個桶子裝了兩種顏色的小球，分別為橘色和綠色，今天如果桶子內橘色球佔的比例為<span class="math">\(μ\)</span>，而今天我們從中隨機抽樣出<span class="math">\(N\)</span>顆小球，並且計算出這<span class="math">\(N\)</span>顆小球中橘色佔的比例為<span class="math">\(ν\)</span>，此時我們可以想像的到，<span class="math">\(μ=ν\)</span>不一定會成立，但<span class="math">\(μ\)</span>也不至於離<span class="math">\(ν\)</span>太遠，所以Hoeffding不等式就告訴我們<span class="math">\(|μ-ν|\)</span>會被限制在一個範圍內，表示為：
+</p>
+<div class="math">$$
+\mathbb{P}[|ν-μ|&gt;ε] \leq 2 exp(-2ε^2N)
+$$</div>
+<p>
+當<span class="math">\(ε\)</span>越大，出現的機率就越低。</p>
+<p>接下來我們再把橘球和綠球的意義換成是，一組Hypothesis預測每筆Data的好或壞，預測正確的是綠球，預測失敗的是橘球，所以對於In-Sample來說，<span class="math">\(μ\)</span> 就是 <span class="math">\(E_{in}\)</span>
+</p>
+<div class="math">$$
+μ = (1/N) \sum_{n=1}^N ⟦h(x)\neq y_n⟧ = E_{in}(h)
+$$</div>
+<p>
+對於Out-Sample來說，<span class="math">\(ν\)</span> 就是 
+</p>
+<div class="math">$$
+ν =  ε_{x \sim P} ⟦h(x)\neq f(x)⟧ = E_{out}(h)
+$$</div>
+<p>
+如果有部分Data，<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>差異非常大，我們會稱為Bad Data(不好的數據)，這就代表<span class="math">\(E_{in}\approx E_{out}\)</span>這個條件漸漸被侵蝕了，但還好！Hoeffding不等式告訴我們，<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>差異大於 <span class="math">\(ε\)</span> 的機率會被限制在一個範圍內，如下：
+</p>
+<div class="math">$$
+\mathbb{P}[|E_{in}(h)-E_{out}(h)|&gt;ε] \leq 2 exp(-2ε^2N)
+$$</div>
+<p>
+因此上述式子保證的是，出現Bad Data的機率將被一個定值給限制住，所以只要出現Bad Data的機率不是太大，基本上我們還是可以說<span class="math">\(E_{in} \approx E_{out}\)</span>。</p>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.006.jpeg"></p>
 <p>而事實上，我們的hypothesis不會只有一個，所以接下來來考慮如果有M個Hypotheses的情況下我們的<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異會怎麼被參數影響。</p>
 <p>如果我們考慮M組Hypotheses，就會發現每種Hypothesis出現Bad Data的地方可能不一樣，因此大大的減少能使用的Data，如上圖左側所示。</p>
