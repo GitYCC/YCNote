@@ -442,6 +442,6 @@ blockquote{
     color: #fff;
 }
 
-.MathJax .math .{
+.MathJax .math span{
     font-size: 80%;
 }
