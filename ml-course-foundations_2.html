@@ -114,7 +114,7 @@ $$</div>
 μ = (1/N) \sum_{n=1}^N ⟦h(x)\neq y_n⟧ = E_{in}(h)
 $$</div>
 <p>
-對於Out-Sample來說，<span class="math">\(ν\)</span> 就是 
+對於Out-Sample來說，<span class="math">\(ν\)</span> 就是 <span class="math">\(E_{out}\)</span>
 </p>
 <div class="math">$$
 ν =  ε_{x \sim P} ⟦h(x)\neq f(x)⟧ = E_{out}(h)
@@ -130,8 +130,13 @@ $$</div>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.006.jpeg"></p>
 <p>而事實上，我們的hypothesis不會只有一個，所以接下來來考慮如果有M個Hypotheses的情況下我們的<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異會怎麼被參數影響。</p>
 <p>如果我們考慮M組Hypotheses，就會發現每種Hypothesis出現Bad Data的地方可能不一樣，因此大大的減少能使用的Data，如上圖左側所示。</p>
-<p>今天如果我有1000份從Target Function取<span class="math">\(N\)</span>個Data的情形，然後只用一個Hypothesis來衡量，根據Hoeffding's Inequality，1000份裡面假設大概5份會出現Bad Data，但今天我再增加一組Hypothesis來衡量，對於這個Hypothesis也可能有自己的5份Bad Data，如果很不幸的，剛剛好這5份Bad Data和前5份沒有重疊，因此用這兩個hypotheses來評估的話，1000份裡頭將會出現10份的Bad Data，由此類推，如果有<span class="math">\(M\)</span>組Hypotheses，最差的情況會發生在什麼時候呢? 那就是<span class="math">\(M\)</span>個Hypotheses的每份Bad Data彼此都沒有交集，夠慘吧! 所以把這些出現Bad Data的機率取聯集得到上圖右側的公式。</p>
-<p>大家現在回想一下上一篇所提到的Perceptron Hypothesis Set就會發現，糟糕了! Perceptron Hypothesis Set 裡有無限多組的Hypotheses，也就是<span class="math">\(M→∞\)</span>，那我們不就需要無限多的Data才能做到<span class="math">\(E_{in} \approx E_{out}\)</span>，否則機器根本不會學習，所以前一篇都在亂講，PLA根本無法學習，等一下，先沉住氣，聽我解釋一下，你就會明白PLA還是可以做到機器學習的。</p>
+<p>今天如果我有1000份從Target Function取<span class="math">\(N\)</span>個Data的情形，然後只用一個Hypothesis來衡量，根據Hoeffding's Inequality，1000份裡面假設大概5份會出現Bad Data，但今天我再增加一組Hypothesis來衡量，對於這個Hypothesis也可能有自己的5份Bad Data，如果很不幸的，剛剛好這5份Bad Data和前5份沒有重疊，因此用這兩個hypotheses來評估的話，1000份裡頭將會出現10份的Bad Data，由此類推，如果有<span class="math">\(M\)</span>組Hypotheses，最差的情況會發生在什麼時候呢? 那就是<span class="math">\(M\)</span>個Hypotheses的每份Bad Data彼此都沒有交集，夠慘吧! 所以把這些出現Bad Data的機率取聯集得到以下式子：
+</p>
+<div class="math">$$
+\mathbb{P}[\exists h\in \mathbb{H}\ s.t.\ |E_{in}(h)-E_{out}(h)|&gt;ε] \leq 2M exp(-2ε^2N)
+$$</div>
+<p>
+大家現在回想一下上一篇所提到的Perceptron Hypothesis Set就會發現，糟糕了! Perceptron Hypothesis Set 裡有無限多組的Hypotheses，也就是<span class="math">\(M→∞\)</span>，那我們不就需要無限多的Data才能做到<span class="math">\(E_{in} \approx E_{out}\)</span>，否則機器根本不會學習，所以前一篇的內容都在亂講，PLA根本無法學習，因為<span class="math">\(E_{in} \approx E_{out}\)</span>，就算<span class="math">\(E_{in}\)</span>很小也不代表學習成立，機器學習是不可能的。等一下！先沉住氣，聽我接下來慢慢解釋，你就會發現還有一線生機。</p>
 <h3>VC Generalization Bound</h3>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.007.jpeg"></p>
 <p>問題出在這裡，我們在Multi-Bin Hoeffding’s Inequality中採用了一個假設，就是假設每組Hypotheses的Bad Data彼此間都沒有重疊，所以在<span class="math">\(M→∞\)</span>的情況下，當然會有一個無限大的上限值，但如果考慮了Bad Data重疊的情形，縱使<span class="math">\(M→∞\)</span>的情況下還是有機會把Bad Data的出現機率壓在一個有限的定值之下。</p>
