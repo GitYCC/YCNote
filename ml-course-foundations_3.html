@@ -98,17 +98,17 @@
 <li>最後評估一下是否有Overfitting的狀況，確保<span class="math">\(E_{in} \approx E_{out}\)</span></li>
 </ol>
 <p>請容許我先不管Model這部份該怎麼建立，我們先來看如何找到最佳參數這部份，<strong>假設今天我知道<span class="math">\(E_{in}\)</span>的評估方法，我該如何找到最佳的參數來使得<span class="math">\(E_{in}\)</span>更小？有一套普遍的方法叫做Gradient Descent</strong>，很強大，甚至連現今流行的「深度學習」找最佳解的機制也是從Gradient Descent衍生出來的。</p>
-<p>想像一下你是一位登山客，你在爬一座由<span class="math">\(E_{in}\)</span>所決定的高山，你的目標是去這座山最低的山谷，也就是<span class="math">\(E_{in}\)</span>最小的地方，因為村莊正在那裡，但是很不幸的你沒有地圖，這個時候有什麼方法可以知道低谷在哪裡呢？答案是就一直下坡吧！反正我知道村莊在山谷裡，那我就一路下山應該就可以找到村莊了，這就是Gradient Descent的精髓。</p>
+<p>想像一下你是一位登山客，你在爬一座由<span class="math">\(E_{in}\)</span>所決定的高山，你的目標是去這座山最低的山谷，也就是<span class="math">\(E_{in}\)</span>最小的地方，因為村莊正在那裡，但是很不幸的你沒有地圖，這個時候有什麼方法可以知道低谷在哪裡呢？最簡單的答案就是一直下坡就對啦！反正我知道村莊在山谷裡，那我就一路下山應該就可以找到村莊了，這就是Gradient Descent的精髓。</p>
 <p>在數學上有一個衡量函數變化的東西，這就是Gradient（梯度），Gradient是一個向量，它的「方向」指向函數值增加量最大的方向，而它的「大小」反應這個變化有多大，其實就是一次微分啦！只不過Gradient推廣到高維度而已。所以我們和這個登山客做一樣的事情，我們朝著下降最多的方向前進，這就是Gradient Descent（梯度下降法），我剛剛說了，梯度是指向函數值增加量最大的方向，那顯然我們往反方向走就可以達到最大下降，所以如果我們有一個Error函數<span class="math">\(E_{in}\)</span>，它的Gradient就是<span class="math">\(\nabla E_{in}\)</span>，那我們的下降方向就是<span class="math">\(- \nabla E_{in}\)</span>。</p>
 <p>來看一下上圖中Gradient Descent的流程，</p>
 <ol>
 <li>定義出Error函數</li>
 <li>Error函數讓我們可以去評估<span class="math">\(E_{in}\)</span></li>
 <li>算出它的梯度<span class="math">\(\nabla E_{in}\)</span></li>
-<li>朝著<span class="math">\(\nabla E_{in}\)</span>的反方向更新參數W，而每次只跨出η大小的一步</li>
+<li>朝著<span class="math">\(\nabla E_{in}\)</span>的反方向更新參數W，而每次只跨出<span class="math">\(η\)</span>大小的一步</li>
 <li>反覆的計算新參數<span class="math">\(W\)</span>的梯度，並一再的更新參數<span class="math">\(W\)</span></li>
 </ol>
-<p>這邊要特別注意，流程中的第四項中，有提到<span class="math">\(η\)</span>，<strong><span class="math">\(η\)</span>稱為Learning Rate，它影響的是更新步伐的大小</strong>，η的選擇要適當，如果<span class="math">\(η\)</span>太小的時候，我們可能要花很多時間才可以走到低點，但如果η太大的話，又可能導致我們在兩個山腰間跳來跳去，甚至越更新越往高處跑，<strong>所以選擇適當的<span class="math">\(η\)</span>相當的重要，所以下次如果你發現<span class="math">\(E_{in}\)</span>一直降不下來甚至在增大，試著將<span class="math">\(η\)</span>減小看看</strong>。另外η也可以是變動的值，我們可以直接設<span class="math">\(η＝|\nabla E_{in}|\)</span>，這麼一來遇到陡坡的時候它就會跨大一點的步伐，遇到緩坡的時候就會跨小步一點，隨狀況調整<span class="math">\(η\)</span>的值。</p>
+<p>這邊要特別注意，流程中的第四項中，有提到<span class="math">\(η\)</span>，<strong><span class="math">\(η\)</span>稱為Learning Rate，它影響的是更新步伐的大小</strong>，<span class="math">\(η\)</span>的選擇要適當，如果<span class="math">\(η\)</span>太小的時候，我們可能要花很多時間才可以走到低點，但如果<span class="math">\(η\)</span>太大的話，又可能導致我們在兩個山腰間跳來跳去，甚至越更新越往高處跑，<strong>所以選擇適當的<span class="math">\(η\)</span>相當的重要，所以下次如果你發現<span class="math">\(E_{in}\)</span>一直降不下來甚至在增大，試著將<span class="math">\(η\)</span>減小看看</strong>。另外<span class="math">\(η\)</span>也可以是變動的值，我們可以直接設<span class="math">\(η＝|\nabla E_{in}|\)</span>，這麼一來遇到陡坡的時候它就會跨大一點的步伐，遇到緩坡的時候就會跨小步一點，隨狀況調整<span class="math">\(η\)</span>的值。</p>
 <p>Gradient Descent (GD, 梯度下降) 有兩個變形，分別為Stochastic Gradient Descent (SGD, 隨機梯度下降) 和 Batch Gradient Descent (BGD, 批次梯度下降)，這差別只在於評估<span class="math">\(\nabla E_{in}\)</span>的時候所考慮的Data數量，正常來說必須要考慮所有的Data，我們才會得到真正的<span class="math">\(E_{in}\)</span>，才有辦法算出正確的<span class="math">\(\nabla E_{in}\)</span>，但這樣所要付出的代價就是較大的計算量。</p>
 <p>所以<strong>Stochastic Gradient Descent的作法是一次只拿一筆Data來求<span class="math">\(\nabla E_{in}\)</span>，並且更新參數W</strong>，這樣的更新方法顯然會比較不穩定，但我們假設，經過好幾輪的更新後，已經完整看過整個數據了，所以平均來說效果和一般的Gradient Descent一樣。</p>
 <p>另外還有一種介於Gradient Descent和Stochastic Gradient Descent之間的作法，稱之為Batch Gradient Descent，它不像Stochastic Gradient Descent那麼極端，一次只評估一組Data，<strong>Batch Gradient Descent一次評估k組數據，並更新參數W</strong>，這是相當好的折衷方案，平衡計算時間和更新穩定度，而且在某些情形下，計算時間還比Stochastic Gradient Descent還快，為什麼呢？GPU的計算方法你可以想像成在做矩陣計算，矩陣元素在計算的時候往往是可以拆開計算的，此時GPU利用它強大的平行化運算將這些元素平行計算，可以大大增進效率，所以如果一次只算一筆資料，反而是沒有利用到GPU的效率，<strong>所以如果你用GPU計算的話，依照你的GPU去設計適當的k值做Batch Gradient Descent，是既有效率又穩定的作法</strong>。</p>
