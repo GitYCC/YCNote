@@ -108,14 +108,14 @@
 <li>朝著<span class="math">\(\nabla E_{in}\)</span>的反方向更新參數W，而每次只跨出<span class="math">\(η\)</span>大小的一步</li>
 <li>反覆的計算新參數<span class="math">\(W\)</span>的梯度，並一再的更新參數<span class="math">\(W\)</span></li>
 </ol>
-<p>這邊要特別注意，流程中的第四項中，有提到<span class="math">\(η\)</span>，<strong><span class="math">\(η\)</span>稱為Learning Rate，它影響的是更新步伐的大小</strong>，<span class="math">\(η\)</span>的選擇要適當，如果<span class="math">\(η\)</span>太小的時候，我們可能要花很多時間才可以走到低點，但如果<span class="math">\(η\)</span>太大的話，又可能導致我們在兩個山腰間跳來跳去，甚至越更新越往高處跑，<strong>所以選擇適當的<span class="math">\(η\)</span>相當的重要，所以下次如果你發現<span class="math">\(E_{in}\)</span>一直降不下來甚至在增大，試著將<span class="math">\(η\)</span>減小看看</strong>。另外<span class="math">\(η\)</span>也可以是變動的值，我們可以直接設<span class="math">\(η＝|\nabla E_{in}|\)</span>，這麼一來遇到陡坡的時候它就會跨大一點的步伐，遇到緩坡的時候就會跨小步一點，隨狀況調整<span class="math">\(η\)</span>的值。</p>
+<p>這邊要特別注意，流程中的第四項中，有提到<span class="math">\(η\)</span>，<strong><span class="math">\(η\)</span>稱為Learning Rate，它影響的是更新步伐的大小</strong>，<span class="math">\(η\)</span>的選擇要適當，如果<span class="math">\(η\)</span>太小的時候，我們可能要花很多時間才可以走到低點，但如果<span class="math">\(η\)</span>太大的話，又可能導致我們在兩個山腰間跳來跳去，甚至越更新越往高處跑，<strong>所以選擇適當的<span class="math">\(η\)</span>相當的重要，所以下次如果你發現<span class="math">\(E_{in}\)</span>一直降不下來甚至在增大，試著將<span class="math">\(η\)</span>減小看看</strong>。另外<span class="math">\(η\)</span>也可以不是定值，我們可以直接設<span class="math">\(η＝|\nabla E_{in}|\)</span>，這麼一來遇到陡坡的時候它就會跨大一點的步伐，遇到緩坡的時候就會跨小步一點，隨狀況調整<span class="math">\(η\)</span>的值。</p>
 <p>Gradient Descent (GD, 梯度下降) 有兩個變形，分別為Stochastic Gradient Descent (SGD, 隨機梯度下降) 和 Batch Gradient Descent (BGD, 批次梯度下降)，這差別只在於評估<span class="math">\(\nabla E_{in}\)</span>的時候所考慮的Data數量，正常來說必須要考慮所有的Data，我們才會得到真正的<span class="math">\(E_{in}\)</span>，才有辦法算出正確的<span class="math">\(\nabla E_{in}\)</span>，但這樣所要付出的代價就是較大的計算量。</p>
-<p>所以<strong>Stochastic Gradient Descent的作法是一次只拿一筆Data來求<span class="math">\(\nabla E_{in}\)</span>，並且更新參數W</strong>，這樣的更新方法顯然會比較不穩定，但我們假設，經過好幾輪的更新後，已經完整看過整個數據了，所以平均來說效果和一般的Gradient Descent一樣。</p>
+<p>所以<strong>Stochastic Gradient Descent的作法是一次只拿一筆Data來求<span class="math">\(\nabla E_{in}\)</span>，並且更新參數<span class="math">\(W\)</span></strong>，這樣的更新方法顯然會比較不穩定，但我們假設，經過好幾輪的更新後，已經完整看過整個數據了，所以平均來說效果和一般的Gradient Descent一樣。</p>
 <p>另外還有一種介於Gradient Descent和Stochastic Gradient Descent之間的作法，稱之為Batch Gradient Descent，它不像Stochastic Gradient Descent那麼極端，一次只評估一組Data，<strong>Batch Gradient Descent一次評估k組數據，並更新參數W</strong>，這是相當好的折衷方案，平衡計算時間和更新穩定度，而且在某些情形下，計算時間還比Stochastic Gradient Descent還快，為什麼呢？GPU的計算方法你可以想像成在做矩陣計算，矩陣元素在計算的時候往往是可以拆開計算的，此時GPU利用它強大的平行化運算將這些元素平行計算，可以大大增進效率，所以如果一次只算一筆資料，反而是沒有利用到GPU的效率，<strong>所以如果你用GPU計算的話，依照你的GPU去設計適當的k值做Batch Gradient Descent，是既有效率又穩定的作法</strong>。</p>
-<p>Gradient Descent求最佳解其實是會產生問題的，還記得我們的目標嗎？我們希望可以走到最低點的山谷裡，所以我們採取的策略是不斷的下降，這個時候如果遇到兩種情形就會動彈不得，</p>
+<p>Gradient Descent求最佳解其實不是完美的，還記得我們的目標嗎？我們希望可以走到最低點的山谷裡，所以我們採取的策略是不斷的下降，這個時候如果遇到兩種情形就會導致還沒到山谷就已經動彈不得，</p>
 <ol>
-<li>小山谷，數學上稱為<strong>Local Minimum</strong>，雖然在那點看起來，那邊的確是低點，但卻不是整個<span class="math">\(E_{in}\)</span>的最低點</li>
-<li>平原，數學上稱為<strong>Saddle Point（鞍點）</strong>，在一片很平的區域，<span class="math">\(\nabla E_{in}=0\)</span>，所以就停止不動了</li>
+<li>小山谷，數學上稱為<strong>Local Minimum</strong>，雖然在那點看起來，那邊的確是相對的低點，所以<span class="math">\(\nabla E_{in}=0\)</span>，但卻不是整個<span class="math">\(E_{in}\)</span>的最低點，但也因為<span class="math">\(\nabla E_{in}=0\)</span>的關係，更新就不會再進行。</li>
+<li>平原，數學上稱為<strong>Saddle Point（鞍點）</strong>，在一片很平的區域，<span class="math">\(\nabla E_{in}=0\)</span>，所以就停止不動了。</li>
 </ol>
 <p>針對這些問題有一些改良後的演算法，在這裡不詳述，請參考<a href="http://ruder.io/optimizing-gradient-descent/">S. Ruder的整理</a>。</p>
 <p>好！我們已經了解了怎麼使用Gradient Descent去找到<span class="math">\(E_{in}\)</span>最小的最佳參數，那我們可以回頭看Model有哪一些？Error Measure該怎麼定？</p>
@@ -134,24 +134,24 @@ $$</div>
 where: W = [w_0, w_1, w_2, w_3], x = [x_0=1, x_1, x_2, x_3]
 $$</div>
 <p>
-在線性模型中，這個 s 就正好是我們Model預測的 y，通常我們會把預測得來的 <span class="math">\(y\)</span> 記作<span class="math">\(\widehat{y}\)</span> (y hat)，如果今天這個 y 和 ŷ 是實數的話，那這就是一個標準的Linear Regression問題，那如何去衡量預測的好或不好呢？<strong>我們可以使用Squared Error來衡量，<span class="math">\(err(\widehat{y},y)=(\widehat{y}-y)^2\)</span></strong>，所以 <span class="math">\(\widehat{y}\)</span> 和 <span class="math">\(y\)</span> 越靠近Error就越小。</p>
-<p>Squared Error的<span class="math">\(E_{in}\)</span>平面比較簡單，就是一個單純的開口向上的拋物線，所以它的最低點其實是有解析解的，我們可以靠著數學上的<strong>Pseudo-Inverse方法</strong>在評估完全部的Data之後把最佳參數給算出來，這麼簡單的<span class="math">\(E_{in}\)</span>平面是很難見到的，我們之前介紹的Gradient Descent則是靠著逐步更新的方式去尋找近似解，這個方法是不管<span class="math">\(E_{in}\)</span>平面有多麼複雜都可以處理，但是需要特別注意別卡在Local Minimum和Saddle Point。</p>
+在線性模型中，這個 s 就正好是我們Model預測的值，通常我們會把預測得來的 <span class="math">\(y\)</span> 記作<span class="math">\(\widehat{y}\)</span> (y hat)，如果今天這個 y 和 ŷ 是實數的話，那這就是一個標準的Linear Regression問題，那如何去衡量預測的好或不好呢？<strong>我們可以使用Squared Error來衡量，<span class="math">\(err(\widehat{y},y)=(\widehat{y}-y)^2\)</span></strong>，所以 <span class="math">\(\widehat{y}\)</span> 和 <span class="math">\(y\)</span> 越靠近Error就越小。</p>
+<p>Squared Error的<span class="math">\(E_{in}\)</span>平面比較簡單，就是一個單純的開口向上的拋物線，所以它的最低點其實是有解析解的，我們可以靠著數學上的<strong>Pseudo-Inverse方法</strong>在評估完全部的Data之後把最佳參數給算出來，這麼簡單的<span class="math">\(E_{in}\)</span>平面是很難見到的，我們之前介紹的Gradient Descent則是靠著逐步更新的方式去尋找近似解，這個方法是不管<span class="math">\(E_{in}\)</span>平面有多麼複雜都可以處理，但是需要特別注意可能會卡在Local Minimum和Saddle Point。</p>
 <p><br/></p>
 <h3>Logistic Regression</h3>
 <p><img alt="ML" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.011.jpeg"></p>
-<p>在上一回討論二元分類問題時，我們考慮的狀況是「沒有雜訊」的情形，不過在實際情況下，「雜訊」是一定需要考慮的。在「沒有雜訊」的情形下，一筆Data只會有一個確定的答案，<strong>如果考慮「雜訊」，一筆Data有可能有多個答案，呈現機率分布</strong>，對於正確答案的機率也許會高一點，但因為雜訊的干擾的原因並非能百分之一百的出現正確答案。</p>
-<p>在二元分類的答案因為雜訊出現了機率分布，可能會產生像下面一樣的情況，</p>
+<p>在上一回討論二元分類問題時，我們考慮的狀況是「沒有雜訊」的情形，不過在實際情況下，「雜訊」是一定需要考慮的。在「沒有雜訊」的情形下，一筆Data只會有一個確定的答案，<strong>如果考慮「雜訊」，一筆Data出現的答案可能呈現機率分布</strong>，假設雜訊不大，接近正確答案的機率也許會高一點。</p>
+<p>如果在二元分類問題中，答案因為雜訊出現了機率分布，可能會產生像下面一樣的情況，</p>
 <div class="math">$$
-\mathbb{P}(◯|X^{(1)} = 0.9,   \mathbb{P}(✕|X^{(1)}) = 0.1
+\mathbb{P}(◯|X^{(1)}) = 0.9,\  \mathbb{P}(✕|X^{(1)}) = 0.1
 $$</div>
-<p>而之前PLA的分類方法是屬於非黑及白的，這種分類法我們稱為Hard Classification，並不能描述這種機率分布，所以我們來考慮另外一種分類法，稱之為Soft Classification。</p>
+<p>之前PLA的分類方法是屬於非黑及白的，預測的結果不存在模糊地帶，這種分類法我們稱為Hard Classification，這種分類法並不能描述機率分布，所以我們來考慮另外一種分類法，稱之為Soft Classification。</p>
 <p><strong>Soft Classification看待每個答案不是非黑及白的，而是去評估每個答案出現的機會有多大，以此作為分類</strong>，我們打算使用Regression的連續特性來產生Soft Classification，我們需要引入一個重要的函數—Logistic Function，這個函數可以將所有實數映射到0到1之間，如上圖下方中間的圖示所示，<strong>Logistic Function會將極大的值映射成1，而將極小值映射成0，這個0到1的值剛剛好可以拿來當作機率的大小</strong>。</p>
-<p>所以我們就可以來建立一個有機率概念的模型，這個Model的預測值是一個機率，一樣的先給予輸入變數x權重W求出Score s，再把 s 放到Logistic Function當中，我們就可以映射出在一個機率空間，我們藉由調整W來改變Model以描述我們的Data，有了這個新的Model，我們就可以用機率的方式來描述二元分類，</p>
+<p>所以我們就可以來建立一個有機率概念的模型，這個Model的預測值是一個機率，一樣的先給予輸入變數<span class="math">\(x\)</span>和權重<span class="math">\(W\)</span>求出Score <span class="math">\(s\)</span>，再把 <span class="math">\(s\)</span> 放到Logistic Function當中，我們就可以映射出在一個機率空間，我們藉由調整<span class="math">\(W\)</span>來改變Model來擬合我們的Data，有了這個新的Model，我們就可以用機率的方式來描述二元分類，</p>
 <div class="math">$$
 \mathbb{P}(◯|X^{(1)}) = Θ(s) ;   \mathbb{P}(✕|X^{(1)}) = 1 - Θ(s) = Θ(-s)
 $$</div>
-<p>OK! 決定好Model，我們就可以來定義它的Error Measurement的方式了，這個時候如果使用Squared Error來作為Error Measurement你會發現這種評估方式有一點失焦了，我們並不是要將雜訊給放進去Model之中，而是要在考慮雜訊之下盡可能的去描述數據背後真正的機制。</p>
-<p>所以我們來探討一下「可能性」，在考慮採樣數據過程因為雜訊造成的機率分布的前提下，我們去看會採樣到這組Data的可能性，我們應該合理的認為採樣出來的這組Data應該具有最大的「可能性」，這個「可能性」可以表示成</p>
+<p>OK! 決定好Model，我們就可以來定義它的Error Measurement的方式了，這個時候如果使用Squared Error來作為Error Measurement你會發現這種評估方式有一點失焦了，如果採用Squared Error，我們做的事是將機率的值給擬合精準，但我們知道這個機率的產生是來自於雜訊，預測雜訊是沒有意義的，要做的事應該是要在考慮雜訊之下盡可能的去描述數據背後真正的機制。</p>
+<p>因此從機率觀點來看是比較合理的，在考慮採樣數據過程因為雜訊造成的機率分布的前提下，我們去看會採樣到這組Data的可能性，我們應該合理的認為採樣出來的這組Data應該具有最大的「可能性」，這個「可能性」可以表示成</p>
 <p>Assume <span class="math">\(◯ \equiv  (y=+1)\)</span> and <span class="math">\(✕ \equiv  (y=-1)\)</span></p>
 <p><span class="math">\(\mathbb{P}(likelihood\ of\ ◯) = \mathbb{P}(x^{(1)})Θ(y^{(1)} s^{(1)}) \times \mathbb{P}(x^{(2)})Θ(y^{(2)} s^{(2)}) \times … \times \mathbb{P}(x^{(N)})Θ(y^{(N)} s^{(N)})\)</span></p>
 <p><strong>所以我們需要設計一組Error Measurement，使得Error降低的同時可以使得<span class="math">\(\mathbb{P}(likelihood\ of\ ◯)\)</span>可以增大，這個Error Measurement就是Cross-Entropy，<span class="math">\(E_{ce}=ln[1+exp(-ys)]\)</span>。</strong></p>
