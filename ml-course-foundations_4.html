@@ -109,20 +109,20 @@ $$</div>
 <p>Overfitting是一個大怪獸，在學習怎麼對付牠之前，我們先來好好的了解牠！</p>
 <p><img alt="Overfitting" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.03.png"></p>
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf</a></p>
-<p>上面這張圖用很簡單的方法說明了Overfitting是怎麼一回事，假設藍色的線是Target，也就是我們抽樣的母群體，因為雜訊的關係，抽樣出來的點可能會稍微偏離Target，而如果這個時候我們用二次式來描述這些抽樣出來的Data（上圖中的左側）會發現<span class="math">\(E_{in}\)</span>不能壓到0，所以這個時候可能有人想說加進去更高次項來試試看（上圖中的右側），此時會發現<span class="math">\(E_{in}=0\)</span>，所有數據都可以被完整描述了，但是你會發現Fit的曲線已經完全偏離了Target，反而是使用低次項還描述的<span class="math">\(E_{in} \approx E_{out}\)</span>比較好，所以結論是<strong>如果我們把「隨機雜訊」（Stochastic Noise）Fit進去Model裡面就會因此產生Overfitting</strong>。</p>
+<p>上面這張圖用很簡單的方法說明了Overfitting是怎麼一回事，假設藍色的線是Target，也就是我們抽樣的母群體，因為雜訊的關係，抽樣出來的點可能會稍微偏離Target，而如果這個時候我們用二次式來描述這些抽樣出來的Data（上圖中的左側）會發現<span class="math">\(E_{in}\)</span>不能壓到0，所以這個時候可能有人想說加進去更高次項來試試看（上圖中的右側），此時會發現<span class="math">\(E_{in}=0\)</span>，所有數據都可以被完整描述了，但是你會發現Fit的曲線已經完全偏離了Target，反而是使用低次項還描述比較好，低次項描述的<span class="math">\(E_{in}\)</span>和 <span class="math">\(E_{out}\)</span>(Target Function) 比較接近，所以結論是<strong>如果我們把「隨機雜訊」（Stochastic Noise）Fit進去Model裡面就會因此產生Overfitting，要避免這種情況發生，就要小心使用高次項</strong>。</p>
 <p><img alt="Overfitting2" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.04.png"></p>
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf</a></p>
-<p>但可別以為沒有「隨機雜訊」鬧場就不會出現Overfitting，上圖假設一個沒有「隨機雜訊」的情形，但是Target Function的複雜度很高（上圖右側），當我們從中採樣一些Data來進行Fitting，如上圖左側，我們分別使用2次和10次來做Fitting，這個時候你會發現雖然2次和10次都和Target曲線差很遠，但是小次方的還是Fit的比較好一點，造成Overfitting的原因是因為當Target很複雜的情況下，如果採樣的數據不大，根本無法反應Target本身，所以就算使用了和Target一樣複雜的Model，也只是在瞎猜而已。<strong>這種因為Target本身的複雜度所帶來的雜訊，我們稱為「決定性雜訊」(Deterministic Noise)</strong>。</p>
+<p>但可別以為沒有「隨機雜訊」鬧場就不會出現Overfitting，上圖假設一個沒有「隨機雜訊」的情形，但是這次Target Function的複雜度很高（上圖右側），當我們從中採樣一些Data來進行Fitting，如上圖左側，我們分別使用2次和10次來做Fitting，這個時候你會發現雖然2次和10次都和Target曲線差很遠，但是小次方的還是Fit的比較好一點，造成Overfitting的原因是因為當Target很複雜的情況下，如果採樣的數據不大，根本無法反應Target本身，所以就算使用了和Target一樣複雜的Model，也只是在瞎猜而已。<strong>這種因為Target本身的複雜度所帶來的雜訊，我們稱為「決定性雜訊」(Deterministic Noise)</strong>。</p>
 <p><img alt="Noise" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.05.png"></p>
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf</a></p>
-<p>我們來看一下「隨機雜訊」（Stochastic Noise）和「決定性雜訊」（Deterministic Noise）怎麼造成Overfitting的，上圖中的兩張漸層圖表示的是Overfitting的程度，越接近紅色代表Overfitting越嚴重；反之，越接近藍色則Overfitting越輕微。左邊的漸層圖是考慮「隨機誤差」的影響，右邊的漸層圖則是考慮「決定性雜訊」的影響。從這兩張圖我們可以觀察出下面四點，</p>
+<p>我們來看一下「隨機雜訊」（Stochastic Noise）和「決定性雜訊」（Deterministic Noise）怎麼造成Overfitting的，上圖中的兩張漸層圖表示的是Overfitting的程度，越接近紅色代表Overfitting越嚴重；反之，越接近藍色則Overfitting越輕微。左邊的漸層圖是考慮「隨機誤差」的影響，右邊的漸層圖則是考慮「決定性雜訊」的影響。從這兩張圖我們可以觀察出下面四點特性：</p>
 <ol>
 <li>Data數量<span class="math">\(N\)</span>越少，越容易Overfitting</li>
 <li>「隨機雜訊」越多，越容易Overfitting</li>
 <li>「決定性雜訊」越多，越容易Overfitting</li>
 <li>Model本身越複雜，越容易Overfitting</li>
 </ol>
-<p>那有什麼方法可以防止Overfitting嗎？有的，有一些之前提過，而有一些我接下來會講，我們來看一下：</p>
+<p>那有什麼方法可以防止Overfitting嗎？有的，包括之前講過的一些方法，我們來看一下：</p>
 <ol>
 <li><strong>從簡單的模型開始做起，從低次模型開始做起，在慢慢加入高次項</strong></li>
 <li><strong>提升資料的正確性：Data Cleaning/Pruning（資料清洗）將錯誤的Data修正或刪除</strong></li>
@@ -138,7 +138,7 @@ $$</div>
 <p>經數學證明，<strong>限制權重<span class="math">\(W\)</span>的大小可以等價於在<span class="math">\(E_{in}\)</span>上面加上「<span class="math">\(W\)</span>大小的平方」乘上定值<span class="math">\(λ\)</span>，<span class="math">\(λ\)</span>越大代表<span class="math">\(W\)</span>大小限制越緊；<span class="math">\(λ\)</span>越小代表<span class="math">\(W\)</span>大小限制越鬆</strong>，這也非常容易想像，訓練Model的方法是去降低<span class="math">\(E_{in}\)</span>，但是如果使用了大的<span class="math">\(W\)</span>，就會使得<span class="math">\(E_{in}\)</span>增大，自然而然在訓練的過程中，機器會去尋找小一點的<span class="math">\(W\)</span>，也就等同於限制了<span class="math">\(W\)</span>的大小。</p>
 <p>見上圖左側，我們修改了Gradient Descent讓它受到Regularization的限制。</p>
 <p>而上圖左側下方，顯示了在<span class="math">\(λ\)</span>增大的同時，限制<span class="math">\(W\)</span>的大小會越來越緊，所以Fitting的結果從原本的Overfitting變成Underfitting。</p>
-<p><strong>Underfitting所代表的是Model本身的複雜度不足以使得<span class="math">\(E_{in}\)</span>減小，如果你經過Validation（待會會講）後發現沒有Overfitting的現象，但是你的<span class="math">\(E_{in}\)</span>始終壓不下來，那就有可能是Underfitting，那你可以考慮增加Model複雜度或者放寬Regularization。</strong></p>
+<p><strong>Underfitting所代表的是Model本身的複雜度不夠，不足以使得<span class="math">\(E_{in}\)</span>降的夠小，如果你經過Validation（待會會講）後發現沒有Overfitting的現象，但是你的<span class="math">\(E_{in}\)</span>始終壓不下來，那就有可能是Underfitting，那你該考慮的是增加Model複雜度或者放寬Regularization，反而不是Regularization。</strong></p>
 <p><strong>Regularizer的選擇常見的有兩種L2和L1，L2使用「<span class="math">\(W\)</span>大小的平方」，L1則使用「<span class="math">\(W\)</span>大小的絕對值」。</strong></p>
 <p>當Linear Regression使用Regularization限制，統計上有一個名稱稱為Ridge Regression，你可以使用Gradient Descent來做，又或者使用解析解的方法。</p>
 <p>最後提一個Regularization的細節，你會發現因為高次項是彼此兩兩相乘的結果，所以項目的個數會隨著次方增加而增加，這麼一來在做Regularization時可能會過度懲罰高次項，因此，我們可以將Feature轉換成Legendre Polynomials來避免這個問題。</p>
