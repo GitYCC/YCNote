@@ -4,343 +4,343 @@ xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitem
 xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
-<loc>/</loc>
-<lastmod>2018-05-22T21:28:46-00:00</lastmod>
+<loc>YCNote/</loc>
+<lastmod>2018-05-22T21:29:53-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/archives.html</loc>
-<lastmod>2018-05-22T21:28:46-00:00</lastmod>
+<loc>YCNote/archives.html</loc>
+<lastmod>2018-05-22T21:29:53-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/tags.html</loc>
-<lastmod>2018-05-22T21:28:46-00:00</lastmod>
+<loc>YCNote/tags.html</loc>
+<lastmod>2018-05-22T21:29:53-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/categories.html</loc>
-<lastmod>2018-05-22T21:28:46-00:00</lastmod>
+<loc>YCNote/categories.html</loc>
+<lastmod>2018-05-22T21:29:53-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/introduction-object-oriented-programming_3.html</loc>
+<loc>YCNote/introduction-object-oriented-programming_3.html</loc>
 <lastmod>2018-04-14T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/introduction-object-oriented-programming_2.html</loc>
+<loc>YCNote/introduction-object-oriented-programming_2.html</loc>
 <lastmod>2018-04-10T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/introduction-object-oriented-programming_1.html</loc>
+<loc>YCNote/introduction-object-oriented-programming_1.html</loc>
 <lastmod>2018-04-05T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/the-selfish-gene.html</loc>
+<loc>YCNote/the-selfish-gene.html</loc>
 <lastmod>2018-02-03T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/tensorflow-tutorial_6.html</loc>
+<loc>YCNote/tensorflow-tutorial_6.html</loc>
 <lastmod>2017-11-25T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/tensorflow-tutorial_5.html</loc>
+<loc>YCNote/tensorflow-tutorial_5.html</loc>
 <lastmod>2017-11-19T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/tensorflow-tutorial_4.html</loc>
+<loc>YCNote/tensorflow-tutorial_4.html</loc>
 <lastmod>2017-11-18T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/tensorflow-tutorial_3.html</loc>
+<loc>YCNote/tensorflow-tutorial_3.html</loc>
 <lastmod>2017-11-12T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/uwarn-performance_1.html</loc>
+<loc>YCNote/uwarn-performance_1.html</loc>
 <lastmod>2017-11-09T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/uwarn-performance_2.html</loc>
+<loc>YCNote/uwarn-performance_2.html</loc>
 <lastmod>2017-11-08T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/tensorflow-tutorial_2.html</loc>
+<loc>YCNote/tensorflow-tutorial_2.html</loc>
 <lastmod>2017-11-07T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/tensorflow-tutorial_1.html</loc>
+<loc>YCNote/tensorflow-tutorial_1.html</loc>
 <lastmod>2017-10-23T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/stock-sell-point.html</loc>
+<loc>YCNote/stock-sell-point.html</loc>
 <lastmod>2017-09-05T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/confusion-matrix.html</loc>
+<loc>YCNote/confusion-matrix.html</loc>
 <lastmod>2017-08-04T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/python-play-with-data_3.html</loc>
+<loc>YCNote/python-play-with-data_3.html</loc>
 <lastmod>2017-05-06T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/ml-course-techniques_7.html</loc>
+<loc>YCNote/ml-course-techniques_7.html</loc>
 <lastmod>2017-04-22T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/ml-course-techniques_6.html</loc>
+<loc>YCNote/ml-course-techniques_6.html</loc>
 <lastmod>2017-04-17T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/python-play-with-data_2.html</loc>
+<loc>YCNote/python-play-with-data_2.html</loc>
 <lastmod>2017-04-17T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/big-data-a-revolution.html</loc>
+<loc>YCNote/big-data-a-revolution.html</loc>
 <lastmod>2017-04-07T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/ml-course-techniques_5.html</loc>
+<loc>YCNote/ml-course-techniques_5.html</loc>
 <lastmod>2017-04-02T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/algorithm-complexity-theory.html</loc>
+<loc>YCNote/algorithm-complexity-theory.html</loc>
 <lastmod>2017-03-30T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/ml-course-techniques_4.html</loc>
+<loc>YCNote/ml-course-techniques_4.html</loc>
 <lastmod>2017-03-29T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/the-brain-the-story-of-you.html</loc>
+<loc>YCNote/the-brain-the-story-of-you.html</loc>
 <lastmod>2017-03-24T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/python-play-with-data_1.html</loc>
+<loc>YCNote/python-play-with-data_1.html</loc>
 <lastmod>2017-03-20T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/how-to-read-books.html</loc>
+<loc>YCNote/how-to-read-books.html</loc>
 <lastmod>2017-03-18T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/ml-course-techniques_3.html</loc>
+<loc>YCNote/ml-course-techniques_3.html</loc>
 <lastmod>2017-03-15T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/ml-course-techniques_2.html</loc>
+<loc>YCNote/ml-course-techniques_2.html</loc>
 <lastmod>2017-02-20T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/ml-course-techniques_1.html</loc>
+<loc>YCNote/ml-course-techniques_1.html</loc>
 <lastmod>2017-01-12T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/ml-course-foundations_4.html</loc>
+<loc>YCNote/ml-course-foundations_4.html</loc>
 <lastmod>2016-09-18T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/about-me.html</loc>
+<loc>YCNote/about-me.html</loc>
 <lastmod>2016-08-17T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/ml-course-foundations_3.html</loc>
+<loc>YCNote/ml-course-foundations_3.html</loc>
 <lastmod>2016-08-07T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/ml-course-foundations_2.html</loc>
+<loc>YCNote/ml-course-foundations_2.html</loc>
 <lastmod>2016-06-26T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/ml-course-foundations_1.html</loc>
+<loc>YCNote/ml-course-foundations_1.html</loc>
 <lastmod>2016-06-06T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
 
 <url>
-<loc>/category/aiml.html</loc>
+<loc>YCNote/category/aiml.html</loc>
 <lastmod>2017-11-25T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/category/coding.html</loc>
+<loc>YCNote/category/coding.html</loc>
 <lastmod>2018-04-14T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/category/me.html</loc>
+<loc>YCNote/category/me.html</loc>
 <lastmod>2016-08-17T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/category/reading.html</loc>
+<loc>YCNote/category/reading.html</loc>
 <lastmod>2018-02-03T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/category/recording.html</loc>
+<loc>YCNote/category/recording.html</loc>
 <lastmod>2017-11-09T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/tag/ji-ta.html</loc>
+<loc>YCNote/tag/ji-ta.html</loc>
 <lastmod>2017-11-09T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/tag/pythonwan-shu-ju.html</loc>
+<loc>YCNote/tag/pythonwan-shu-ju.html</loc>
 <lastmod>2017-05-06T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/tag/ruan-ti-she-ji.html</loc>
+<loc>YCNote/tag/ruan-ti-she-ji.html</loc>
 <lastmod>2018-04-14T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/tag/ji-qi-xue-xi-ji-shi.html</loc>
+<loc>YCNote/tag/ji-qi-xue-xi-ji-shi.html</loc>
 <lastmod>2016-09-18T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/tag/tensorflow.html</loc>
+<loc>YCNote/tag/tensorflow.html</loc>
 <lastmod>2017-11-25T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/tag/ji-qi-xue-xi-ji-fa.html</loc>
+<loc>YCNote/tag/ji-qi-xue-xi-ji-fa.html</loc>
 <lastmod>2017-04-22T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>/author/yc-chen.html</loc>
+<loc>YCNote/author/yc-chen.html</loc>
 <lastmod>2018-04-14T12:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
