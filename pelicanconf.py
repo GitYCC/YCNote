@@ -46,7 +46,7 @@ SITEMAP = {
         "pages": "monthly",
     }
 }
-
+ATH_JAX = {'align':'center'}
 
 #FILES_TO_COPY = (
 #    ("extra/robots.txt", "robots.txt"),

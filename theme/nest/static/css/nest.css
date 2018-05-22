@@ -441,3 +441,7 @@ blockquote{
 .footer a{
     color: #fff;
 }
+
+.MathJax{
+    font-size: 80%;
+}
