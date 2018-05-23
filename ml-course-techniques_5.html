@@ -98,54 +98,109 @@
 <p>本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。</p>
 </blockquote>
 <h3>Boost的精髓</h3>
-<p>在上一回當中，我們介紹的Aggregation Models都屬於沒有Boost的，不管是Bagging或Decision Tree都沒有要試著在Training的過程中改善Model，<strong>而這篇將要提到的Boost方法，則是在產生每個g<sub>t</sub>時試圖讓Model整體更完善，更能發揮Aggregation Models中截長補短中的「補短」的效果，也就是說g<sub>t</sub>可以彼此互補不足之處</strong>。</p>
+<p>在上一回當中，我們介紹的Aggregation Models都屬於沒有Boost的，不管是Bagging或Decision Tree都沒有要試著在Training的過程中改善Model，<strong>而這篇將要提到的Boost方法，則是在產生每個g_{t}時試圖讓Model整體更完善，更能發揮Aggregation Models中截長補短中的「補短」的效果，也就是說g_{t}可以彼此互補不足之處</strong>。</p>
 <p>那實際上我們應該怎麼做才能實踐Boost呢？其實方法的道理早就透漏在上一回中的Bagging和Decision Tree裡頭了，不管是Bagging和Decision Tree都是使用變換Data來做到變異度，在這個方法下Model的架構可以本身是不變的，這帶來相當的便利性，而今天我們要講的Boost也同樣的利用「變換Data」來做到變異度，但不同的是Boost的過程中「變換Data」這件事是有目標性的。</p>
-<p><strong>Boost方法在「變換Data」時會試著去凸顯原先做錯的Data，而降低原本已經做對的Data，藉由這樣的方法訓練出來的g<sub>t</sub>可以補齊前面的不足，所以Boost的過程將會使得Model漸漸的完善，這就是Boost的主要精髓。</strong></p>
+<p><strong>Boost方法在「變換Data」時會試著去凸顯原先做錯的Data，而降低原本已經做對的Data，藉由這樣的方法訓練出來的<span class="math">\(g_{t}\)</span>可以補齊前面的不足，所以Boost的過程將會使得Model漸漸的完善，這就是Boost的主要精髓。</strong></p>
 <p><br/></p>
 <h3>AdaBoost (Adaptive Boost) for Classification</h3>
 <p>剛剛上一段的最後我已經揭露了Boost的真正精髓，拿這樣的概念來做分類問題，就是我們接下來要談的AdaBoost，全名稱為Adaptive Boost。</p>
 <p>在分類問題中我們怎麼做到「凸顯原先做錯的Data」？簡單的想法是這樣的，我們可以減少原本已經是正確分類的Data的數量，然後增加原本錯誤分類的Data的數量，<strong>增減Data的數量其實是等效於改變每筆Data的權重</strong>，假如我們給每筆資料權重，要做的事是拉低正確分類Data的權重，而且拉高錯誤分類Data的權重。</p>
 <p>那我們應該要提升權重或降低權重到什麼程度才是OK的呢？換個方式思考，我們為什麼要去調整權重？目的其實是要去凸顯原先做錯的部分，降低原本做對的部分，也就是想<strong>藉由調整每筆Data的多寡或權重來做到「弭平原先的預測性」，最好可以讓原本的預測方法看起來是隨機分布</strong>，也就是「錯誤率＝正確率」，讓它像是擲銅板一樣，沒有什麼預測能力。</p>
 <p><img alt="AdaBoost" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.012.jpeg"></p>
-<p>有了概念之後，我們來看實際應該要怎麼做？見上圖說明，首先我們需要先將Data權重u<sup>(1)</sup>先初始化，接下來就可以開始找g<sub>t</sub>了，我們使用任意一個分類問題的Model搭配上Data的權重，求得一組g<sub>t</sub>，接下來計算這組g<sub>t</sub>的<strong>「錯誤率」ε<sub>t</sub></strong>，</p>
-<p><strong>ε<sub>t</sub>= 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup></strong></p>
-<p>有注意到考慮「錯誤率」ε<sub>t</sub>的時候必須要評估u<sub>n</sub><sup>(t)</sup>，要記得會有Data權重是為了表示增加或減少原本的Data的數量，所以依照每筆Data的出現機會不同，會有不同的權重，也就會有對「錯誤率」不同的貢獻程度。</p>
-<p>那為了待會要對權重重新分配，我們先定義了β<sub>t</sub>，在未來我會將錯誤的Data的權重乘上β<sub>t</sub>，即u<sub>n</sub><sup>(t+1)</sup>=u<sub>n</sub><sup>(t)</sup>×β<sub>t</sub>，並且把正確的Data權重除以β<sub>t</sub>，即u<sub>n</sub><sup>(t+1)</sup>=u<sub>n</sub><sup>(t)</sup>/β<sub>t</sub>，<strong>而期望的結果是重新分配的Dataset在g<sub>t</sub>的預測下可以表現的像隨機的一樣，於是乎下一次使用這組Dataset訓練出來的g<sub>t+1</sub>將會彌補g<sub>t</sub>的不足</strong>，根據這樣的原則我們來推一下β<sub>t</sub>，</p>
-<p>𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup> ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup>=1/2 (預測能力像隨機分布)</p>
-<p>⇒  𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup> ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ = 𝚺<sub>n</sub> u<sub>n</sub><sup>(t+1)</sup> ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ </p>
-<p>⇒  𝚺<sub>n</sub> (u<sub>n</sub><sup>(t)</sup>×β<sub>t</sub>)  ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ = 𝚺<sub>n</sub> (u<sub>n</sub><sup>(t)</sup>/β<sub>t</sub>) ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ </p>
-<p>⇒  β<sub>t</sub><sup>2</sup> = 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup>  ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧</p>
-<p>⇒  β<sub>t</sub><sup>2</sup> = [𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ⟦y<sub>n</sub>=g<sub>t</sub>(x<sub>n</sub>)⟧ /  𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup>]/ [𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup>  ⟦y<sub>n</sub>≠g<sub>t</sub>(x<sub>n</sub>)⟧ / 𝚺<sub>n</sub> u<sub>n</sub><sup>(t)</sup> ]</p>
-<p>⇒  <strong>β<sub>t</sub><sup>2</sup> = 1-ε<sub>t</sub> / ε<sub>t</sub></strong></p>
-<p>所以我們就可以利用這個β<sub>t</sub>來更新我的Data權重，並且在多次迭代後，得到很多個g<sub>t</sub>。而將來我們會把所有的g<sub>t</sub>做線性組合，而我們希望<strong>「錯誤率」越低的g<sub>t</sub>可以有更高的貢獻度α<sub>t</sub></strong>，所以使用β<sub>t</sub>緊接著計算「g<sub>t</sub>的權重」α<sub>t</sub>，定義為</p>
-<p><strong>α<sub>t</sub> = ln(βt)</strong></p>
-<p>所以當一個百分之一百可以完全預測的g<sub>t</sub>出現時，它的ε<sub>t</sub>=0，此時它的β<sub>t</sub> →∞，同時α<sub>t</sub> →∞，所以這樣的g<sub>t</sub>會有完全的貢獻。</p>
-<p>如果一個預測效果很差的g<sub>t</sub>出現，它的ε<sub>t</sub>=1/2，此時它的β<sub>t</sub>=1，同時α<sub>t</sub>=0，所以這樣的g<sub>t</sub>並沒有任何參考價值。</p>
-<p>那如果出現一個g<sub>t</sub>它的ε<sub>t</sub> &gt; 1/2，那這樣的g<sub>t</sub>並不能說它沒有用處，反而是一個很好的反指標，我們只需要反著看就好了，當ε<sub>t</sub> &gt; 1/2時，β<sub>t</sub> &lt; 1，所以α<sub>t</sub> &lt; 0，這樣的g<sub>t</sub>具有逆向的貢獻。</p>
-<p>最後只要把這些訓練好的g<sub>t</sub>乘上各自的α<sub>t</sub>再加總起來，我們就完成了AdaBoost啦！</p>
+<p>有了概念之後，我們來看實際應該要怎麼做？見上圖說明，首先我們需要先將Data權重<span class="math">\(u^{(1)}\)</span>先初始化，接下來就可以開始找<span class="math">\(g_{t}\)</span>了，我們使用任意一個分類問題的Model搭配上Data的權重，求得一組<span class="math">\(g_{t}\)</span>，接下來計算這組<span class="math">\(g_{t}\)</span>的<strong>「錯誤率」<span class="math">\(ε_{t}\)</span></strong>，</p>
+<p><strong><span class="math">\(ε_{t}= 𝚺_{n} u_{n}^{(t)} ⟦y_{n}≠g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t)}\)</span></strong></p>
+<p>有注意到考慮「錯誤率」<span class="math">\(ε_{t}\)</span>的時候必須要評估<span class="math">\(u_{n}^{(t)}\)</span>，要記得會有Data權重是為了表示增加或減少原本的Data的數量，所以依照每筆Data的出現機會不同，會有不同的權重，也就會有對「錯誤率」不同的貢獻程度。</p>
+<p>那為了待會要對權重重新分配，我們先定義了<span class="math">\(β_{t}\)</span>，在未來我會將錯誤的Data的權重乘上<span class="math">\(β_{t}\)</span>，即<span class="math">\(u_{n}^{(t+1)}=u_{n}^{(t)}×β_{t}\)</span>，並且把正確的Data權重除以<span class="math">\(β_{t}\)</span>，即<span class="math">\(u_{n}^{(t+1)}=u_{n}^{(t)}/β_{t}\)</span>，<strong>而期望的結果是重新分配的Dataset在<span class="math">\(g_{t}\)</span>的預測下可以表現的像隨機的一樣，於是乎下一次使用這組Dataset訓練出來的<span class="math">\(g_{t+1}\)</span>將會彌補<span class="math">\(g_{t}\)</span>的不足</strong>，根據這樣的原則我們來推一下<span class="math">\(β_{t}\)</span>，</p>
+<p><span class="math">\(𝚺_{n} u_{n}^{(t+1)} ⟦y_{n}≠g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t+1)}=1/2\)</span> (預測能力像隨機分布)</p>
+<p>⇒  $𝚺<em n>{n} u</em>^{(t+1)} ⟦y_{n}≠g_{t}(x_{n})⟧ = 𝚺<em n>{n} u</em>^{(t+1)} ⟦y_{n}=g_{t}(x_{n})⟧ $</p>
+<p>⇒  <span class="math">\(𝚺_{n} (u_{n}^{(t)}×β_{t})  ⟦y_{n}≠g_{t}(x_{n})⟧ = 𝚺_{n} (u_{n}^{(t)}/β_{t}) ⟦y_{n}=g_{t}(x_{n})⟧\)</span></p>
+<p>⇒  <span class="math">\(β_{t}^{2} = 𝚺_{n} u_{n}^{(t)} ⟦y_{n}=g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t)}  ⟦y_{n}≠g_{t}(x_{n})⟧\)</span></p>
+<p>⇒  <span class="math">\(β_{t}^{2} = [𝚺_{n} u_{n}^{(t)} ⟦y_{n}=g_{t}(x_{n})⟧ /  𝚺_{n} u_{n}^{(t)}]/ [𝚺_{n} u_{n}^{(t)}  ⟦y_{n}≠g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t)} ]\)</span></p>
+<p>⇒  <strong><span class="math">\(β_{t}^{2} = 1-ε_{t} / ε_{t}\)</span></strong></p>
+<p>所以我們就可以利用這個<span class="math">\(β_{t}\)</span>來更新我的Data權重，並且在多次迭代後，得到很多個<span class="math">\(g_{t}\)</span>。而將來我們會把所有的<span class="math">\(g_{t}\)</span>做線性組合，而我們希望<strong>「錯誤率」越低的<span class="math">\(g_{t}\)</span>可以有更高的貢獻度<span class="math">\(α_{t}\)</span></strong>，所以使用<span class="math">\(β_{t}\)</span>緊接著計算「<span class="math">\(g_{t}\)</span>的權重」<span class="math">\(α_{t}\)</span>，定義為</p>
+<p><strong><span class="math">\(α_{t} = ln(βt)\)</span></strong></p>
+<p>所以當一個百分之一百可以完全預測的<span class="math">\(g_{t}\)</span>出現時，它的<span class="math">\(ε_{t}=0\)</span>，此時它的<span class="math">\(β_{t} →∞\)</span>，同時<span class="math">\(α_{t} →∞\)</span>，所以這樣的<span class="math">\(g_{t}\)</span>會有完全的貢獻。</p>
+<p>如果一個預測效果很差的<span class="math">\(g_{t}\)</span>出現，它的<span class="math">\(ε_{t}=1/2\)</span>，此時它的<span class="math">\(β_{t}=1\)</span>，同時<span class="math">\(α_{t}=0\)</span>，所以這樣的<span class="math">\(g_{t}\)</span>並沒有任何參考價值。</p>
+<p>那如果出現一個<span class="math">\(g_{t}\)</span>它的<span class="math">\(ε_{t} &gt; 1/2\)</span>，那這樣的<span class="math">\(g_{t}\)</span>並不能說它沒有用處，反而是一個很好的反指標，我們只需要反著看就好了，當<span class="math">\(ε_{t} &gt; 1/2\)</span>時，<span class="math">\(β_{t} &lt; 1\)</span>，所以<span class="math">\(α_{t} &lt; 0\)</span>，這樣的<span class="math">\(g_{t}\)</span>具有逆向的貢獻。</p>
+<p>最後只要把這些訓練好的<span class="math">\(g_{t}\)</span>乘上各自的<span class="math">\(α_{t}\)</span>再加總起來，我們就完成了AdaBoost啦！</p>
 <p><br/></p>
 <h3>Gradient Boost for Regression</h3>
 <p>剛剛我們講了AdaBoost，是個很神奇的方法，當我們做錯了，沒關係！從哪裡跌倒就從哪裡站起來，利用這種精神我們就可以做到Boost的效果，但美中不足的是上面的方法只能用在「分類問題」上，那如果我也想在「Regression問題」也做到Boost呢？這就是接下來要講的GradientBoost的方法。</p>
 <p>在課程中林軒田教授是從AdaBoost出發經過推導後，得到一個很像是Gradient Decent的式子，接下來將式子一般化成為可以使用任意Error Measure的形式，我稍微列一下：</p>
 <blockquote>
-<p>GradientBoost: min<sub>η</sub> min<sub>h</sub> (1/N) 𝚺<sub>n</sub> err[𝚺<sub>τ=1~t-1</sub> α<sub>τ</sub> g<sub>τ</sub>(x<sub>n</sub>) + η h(x<sub>n</sub>), y<sub>n</sub>]</p>
+<p>GradientBoost: <span class="math">\(min_{η}\ min_{h}\ (1/N) 𝚺_{n} err[𝚺_{τ=1~t-1} α_{τ} g_{τ}(x_{n}) + η h(x_{n}), y_{n}]\)</span></p>
 </blockquote>
-<p>我們這邊會考慮err為平方誤差(s-y)<sup>2</sup>的結果，詳細的推導這邊就不多加討論，可以到影片中學習，這裡我想要從我觀察出來的觀點，概念性的來看這個GradientBoost的方法。</p>
-<p>「從哪裡跌倒就從哪裡站起來」就是Boost的精神，所以今天你有一個Regression問題沒做好，<strong>留下了餘數Residual，怎麼辦？那我就把這個餘數當作另外一個Regression問題來做它</strong>，再把這個結果附到先前的那個就好啦！如果第一次Regression後的Model是g<sub>1</sub>(x)，那剩下的沒做好的餘數就應該是y(x)-g<sub>1</sub>(x)，我們拿這個餘數下去在做一次Regression得到另外一個Model g<sub>2</sub>(x)，此時合併這兩個結果的餘數就變成了y(x)-g<sub>1</sub>(x)-g<sub>2</sub>(x)，就可以使用這個餘數繼續做下去，最後組合所有的g<sub>t</sub>(x)就會得到一個更好的Model。</p>
+<p>我們這邊會考慮err為平方誤差<span class="math">\((s-y)^{2}\)</span>的結果，詳細的推導這邊就不多加討論，可以到影片中學習，這裡我想要從我觀察出來的觀點，概念性的來看這個GradientBoost的方法。</p>
+<p>「從哪裡跌倒就從哪裡站起來」就是Boost的精神，所以今天你有一個Regression問題沒做好，<strong>留下了餘數Residual，怎麼辦？那我就把這個餘數當作另外一個Regression問題來做它</strong>，再把這個結果附到先前的那個就好啦！如果第一次Regression後的Model是<span class="math">\(g_{1}(x)\)</span>，那剩下的沒做好的餘數就應該是<span class="math">\(y(x)-g_{1}(x)\)</span>，我們拿這個餘數下去在做一次Regression得到另外一個Model <span class="math">\(g_{2}(x)\)</span>，此時合併這兩個結果的餘數就變成了<span class="math">\(y(x)-g_{1}(x)-g_{2}(x)\)</span>，就可以使用這個餘數繼續做下去，最後組合所有的<span class="math">\(g_{t}(x)\)</span>就會得到一個更好的Model。</p>
 <p><img alt="Gradient Boost" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.013.jpeg"></p>
-<p>依循這樣的概念我們來看GradientBoost作法，如上圖，一開始我們先初始化每一筆Data的預測值s<sub>n</sub>為0，再接下來開始產生g<sub>t</sub>，我們先把Data的 y<sub>n</sub> 減去每一筆Data當前的預測值s<sub>n</sub>，就會產生餘數(y<sub>n</sub>-s<sub>n</sub>)，當然，在一開始s<sub>n</sub>=0，所以y<sub>n</sub>-s<sub>n</sub>=y<sub>n</sub>，等於是對原問題求解。</p>
-<p>接下來因為最後我們要線性組合g<sub>t</sub>(x)，所以需要決定g<sub>t</sub>(x)前面的係數α<sub>t</sub>，也就是貢獻度，這個α<sub>t</sub>的決定方式是去求解一個One-Variable-Linear-Regression (單變數線性迴歸)，目的是<strong>去縮放g<sub>t</sub>(x)使得它更接近剛剛的餘數(y<sub>n</sub>-s<sub>n</sub>)，而找到這個縮放值就是α<sub>t</sub></strong>。所以每一次g<sub>t</sub>(x)的產生都是為了可以把G(x)描述的更好，最後G(x)=𝚺<sub>t</sub> α<sub>t</sub>g<sub>t</sub>(x)。</p>
-<p>看到這裡有人一定會認為One-Variable-Linear-Regression求α<sub>t</sub>這一步是多餘的，因為在一開始做{x<sub>n</sub>,y<sub>n</sub>-s<sub>n</sub>}的Regression中我們已經最佳化過g<sub>t</sub>(x)，那為什麼還要把g<sub>t</sub>(x)乘上α<sub>t</sub>再做同樣的事呢？α<sub>t</sub>一定是1的啊！就像我一開始舉的例子一樣啊！其實問題就出在於你把g<sub>t</sub>(x)理所當然的看成是線性模型，你才會覺得這一步是多餘的，如果g<sub>t</sub>(x)不是線性的，求α<sub>t</sub>就很重要的，因為你要使用線性組合來組出G(x)，但是你的g<sub>t</sub>(x)不是線性的，所以你只好在外面再用線性模型來包裝一遍。</p>
+<p>依循這樣的概念我們來看GradientBoost作法，如上圖，一開始我們先初始化每一筆Data的預測值<span class="math">\(s_{n}\)</span>為0，再接下來開始產生<span class="math">\(g_{t}\)</span>，我們先把Data的 <span class="math">\(y_{n}\)</span> 減去每一筆Data當前的預測值<span class="math">\(s_{n}\)</span>，就會產生餘數<span class="math">\((y_{n}-s_{n})\)</span>，當然，在一開始<span class="math">\(s_{n}=0\)</span>，所以<span class="math">\(y_{n}-s_{n}=y_{n}\)</span>，等於是對原問題求解。</p>
+<p>接下來因為最後我們要線性組合<span class="math">\(g_{t}(x)\)</span>，所以需要決定<span class="math">\(g_{t}(x)\)</span>前面的係數<span class="math">\(α_{t}\)</span>，也就是貢獻度，這個<span class="math">\(α_{t}\)</span>的決定方式是去求解一個One-Variable-Linear-Regression (單變數線性迴歸)，目的是<strong>去縮放<span class="math">\(g_{t}(x)\)</span>使得它更接近剛剛的餘數<span class="math">\((y_{n}-s_{n})\)</span>，而找到這個縮放值就是<span class="math">\(α_{t}\)</span></strong>。所以每一次<span class="math">\(g_{t}(x)\)</span>的產生都是為了可以把G(x)描述的更好，最後<span class="math">\(G(x)=𝚺_{t} α_{t}g_{t}(x)\)</span>。</p>
+<p>看到這裡有人一定會認為One-Variable-Linear-Regression求<span class="math">\(α_{t}\)</span>這一步是多餘的，因為在一開始做<span class="math">\(\{x_{n},y_{n}-s_{n}\}\)</span>的Regression中我們已經最佳化過<span class="math">\(g_{t}(x)\)</span>，那為什麼還要把<span class="math">\(g_{t}(x)\)</span>乘上<span class="math">\(α_{t}\)</span>再做同樣的事呢？<span class="math">\(α_{t}\)</span>一定是1的啊！就像我一開始舉的例子一樣啊！其實問題就出在於你把<span class="math">\(g_{t}(x)\)</span>理所當然的看成是線性模型，你才會覺得這一步是多餘的，如果<span class="math">\(g_{t}(x)\)</span>不是線性的，求<span class="math">\(α_{t}\)</span>就很重要的，因為你要使用線性組合來組出<span class="math">\(G(x)\)</span>，但是你的<span class="math">\(g_{t}(x)\)</span>不是線性的，所以你只好在外面再用線性模型來包裝一遍。</p>
 <p><br/></p>
 <h3>AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)</h3>
 <p><img alt="AdaBoosted and GrandientBoosted DTree" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.014.jpeg"></p>
 <p>和Random Forest一樣，我們也可以將AdaBoost和GradientBoost套用到Decision Tree上面，<strong>如果是處理分類問題就使用AdaBoosted Decision Tree；那如果是處理Regression問題可以使用Gradient Boosted Decision Tree</strong>。</p>
-<p>但要特別注意的是，這邊的Decision Tree都必須是弱的，也就是Pruning過後的樹，如果直接使用完全長成的樹，你會發現在AdaBoosted Decision Tree中，因為ε<sub>t</sub>=0所以α<sub>t</sub>→∞；在Gradient Boosted Decision Tree中，y<sub>n</sub>-s<sub>n</sub>→0，因為錯誤出現的太少了，所以造成我們不能真正使用到Boost的效果，也就失去做Boost的意義了，<strong>因此在做AdaBoosted Decision Tree或Gradient Boosted Decision Tree時要使用「弱」一點的Decision Tree</strong>。</p>
+<p>但要特別注意的是，這邊的Decision Tree都必須是弱的，也就是Pruning過後的樹，如果直接使用完全長成的樹，你會發現在AdaBoosted Decision Tree中，因為<span class="math">\(ε_{t}=0\)</span>所以<span class="math">\(α_{t}→∞\)</span>；在Gradient Boosted Decision Tree中，<span class="math">\(y_{n}-s_{n}→0\)</span>，因為錯誤出現的太少了，所以造成我們不能真正使用到Boost的效果，也就失去做Boost的意義了，<strong>因此在做AdaBoosted Decision Tree或Gradient Boosted Decision Tree時要使用「弱」一點的Decision Tree</strong>。</p>
 <p><br/></p>
 <h3>結語</h3>
-<p>這一篇當中，我們完整提了Boost的方法，Boost的精神就是從哪裡跌倒就從哪裡站起來，使用變換Data權重的手法去凸顯原先做錯的Data，而降低原本已經做對的Data，藉由這樣的方法訓練出來的g<sub>t</sub>可以補齊前面的不足，所以Boost的過程將會使得Model漸漸的完善。</p>
+<p>這一篇當中，我們完整提了Boost的方法，Boost的精神就是從哪裡跌倒就從哪裡站起來，使用變換Data權重的手法去凸顯原先做錯的Data，而降低原本已經做對的Data，藉由這樣的方法訓練出來的<span class="math">\(g_{t}\)</span>可以補齊前面的不足，所以Boost的過程將會使得Model漸漸的完善。</p>
 <p>我們提了兩種Boost的方法，如果是處理分類問題就使用AdaBoost；如果是處理Regression問題可以使用GradientBoost，而且這兩種方法都可以和Decision Tree做結合。</p>
 <p>以上兩回，我們已經完成了Aggregation Models了，接下來的下一回將要探討的就是現今很流行的類神經網路和深度學習等等。</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
 
 
         <br/><br/>
