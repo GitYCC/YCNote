@@ -127,7 +127,7 @@
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf</a></p>
 <p>接下來來看怎麼用K-Means找到代表資料群體的幾個象徵性的中心點。</p>
 <p>首先，先決定要有幾個「中心點」，這裡假設我要有<span class="math">\(k\)</span>個好了，接下來先隨機給這些「中心點」一個初始的位置，接下來根據數據的靠近程度開始歸類，如果一筆數據比較所有的「中心點」後發現離「中心點」A是最近的話，那這筆數據就歸「中心點」A了，就用這樣的規則把所有數據都做分類。</p>
-<p>分完類後，接下來平均每一個資料群體裡的數據座標找出新的代表這個群體的「中心點」，然後又拿這個新的「中心點」根據數據的靠近程度再歸類一次，如此循環多次，直到收斂為止。這樣的話，這<span class="math">\(k\)</span>個「中心點」收斂後會各自佔據四方，並且代表某個群體的中心點。我們就可以找到代表性的k個點，並拿這些點做「k Nearest Neighbor RBF Network」。</p>
+<p>分完類後，接下來平均每一個資料群體裡的數據座標找出新的代表這個群體的「中心點」，然後又拿這個新的「中心點」根據數據的靠近程度再歸類一次，如此循環多次，直到收斂為止。這樣的話，這<span class="math">\(k\)</span>個「中心點」收斂後會各自佔據四方，並且代表某個群體的中心點。我們就可以找到代表性的<span class="math">\(k\)</span>個點，並拿這些點做「k Nearest Neighbor RBF Network」。</p>
 <p><br/></p>
 <h3>One-Hot Encoding</h3>
 <p>討論這麼久的ML，我們還沒有討論過假設遇到「類別」要怎麼處理！</p>
