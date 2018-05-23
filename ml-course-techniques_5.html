@@ -98,7 +98,7 @@
 <p>本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。</p>
 </blockquote>
 <h3>Boost的精髓</h3>
-<p>在上一回當中，我們介紹的Aggregation Models都屬於沒有Boost的，不管是Bagging或Decision Tree都沒有要試著在Training的過程中改善Model，<strong>而這篇將要提到的Boost方法，則是在產生每個g_{t}時試圖讓Model整體更完善，更能發揮Aggregation Models中截長補短中的「補短」的效果，也就是說g_{t}可以彼此互補不足之處</strong>。</p>
+<p>在上一回當中，我們介紹的Aggregation Models都屬於沒有Boost的，不管是Bagging或Decision Tree都沒有要試著在Training的過程中改善Model，<strong>而這篇將要提到的Boost方法，則是在產生每個<span class="math">\(g_{t}\)</span>時試圖讓Model整體更完善，更能發揮Aggregation Models中截長補短中的「補短」的效果，也就是說<span class="math">\(g_{t}\)</span>可以彼此互補不足之處</strong>。</p>
 <p>那實際上我們應該怎麼做才能實踐Boost呢？其實方法的道理早就透漏在上一回中的Bagging和Decision Tree裡頭了，不管是Bagging和Decision Tree都是使用變換Data來做到變異度，在這個方法下Model的架構可以本身是不變的，這帶來相當的便利性，而今天我們要講的Boost也同樣的利用「變換Data」來做到變異度，但不同的是Boost的過程中「變換Data」這件事是有目標性的。</p>
 <p><strong>Boost方法在「變換Data」時會試著去凸顯原先做錯的Data，而降低原本已經做對的Data，藉由這樣的方法訓練出來的<span class="math">\(g_{t}\)</span>可以補齊前面的不足，所以Boost的過程將會使得Model漸漸的完善，這就是Boost的主要精髓。</strong></p>
 <p><br/></p>
@@ -112,11 +112,11 @@
 <p>有注意到考慮「錯誤率」<span class="math">\(ε_{t}\)</span>的時候必須要評估<span class="math">\(u_{n}^{(t)}\)</span>，要記得會有Data權重是為了表示增加或減少原本的Data的數量，所以依照每筆Data的出現機會不同，會有不同的權重，也就會有對「錯誤率」不同的貢獻程度。</p>
 <p>那為了待會要對權重重新分配，我們先定義了<span class="math">\(β_{t}\)</span>，在未來我會將錯誤的Data的權重乘上<span class="math">\(β_{t}\)</span>，即<span class="math">\(u_{n}^{(t+1)}=u_{n}^{(t)}×β_{t}\)</span>，並且把正確的Data權重除以<span class="math">\(β_{t}\)</span>，即<span class="math">\(u_{n}^{(t+1)}=u_{n}^{(t)}/β_{t}\)</span>，<strong>而期望的結果是重新分配的Dataset在<span class="math">\(g_{t}\)</span>的預測下可以表現的像隨機的一樣，於是乎下一次使用這組Dataset訓練出來的<span class="math">\(g_{t+1}\)</span>將會彌補<span class="math">\(g_{t}\)</span>的不足</strong>，根據這樣的原則我們來推一下<span class="math">\(β_{t}\)</span>，</p>
 <p><span class="math">\(𝚺_{n} u_{n}^{(t+1)} ⟦y_{n}≠g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t+1)}=1/2\)</span> (預測能力像隨機分布)</p>
-<p>⇒  $𝚺<em n>{n} u</em>^{(t+1)} ⟦y_{n}≠g_{t}(x_{n})⟧ = 𝚺<em n>{n} u</em>^{(t+1)} ⟦y_{n}=g_{t}(x_{n})⟧ $</p>
+<p>⇒  <span class="math">\(𝚺_{n} u_{n}^{(t+1)} ⟦y_{n}≠g_{t}(x_{n})⟧ = 𝚺_{n} u_{n}^{(t+1)} ⟦y_{n}=g_{t}(x_{n})⟧\)</span></p>
 <p>⇒  <span class="math">\(𝚺_{n} (u_{n}^{(t)}×β_{t})  ⟦y_{n}≠g_{t}(x_{n})⟧ = 𝚺_{n} (u_{n}^{(t)}/β_{t}) ⟦y_{n}=g_{t}(x_{n})⟧\)</span></p>
 <p>⇒  <span class="math">\(β_{t}^{2} = 𝚺_{n} u_{n}^{(t)} ⟦y_{n}=g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t)}  ⟦y_{n}≠g_{t}(x_{n})⟧\)</span></p>
 <p>⇒  <span class="math">\(β_{t}^{2} = [𝚺_{n} u_{n}^{(t)} ⟦y_{n}=g_{t}(x_{n})⟧ /  𝚺_{n} u_{n}^{(t)}]/ [𝚺_{n} u_{n}^{(t)}  ⟦y_{n}≠g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t)} ]\)</span></p>
-<p>⇒  <strong><span class="math">\(β_{t}^{2} = 1-ε_{t} / ε_{t}\)</span></strong></p>
+<p>⇒  <strong><span class="math">\(β_{t}^{2} = 1-ε_{t} / ε_{t}​\)</span></strong></p>
 <p>所以我們就可以利用這個<span class="math">\(β_{t}\)</span>來更新我的Data權重，並且在多次迭代後，得到很多個<span class="math">\(g_{t}\)</span>。而將來我們會把所有的<span class="math">\(g_{t}\)</span>做線性組合，而我們希望<strong>「錯誤率」越低的<span class="math">\(g_{t}\)</span>可以有更高的貢獻度<span class="math">\(α_{t}\)</span></strong>，所以使用<span class="math">\(β_{t}\)</span>緊接著計算「<span class="math">\(g_{t}\)</span>的權重」<span class="math">\(α_{t}\)</span>，定義為</p>
 <p><strong><span class="math">\(α_{t} = ln(βt)\)</span></strong></p>
 <p>所以當一個百分之一百可以完全預測的<span class="math">\(g_{t}\)</span>出現時，它的<span class="math">\(ε_{t}=0\)</span>，此時它的<span class="math">\(β_{t} →∞\)</span>，同時<span class="math">\(α_{t} →∞\)</span>，所以這樣的<span class="math">\(g_{t}\)</span>會有完全的貢獻。</p>
