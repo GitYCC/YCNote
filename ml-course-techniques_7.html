@@ -113,7 +113,7 @@
 <p>所以我們可以仿造SVM的形式來造一個Network，</p>
 <p><strong><span class="math">\(G=Output{[𝚺_m β_m RBF(X,μ_m)]+b}\)</span></strong></p>
 <p>當<span class="math">\(Output\)</span>為<span class="math">\(sign\)</span> Function、<span class="math">\(β_m\)</span>為<span class="math">\(α_n y_n\)</span>就回到特例SVM了。</p>
-<p>我們來細看這個式子傳遞的概念，RBF Network的第一層是先產生<span class="math">\(M\)</span>組<span class="math">\(RBF(X,μ_m)\)</span>，意味著以這<span class="math">\(M\)</span>個位置<span class="math">\(μ_m\)</span>當作中心點來評估各個X與它的相似程度，RBF是有評估相似度的味道，越接近<span class="math">\(μ_m\)</span>的點，RBF越大，並隨著與<span class="math">\(μ_m\)</span>距離變大，RBF的值也快速遞減，所以這<span class="math">\(M\)</span>個<span class="math">\(μ_m\)</span>是有象徵性的，越接近它你越受它的影響。</p>
+<p>我們來細看這個式子傳遞的概念，RBF Network的第一層是先產生<span class="math">\(M\)</span>組<span class="math">\(RBF(X,μ_m)\)</span>，意味著以這<span class="math">\(M\)</span>個位置<span class="math">\(μ_m\)</span>當作中心點來評估各個<span class="math">\(X\)</span>與它的相似程度，RBF是有評估相似度的味道，越接近<span class="math">\(μ_m\)</span>的點，RBF越大，並隨著與<span class="math">\(μ_m\)</span>距離變大，RBF的值也快速遞減，所以這<span class="math">\(M\)</span>個<span class="math">\(μ_m\)</span>是有象徵性的，越接近它你越受它的影響。</p>
 <p>決定了每一筆數據各是受哪些<span class="math">\(μ_m\)</span>影響，接下來第二層是由這M個代表性的位置來進行投票決定最後的結果，這意味的不同的地方對<span class="math">\(μ_m\)</span>最後結果也有不同的影響力，舉個例子，假設在SVM裡頭，某個<span class="math">\(μ_m\)</span>如果它的<span class="math">\(y_m =+1\)</span>，那它對最後的影響就會是正的；那如果某個<span class="math">\(μ_m\)</span>的<span class="math">\(y_m=-1\)</span>，那它對最後的影響就會是負的，所以一個點進來，先評估一下它和象徵性的幾個點<span class="math">\(μ_m\)</span>的距離，如果相鄰幾點都是正的，這個點最後的結果就會是正的。</p>
 <p><img alt="RBF Network" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_05.png"></p>
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf</a></p>
@@ -150,7 +150,7 @@
 <p>Hypothesis: <span class="math">\(h(X) = W^TVX\)</span></p>
 <p>而如果是某一用戶，則</p>
 <p><span class="math">\(h(X_n) = W^TV_n\)</span></p>
-<p>對某個用戶而言與他匹配的電影是一個向量，上面紀錄了他看過的電影，假設我再指定一部電影m，此時<span class="math">\(W_m^T V_n\)</span>就代表這個用戶有沒有看過這部電影。</p>
+<p>對某個用戶而言與他匹配的電影是一個向量，上面紀錄了他看過的電影，假設我再指定一部電影<span class="math">\(m\)</span>，此時<span class="math">\(W_m^T V_n\)</span>就代表這個用戶有沒有看過這部電影。</p>
 <p>用這個方法來想問題，假設今天你把用戶和電影填成一個大的表格，或是矩陣，有交集的部分就打個勾，這個矩陣的每個元素表示成<span class="math">\(r_{nm}\)</span>，有打勾的部分<span class="math">\(r_{nm}=1\)</span>，沒打勾的部分<span class="math">\(r_{nm}=0\)</span>，那我們做的轉換W和V最終就是為了讓</p>
 <p><span class="math">\(W_m^T V_n ≈r_{nm}\)</span></p>
 <p>為了評估匹配的好壞，我們定義Error Function為</p>
