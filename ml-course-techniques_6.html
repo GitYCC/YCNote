@@ -139,8 +139,8 @@
 <p>上式當中我們使用了微分的連鎖率，並且令</p>
 <p><strong><span class="math">\(δ_{j}^{(L)} = ∂L/∂s_{j}^{(L)}\)</span></strong></p>
 <p><span class="math">\(δ_{j}^{(L)}\)</span>這一項被稱為Backward Pass Term，而<span class="math">\(X_{i}^{(L-1)}\)</span>這項被稱為Forward Pass Term，所以<span class="math">\(L\)</span>層權重的更新取決於Forward Pass Term和Backward Pass Term相乘<span class="math">\(δ_{j}^{(L)}×X_{i}^{(L-1)}\)</span>。</p>
-<p>我們先來看一下L層的Forward Pass Term要怎麼計算，<span class="math">\(X_{i}^{(L-1)}\)</span>這項是很容易求的，我們只要讓數據一路從<span class="math">\(0\)</span>層傳遞上來就可以自然而然的得到<span class="math">\(X_{i}^{(L-1)}\)</span>的值，所以我們會稱<span class="math">\(X_{i}^{(L-1)}\)</span>這一項為Forward Pass Term，因為我們必須要往前傳遞才可以得到這個值。</p>
-<p>再來看一下L層的Backward Pass Term要怎麼計算，<span class="math">\(δ_{j}^{(L)}\)</span>一樣是很容易求得的，</p>
+<p>我們先來看一下<span class="math">\(L\)</span>層的Forward Pass Term要怎麼計算，<span class="math">\(X_{i}^{(L-1)}\)</span>這項是很容易求的，我們只要讓數據一路從<span class="math">\(0\)</span>層傳遞上來就可以自然而然的得到<span class="math">\(X_{i}^{(L-1)}\)</span>的值，所以我們會稱<span class="math">\(X_{i}^{(L-1)}\)</span>這一項為Forward Pass Term，因為我們必須要往前傳遞才可以得到這個值。</p>
+<p>再來看一下<span class="math">\(L\)</span>層的Backward Pass Term要怎麼計算，<span class="math">\(δ_{j}^{(L)}\)</span>一樣是很容易求得的，</p>
 <p><span class="math">\(δ_{j}^{(L)} = ∂L/∂s_{j}^{(L)} = ∂[(1/2) (y-\overline{y})^{2}]/∂y = (y-\overline{y})\)</span></p>
 <p>你會發現這一項的計算需要得到誤差的資訊，而誤差資訊要等到Forward的動作做完才有辦法得到，所以資訊的傳遞方向是從尾巴一路回到頭，是一個Backword的動作。</p>
 <p>因此，最後一層也是Output Layer的更新公式如下：</p>
@@ -156,7 +156,7 @@
 <p><span class="math">\(= 𝚺_{k} {∂L/∂s_{k}^{(ℓ+1)}}×{∂s_{k}^{(ℓ+1)}/∂X_{jk}^{(ℓ)}}×{∂X_{jk}^{(ℓ)}/∂s_{j}^{(ℓ)}}\)</span> (連鎖率)</p>
 <p><span class="math">\(= 𝚺_{k} {δ_{k}^{(ℓ+1)}}×{W_{jk}^{(ℓ)}}×{σ'(s_{j}^{(ℓ)})}\)</span></p>
 <p><span class="math">\(W_{jk}^{(ℓ)}\)</span>和<span class="math">\(σ'(s_{j}^{(ℓ)})\)</span>都是Forward之後就會得到的資訊，而<span class="math">\(δ_{k}^{(ℓ+1)}\)</span> 而是需要Backward才可以得到，我們已經知道<span class="math">\(δ_{j}^{(ℓ=L)}\)</span>的值，就可以從<span class="math">\(δ_{j}^{(ℓ=L)}\)</span>開始利用上面的公式，一路Backward把所有的<span class="math">\(δ_{j}\)</span>都找齊。好！那現在我們已經找到了更新所有Weights的方法了。</p>
-<p>看一下上圖中的最下面的Flow，一開始我們Forward，把所有X和s都得到，到了Output Layer，我們得到了<span class="math">\(δ_{j}^{(ℓ=L)}\)</span>，再Backward回去找出所有的<span class="math">\(δ\)</span>，接下來就可以用Forward Pass Term和Backword Pass Term來Update所有的<span class="math">\(W\)</span>了。</p>
+<p>看一下上圖中的最下面的Flow，一開始我們Forward，把所有<span class="math">\(X\)</span>和<span class="math">\(s\)</span>都得到，到了Output Layer，我們得到了<span class="math">\(δ_{j}^{(ℓ=L)}\)</span>，再Backward回去找出所有的<span class="math">\(δ\)</span>，接下來就可以用Forward Pass Term和Backword Pass Term來Update所有的<span class="math">\(W\)</span>了。</p>
 <p>總結一下，反向傳播算法(Backpropagation, BP)更新權重的方法為</p>
 <blockquote>
 <p><strong><span class="math">\(W_{ij}^{(ℓ)} ←  W_{ij}^{(ℓ)}-η×δ_{j}^{(ℓ)}×X_{i}^{(ℓ-1)}\)</span>  <br/></strong></p>
@@ -170,7 +170,7 @@
 <p>第一個方法，就是我們剛剛提過的<strong>「設計Deep Neural Network的結構」</strong>，藉由限縮一層當中的神經元來達到一種限制，做到Regularization。</p>
 <p>第二個方法是<strong>「限制W的大小」</strong>，和標準Regularization作一樣的事情，我們將<span class="math">\(W\)</span>的大小加進去Cost裡頭做Fitting，例如使用L2 Regularizer <span class="math">\(Ω(W)=𝚺(W_{jk}^{(ℓ)})^{2}\)</span>，但這樣使用有一個問題就是<span class="math">\(W\)</span>並不是Sparse的，L2 Regularizer在抑制<span class="math">\(W\)</span>的方法是，如果W的分量大的話就抑制多一點，如果分量小就抑制少一點（因為<span class="math">\(W^{2}\)</span>微分為一次），所以最後會留下很多很小的分量，造成計算量大大增加，尤其像是Deep Learing這麼龐大的Model，這樣的Regularization顯然不夠好，L1 Regularizer顯然可以解決這個問題（因為在大部分位置微分為常數），但不幸的是它無法微分，所以就有了L2 Regularizer的衍生版本，</p>
 <p>Weight-elimination L2 regularizer: <span class="math">\(𝚺[(W_{jk}^{(ℓ)})^{2}]/[1+(W_{jk}^{(ℓ)})^{2}]\)</span></p>
-<p>這麼一來不管<span class="math">\(W\)</span>大或小，它受到抑制的值大小接近的 (Weight-elimination L2 regularizer微分為 -1次方)，因此就可以使得部分<span class="math">\(W\)</span>可以為0，大大便利於我們做計算。</p>
+<p>這麼一來不管<span class="math">\(W\)</span>大或小，它受到抑制的值大小接近的 (Weight-elimination L2 regularizer微分為 <span class="math">\(-1\)</span>次方)，因此就可以使得部分<span class="math">\(W\)</span>可以為<span class="math">\(0\)</span>，大大便利於我們做計算。</p>
 <p>第三種方法是最常使用的<strong>「Early Stopping」</strong>，所謂的Early Stopping就是，在做Backpropagation的過程去觀察Validation Data的Error有沒有脫離Training Data的Error太多，如果開始出現差異，我們就立刻停止計算，這樣就可以確保Model裡的參數沒有使得Model產生Overfitting，是一個很直接的作法。</p>
 <p>第四種方法是<strong>「Drop-out」</strong>，在Deep Learing Fitting的過程中，隨機的關閉部分神經元，藉由這樣的作法使得Fitting的過程使用較少的神經元，並且使得結構是瘦長狀的，來達到Regularization。</p>
 <p>第五種方法是接下來會用更大篇幅介紹的<strong>「Denoising Autoencoder」</strong>，在Deep Neural Network前面加入這樣的結構有助於抑制雜訊。</p>
