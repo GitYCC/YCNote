@@ -207,7 +207,7 @@
 <p><br/></p>
 <h3>Dropout</h3>
 <p>Dropout是Deep Learning常用的Regularization技巧，它的作法是在訓練的時候我先隨機把部份的神經元關閉，使用較少的神經元訓練，來達到Regularization的效果，最後在「推論」的時候再使用全部的神經元，我個人覺得這有Aggregation Model的味道，分別訓練出許多的sub-model再做Aggregation以達到截長補短的效果。</p>
-<p>實作上有一些細節必須要注意，當我們關閉一些神經元時，也就是等於減少部份的貢獻量，所以我們需要依照相應比例來給予權重，以抵銷減少的部分。舉個例子，假設今天原本應該要輸出的值有十個，這十個值都是1，然後因為Dropout，變成五個1五個0的輸出，我們看到原本貢獻量因為Dropout一半而少一半，這樣並不合理，會導致我後面的Weights在更新的時候低估更新量，所以我們必須要將「沒被Dropout的部分」權重乘上一倍，才可以解決問題。因此，如果Dropout r倍的神經元，權重就要乘以(1/r)倍，我們來看看Tensorflow怎麼做的。</p>
+<p>實作上有一些細節必須要注意，當我們關閉一些神經元時，也就是等於減少部份的貢獻量，所以我們需要依照相應比例來給予權重，以抵銷減少的部分。舉個例子，假設今天原本應該要輸出的值有十個，這十個值都是1，然後因為Dropout，變成五個1五個0的輸出，我們看到原本貢獻量因為Dropout一半而少一半，這樣並不合理，會導致我後面的Weights在更新的時候低估更新量，所以我們必須要將「沒被Dropout的部分」權重乘上一倍，才可以解決問題。因此，如果Dropout <span class="math">\(r\)</span>倍的神經元，權重就要乘以<span class="math">\((1/r)\)</span>倍，我們來看看Tensorflow怎麼做的。</p>
 <div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
     <span class="n">S</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
                      <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
@@ -487,7 +487,7 @@ test_acc = 92.02%
 </pre></div>
 
 
-<p>跟上次的結果比，你會發現有長足的進步，精確率來到90幾，大家可以<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py">下載程式碼</a>，試著調整參數使得DNN Model的精確率可以更高，參數包含：</p>
+<p>跟上次的結果比，你會發現有長足的進步，精確率來到90幾%，大家可以<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py">下載程式碼</a>，試著調整參數使得DNN Model的精確率可以更高，參數包含：</p>
 <ul>
 <li>Hidden Layer的神經元數量</li>
 <li>不同的Activation Function</li>

@@ -107,7 +107,7 @@
 <p><strong>我們把所有正確的情況，也就是True Positive和True Negative，把它加總起來除上所有情形個數，那就是Accuracy，這也是最常用的指標，但是在某些情形下這個指標會失效</strong>，如果今天實際正向的例子很少，譬如有一個聊天機器人和10000個人長談，藉由談話，機器人會預測這些人未來會不會當上CEO，那我只要簡單一步來設計我的模型就可以使它Accuracy達到99%以上，那就是通通預測你不會當上CEO就好了，顯然我們需要別種指標來應對這種情況。</p>
 <p>Precision（準確率）和Recall（召回率）這個時候就派上用場了，Precision和Recall同時關注的都是True Positive（都在分子），但是角度不一樣，<strong>Precision看的是在預測正向的情形下，實際的「精準度」是多少，而Recall則是看在實際情形為正向的狀況下，預測「能召回多少」正向的答案</strong>。一樣的，如果是門禁系統，我們希望Precision可以很高，Recall就相較比較不重要，如果是廣告投放，則Recall很重要，越大越好，Precision就顯得沒這麼重要了。<strong>Precision和Recall都不去考慮True Negative</strong>，以上面CEO的例子，大部分的人都不會當上CEO，所以預測這一塊並不是那麼重要，反而我們應該關心的是應該當上CEO的沒被預測到，以及沒當上CEO的卻被預測到了的兩種情形。</p>
 <p><img alt="mechine_learning_measure.003" src="http://www.ycc.idv.tw/media/mechine_learning_measure/mechine_learning_measure.003.jpeg"></p>
-<p>如果今天我覺得Precision和Recall都同等重要，我想要用一個指標來統合標誌它，這就是F1 Score或稱F1 Measure，它是F Measure的一個特例，當belta=1時就是F1 Measure，代表Precision和Recall都同等重要，那如果我希望多看中一點Precision，那belta就可以選擇小一點，當belta=0時，F Measure就是Precision；如果我希望多看中一點Recall，那belta就可以選擇大一點，當belta無限大時，F Measure就是Recall。</p>
+<p>如果今天我覺得Precision和Recall都同等重要，我想要用一個指標來統合標誌它，這就是F1 Score或稱F1 Measure，它是F Measure的一個特例，當belta=1時就是F1 Measure，代表Precision和Recall都同等重要，那如果我希望多看中一點Precision，那<span class="math">\(belta\)</span>就可以選擇小一點，當<span class="math">\(belta=0\)</span>時，F Measure就是Precision；如果我希望多看中一點Recall，那belta就可以選擇大一點，當belta無限大時，F Measure就是Recall。</p>
 <p>如果你仔細看F1 Measure，你會發現它的平均方法是「調和平均」，帶大家go-through三種平均方法，你就能明白為什麼要使用調和平均了。下圖列出了三種平均方法的使用時機，我們要去了解資料或數列的特性，我們才能知道要採取哪種平均方法較為恰當，大多情況算數平均都可以使用，因為我們都假設有線性關係存在，譬如說平均距離；幾何平均常用於人口計算，因為人口增加是成比例增加的；調和平均常用於計算平均速率，在固定距離下，所花時間就是平均速率，這數據成倒數關係，而F1 Measure也同樣是這樣的數據特性，在固定TP的情況下，有不同的分母，所以這裡使用調和平均較為適當。</p>
 <p><img alt="mechine_learning_measure.004" src="http://www.ycc.idv.tw/media/mechine_learning_measure/mechine_learning_measure.004.jpeg"></p>
 <p>下圖的名詞看一下有印象就好。</p>
@@ -116,6 +116,61 @@
 <p><img alt="mechine_learning_measure.006" src="http://www.ycc.idv.tw/media/mechine_learning_measure/mechine_learning_measure.006.jpeg"></p>
 <p>通常在醫學上，會通過一些閥值來斷定病人是否有得此病，而這個閥值就會影響Sensitivity和Specificity，這個不同閥值Sensitivity和Specificity的分布情況可以畫成ROC Curve，而ROC Curve底下的面積稱為AUC，最理想的情況是AUC=1，在這種情況下存在一種閥值，也就是左上角落，使得Sensitivity=1且Specificity=1。而AUC=0.5，則是代表隨機挑選的狀況，沒有預測能力。大部分情形都是落在這兩種之間，透過ROC和AUC我們就可以選出更為強健穩定的模型。</p>
 <p>想必這個時候你再回去看第一張圖就更加了解了，有了這些指標，我們就多一把尺來評斷我們的模型好還是不好了。</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
 
 
         <br/><br/>
