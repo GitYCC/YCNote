@@ -142,11 +142,8 @@
 <blockquote>
 <p>Kernel Soft-Margin SVM：<br/></p>
 <p>在<span class="math">\(0 ≤ α_{n} ≤ C;\ 𝚺_{n} α_{n}y_{n} = 0\)</span>的限制條件下，求解<span class="math">\(min. [(1/2)𝚺_{n}𝚺_{m} α_{n}α_{m}y_{n}y_{m}K(X_{n},X_{m})-𝚺_{n} α_{n}]\)</span></p>
-<p><br/></p>
 <p>得到<span class="math">\(α_{n}\)</span>，然後</p>
-<p><br/></p>
 <p><strong><span class="math">\(W = 𝚺_{n} α_{n}y_{n}Z_{n}\)</span></strong></p>
-<p><br/></p>
 <p><span class="math">\(b=y_{sv}-𝚺_{n} α_{n}y_{n}K(X_{n},X_{sv})\)</span></p>
 </blockquote>
 <p>其中W可以想成是由<span class="math">\(Z_{n}\)</span>所組合而成的，而決定貢獻程度則反應在放在它前面的係數<span class="math">\((α_{n}y_{n})\)</span>，<span class="math">\(y_{n}\)</span>決定貢獻的方向，<span class="math">\(α_{n}\)</span>決定影響的程度。</p>
@@ -186,7 +183,7 @@
 <blockquote>
 <p>Kernel Ridge Regression：<br/></p>
 <p><span class="math">\(min. E_{aug}\)</span></p>
-<p><br/><span class="math">\(E_{aug}=(1/N)×(β^{T}K^{T}Kβ-2β^{T}K^{T}y+y^{T}y) +  (λ/N)×β^{T}Kβ)\)</span></p>
+<p><span class="math">\(E_{aug}=(1/N)×(β^{T}K^{T}Kβ-2β^{T}K^{T}y+y^{T}y) +  (λ/N)×β^{T}Kβ)\)</span></p>
 </blockquote>
 <p>所以，由<span class="math">\(∇E_{aug}=0\)</span>就可以得到最小值成立的條件為</p>
 <p><strong><span class="math">\(β^*=(λI+K)^{-1}y\)</span></strong></p>
