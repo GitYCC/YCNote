@@ -6,12 +6,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="機器有辦法自行從文本中觀察出詞彙間的相似度嗎？是可以的，word2vec是&#34;word to vector&#34;的縮寫，代表的正是將每個字轉換成向量，而一旦兩個字的向量越是靠近，就代表它的相似度越高，我們究竟要如何得到這些向量呢？方法簡單但出奇有效，文章的最後會向大家呈現它的精彩的結果。 本單元程式碼Skip-Gram Word2Vec部分可於Github下載，CBOW...">
         <meta name="keywords" content="Tensorflow">
-        <link rel="icon" href="./static/img/favicon.png">
+        <link rel="icon" href="https://www.ycc.idv.tw/static/img/favicon.png">
 
         <title>實作Tensorflow (5)：Word2Vec - YC Note</title>
 
         <!-- Stylesheets -->
-        <link href="./theme/css/all.min.css" rel="stylesheet">
+        <link href="https://www.ycc.idv.tw/theme/css/all.min.css" rel="stylesheet">
         <!-- /Stylesheets -->
 
         <!-- RSS Feeds -->
@@ -49,20 +49,20 @@
     <body>
 
         <!-- Header -->
-    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('./images/tensorflow-logo.jpg'); background-position: center; background-size: cover;">
+    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://www.ycc.idv.tw/images/tensorflow-logo.jpg'); background-position: center; background-size: cover;">
 
             <!-- Static navbar -->
             <div class="container">
                 <div class="header-nav">
                     <div class="header-logo">
-                        <a class="pull-left" href="./"><img class="logo" src="./static/img/favicon.png" alt="logo">YC Note</a>
+                        <a class="pull-left" href="https://www.ycc.idv.tw/"><img class="logo" src="https://www.ycc.idv.tw/static/img/favicon.png" alt="logo">YC Note</a>
                     </div>
                     <div class="nav pull-right">
-                                <a href="./category/coding.html">Coding</a>
-                                <a href="./category/aiml.html">AI.ML</a>
-                                <a href="./category/reading.html">Reading</a>
-                                <a href="./category/recording.html">Recording</a>
-                                <a href="./about-me.html">About Me</a>
+                                <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a>
+                                <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
+                                <a href="https://www.ycc.idv.tw/category/reading.html">Reading</a>
+                                <a href="https://www.ycc.idv.tw/category/recording.html">Recording</a>
+                                <a href="https://www.ycc.idv.tw/about-me.html">About Me</a>
                     </div>
                 </div>
             </div>
@@ -75,12 +75,12 @@
               <div class="col-lg-12">
                   <div class="header-content">
                       <h1 class="header-title">實作Tensorflow (5)：Word2Vec</h1>
-                      <p class="header-date">By <a href="./author/yc-chen.html">YC Chen</a>, 2017 / 11月 19, in category <a href="./category/aiml.html">AI.ML</a></p>
+                      <p class="header-date">By <a href="https://www.ycc.idv.tw/author/yc-chen.html">YC Chen</a>, 2017 / 11月 19, in category <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></p>
                       <div class="header-underline"></div>
                       <div class="clearfix"></div>
                       <p class="pull-right header-tags">
                           <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
-<a href="./tag/tensorflow.html">Tensorflow</a>                      </p>
+<a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a>                      </p>
                   </div>
               </div>
         </div>
@@ -977,8 +977,8 @@ Nearest to &#39;white&#39;:  [&#39;red&#39; &#39;black&#39; &#39;blue&#39; &#39;
                     <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
                         <div class="footer-title">Sitemap</div>
                         <ul class="list-unstyled">
-                            <li><a href="./archives.html">Archives</a></li>
-                            <li><a href="./tags.html">Tags</a></li>
+                            <li><a href="https://www.ycc.idv.tw/archives.html">Archives</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tags.html">Tags</a></li>
                         </ul>
                     </div>
                     <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
