@@ -40,7 +40,7 @@
         {{ article.content }}
 
         {% if article.related_posts %}
-            <h4>Articles connexes</h4>
+            <h3>Related Posts</h3>
             <dl class="dl-horizontal">
             {% for related_post in article.related_posts %}
                 <dt>{{ related_post.locale_date}}</dt>
