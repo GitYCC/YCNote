@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = u'YC Chen'
 SITENAME = u'YC Note'
-SITEURL = 'https://gitycc.github.io/YCNote/'
+SITEURL = 'https://www.ycc.idv.tw'
 
 PATH = 'content'
 
@@ -26,11 +26,11 @@ SOCIAL = (('About Me','./about-me.html'),
 DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
-RELATIVE_URLS = True
+RELATIVE_URLS = False
 
 PLUGIN_PATHS = ["pelican-plugins"]
 
-PLUGINS = ["sitemap","render_math","pelican_alias"]
+PLUGINS = ["sitemap","render_math","pelican_alias","related_posts"]
 
 ## 配置sitemap 插件
 SITEMAP = {
@@ -59,12 +59,13 @@ DISQUS_SITENAME = "ycnote-1"
 
 DEFAULT_DATE_FORMAT = '%Y / %B %d'
 
+RELATED_POSTS_MAX = 10
 
 ### Nest ###
 
 # NEST Template
 THEME = 'theme/nest'
-SITESUBTITLE = u'本網站內容包括機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)。'
+SITESUBTITLE = u'機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)。'
 # Minified CSS
 NEST_CSS_MINIFY = True
 # Add items to top menu before pages
@@ -89,7 +90,7 @@ NEST_FOOTER_HTML = ''
 # index.html
 NEST_INDEX_HEAD_TITLE = u'YC NOTE'
 NEST_INDEX_HEADER_TITLE = u'YC NOTE'
-NEST_INDEX_HEADER_SUBTITLE = u'想像力比知識更重要'
+NEST_INDEX_HEADER_SUBTITLE = u'一個資料科學家的修煉之路'
 NEST_INDEX_CONTENT_TITLE = u'Last Posts'
 # archives.html
 NEST_ARCHIVES_HEAD_TITLE = u'Archives'
@@ -143,11 +144,9 @@ NEST_TAGS_HEADER_SUBTITLE = u'Tags List'
 NEST_TAGS_CONTENT_TITLE = u'Tags List'
 NEST_TAGS_CONTENT_LIST = u'tagged'
 # Static files
-STATIC_PATHS = ['images','media','static', 'extra/robots.txt', 'extra/favicon.ico', 'extra/logo.svg']
+STATIC_PATHS = ['images','media','static', 'extra/robots.txt', 'extra/favicon.ico', 'extra/logo.svg', 'extra/CNAME']
 EXTRA_PATH_METADATA = {
     'extra/robots.txt': {'path': 'robots.txt'},
     'extra/favicon.ico': {'path': 'favicon.ico'},
-    'extra/logo.svg': {'path': 'logo.svg'}
-}
-
-
+    'extra/logo.svg': {'path': 'logo.svg'},
+    'extra/CNAME': {'path': 'CNAME'},}
