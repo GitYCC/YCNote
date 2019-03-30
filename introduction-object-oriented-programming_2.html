@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="物件導向編程 在上一章當中，我們藉由好的程式碼的特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，自然而然引出物件導向的概念。在這一章當中YC會接續介紹完整的物件導向要如何實現，包括物件導向三大特性：封裝、繼承和多型。 ...">
+        <meta name="keywords" content="軟體設計">
+        <link rel="icon" href="https://www.ycc.idv.tw/static/img/favicon.png">
+
+        <title>物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹 - YC Note</title>
+
+        <!-- Stylesheets -->
+        <link href="https://www.ycc.idv.tw/theme/css/all.min.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script type="text/x-mathjax-config"> 
+            MathJax.Hub.Config({ 
+                "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
+                SVG: { linebreaks: { automatic:true } } 
+                });
+        </script>
+
+
+        <!-- Google Analytics -->
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-68393177-2', 'auto');
+          ga('send', 'pageview');
+        </script>
+        <!-- /Google Analytics -->
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://www.ycc.idv.tw/images/coding_front_board.jpg'); background-position: center; background-size: cover;">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="https://www.ycc.idv.tw/"><img class="logo" src="https://www.ycc.idv.tw/static/img/favicon.png" alt="logo">YC Note</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a>
+                                <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
+                                <a href="https://www.ycc.idv.tw/category/reading.html">Reading</a>
+                                <a href="https://www.ycc.idv.tw/category/recording.html">Recording</a>
+                                <a href="https://www.ycc.idv.tw/about-me.html">About Me</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹</h1>
+                      <p class="header-date">By <a href="https://www.ycc.idv.tw/author/yc-chen.html">YC Chen</a>, 2018 / 4月 10, in category <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <h3>物件導向編程</h3>
+<p><a href="http://www.ycc.idv.tw/introduction-object-oriented-programming_1.html">在上一章當中</a>，我們藉由好的程式碼的特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，自然而然引出物件導向的概念。在這一章當中YC會接續介紹完整的物件導向要如何實現，包括物件導向三大特性：封裝、繼承和多型。</p>
+<p>在本章我會採用兩種語言交叉作說明，一種是靜態型別的語言Java，另一種是動態型別的語言Python，這兩種語言都是可以實現物件導向的語言，而所謂型別的動態與靜態可以用一個簡單的方法來區分：型別檢查(Type Checking)發生在什麼時候？像Java這類的靜態型別語言，它的型別檢查是在編譯時期(Compile Time)完成的，而像是Python這類的動態型別語言，它的型別檢查則是在執行時期(Runtime)才去做，所以Python可以不事先宣告變數型別，這點使得Python在開發上方便許多。</p>
+<p>雖然Python和Java都是支援物件導向的語言，但在使用上有很大的差異，首先，因為Python的動態型別，所以有些物件導向的性質對它來說就不是那麼重要，另外，因為Python追求簡潔，簡化了相當多的東西，所以很多的使用方法不同於傳統的物件導向，需要認識到這些差異才可以讓你使用Python的物件導向不會顯得很彆扭。Java是一套對物件導向支援非常完整的語言，而Python是一套易於快速開發的語言，使用兩種語言說明物件導向是為了讓讀者更能了解物件導向的本質，而非語言本身。</p>
+<p>本篇採用『<a href="https://www.tenlong.com.tw/products/9789866761799">大話設計模式</a>』書中的物件導向篇範例。</p>
+<h3>類別(Class)與物件(Object)</h3>
+<p>首先來看物件導向的基本組成，類別(Class)與物件(Object)。
+<em> 類別：建立物件的藍圖，描述所建立的物件共同的屬性和方法。
+</em> 物件：一個自我包含的實體，物件包括屬性（Properties）和方法（Methods），屬性就是需要記憶的資訊，方法就是物件能夠提供的服務。</p>
+<p>舉個例子，我想要創造一隻有名字的貓，她有喵喵叫的能力，在Java中可以寫成</p>
+<div class="highlight"><pre><span class="cm">/* Java */</span>
+
+<span class="kd">class</span> <span class="nc">Cat</span> <span class="o">{</span>  <span class="c1">//{1}</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span> <span class="c1">//{2}</span>
+
+    <span class="kd">public</span> <span class="nf">Cat</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//{3}</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span> <span class="c1">//{4}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">shout</span><span class="o">()</span> <span class="o">{</span> <span class="c1">//{5}</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;. meow~&quot;</span><span class="o">;</span> <span class="c1">//{6}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//{7}</span>
+        <span class="n">Cat</span> <span class="n">cat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Cat</span><span class="o">(</span><span class="s">&quot;May&quot;</span><span class="o">);</span> <span class="c1">//{8}</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">cat</span><span class="o">.</span><span class="na">shout</span><span class="o">());</span> <span class="c1">//{9}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// output:</span>
+<span class="c1">// My name is May. meow~</span>
+</pre></div>
+
+
+<p>{1} 建構一個<code>Cat</code>的類別，類別不是物件，類別只是物件的藍圖。</p>
+<p>{2} 建立一個私有變數<code>name</code>，用來代表貓的名字，我們使用<code>private</code>的修飾詞讓它是私有的，也就是說外部環境沒辦法去讀取到這個變數，只有物件內部才可以讀取的到</p>
+<p>{3} 提供建造方法(constructor)來初始化這一個物件，初始化需要<code>name</code>的參數。</p>
+<p>{4} 在初始化的過程中，我們會將從外部讀取的<code>name</code>存入私有變數<code>this.name</code>裡，在Java裡頭，如果外部變數名稱與本地變數名稱相同，需要使用<code>this</code>來特別區分。</p>
+<p>{5} 創造一個公開的類別方法<code>shout()</code>。</p>
+<p>{6} 使用私有變數<code>name</code>讓貓可以自我介紹，再發出喵喵叫的聲音。</p>
+<p>{7} Java只要遇到<code>main</code>就會去執行，方法<code>main</code>具有靜態方法的修飾詞<code>static</code>，也就是說<code>Test</code>不需要被實體化也能執行<code>main</code>這個方法。</p>
+<p>{8} 使用<code>new</code>來創造一個物件，在創造的過程會執行初始化，所以必須放入初始化需要的參數<code>name</code>，所以上面的新的物件有了<code>"May"</code>的名字。</p>
+<p>{9} 接下來使用<code>cat.shout()</code>去執行喵喵叫的動作，這個方法會回傳字串，再利用<code>System.out.println</code>的方法將字串顯示出來。注意！在物件導向的習慣中，會用<code>.</code>來表示在那物件中的方法或屬性，所以<code>cat.shout()</code>就是執行在物件<code>cat</code>中的方法<code>shout()</code>。</p>
+<p>再來看Python怎麼表示，</p>
+<div class="highlight"><pre><span class="c">### Python3.4</span>
+
+<span class="k">class</span> <span class="nc">Cat</span><span class="p">:</span> <span class="c">#{1}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span> <span class="c">#{2}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">name</span> <span class="c">#{3}</span>
+
+    <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c">#{4}</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">__name</span><span class="o">+</span><span class="s">&quot;. meow~&quot;</span> <span class="c">#{5}</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">cat</span> <span class="o">=</span> <span class="n">Cat</span><span class="p">(</span><span class="s">&quot;May&quot;</span><span class="p">)</span> <span class="c">#{6}</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">shout</span><span class="p">())</span> <span class="c">#{7}</span>
+
+<span class="k">if</span> <span class="n">__name__</span><span class="o">==</span><span class="s">&quot;__main__&quot;</span><span class="p">:</span> <span class="c">#{8}</span>
+    <span class="n">main</span><span class="p">()</span>
+
+<span class="c"># output:</span>
+<span class="c"># My name is May. meow~</span>
+</pre></div>
+
+
+<p>{1} 建構<code>Cat</code>的類別，這是Python3的表示方法，如果是使用Python2.7的話，要寫成<code>class Cat(object):</code>才可以。</p>
+<p>{2} Python的初始化方法，Python在初始化之前會先自行執行<code>__new__</code>的方法，這個過程會產生一個新的物件，也就是實體化，而這個新的物件會以第一個參數的方法被帶入<code>__init__</code>的方法裡進行初始化，我們通常會命名這個變數為<code>self</code>，這裡的<code>self</code>已經是個物件而不是類別，那初始化的過程需要引入外部資訊<code>name</code>的參數來進行命名，所以第二個參數就要設<code>name</code>，記住喔！第一個參數是Python自動產生的，不是由外部帶入的，所以外部只要給<code>name</code>一個參數就足夠了。</p>
+<p>{3} 創造一個私有本地變數<code>__name</code>來將<code>name</code>存入，在Python當中以雙底線<code>__</code>開頭的變數會被視為是「私有的」，效果和Java的<code>private</code>接近，不過Python並沒有這麼嚴格禁止外部去讀取私有變數，所以需要配合工程師的自我規範。</p>
+<p>{4} 類別方法<code>shout()</code>，只要你不是靜態的類別方法，Python都會自動幫你帶入物件資訊當作第一個參數，通常命名為<code>self</code>，那為什麼靜態方法沒有自動帶入，因為靜態方法不用實體化，所以根本不擁有物件的資訊。</p>
+<p>{5} 使用到本地的<code>self.__name</code>變數</p>
+<p>{6} 創造一個物件，在創造的過程會執行初始化，所以必須放入初始化需要的參數<code>name</code>，所以上面的新的物件有了<code>"May"</code>的名字。</p>
+<p>{7} 接下來使用<code>cat.shout()</code>去執行喵喵叫的動作，這個方法會回傳字串，再利用<code>print</code>的方法將字串顯示出來。注意！在物件導向的習慣中，會用<code>.</code>來表示在那物件中的方法或屬性，所以<code>cat.shout()</code>就是執行在物件<code>cat</code>中的方法<code>shout()</code>。</p>
+<p>{8} 在Python程式執行時，它的<code>__name__</code>會是<code>"__main__"</code>，也就是說會去執行這個<code>if</code>判斷式下面的程式。</p>
+<h3>方法多載（Method Overloading）</h3>
+<p>物件導向允許「使用不同的參數形式去實現同一個方法」，這就稱之為方法多載，這個方法涵蓋一般方法和構造初始化方法。</p>
+<p>來延伸剛剛的貓的例子，假設今天我們允許用戶不去設定貓咪的名字，而程式會預先給貓咪No-Name的預設值，所以我們需要另外一個初始化方法是不用貓咪名字的參數形式。</p>
+<p>Java的實現程式碼如下所示，如此一來只要碰到沒有參數的形式，程式會給予<code>"No-Name"</code>的名字去當作貓咪的名字，並進行初始化。</p>
+<div class="highlight"><pre><span class="cm">/* Java */</span>
+
+<span class="kd">class</span> <span class="nc">Cat</span> <span class="o">{</span>  
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span> 
+
+    <span class="kd">public</span> <span class="nf">Cat</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span> 
+    <span class="o">}</span>
+    <span class="c1">// method overloading</span>
+    <span class="kd">public</span> <span class="nf">Cat</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">(</span><span class="s">&quot;No-Name&quot;</span><span class="o">);</span> <span class="c1">// given &quot;No-Name&quot; as its name</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">shout</span><span class="o">()</span> <span class="o">{</span> 
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;. meow~&quot;</span><span class="o">;</span> 
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span> 
+        <span class="n">Cat</span> <span class="n">cat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Cat</span><span class="o">();</span> <span class="c1">// no-argumant format</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">cat</span><span class="o">.</span><span class="na">shout</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// output:</span>
+<span class="c1">// My name is No-Name. meow~</span>
+</pre></div>
+
+
+<p>但在Python當中，不允許這種「相同方法名稱，卻又不同參數形式」，Python採用其他的方式來產生同樣的方法多載效果，如以下所示，我們可以看到Python使用default方法來實現多載，只要我們不給予<code>name</code>，它的default就是<code>"No-Name"</code>。</p>
+<div class="highlight"><pre><span class="c">### Python3.4</span>
+
+<span class="k">class</span> <span class="nc">Cat</span><span class="p">:</span> 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;No-Name&quot;</span><span class="p">):</span> <span class="c"># name&#39;s default is &quot;No-Name&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">name</span> 
+
+    <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">__name</span><span class="o">+</span><span class="s">&quot;. meow~&quot;</span> 
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">cat</span> <span class="o">=</span> <span class="n">Cat</span><span class="p">()</span> <span class="c"># no-argument format</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">shout</span><span class="p">())</span> 
+
+<span class="k">if</span> <span class="n">__name__</span><span class="o">==</span><span class="s">&quot;__main__&quot;</span><span class="p">:</span> 
+    <span class="n">main</span><span class="p">()</span>
+
+<span class="c"># output:</span>
+<span class="c"># My name is No-Name. meow~</span>
+</pre></div>
+
+
+<h3>物件導向三大特性—封裝(Encapsulation)</h3>
+<p>還記得「低耦合，高內聚」的原則嗎？為了符合這原則，每個物件都要盡可能的去包含需要用到的屬性和方法，並且使得外部不能以不合理的方法去影響物件，這就稱之為「封裝」。</p>
+<p>我們來看看上次的成果，我們就用這個例子來說明「封裝」。</p>
+<div class="highlight"><pre><span class="c">### Python3.4</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">class</span> <span class="nc">Calculation</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nums</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span> <span class="o">=</span> <span class="n">nums</span> <span class="c">#{1}</span>
+        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__checkPositiveInteger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span> <span class="c">#{2}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="nb">int</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">num</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;invalid positive integer: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__primeFactorize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span> <span class="c">#{3}</span>
+        <span class="n">prime_factorize</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">num</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">num</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">prime_factorize</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prime_factorize</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">num</span> <span class="o">/=</span> <span class="n">i</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">prime_factorize</span>
+
+    <span class="k">def</span> <span class="nf">findGCF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">prime_factorize</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span><span class="p">:</span>
+            <span class="n">prime_factorize</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__primeFactorize</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
+
+        <span class="n">common_prime</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">prime_factorize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">prime_factorize</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">common_prime</span> <span class="o">&amp;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">pf</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="n">gcf</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">prime</span> <span class="ow">in</span> <span class="n">common_prime</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span>
+            <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">prime_factorize</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">pf</span><span class="p">[</span><span class="n">prime</span><span class="p">])</span>
+            <span class="n">gcf</span> <span class="o">=</span> <span class="n">gcf</span> <span class="o">*</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">m</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">gcf</span>
+
+    <span class="k">def</span> <span class="nf">findLCM</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">gcf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findGCF</span><span class="p">()</span>
+        <span class="n">lcm</span> <span class="o">=</span> <span class="n">gcf</span>
+        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span><span class="p">:</span>
+            <span class="n">lcm</span> <span class="o">*=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="o">/</span><span class="n">gcf</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lcm</span>
+</pre></div>
+
+
+<p>{1} 使用私有變數，讓外部不能任意的改變<code>self.__name</code>變數，在這個例子當中，如果<code>self.__name</code>被任意改變，它將會逃過<code>__checkPositiveInteger</code>的檢查。
+{2}&amp;{3} 不需要由外部讀取的方法，就盡量讓它是私有的。</p>
+<p>再回到貓咪的這個例子，如果我們想要可以調控「叫聲次數」的話，可以這樣實現。</p>
+<div class="highlight"><pre><span class="cm">/* Java */</span>
+
+<span class="kd">class</span> <span class="nc">Cat</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Cat</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">Cat</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">(</span><span class="s">&quot;No-Name&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">shout_num</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span> <span class="c1">//{1}</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getShoutNum</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">shout_num</span><span class="o">;</span> <span class="o">}</span> <span class="c1">//{2}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setShoutNum</span><span class="o">(</span><span class="kt">int</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//{3}</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">IllegalArgumentException</span><span class="o">();</span>
+        <span class="n">shout_num</span> <span class="o">=</span> <span class="n">num</span><span class="o">;</span> 
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">shout</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">shout_num</span><span class="o">;</span> <span class="n">i</span><span class="o">++){</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s">&quot;meow~ &quot;</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;. &quot;</span><span class="o">+</span><span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Cat</span> <span class="n">cat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Cat</span><span class="o">(</span><span class="s">&quot;May&quot;</span><span class="o">);</span>
+        <span class="n">cat</span><span class="o">.</span><span class="na">setShoutNum</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span> <span class="c1">//{4}</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">cat</span><span class="o">.</span><span class="na">shout</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// output:</span>
+<span class="c1">// My name is May. meow~ meow~ meow~ meow~ meow~</span>
+</pre></div>
+
+
+<p>{1} 設置私有變數<code>shout_num</code>來決定叫聲次數。</p>
+<p>{2} 為了做到封裝，外部不能直接去讀取<code>shout_num</code>，而是經由<code>getShoutNum</code>的外部方法來得到叫聲次數，這個<code>getXXX</code>的形式在物件導向裡頭被稱為Getter。</p>
+<p>{3} 為了做到封裝，外部不能直接去改變<code>shout_num</code>，而是經由<code>setShoutNum</code>的外部方法來以合理的方法改變叫聲次數，在這個方法中，我們會先檢查再設定，如果是直接的改變<code>shout_num</code>將會少了這一份檢查，這個<code>setXXX</code>的形式在物件導向裡頭被稱為Setter。</p>
+<p>{4} 使用Setter方法由外部來改變叫聲次數。</p>
+<p>在Python中，Getter和Setter被簡化了。</p>
+<div class="highlight"><pre><span class="c">### Python3.4</span>
+
+<span class="k">class</span> <span class="nc">Cat</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;No-Name&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__shout_num</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="nd">@property</span>  <span class="c">#{1}</span>
+    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__shout_num</span>
+
+    <span class="nd">@shoutNum.setter</span>  <span class="c">#{2}</span>
+    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__shout_num</span> <span class="o">=</span> <span class="n">num</span>
+
+    <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__shout_num</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s">&quot;meow~ &quot;</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">__name</span><span class="o">+</span><span class="s">&quot;. &quot;</span><span class="o">+</span><span class="n">result</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">cat</span> <span class="o">=</span> <span class="n">Cat</span><span class="p">(</span><span class="s">&quot;May&quot;</span><span class="p">)</span>
+    <span class="n">cat</span><span class="o">.</span><span class="n">shout_num</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c">#{3}</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">shout</span><span class="p">())</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+<span class="c"># output:</span>
+<span class="c"># My name is May. meow~ meow~ meow~ meow~ meow~</span>
+</pre></div>
+
+
+<p>{1} Python使用Decorator<code>@property</code>來創造Getter，一旦加上了<code>@property</code>，當下的函數方法就會變成一種性質。</p>
+<p>{2} 再使用<code>shout_num.setter</code>來替<code>shout_num</code>這個特性加上Setter。</p>
+<p>{3} 然後我們就可以以像是修改一般變數的方式來修改<code>shout_num</code>，但實際上<code>shout_num</code>是有被封裝的，如此一來就可以更為簡潔，不用去寫<code>getXX</code>和<code>setXXX</code>等囉唆的寫法。</p>
+<h3>物件導向三大特性—繼承(Inheritance)</h3>
+<p>還記得「Don't Repeat Yourself」原則嗎？物件導向同樣提供了這個選項，「繼承」可以讓子類擁有父類的屬性和方法，避免不必要的重寫，但同時也會增加父類和子類之間的耦合，所以使用時要去評估它影響了多少耦合性。</p>
+<p>子類可以先繼承父類的屬性和方法，再去新增屬於子類自己的屬性和方法，甚至還可以去覆寫父類的方法，這稱之為方法覆寫(Method Overriding)，有了這些方法，子類可以在不重複撰寫父類方法的情況下，去增加自己的特色和自己的功能。</p>
+<p>依循著剛剛的例子，如果我們今天想要增加狗的類別，但是又不想重複撰寫相同的部分，所以我們可以選擇創造動物的類別，再讓貓和狗繼承自動物。</p>
+<div class="highlight"><pre><span class="cm">/* Java */</span>
+
+<span class="kd">class</span> <span class="nc">Animal</span> <span class="o">{</span>
+    <span class="kd">protected</span> <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span> <span class="c1">//{1}</span>
+
+    <span class="kd">public</span> <span class="nf">Animal</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">Animal</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">(</span><span class="s">&quot;No-Name&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">protected</span> <span class="kt">int</span> <span class="n">shout_num</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getShoutNum</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">shout_num</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setShoutNum</span><span class="o">(</span><span class="kt">int</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">IllegalArgumentException</span><span class="o">();</span>
+        <span class="n">shout_num</span> <span class="o">=</span> <span class="n">num</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Cat</span> <span class="kd">extends</span> <span class="n">Animal</span><span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">Cat</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">name</span><span class="o">);</span> <span class="c1">//{2}</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">Cat</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">shout</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">shout_num</span><span class="o">;</span> <span class="n">i</span><span class="o">++){</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s">&quot;meow~ &quot;</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;. &quot;</span><span class="o">+</span><span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">class</span> <span class="nc">Dog</span> <span class="kd">extends</span> <span class="n">Animal</span><span class="o">{</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">shout</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">shout_num</span><span class="o">;</span> <span class="n">i</span><span class="o">++){</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s">&quot;woof~ &quot;</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;. &quot;</span><span class="o">+</span><span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>{1} <code>protected</code>的效果和<code>private</code>一樣，讓外部無法讀取到內部的私有化，但是<code>private</code>無法被「繼承」，而<code>protected</code>可以被繼承，所以如果希望可以被繼承的私有變數或方法，就使用<code>protected</code>。</p>
+<p>{2} <code>super</code>指的是父類，這裡我們使用父類來做初始化，事實上這邊可以不用再初始化一次，子類本身就會繼承父類的初始化方法，所以可以像<code>Dog</code>一樣省略不寫。</p>
+<div class="highlight"><pre><span class="c">### Python3.4</span>
+
+<span class="k">class</span> <span class="nc">Animal</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;No-Name&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="mi">3</span> <span class="c">#{1}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span>
+    <span class="nd">@shout_num.setter</span>
+    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="n">num</span>
+
+<span class="k">class</span> <span class="nc">Cat</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;No_Name&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>  <span class="c">#{2}</span>
+
+    <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s">&quot;meow~ &quot;</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">+</span><span class="s">&quot;. &quot;</span><span class="o">+</span><span class="n">result</span>
+<span class="k">class</span> <span class="nc">Dog</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s">&quot;woof~ &quot;</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">+</span><span class="s">&quot;. &quot;</span><span class="o">+</span><span class="n">result</span>
+</pre></div>
+
+
+<p>{1} Python的<code>protected</code>使用單底線<code>_</code>開頭表示。</p>
+<p>{2} <code>super</code>指的是父類，這裡我們使用父類來做初始化，事實上這邊可以不用再初始化一次，子類本身就會繼承父類的初始化方法，所以可以像<code>Dog</code>一樣省略不寫。</p>
+<h3>抽象化：抽象類別(Abstract Class)、抽象方法(Abstract Method)和接口(Interface)</h3>
+<p>事實上，剛剛使用<code>Animal</code>的方法並不是很正確，我們將<code>Animal</code>當作一個類別處理，所以<code>Animal</code>其實是可以被實例化的，但是<code>Animal</code>根本沒有什麼有用的方法，它必須被繼承後再添加方法才有用處，所以我們其實可以把<code>Animal</code>抽象化，將<code>Animal</code>視為抽象類別，其中擁有一些方法需要在子類實現的，稱為抽象方法，我們直接看怎麼做。</p>
+<div class="highlight"><pre><span class="cm">/* Java */</span>
+
+<span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Animal</span> <span class="o">{</span> <span class="c1">//{1}</span>
+    <span class="kd">protected</span> <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Animal</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">Animal</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">(</span><span class="s">&quot;No-Name&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">protected</span> <span class="kt">int</span> <span class="n">shout_num</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getShoutNum</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">shout_num</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setShoutNum</span><span class="o">(</span><span class="kt">int</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">IllegalArgumentException</span><span class="o">();</span>
+        <span class="n">shout_num</span> <span class="o">=</span> <span class="n">num</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">shout</span><span class="o">()</span> <span class="o">{</span> <span class="c1">//{2}</span>
+        <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">shout_num</span><span class="o">;</span> <span class="n">i</span><span class="o">++){</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">getShoutSound</span><span class="o">()+</span><span class="s">&quot; &quot;</span><span class="o">;</span> <span class="c1">//{3}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;. &quot;</span><span class="o">+</span><span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">abstract</span> <span class="kd">protected</span> <span class="n">String</span> <span class="nf">getShoutSound</span><span class="o">();</span> <span class="c1">//{4}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Cat</span> <span class="kd">extends</span> <span class="n">Animal</span><span class="o">{</span>
+    <span class="kd">protected</span> <span class="n">String</span> <span class="nf">getShoutSound</span><span class="o">()</span> <span class="o">{</span> <span class="c1">//{5}</span>
+        <span class="k">return</span> <span class="s">&quot;meow~&quot;</span><span class="o">;</span> 
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">class</span> <span class="nc">Dog</span> <span class="kd">extends</span> <span class="n">Animal</span><span class="o">{</span>
+    <span class="kd">protected</span> <span class="n">String</span> <span class="nf">getShoutSound</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">&quot;woof~&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>{1} 使用<code>abstract class</code>修飾詞來創建抽象類別，只有在抽象類別中才可以擁有抽象方法，抽象類別不能直接被實例化。</p>
+<p>{2} 抽象類別也可以有一般的具體方法。</p>
+<p>{3} 這裡使用的<code>getShoutSound()</code>方法要等在子類才會被實現。</p>
+<p>{4} 使用<code>abstract</code>設置抽象方法，繼承自抽象類別的子類必須要完全實現所有的抽象方法。</p>
+<p>{5} 實現抽象方法。</p>
+<p>在Python中沒有原生的抽象類別和方法，必須<code>import abc</code>。</p>
+<div class="highlight"><pre><span class="c">### Python3.4</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="k">class</span> <span class="nc">Animal</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span> <span class="c">#{1}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;No-Name&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span>
+    <span class="nd">@shout_num.setter</span>
+    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="n">num</span>
+
+    <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getShoutSound</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">+</span><span class="s">&quot;. &quot;</span><span class="o">+</span><span class="n">result</span>  
+    <span class="nd">@abc.abstractmethod</span>  <span class="c">#{2}</span>
+    <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Cat</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c">#{3}</span>
+        <span class="k">return</span> <span class="s">&quot;meow~&quot;</span>
+
+<span class="k">class</span> <span class="nc">Dog</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;woof~&quot;</span>
+</pre></div>
+
+
+<p>{1} 繼承<code>abc.ABC</code>來建立抽象類別。</p>
+<p>{2} 使用<code>@abc.abstractmethod</code>來建立抽象方法。</p>
+<p>{3} 實現抽象方法。</p>
+<p>還有一種類型抽象化的更為徹底，稱之為「接口」，「接口」上的所有方法都是抽象未實現的，「接口」不能擁有任何具體的方法。雖然「接口」很像是完全抽象化的「抽象類別」，也確實可以利用「抽象類別」來創造「接口」，但是兩者的意義是不同的，「抽象類別」是從子類中發現共通的東西，而泛化出現的，但是「接口」可以根本不預先知道子類是什麼，而僅僅事先定義行為本身，換句話說，「抽象類別」是類別的抽象化，而「接口」則是行為的抽象化。</p>
+<p>例如，我想要讓某些動物擁有「飛」的能力，這是一個行為，而不會事先知道它會套用到哪一個類別上面。</p>
+<p>在Java之中只允許單一繼承，但是卻可以有多個「接口」；而Python沒有現成的「接口」可以使用，我們必須使用「抽象方法」來創造「接口」，所以開發者要謹記「接口」的限制：不能有任何的具體方法，因為Python允許多重繼承，所以就可以直接將模擬「接口」的抽象類別直接疊加上去。</p>
+<div class="highlight"><pre><span class="cm">/* Java */</span>
+
+<span class="kd">interface</span> <span class="nc">IFly</span> <span class="o">{</span> <span class="c1">//{1}</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">flyTo</span><span class="o">(</span><span class="n">String</span> <span class="n">place</span><span class="o">);</span> <span class="c1">//{2}</span>
+<span class="o">}</span>
+<span class="kd">class</span> <span class="nc">FlyingCat</span> <span class="kd">extends</span> <span class="n">Cat</span> <span class="kd">implements</span> <span class="n">IFly</span> <span class="o">{</span> <span class="c1">//{3}</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">flyTo</span><span class="o">(</span><span class="n">String</span> <span class="n">place</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//{4}</span>
+        <span class="k">return</span> <span class="nf">shout</span><span class="o">()+</span><span class="s">&quot; I&#39;m going to fly to &quot;</span><span class="o">+</span><span class="n">place</span><span class="o">+</span><span class="s">&quot;.&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">FlyingCat</span> <span class="n">cat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FlyingCat</span><span class="o">(</span><span class="s">&quot;May&quot;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">cat</span><span class="o">.</span><span class="na">flyTo</span><span class="o">(</span><span class="s">&quot;Taiwan&quot;</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// output: </span>
+<span class="c1">// My name is May. meow~ meow~ meow~ I&#39;m going to fly to Taiwan.</span>
+</pre></div>
+
+
+<p>{1} 使用<code>interface</code>創建「接口」，我們習慣會使用開頭大寫I來表示Interface(接口)。</p>
+<p>{2} 「接口」定義未實現的抽象方法<code>flyTo</code>。</p>
+<p>{3} <code>FlyingCat</code>繼承自<code>Cat</code>並且裝上<code>IFly</code>的「接口」。</p>
+<p>{4} 必須實現「接口」上所有的抽象方法。</p>
+<div class="highlight"><pre><span class="c">### Python3.4</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="k">class</span> <span class="nc">IFly</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span> <span class="c">#{1}</span>
+    <span class="nd">@abc.abstractmethod</span> <span class="c">#{2}</span>
+    <span class="k">def</span> <span class="nf">flyTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">place</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">FlyingCat</span><span class="p">(</span><span class="n">Cat</span><span class="p">,</span><span class="n">IFly</span><span class="p">):</span> <span class="c">#{3}</span>
+    <span class="k">def</span> <span class="nf">flyTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">place</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shout</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; I&#39;m going to fly to &quot;</span><span class="o">+</span><span class="n">place</span><span class="o">+</span><span class="s">&quot;.&quot;</span><span class="p">;</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">cat</span> <span class="o">=</span> <span class="n">FlyingCat</span><span class="p">(</span><span class="s">&quot;May&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">fly</span><span class="p">(</span><span class="s">&quot;Taiwan&quot;</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+<span class="c"># output: </span>
+<span class="c"># My name is May. meow~ meow~ meow~ I&#39;m going to fly to Taiwan.</span>
+</pre></div>
+
+
+<p>{1} 使用抽象類別來創造「接口」。</p>
+<p>{2} 要注意！「接口」裡頭不能有具體方法。</p>
+<p>{3} 直接使用多重繼承，將<code>IFly</code>安裝上去。</p>
+<h3>物件導向三大特性—多型(Polymorphism)</h3>
+<p>最後，來講講物件導向的最後一個特性，那就是「多型」。「多型」的涵義是指「子類可以以父類的身分出現」，而因為是以父類的角色出現，所以只能執行父類擁有的方法，也就是只能執行這些子類共同泛化分享的方法，當然不同的子類實現後的效果會不一樣，不然使用「多型」的意義就不大了，至於子類自己的特殊方法則不可以使用「多型」去執行。</p>
+<p>直接來看範例，假設今天我要邀請三隻貓貓狗狗來參加叫聲比賽，分別請他們叫個幾聲來聽聽，此時就需要使用到「多型」的方法。</p>
+<div class="highlight"><pre><span class="cm">/* Java */</span>
+
+<span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Animal</span> <span class="o">{</span> 
+    <span class="kd">protected</span> <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Animal</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">Animal</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">(</span><span class="s">&quot;No-Name&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">protected</span> <span class="kt">int</span> <span class="n">shout_num</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getShoutNum</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">shout_num</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setShoutNum</span><span class="o">(</span><span class="kt">int</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">IllegalArgumentException</span><span class="o">();</span>
+        <span class="n">shout_num</span> <span class="o">=</span> <span class="n">num</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">shout</span><span class="o">()</span> <span class="o">{</span> 
+        <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">shout_num</span><span class="o">;</span> <span class="n">i</span><span class="o">++){</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">getShoutSound</span><span class="o">()+</span><span class="s">&quot; &quot;</span><span class="o">;</span> 
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">&quot;. &quot;</span><span class="o">+</span><span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">abstract</span> <span class="kd">protected</span> <span class="n">String</span> <span class="nf">getShoutSound</span><span class="o">();</span> 
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Cat</span> <span class="kd">extends</span> <span class="n">Animal</span><span class="o">{</span>
+    <span class="kd">protected</span> <span class="n">String</span> <span class="nf">getShoutSound</span><span class="o">()</span> <span class="o">{</span> 
+        <span class="k">return</span> <span class="s">&quot;meow~&quot;</span><span class="o">;</span> 
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">class</span> <span class="nc">Dog</span> <span class="kd">extends</span> <span class="n">Animal</span><span class="o">{</span>
+    <span class="kd">protected</span> <span class="n">String</span> <span class="nf">getShoutSound</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">&quot;woof~&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ShoutGame</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Animal</span><span class="o">[]</span> <span class="n">arrayAnimal</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Animal</span><span class="o">[</span><span class="mi">3</span><span class="o">];</span> <span class="c1">//{1}</span>
+        <span class="c1">// polymorphism</span>
+        <span class="n">arrayAnimal</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Cat</span><span class="o">(</span><span class="s">&quot;May&quot;</span><span class="o">);</span> <span class="c1">//{2}</span>
+        <span class="n">arrayAnimal</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Dog</span><span class="o">(</span><span class="s">&quot;Linda&quot;</span><span class="o">);</span>
+        <span class="n">arrayAnimal</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Cat</span><span class="o">(</span><span class="s">&quot;Joy&quot;</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">Animal</span> <span class="nl">animal:</span> <span class="n">arrayAnimal</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">animal</span><span class="o">.</span><span class="na">shout</span><span class="o">());</span> <span class="c1">//{3}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// output: </span>
+<span class="c1">// My name is May. meow~ meow~ meow~</span>
+<span class="c1">// My name is Linda. woof~ woof~ woof~</span>
+<span class="c1">// My name is Joy. meow~ meow~ meow~</span>
+</pre></div>
+
+
+<p>{1} 創建<code>Animal</code>的Array，Animal是抽象類別不能實體化，這裡預定要放的是它的繼承實現類別。</p>
+<p>{2} 將<code>Cat</code>和<code>Dog</code>任意放到<code>Animal</code>的Array是可以的，此時就套用「多型」，不管是<code>Cat</code>和<code>Dog</code>都是以<code>Animal</code>的形式出現，只能執行<code>Animal</code>有的方法。</p>
+<p>{3} <code>shout()</code>是父類<code>Animal</code>有的方法，可以被執行。</p>
+<p>而在Python當中，「多型」就沒這麼重要了，因為Python具有「鴨子型別」（Duck Typing），什麼是「鴨子型別」呢？有一句話道出它的意義：「當看到一隻鳥走起來像鴨子、游泳起來像鴨子、叫起來也像鴨子，那麼這隻鳥就可以被稱為鴨子」，因為Python是動態型別的語言，變數型態不需要事先宣告，所以一個變數具有彈性可以放入任意型別，直到出現不合適的使用方法，才會報錯，所以在Python中變數可以任意放入不同的類別的物件，只要確保這些類別都具有這些變數所需要用到的方法，就可以了，這不正是接近「多型」的概念。</p>
+<div class="highlight"><pre><span class="c">### Python3.4</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="k">class</span> <span class="nc">Animal</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;No-Name&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span>
+    <span class="nd">@shout_num.setter</span>
+    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="n">num</span>
+
+    <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getShoutSound</span><span class="p">()</span><span class="o">+</span><span class="s">&quot; &quot;</span>
+        <span class="k">return</span> <span class="s">&quot;My name is &quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">+</span><span class="s">&quot;. &quot;</span><span class="o">+</span><span class="n">result</span>  
+    <span class="nd">@abc.abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Cat</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;meow~&quot;</span>
+
+<span class="k">class</span> <span class="nc">Dog</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;woof~&quot;</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="c"># Shout Game</span>
+    <span class="n">arrayAnimal</span> <span class="o">=</span> <span class="p">[]</span> <span class="c">#{1}</span>
+    <span class="n">arrayAnimal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Cat</span><span class="p">(</span><span class="s">&quot;May&quot;</span><span class="p">))</span> 
+    <span class="n">arrayAnimal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Dog</span><span class="p">(</span><span class="s">&quot;Linda&quot;</span><span class="p">))</span>
+    <span class="n">arrayAnimal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Cat</span><span class="p">(</span><span class="s">&quot;Joy&quot;</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">animal</span> <span class="ow">in</span> <span class="n">arrayAnimal</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">animal</span><span class="p">,</span><span class="n">Animal</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">TypeError</span> <span class="c">#not necessary #{2}</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">animal</span><span class="o">.</span><span class="n">shout</span><span class="p">())</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+<span class="c"># output: </span>
+<span class="c"># My name is May. meow~ meow~ meow~</span>
+<span class="c"># My name is Linda. woof~ woof~ woof~</span>
+<span class="c"># My name is Joy. meow~ meow~ meow~</span>
+</pre></div>
+
+
+<p>{1} 要存入多型的List不需要特別處理。</p>
+<p>{2} 可以檢查是不是繼承自<code>Animal</code>，以確保多型的嚴格定義，但這個過程是非必要的。</p>
+<h3>總結：物件導向使用方法</h3>
+<p>好！我們花了好大的力氣，終於了解如何在Java和Python中使用物件導向。從一開始的「類別」和「物件」講起，再來談到物件導向的三大特性：「封裝」、「繼承」和「多型」，還談到方法可以「多載」也可以「覆寫」，以及一些抽象化的東西，包括「抽象類別」、「抽象方法」和「接口」。</p>
+<p>但是等等！你知道該怎麼運用這些技巧嗎？沒錯，僅僅是了解這些招式不足以讓你寫出卓越的程式碼，你還需要了解如何使用，就像是外功招式還得配合內功才可以是一套完整的功夫，否則只是半吊子而已，我們將在下一章節中來帶大家了解如何去使用這些招式。</p>
+
+            <h3>Related Posts</h3>
+            <dl class="dl-horizontal">
+                <dt>2018 / 4月 05</dt>
+                <dd><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_1.html">物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？</a></dd>
+                <dt>2018 / 4月 14</dt>
+                <dd><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_3.html">物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID</a></dd>
+            </dl>
+
+        <br/><br/>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+/* <![CDATA[ */
+
+    var disqus_shortname = 'ycnote-1';
+    var disqus_identifier = "introduction-object-oriented-programming_2.html";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+/* ]]> */
+</script>
+<noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://www.ycc.idv.tw/archives.html">Archives</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tags.html">Tags</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Contact Me</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
+                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
+                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; YC Note 2018</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>

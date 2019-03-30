@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem。 ...">
+        <meta name="keywords" content="機器學習技法">
+        <link rel="icon" href="https://www.ycc.idv.tw/static/img/favicon.png">
+
+        <title>機器學習技法 學習筆記 (2)：Support Vector Machine (SVM) - YC Note</title>
+
+        <!-- Stylesheets -->
+        <link href="https://www.ycc.idv.tw/theme/css/all.min.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script type="text/x-mathjax-config"> 
+            MathJax.Hub.Config({ 
+                "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
+                SVG: { linebreaks: { automatic:true } } 
+                });
+        </script>
+
+
+        <!-- Google Analytics -->
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-68393177-2', 'auto');
+          ga('send', 'pageview');
+        </script>
+        <!-- /Google Analytics -->
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://www.ycc.idv.tw/images/ai_front_board.jpg'); background-position: center; background-size: cover;">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="https://www.ycc.idv.tw/"><img class="logo" src="https://www.ycc.idv.tw/static/img/favicon.png" alt="logo">YC Note</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a>
+                                <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
+                                <a href="https://www.ycc.idv.tw/category/reading.html">Reading</a>
+                                <a href="https://www.ycc.idv.tw/category/recording.html">Recording</a>
+                                <a href="https://www.ycc.idv.tw/about-me.html">About Me</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)</h1>
+                      <p class="header-date">By <a href="https://www.ycc.idv.tw/author/yc-chen.html">YC Chen</a>, 2017 / 2月 20, in category <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <blockquote>
+<p>本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem。</p>
+</blockquote>
+<p>在<a href="http://www.ycc.idv.tw/ml-course-techniques_1.html">上一篇文章</a>當中，我們掃過了《機器學習技法》 將會包含的內容，今天我們正式來看SVM。</p>
+<p>如果我想要使用無窮次高次方的非線性轉換加入我的Model，可以做到嗎？上一篇，我告訴大家，只要使用Dual Transformation加上Kernel Function等數學技巧就可以做到，我們今天就來看一下這是怎麼一回事。</p>
+<p>本篇文章分為兩個部分，第一部分我盡量不牽扯太多數學計算，而將數學證明放在第二個部分，數學證明的部分非常複雜，但我並不打算把它們忽略掉，因為這些數學計算是相當重要的，它所帶來的方法和概念是可以重複使用的，也有助於你了解和創造其他演算法，所以有心想要成為專家的你請耐心的把後半段的數學看完。</p>
+<p><br/></p>
+<h3>Hard-Margin Support Vector Machine (SVM)</h3>
+<p><img alt="Hard-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.001.jpeg"></p>
+<p>回到我們最熟悉的二元分類問題，如果問題的答案是線性可分的話，我們可以找到一條直線把兩類Data給切開來，而在以前PLA的方法，切在哪裡其實是沒辦法決定的，PLA只能幫你找到可以分開兩類的一刀，但不能幫你把這刀切的更好。</p>
+<p><strong>我們希望這個切開兩類的邊界可以離兩類Data越遠越好，讓邊界到Data有一個較大的空白區，這就是Hard-Margin SVM做的事</strong>。</p>
+<p>我們先來看一下如何計算切平面到任意Data的距離，首先我先假設切平面的方程式為
+</p>
+<div class="math">$$
+W^T X+b = 0 (切平面)
+$$</div>
+<p>
+回想一下高中數學，這個平面的法向量是W，垂直於平面，所以垂直於平面的單位法向量是 <span class="math">\(W/|W|\)</span>，今天如果我有一點Data Point落在<span class="math">\(X\)</span>，另外在平面上任意再找一點<span class="math">\(X_0\)</span>，從<span class="math">\(X_0\)</span>到<span class="math">\(X\)</span>的向量表示為<span class="math">\(X-X_0\)</span>，這個向量如果投影到單位法向量上，這個向量的大小正是Data Point到平面的最短距離，表示成
+</p>
+<div class="math">$$
+d = |W\cdot (X - X_0)| / |W|
+$$</div>
+<p>
+<span class="math">\(X_0\)</span>符合切平面的方程式<span class="math">\(W^T X_0+b = 0\)</span>代入，得
+</p>
+<div class="math">$$
+d = |W\cdot X + b| / |W|
+$$</div>
+<p>
+所以假如我有一群線性可分的二元分類Data，這個切平面我希望可以離兩類Data越遠越好，所以我會有一段全部都沒有Data的空白區，這邊假設這個空白區的邊界為
+</p>
+<div class="math">$$
+W^TX+b = ±1
+$$</div>
+<p>
+這個假設是可以做到的，因為我們可以以比例去調整<span class="math">\(W\)</span>和<span class="math">\(b\)</span>來達到縮放的效果，而不會影響切平面<span class="math">\(W^T X+b = 0\)</span> 。從上面的距離公式，我們知道在這個假設之下，空白區邊界距離切平面為
+</p>
+<div class="math">$$
+margin = 1 / |W|
+$$</div>
+<p>
+而剛好落在這空白區邊界的Data會符合以下方程式</p>
+<p><strong><span class="math">\(y_n\times (W^T X_n+b) = 1\ (Support\ Vector)\)</span></strong></p>
+<p><span class="math">\(y_n\)</span>的正負剛好和<span class="math">\((W^T X_n+b)\)</span>相抵消，<strong>這些落在空白區邊界的Data被稱為Support Vector，就字面上的意義就像是空白區由這一些數據給「撐」起來，而切平面只由這些Support Vector的數據點所決定，和其他的數據點無關</strong>。</p>
+<p>如果考慮所有Data的話，應該要滿足
+</p>
+<div class="math">$$
+y_n\times (W^T X_n+b) ≥ 1\ (All\ Data)
+$$</div>
+<p>
+<strong>綜合上述，Hard-Margin SVM的目標就是，在符合<span class="math">\(y_n\times (W^T X_n+b) ≥ 1 ,\ n=1~N​\)</span>的條件下，求<span class="math">\(Margin (1 / |W|)​\)</span>最大的情形，也可以等價於求<span class="math">\((W^T W/2)​\)</span> 最小的情形，這個問題有辦法使用QP Solver來求解，詳見<a href="https://en.wikipedia.org/wiki/Quadratic_programming">這裡</a>，我就不多加介紹這個數學工具。</strong></p>
+<p><br/></p>
+<h3>Kernel Function</h3>
+<p>Kernel Function是最終可以讓我們有無限多次方特徵的數學工具，但這個工具非常容易理解。</p>
+<p>假設考慮一個非線性轉換，將<span class="math">\(X\)</span>空間轉換到<span class="math">\(Z\)</span>空間，那如果我需要計算轉換過的兩個新Features相乘<span class="math">\(Z_n (X_n)\times Z_m(X_m)\)</span>，我有辦法<strong>不需要先做特徵轉換再相乘</strong>，而是直接使用原有的Features <span class="math">\(X_n\)</span>和<span class="math">\(X_m\)</span>求出<span class="math">\(Z_n(X_n)×Z_m(X_m)\)</span>的最後結果？這種情形數學可以表示成<span class="math">\(K(X_n,X_m)=Z_n(X_n)×Z_m(X_m)\)</span>，這個函式就叫Kernel Function。</p>
+<p><strong>如果有了Kernel Function這樣的數學工具，就可以簡化和優化因為「特徵轉換」所帶來的複雜計算。</strong></p>
+<p>我列出以下幾種Kernel Function：</p>
+<ul>
+<li><strong>Polynomial Kernel：<span class="math">\(K_Q(X_n,X_m)=(ζ+γ X_n^T X_m)^Q\)</span>等價於 「Q次方非線性轉換後的兩個新特徵相乘」。</strong></li>
+<li><strong>Guassian Kernel：<span class="math">\(K(X_n,X_m)=exp(-γ|X_n-X_m|^2)\)</span>等價於 「無窮次方非線性轉換後的兩個新特徵相乘」。</strong></li>
+</ul>
+<p>因此有了Guassian Kernel的幫忙，我們完全不需要管特徵轉換有多複雜，我們可以直接使用原有的Features 來計算「無窮次方的非線性轉換」。</p>
+<p><strong>最後給予Kernel Function一個物理解釋，Kernel Function說穿了就是兩個向量轉換到Z空間後的「內積」，「內積」可以約略想成是「相似程度」，當兩個向量同向，內積是正的，相似度高，但當兩個向量反向，內積是負的，相似度極低，所以你會發現Guassian Kernel在<span class="math">\(X_n=X_m\)</span>會出現最大值，因為代表這兩個位置相似度極高。</strong></p>
+<p><br/></p>
+<h3>Kernel Hard-Margin SVM</h3>
+<p><img alt="Kernel Hard-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.002.jpeg"></p>
+<p>那我們如何使用Kernel Function來使得Hard-Margin SVM更厲害呢？我們必須額外引入另外的數學工具，包括：Lagrange Multiplier和Lagrange Dual Problem，才有辦法把Kernel Function用上，不過這部份的數學有一些複雜，我將這部份的證明放在後面的附錄上，這邊就直接從結果講起。</p>
+<p>Kernel Hard-Margin SVM的公式是，在<span class="math">\(α_n  ≥ 0; 𝚺_n α_n y_n = 0\)</span>的限制條件下，求解<span class="math">\(α_n\)</span></p>
+<p>使得 <span class="math">\([(1/2)𝚺_n 𝚺_m  α_n α_m y_n y_m K(X_n,X_m)-𝚺_n α_n]\)</span>為最小值，</p>
+<p>其中<span class="math">\(K(X_n,X_m)\)</span>就是Kernel Function，由你的特徵轉換方式來決定，這個問題一樣可以使用QP Solver來求解。</p>
+<p>當我們已經有了每筆數據點的<span class="math">\(α_n\)</span>了，接下來可以利用<span class="math">\(α_n\)</span>求出切平面的W和b，在那之前來看一下<span class="math">\(α_n\)</span>的意義，<strong><span class="math">\(α_n\)</span>可以看作是某個數據點對切平面的貢獻程度，<span class="math">\(α_n=0\)</span>的這些數據點為非Support Vector，而<span class="math">\(α_n&gt;0\)</span>的這些數據點是Support Vector，所以對切平面有貢獻的只有Support Vector而已</strong>，這和剛剛的結論相同。因此，W和b可由Support Vector決定，</p>
+<p><strong><span class="math">\(W = 𝚺_{n=sv} α_n y_n Z_n\)</span></strong></p>
+<p><strong><span class="math">\(b=y_{sv}-𝚺_n α_n y_n K(X_n,X_{sv})\)</span></strong></p>
+<p>最後提一個非常重要的概念，是什麼原因讓我們不需要管特徵轉換的複雜度？以往我們的作法是這樣的，我們有每筆Data的Features，接下來對每筆Data做特徵轉換，然後在用特徵轉換後的新Features去Train線性模型，這麼一來如果特徵轉換的次方非常高的話，計算的複雜度就會全落在特徵轉換上。<strong>所以我們巧妙的使用數學工具，讓我們可以單單使用Data的Labels來做優化，而將複雜的特徵轉換利用Kernel Function的方式「嵌入」到優化的過程裡頭，此時計算量就只與Data數量有關，所以可以完全不管特徵轉換所帶來的複雜度</strong>。</p>
+<p><br/></p>
+<h3>Kernel Hard-Margin SVM: 無窮次方的特徵轉換效果如何?</h3>
+<p>終於我們可以使用無窮次方的特徵轉換了，只要使用Kernel Hard-Margin SVM搭配上Guassian Kernel：<span class="math">\(K(X_n,X_m)=exp(-γ|X_n-X_m|^2)\)</span>就可以辦到，下圖是模擬的結果，是不是看起來很強大，隨著γ的不同會有不一樣的切分方法，<strong>你會發現γ越大時看起來的結果越接近Overfitting，所以必須小心挑選γ的大小。</strong></p>
+<p><img alt="Guassian Kernel in Hard-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_01.png"></p>
+<p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/203_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/203_handout.pdf</a></p>
+<p><br/></p>
+<h3>Soft-Margin SVM</h3>
+<p><img alt="Soft-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.003.jpeg"></p>
+<p>剛剛Hard-Margin SVM會很容易Overfitting的原因在於它的機制無法<strong>容忍雜訊</strong>，所以接下來要講的Soft-Margin SVM可以容忍部份的Data違反規則，讓它們可以超出空白區的邊界。</p>
+<p>見上圖，可以發現我們稍微修改了Hard-Margin SVM，加入了參數<span class="math">\(ξ_n\)</span>，<span class="math">\(ξ_n\)</span>代表錯誤的Data離空白區邊界有多遠，而我們將<span class="math">\(ξ_n\)</span>的總和加進去Cost裡面，在優化的過程中將使違反的狀況不會太多和離邊界太遠，<strong>而參數C負責控制<span class="math">\(ξ_n\)</span>總和的影響程度，如果C很大，代表不大能容忍雜訊；如果C很小，則代表對雜訊的容忍很寬鬆</strong>。</p>
+<p><strong>因此我們現在有兩種Support Vector，一種是剛好落在空白區邊界的，稱為Free Support Vector；另外一種是違反規則並超出空白區的，稱為Bounded Support Vector，切平面一樣是由這些Support Vector所決定。</strong></p>
+<p><br/></p>
+<h3>Kernel Soft-Margin SVM</h3>
+<p><img alt="Kernel Soft-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.004.jpeg"></p>
+<p>接下來同樣的對Soft-Margin SVM做數學上Lagrange Multiplier和Lagrange Dual Problem的轉換，再將Kernel Function用上，一樣的，我將這部份的證明放在後面的附錄上，這邊就直接從結果講起。</p>
+<p>Kernel Soft-Margin SVM的公式是，在<span class="math">\(0 ≤ α_n ≤ C;\ 𝚺_n α_n y_n = 0\)</span>的限制條件下，求解<span class="math">\(α_n\)</span></p>
+<p>使得 <span class="math">\([(1/2)𝚺_n 𝚺_m α_n α_m y_n y_m K(X_n ,X_m)-𝚺_n α_n]\)</span>為最小值，</p>
+<p>你會發現和Kernel Hard-Margin SVM唯一只差在<span class="math">\(α_n\)</span>被<span class="math">\(C\)</span>所限制。</p>
+<p>當我們已經有了每筆數據點的<span class="math">\(α_n\)</span>了，接下來可以利用<span class="math">\(α_n\)</span>求出切平面的<span class="math">\(W\)</span>和<span class="math">\(b\)</span>，<span class="math">\(α_n\)</span>一樣的可以看作是某個數據點對切平面的貢獻程度，<span class="math">\(α_n=0\)</span>的這些數據點為非Support Vector，而<span class="math">\(α_n&gt;0\)</span>的這些數據點是Support Vector，可以進一步細分，<span class="math">\(α_n &lt; C\)</span>為Free Support Vector，而<span class="math">\(α_n＝C\)</span>為Bounded Support Vector。相同的，W和b可由Support Vector (Free Support Vector和Bounded Support Vector)決定，跟Kernel Hard-Margin SVM公式一模一樣</p>
+<p><strong><span class="math">\(W = 𝚺_{n=sv} α_n y_n Z_n\)</span></strong></p>
+<p><strong><span class="math">\(b=y_{sv} -𝚺_n α_n y_n K(X_n,X_{sv})\)</span></strong></p>
+<p><br/></p>
+<h3>Kernel Soft-Margin SVM: 容忍雜訊的無窮次方特徵轉換</h3>
+<p><img alt="Guassian Kernel in Soft-Margin SVM" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_02.png"></p>
+<p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/204_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/204_handout.pdf</a></p>
+<p>來看看Kernel Soft-Margin SVM搭配上Guassian Kernel的效果如何，上圖是模擬的結果，我們會發現有部分Data違反分類規則，所以Soft-Margin SVM確實可以容忍雜訊，而且<span class="math">\(C\)</span>越小，容忍雜訊的能力越強，所以要特別注意<span class="math">\(C\)</span>的選取，如果沒有選好還是可能造成Overfitting的。</p>
+<p><br/></p>
+<h3>結語</h3>
+<p>在這一篇當中，我們介紹了Hard-Margin SVM和Soft-Margin SVM，並且成功的利用數學工具將問題轉換成，可以單單使用Data的Labels來做優化，而將複雜的特徵轉換利用Kernel Function的方式「嵌入」到優化的過程裡頭，此時計算量就只與Data數量有關，所以可以完全不管特徵轉換所帶來的複雜度，因此利用Guassian Kernel就可以做到「無窮多次的特徵轉換」了。最後再次強調數學的部分非常重要，它提供的方法和概念是可以重複使用的，而這部份的數學是少不了的，所以有興趣的可以繼續往下看下去。</p>
+<p><br/><br/></p>
+<h3>[進階] 拉格朗日乘子法（Lagrange Multiplier）</h3>
+<p>如果是物理系學生修過古典力學，應該對這個數學工具不陌生。<strong>Lagrange Multiplier是用在有限制條件之下的求極值問題</strong>，步驟如下：</p>
+<ol>
+<li>問題：在限制 <span class="math">\(g_i (x_1,x_2, … , x_n) = 0,\ i=1\cdots k\)</span>  之下，求 <span class="math">\(f(x_1,x_2, … , x_n)\)</span> 的極值</li>
+<li>假設Lagrange Function：   <span class="math">\(L(x_1,x_2, … , x_n,λ_i) = f(x_1,x_2, … , x_n) + 𝚺_i λ_i × g_i(x_1,x_2, … , x_n)\)</span></li>
+<li>聯立方程式求解：</li>
+<li>找L的極值：<span class="math">\(∇L = 0\)</span>  [Stationarity Condition]</li>
+<li><span class="math">\(g_i (x_1,x_2, … , x_n) = 0,\ i=1\cdots k\)</span>  [Primal Feasibility Condition]</li>
+<li>求解以上聯立方程式得到最佳解 <span class="math">\(x_{1},x_{2}, … , x_{n}\)</span></li>
+</ol>
+<p>上面的聯立方程式不難理解，Primal Feasibility Condition就是我們的限制式，然後Stationarity Condition就是求極值的方法，非常直觀，滿足上面的式子我們就可以在限制上面找極值。</p>
+<p><br/></p>
+<p>上面是一般的Lagrange Multiplier，只有考慮到限制式是等式的情形，假如限制條件是不等式呢？我們來看一下加強版的Lagrange Multiplier：</p>
+<ol>
+<li>問題：在限制 <span class="math">\(g_{i}(x_{1},x_{2}, … , x_{n}) = 0,\ i=1\cdots k\)</span> 且  <span class="math">\(h_{j}(x_{1},x_{2}, … , x_{n}) ≤ 0,\ j=1\cdots r\)</span> 之下，求 <span class="math">\(f(x_{1},x_{2}, … , x_{n})\)</span> 的極值</li>
+<li>假設Lagrange Function：   <span class="math">\(L(x_{1},x_{2}, … , x_{n}, λ_{i},μ_{j}) = f(x_{1},x_{2}, … , x_{n}) + 𝚺_{i} λ_{i} × g_{i}(x_{1},x_{2}, … , x_{n}) + 𝚺_{j} μ_{j} × h_{j}(x_{1},x_{2}, … , x_{n})\)</span></li>
+<li>聯立方程式求解：</li>
+<li><strong>找<span class="math">\(L\)</span>的極值：<span class="math">\(∇L = 0\)</span>  [Stationarity Condition]</strong></li>
+<li><strong><span class="math">\(g_{i}(x_{1},x_{2}, … , x_{n}) = 0,\ i=1\cdots k\)</span> 且 <span class="math">\(h_{j}(x_{1},x_{2}, … , x_{n}) ≤ 0,\ j=1\cdots r\)</span>  [Primal Feasibility Condition]</strong></li>
+<li><strong><span class="math">\(μ_{j}  × h_{j} (x_{1},x_{2}, … , x_{n}) = 0,\ j=1\cdots r\)</span>  [Complementary Slackness Condition]</strong></li>
+<li><strong>求<span class="math">\(L\)</span>的最小值時 <span class="math">\(μ_{j} ≥ 0,\ j=1\cdots r\)</span>；求<span class="math">\(L\)</span>的最大值時 <span class="math">\(μ_{j} ≤ 0,\ j=1\cdots r\)</span> [Dual Feasibility Condition]</strong></li>
+<li><strong>以上的條件包括Stationarity、Primal Feasibility、Complementary Slackness、Dual Feasibility通稱 KKT (Karush-Kuhn-Tucker) Conditions</strong></li>
+</ol>
+<p>加強版的Lagrange Multiplier和一般版的一樣有Stationarity Condition和Primal Feasibility Condition。唯一增加的是Complementary Slackness Condition和Dual Feasibility Condition。</p>
+<p>先來講一下Complementary Slackness Condition怎麼來的，我們來考慮不等式條件<span class="math">\(h_{j}(x_{1},x_{2}, … , x_{n}) ≤ 0\)</span>，會有兩個情形發生，一個是壓到邊界，也就是<span class="math">\(h_{j}(x_{1},x_{2}, … , x_{n}) = 0\)</span>，這個時候問題就回到一般版的Lagrange Multiplier，此時<span class="math">\(μ_{j}\)</span>和<span class="math">\(λ_{i}\)</span>效果是一樣的，<span class="math">\(μ_{j}\)</span>可以是任意值；另外一種情況是我沒壓到邊界，也就是<span class="math">\(h_{j}(x_{1},x_{2}, … , x_{n}) &lt; 0\)</span>，這個時候我可以把這個限制看作不存，最簡易的方法就是令<span class="math">\(μ_{j}=0\)</span>，他在<span class="math">\(L(x_{1},x_{2}, … , x_{n}, λ_{i},μ_{j})\)</span> 中就不參與作用了。<strong>所以綜合壓到邊界和不壓到兩種情況，我們可以寫出一個有開關效果的方程式 <span class="math">\(μ_{j} × h_{j}(x_{1},x_{2}, … , x_{n}) = 0\)</span>，這就是Complementary Slackness Condition。</strong></p>
+<p>另外一個是Dual Feasibility Condition，這個限制一樣是在不等式條件才會發生，<span class="math">\(μ_{j}\)</span>的正負號取決於<span class="math">\(L\)</span>是要求最大還是求最小值，稍微解釋一下，找極值我們用<span class="math">\(∇L = 0\)</span>這個式子來求，代入Lagrange Function後得<span class="math">\(∇L = ∇f +𝚺_{i}λ_{i}×∇g_{i}+𝚺_{j}μ_{j}×∇h_{j}=0\)</span>，先定性來看，假設不計<span class="math">\(∇g_{i}\)</span>的影響，當最後解落在<span class="math">\(h ≤ 0\)</span>的邊界上時<span class="math">\(∇f＝- μ×∇h\)</span>，因為<span class="math">\(h ≤ 0\)</span>的關係，所以<span class="math">\(∇h\)</span>是朝向可行區的外面，如果今天是求<span class="math">\(f\)</span>的極小值，那們<span class="math">\(∇f\)</span>應當朝著可行區才合理，如果不是的話則可行區內部有更小更佳的解，所以求極小值時<span class="math">\(μ ≥ 0\)</span>；如果是求<span class="math">\(f\)</span>的極大值，那<span class="math">\(∇f\)</span>應當朝著可行區的外面，所以<span class="math">\(μ ≤ 0\)</span>，這個條件待會會用在對偶問題上面。</p>
+<p><br/></p>
+<p>其實我們之前在《機器學習基石》裡的Regularization有偷用了Lagrange Multiplier的產物。</p>
+<p>Regularization將W的長度限制在一個範圍，表示成
+</p>
+<div class="math">$$
+|W|^{2} ≤ C
+$$</div>
+<p>
+在這個條件下我們要找E_{in}的極小值，使用加強版的Lagrange Multiplier：</p>
+<ol>
+<li>問題：在限制  <span class="math">\(|W|^{2} - C ≤ 0\)</span> 之下，求 <span class="math">\(E_{in}\)</span> 的極小值</li>
+<li>假設Lagrange Function：   <span class="math">\(L = E_{in} + μ × ( |W|^{2} - C)\)</span></li>
+<li>聯立方程式求解：</li>
+<li><span class="math">\(𝞉L / 𝞉W = 𝞉E_{in} / 𝞉W + 2μ × |W| = 0\)</span>  [Stationarity Condition]</li>
+<li><span class="math">\(|W|^{2} - C ≤ 0\)</span>  [Primal Feasibility Condition]</li>
+<li><span class="math">\(μ × ( C - |W|^{2} ) = 0\)</span>  [Complementary Slackness Condition]</li>
+</ol>
+<p>Stationarity Condition的結果就是Regularization的結果了，可以<a href="http://www.ycc.idv.tw/ml-course-foundations_4.html">回去參照一下</a>。</p>
+<p><br/></p>
+<h3>[進階] Lagrangian Dual Problem</h3>
+<p>接下來來講對偶問題，這個部分很難，我也是反覆在網路上看了很多篇介紹才弄懂，推薦大家看<a href="http://www.eng.newcastle.edu.au/eecs/cdsc/books/cce/Slides/Duality.pdf">這一篇</a>，這篇介紹的很清楚，應該會對大家理解Lagrangian Dual有幫助。</p>
+<p>來考慮一下待會會用到的求極小值問題，</p>
+<blockquote>
+<p>在限制 <span class="math">\(g_{i}(x_{1},x_{2}, … , x_{n}) = 0,\ i=1\cdots k\)</span> 且  <span class="math">\(h_{j}(x_{1},x_{2}, … , x_{n}) ≤ 0,\ j=1\cdots r\)</span> 之下，求 <span class="math">\(f(x_{1},x_{2}, … , x_{n})\)</span> 的極小值。</p>
+</blockquote>
+<p>如果我們利用剛剛的解法，稱之為Lagrangian Primal Problem。</p>
+<p><strong>而這個問題可以等效轉換成Lagrangian Dual Problem，利用以下關係式</strong></p>
+<p><strong><span class="math">\(Minimum Problem ≡ min. L  ≡ min. [max._{μ ≥ 0} L] ≥ max._{μ ≥ 0} [min. L(μ)]\)</span></strong></p>
+<p>我們在將原本<span class="math">\(min. L\)</span> 換成<span class="math">\(min. [max._{μ ≥ 0} L]\)</span> 是不影響結果的，因為我們剛剛分析過了在求最小值時<span class="math">\(μ ≥ 0\)</span>是合理的，相反的如果<span class="math">\(μ &lt; 0\)</span>，則求<span class="math">\(max._{μ ≥ 0} L\)</span>時會產生無限大的結果，接下來就是交換<span class="math">\(min.\)</span>和<span class="math">\(max.\)</span>的部分，數學上可以證明<span class="math">\(min. [max._{μ ≥ 0} L] ≥ max._{μ ≥ 0} [min. L(μ)]\)</span>這樣的關係，我們就稱左式轉到右式為Dual轉換。</p>
+<p>而上面式子右側的求法，我們可以先求出<span class="math">\(Θ(λ_{i},μ_{j}) =\ given\ λ_{i},μ_{j}\ to\ find\ min. L(x_{1},x_{2}, … , x_{n}, λ_{i},μ_{j})\)</span> ，作法是使用<span class="math">\(∇L = 0\)</span>所產生符合極值的參數代入<span class="math">\(L(x_{1},x_{2}, … , x_{n}, λ_{i},μ_{j})\)</span>，換成以<span class="math">\(λ_{i}\)</span>,<span class="math">\(μ_{j}\)</span>表示的<span class="math">\(Θ(λ_{i},μ_{j})\)</span>。然後，再求<span class="math">\(Θ(λ_{i},μ_{j})\)</span>的最大值，就可以了。</p>
+<p><strong>經過Dual轉換後，我們將原本在<span class="math">\(x_{1},x_{2}, … , x_{n}\)</span>的問題轉換到<span class="math">\(λ_{i},μ_{j}\)</span>的空間上。</strong></p>
+<p>這個轉換我們可以使用下面的圖來解釋，</p>
+<p><img alt="Lagrangian Dual Geometric Interpretation" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.005.jpeg"></p>
+<p>我們先不管<span class="math">\(g(x)\)</span>的部分只看<span class="math">\(f(x)\)</span>和<span class="math">\(h(x)\)</span>的部分，假設所有的Data <span class="math">\(x\)</span>映射到<span class="math">\(f(x)\)</span>和<span class="math">\(h(x)\)</span>會產生一塊區域<span class="math">\(G\)</span>。</p>
+<p>在Primal Problem中我們可以很容易的找出<span class="math">\(h_{j}(x_{1},x_{2}, … , x_{n}) ≤ 0\)</span>的限制之下<span class="math">\(f(x_{1},x_{2}, … , x_{n})\)</span> 的最小值，見上圖左側。</p>
+<p>見上圖中間，Dual Problem採取另外一個方法，它先去找
+</p>
+<div class="math">$$
+Θ(μ) = given\ μ\ to\ find\ min. L(x,μ),\ where: L(x,μ) = f(x)+μh(x)。
+$$</div>
+<p>
+<span class="math">\(f(x)+μh(x)=α\)</span>在圖中的平面上是一條直線，而<span class="math">\(f(x)+μh(x)\)</span>的值也就是<span class="math">\(α\)</span>也正好是它的「截距」，所以在給定<span class="math">\(μ\)</span>後要最小化<span class="math">\(f(x)+μh(x)\)</span>的方法，就等效於固定直線斜率最小化截距，所以最後這個直線就必須要切於<span class="math">\(G\)</span>才能使得截距最小，所以我們得到一條切於<span class="math">\(G\)</span>且斜率<span class="math">\((-μ)\)</span>的直線， 因此我們就順利的得到<span class="math">\(Θ(μ)\)</span>的關係式了，接下來我要找出<span class="math">\(Θ(μ)\)</span>的最大值，所以就必須往上推，這個時候你就發現答案和前面Primal Problem答案一模一樣，這種最佳化答案相同的情況稱為「Strong Duality」，而最佳化答案不相同的情況就叫做「Weak Duality」，見上圖右側，在這種<span class="math">\(G\)</span>的形狀下，就會產生最佳化答案不相同的情況。</p>
+<p><br/></p>
+<h3>[進階] Hard-Margin SVM Dual + Kernel Function = Kernel Hard-Margin SVM</h3>
+<p>那我們現在可以正式的把Lagrangian Dual的東西放到Hard-Margin SVM上面。</p>
+<p>回想一下Hard-Margin SVM的問題是：</p>
+<blockquote>
+<p>在<span class="math">\(y_{n}×(W^{T}X_{n}+b) ≥ 1 ,\ n=1\cdots N\)</span>的條件下，求<span class="math">\((W^{T}W/2)\)</span> 最小的情形。</p>
+</blockquote>
+<p>那如果加上非線性轉換，從<span class="math">\(X\)</span>空間轉到<span class="math">\(Z\)</span>空間，則問題變成</p>
+<blockquote>
+<p>在<span class="math">\(y_{n}×(W^{T}Z_{n}+b) ≥ 1 ,\ n=1\cdots N\)</span>的條件下，求<span class="math">\((W^{T}W/2)\)</span> 最小的情形。</p>
+</blockquote>
+<p>所以我們可以使用Lagrangian Multiplier來解決問題，依以下步驟：</p>
+<ol>
+<li>假設Lagrange Function：   <span class="math">\(L(W,b,α) = (W^{T}W/2) +  𝚺_{n} α_{n} × [1-y_{n}×(W^{T}Z_{n}+b)]\)</span></li>
+<li>考慮Primal Feasibility、Complementary Slackness、Dual Feasibility的限制</li>
+<li>Primal Feasibility Condition：<span class="math">\(1-y_{n}×(W^{T}Z_{n}+b) ≤ 0\)</span> [式1-1]</li>
+<li>Complementary Slackness Condition：<span class="math">\(α_{n}  × [1-y_{n}×(W^{T}Z_{n}+b)] = 0\)</span> [式1-2]</li>
+<li>Dual Feasibility Condition：<span class="math">\(α_{n}  ≥ 0\)</span> [式1-3]</li>
+<li>先求出<span class="math">\(Θ(α) = given α to find min. L(W,b,α)\)</span></li>
+<li><span class="math">\(𝞉L / 𝞉b = - 𝚺_{n} α_{n}y_{n} = 0\)</span> [式1-4]</li>
+<li><span class="math">\(𝞉L / 𝞉W_{n} =  |W|- 𝚺_{n} α_{n}y_{n}Z_{n} = 0\)</span>，<span class="math">\(y_{n}Z_{n}\)</span>應該和<span class="math">\(W\)</span>同向，所以
+     <span class="math">\(W = 𝚺_{n} α_{n}y_{n}Z_{n}\)</span> [式1-5]</li>
+<li>因此<span class="math">\(L(W,b,α)\)</span>只要滿足[式1-4]和[式1-5]就代表是極小值了</li>
+<li>所以[式1-4]和[式1-5]代入得<span class="math">\(Θ(α,β) = (-1/2)𝚺_{n}𝚺_{m} α_{n}α_{m}y_{n}y_{m}Z_{n}Z_{m}+𝚺_{n} α_{n}\)</span></li>
+<li>求<span class="math">\(Θ(α)\)</span>極大值</li>
+<li><span class="math">\(max.[Θ(α)]＝min.[-Θ(α)]=min.[(1/2)𝚺_{n}𝚺_{m} α_{n}α_{m}y_{n}y_{m}Z_{n}Z_{m}-𝚺_{n} α_{n}]\)</span> —[式1-6]</li>
+<li>綜合上述[式1-3]、[式1-4]、[式1-6]並改寫成Kernel的形式得，<span class="math">\(min. [(1/2)𝚺_{n}𝚺_{m} α_{n}α_{m}y_{n}y_{m}K(X_{n},X_{m})-𝚺_{n} α_{n}], s.t. α_{n} ≥ 0 ; \ 𝚺_{n} α_{n}y_{n} = 0\)</span>，使用QP Solver可以求出 <span class="math">\(α_{n}\)</span>。</li>
+<li>可以用<span class="math">\(α_{n}\)</span>來求<span class="math">\(W\)</span>和<span class="math">\(b\)</span></li>
+<li><span class="math">\(α_{n}\)</span>涵義：觀察[式1-2]可得 (1) <span class="math">\(α_{n} = 0\)</span> 為Non-Support Vector； (2) <span class="math">\(α_{n} &gt; 0\)</span> 代表<span class="math">\(y_{n}×(W^{T}Z_{n}+b)=1\)</span>，為Support Vector。</li>
+<li>由[式1-5]得，<span class="math">\(W = 𝚺_{n} α_{n}y_{n}Z_{n}\)</span>，從式子中你會發現對W有貢獻的只有Support Vector <span class="math">\((α_{n}&gt;0)\)</span>。</li>
+<li>假設在某個Support Vector(<span class="math">\(α_{n}&gt;0\)</span>)上，由[式1-2]可推得，<span class="math">\(b=y_{sv}-𝚺_{n} α_{n}y_{n}K(X_{n},X_{sv})\)</span>  (at Support Vector)。</li>
+</ol>
+<p><br/></p>
+<h3>[進階] Soft-Margin SVM Dual + Kernel Function = Kernel Soft-Margin SVM</h3>
+<p>考慮Soft-Margin SVM和特徵轉換：</p>
+<blockquote>
+<p>在<span class="math">\(y_{n}×(W^{T}Z_{n}+b) ≥ 1-ξ_{n}\)</span>且<span class="math">\(ξ_{n} ≥ 0,\ n=1\cdots N\)</span>的條件下，求<span class="math">\((W^{T}W/2) + C 𝚺_{n} ξ_{n}\)</span>最小的情形。</p>
+</blockquote>
+<p>所以我們可以使用Lagrangian Dual Problem來解決問題，依以下步驟：</p>
+<ol>
+<li>假設Lagrange Function：   <span class="math">\(L(W,b,ξ,α,β) = (W^{T}W/2) + C 𝚺_{n} ξ_{n} +  𝚺_{n} α_{n} × [1-ξ_{n}-y_{n}×(W^{T}Z_{n}+b)] + 𝚺_{n} β_{n} × [-ξ_{n}]\)</span></li>
+<li>考慮Primal Feasibility、Complementary Slackness、Dual Feasibility的限制</li>
+<li>Primal Feasibility Condition：<span class="math">\(1-ξ_{n}-y_{n}×(W^{T}Z_{n}+b) ≤ 0\)</span> [式2-1]；<span class="math">\(-ξ_{n} ≤ 0\)</span> [式2-2]</li>
+<li>Complementary Slackness Condition：<span class="math">\(α_{n}  × [1-ξ_{n}-y_{n}×(W^{T}Z_{n}+b)] = 0\)</span> [式2-3]；<span class="math">\(β_{n} × [-ξ_{n}] = 0\)</span> [式2-4]</li>
+<li>Dual Feasibility Condition：<span class="math">\(α_{n}  ≥ 0\)</span> [式2-5]；<span class="math">\(β_{n}  ≥ 0\)</span> [式2-6]</li>
+<li>先求出<span class="math">\(Θ(α,β) = given\ α,β\ to\ find\ min. L(W,b,ξ,α,β)\)</span></li>
+<li><span class="math">\(𝞉L / 𝞉b = - 𝚺_{n} α_{n}y_{n} = 0\)</span> [式2-7]</li>
+<li><span class="math">\(𝞉L / 𝞉W_{n} =  |W|- 𝚺_{n} α_{n}y_{n}Z_{n} = 0\)</span>，<span class="math">\(y_{n}Z_{n}\)</span>應該和<span class="math">\(W\)</span>同向，所以
+     <span class="math">\(W = 𝚺_{n} α_{n}y_{n}Z_{n}\)</span> [式2-8]</li>
+<li><span class="math">\(𝞉L / 𝞉ξ_{n} = C - α_{n} - β_{n} = 0\)</span> [式2-9]</li>
+<li>因此<span class="math">\(L(W,b,ξ,α,β)\)</span>只要滿足[式2-7]、[式2-8]和[式2-9]就代表是極小值了</li>
+<li>所以[式2-7]、[式2-8]和[式2-9]代入得<span class="math">\(Θ(α,β) = (-1/2)𝚺_{n}𝚺_{m} α_{n}α_{m}y_{n}y_{m}Z_{n}Z_{m}+𝚺_{n} α_{n}\)</span></li>
+<li>求<span class="math">\(Θ(α,β)\)</span>極大值</li>
+<li><span class="math">\(max.[Θ(α,β)]＝min.[-Θ(α,β)]=min.[(1/2)𝚺_{n}𝚺_{m} α_{n}α_{m}y_{n}y_{m}Z_{n}Z_{m}-𝚺_{n} α_{n}]\)</span> —[式2-10]</li>
+<li>綜合上述[式2-5]、[式2-6]、[式2-9]、[式2-10]並改寫成Kernel的形式得，<span class="math">\(min. [(1/2)𝚺_{n}𝚺_{m} α_{n}α_{m}y_{n}y_{m}K(X_{n},X_{m})-𝚺_{n} α_{n}],\ s.t. 0 ≤ α_{n} ≤ C;\  𝚺_{n} α_{n}y_{n} = 0\)</span>，使用QP Solver可以求出 <span class="math">\(α_{n}\)</span>。</li>
+<li>可以用<span class="math">\(α_{n}\)</span>來求<span class="math">\(W\)</span>和<span class="math">\(b\)</span></li>
+<li><span class="math">\(α_{n}\)</span>涵義：觀察[式2-3]和[式2-4]可得 (1) <span class="math">\(α_{n} = 0\)</span> 為Non-Support Vector； (2) <span class="math">\(0 &lt; α_{n} &lt; C\)</span> 代表<span class="math">\(y_{n}×(W^{T}Z_{n}+b)=1\)</span>，為Free Support Vector；(3) <span class="math">\(α_{n} = C\)</span> 代表<span class="math">\(y_{n}×(W^{T}Z_{n}+b)=1-ξ_{n}\)</span>，為Bounded Support Vector。</li>
+<li>由[式2-8]得，<span class="math">\(W = 𝚺_{n} α_{n}y_{n}Z_{n}​\)</span>，從式子中你會發現對W有貢獻的只有Support Vector (<span class="math">\(α_{n}&gt;0​\)</span>)。</li>
+<li>假設在某個Support Vector(<span class="math">\(α_{n}&gt;0\)</span>且<span class="math">\(β_{n}&gt;0\)</span>)上，由[式2-3]和[式2-4]可推得，<span class="math">\(b=y_{sv}-𝚺_{n} α_{n}y_{n}K(X_{n},X_{sv})\)</span>  (at Support Vector)。</li>
+</ol>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+
+            <h3>Related Posts</h3>
+            <dl class="dl-horizontal">
+                <dt>2016 / 9月 18</dt>
+                <dd><a href="https://www.ycc.idv.tw/ml-course-foundations_4.html">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</a></dd>
+                <dt>2017 / 1月 12</dt>
+                <dd><a href="https://www.ycc.idv.tw/ml-course-techniques_1.html">機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹</a></dd>
+                <dt>2017 / 3月 15</dt>
+                <dd><a href="https://www.ycc.idv.tw/ml-course-techniques_3.html">機器學習技法 學習筆記 (3)：Kernel Regression</a></dd>
+                <dt>2017 / 3月 29</dt>
+                <dd><a href="https://www.ycc.idv.tw/ml-course-techniques_4.html">機器學習技法 學習筆記 (4)：Basic Aggregation Models</a></dd>
+            </dl>
+
+        <br/><br/>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+/* <![CDATA[ */
+
+    var disqus_shortname = 'ycnote-1';
+    var disqus_identifier = "ml-course-techniques_2.html";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+/* ]]> */
+</script>
+<noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://www.ycc.idv.tw/archives.html">Archives</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tags.html">Tags</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Contact Me</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
+                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
+                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; YC Note 2018</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>

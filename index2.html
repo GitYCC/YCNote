@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)。">
+        <meta name="keywords" content="">
+        <link rel="icon" href="https://www.ycc.idv.tw/static/img/favicon.png">
+
+        <title>YC NOTE - page 2 - YC Note</title>
+
+        <!-- Stylesheets -->
+        <link href="https://www.ycc.idv.tw/theme/css/all.min.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script type="text/x-mathjax-config"> 
+            MathJax.Hub.Config({ 
+                "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
+                SVG: { linebreaks: { automatic:true } } 
+                });
+        </script>
+
+
+        <!-- Google Analytics -->
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-68393177-2', 'auto');
+          ga('send', 'pageview');
+        </script>
+        <!-- /Google Analytics -->
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://www.ycc.idv.tw/images/welcome_front_board.jpg'); background-position: center; background-size: cover;">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="https://www.ycc.idv.tw/"><img class="logo" src="https://www.ycc.idv.tw/static/img/favicon.png" alt="logo">YC Note</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a>
+                                <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
+                                <a href="https://www.ycc.idv.tw/category/reading.html">Reading</a>
+                                <a href="https://www.ycc.idv.tw/category/recording.html">Recording</a>
+                                <a href="https://www.ycc.idv.tw/about-me.html">About Me</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">YC NOTE</h1>
+                      <div class="header-underline"></div>
+                      <p class="header-subtitle header-subtitle-homepage">一個資料科學家的修煉之路</p>
+                  </div>
+              </div>
+        </div>
+    </div>
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    
+    <div class="archive-container">
+        <div class="container content archive">
+            <h2><a href="https://www.ycc.idv.tw/index2.html">Last Posts <small>- page 2</small></a></h2>
+            <dl class="dl-horizontal">
+                <dt>2017 / 11月 08</dt>
+                <dd><a href="https://www.ycc.idv.tw/uwarn-performance_2.html">[吉他] 光良-傷心地鐵</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><br/></p>
+<iframe width="100%" height="450" src="https://www.youtube.com/embed/7KpOh8N-9Z0" frameborder="0" gesture="media" allowfullscreen></iframe></dd>
+                <dt>2017 / 11月 07</dt>
+                <dd><a href="https://www.ycc.idv.tw/tensorflow-tutorial_2.html">實作Tensorflow (2)：Build First Deep Neurel Network (DNN)</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>接續著<a href="http://www.ycc.idv.tw/tensorflow-tutorial_1.html">上一回</a>，我們已經有一個單層的Neurel Network，緊接著我們來試著一步一步改造它，讓它成為我們常使用的Deep Neurel Network的形式。</p>
+<p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py">Github</a>下載。</p>
+<p><br/></p>
+<h5><u>增加Hidden Layer</u></h5>
+<p>在上一回當中，我們只有一層Neurel Network，也就是做完一個線性轉換後，就直接使用Softmax Layer來轉換成機率表示方式，這樣的結構並不夠powerful，我們需要把它的結構弄的又窄又深，這樣效果才會好，詳細原因請參考<a href="http://www.ycc.idv.tw/ml-course-techniques_6.html">這一篇的介紹</a>。</p>
+<p>因此，我們來試著加入一層Hidden Layer，來打造成兩層的Neurel Network，並在兩層之間加入Activation Function，為我的Model增加非線性因子。</p>
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">features</span><span class="p">,</span><span class="n">labels</span><span class="p">,</span><span class="n">n_hidden</span><span class="p">,</span><span class="n">activation</span><span class="p">):</span>
+        <span class="c"># build neurel network structure and return their predictions and loss</span>
+        <span class="c">### Variable …</span></pre></div></dd>
+                <dt>2017 / 10月 23</dt>
+                <dd><a href="https://www.ycc.idv.tw/tensorflow-tutorial_1.html">實作Tensorflow (1)：Simple Logistic Classification on MNIST</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。</p>
+<p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/01_simple_logistic_classification_on_MNIST.py">Github</a>下載。</p>
+<h5><u>MNIST Dataset</u></h5>
+<p>首先，先<code>import</code>一些會用到的function，並且定義<code>summary</code> function以便於觀察ndarray。</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="c"># Config the matplotlib backend as plotting inline in IPython</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+
+<span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
+    <span class="k">print …</span></pre></div></dd>
+                <dt>2017 / 9月 05</dt>
+                <dd><a href="https://www.ycc.idv.tw/stock-sell-point.html">股票策略：移動停損法</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>最近在研究股票，在網路上看到這篇文章</p>
+<p><a href="https://m.mobile01.com/topicdetail.php?f=291&amp;t=3065829&amp;p=1">https://m.mobile01.com/topicdetail.php?f=291&amp;t=3065829&amp;p=1</a></p>
+<p>覺得相當實用，在這邊跟大家分享，並且當作給自己參考的筆記。</p>
+<p>一般我們常常說玩股票要做好風險管理，最廣為人知的就是設停損點，假設今天我以20元買入一張股票，假如停損比率設10%好了，那我的停損點就是18元，股票一到這個價位就忍痛賣出，以做到風險管理，避免自己大賠。</p>
+<p>停損點的另外一個相反就是停利點，也就是當賺到某一個比例的金額時就獲利了結，假設一樣20元買入一張股票，設20%停利，也就是24元的時候賣出，設停利原本的目的是為了讓自己賣在高點，不過卻是有可能造成反效果。</p>
+<p>如果今天你幸運的買到一張飆股，一連兩天漲了兩根來到了24元，到了你設下的停利點，你不會真的就把它給賣了吧！正常人應該會等它漲到夠了，等它開始反轉時再考慮賣出。那究竟應該在反轉後跌多少才應該賣？這就變成了新的問題，總不能還是以停損點當作賣點吧！那你應該永遠賺不到錢～</p>
+<p>所以這篇的作者提供了一個方法，把停損點和停利點結合成為一點，而這一點會隨著股價上漲而移動上漲，所以下面的網友就稱這個叫做移動停損法。聽起來很神奇，其實概念很簡單 …</p></dd>
+                <dt>2017 / 8月 04</dt>
+                <dd><a href="https://www.ycc.idv.tw/confusion-matrix.html">如何辨別機器學習模型的好壞？秒懂Confusion Matrix</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
+<p>​ 本篇介紹包含Confusion Matrix, True Positive, False Negative, False Positive, True Negative, Type I Error, Type II Error, Prevalence, Accuracy, Precision, Recall, F1 Measure, F Measure, Sensitivity, Specificity, ROC Curve, AUC, TPR, FNR, FPR, TNR, FDR, FOR, PPV, NPV, 算數平均, 幾何平均, 調和平均</p>
+</blockquote>
+<p>有時要鑑別一個模型的好或壞，並不能簡單的看出來，所以我們需要用一些指標去判定它的好壞，也作為我們挑選模型的依據。如果你稍微查一下有哪些指標，你就會發現指標多到讓人家眼花撩亂，一堆名詞就攤在那邊，讓人無從下手。有一種常用的指標稱之為Confusion Matrix …</p></dd>
+                <dt>2017 / 5月 06</dt>
+                <dd><a href="https://www.ycc.idv.tw/python-play-with-data_3.html">Python玩數據 (3)：Numpy [2/2]</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>在上一章節的討論，我們已經有了Numpy的基礎概念，在這一篇當中，我們會更深入的了解Numpy還有什麼進階的功能，包括：產生ndarray的多種方法、broadcast的概念以及ndarray的進階操作手法。</p>
+<h5><u>產生ndarray的其他方法</u></h5>
+<p>在上一章，ndarray的產生方法是由list產生的。</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Numpy還提供產生ndarray的其他方式，幫助我們更容易的產生ndarray，譬如，產生一個數列。</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">E</span>
+<span class="n">array</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">3</span><span class="p">,</span>  <span class="mi">4</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">6</span><span class="p">,</span>  <span class="mi">7</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span>  <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">F</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">array</span><span class="p">([</span> <span class="mi">1 …</span></pre></div></dd>
+                <dt>2017 / 4月 22</dt>
+                <dd><a href="https://www.ycc.idv.tw/ml-course-techniques_7.html">機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
+<p>本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization。</p>
+</blockquote>
+<p><br/></p>
+<h5><u>Radial Basis Function (RBF) Network</u></h5>
+<p>回顧一下Gaussian Kernel SVM，</p>
+<blockquote>
+<p><span class="math">\(W = 𝚺_{n=sv}  α_n y_n Z_n\)</span></p>
+<p><span class="math">\(G_{SVM}\)</span>   <br/></p>
+<p><span class="math">\(= sign[WZ+b]\)</span> <br/></p>
+<p><span class="math">\(= sign{[𝚺_{n=sv} α_n y_n K(X_n,X)]+b}\)</span> <br/></p>
+<p><span class="math">\(⇒ G_{SVM} = sign{[𝚺_{n=sv} α_n y_n exp(-γ |X-X_n …</span></p></blockquote></dd>
+                <dt>2017 / 4月 17</dt>
+                <dd><a href="https://www.ycc.idv.tw/ml-course-techniques_6.html">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
+<p>本篇內容涵蓋神經網路(Neural Network, NN)、深度學習(Deep Learning, DL)、反向傳播算法(Backpropagation, BP)、Weight-elimination Regularizer、Early Stop、Autoencoder、Principal Component Analysis (PCA)。</p>
+</blockquote>
+<p><br/></p>
+<h5><u>神經網路(Neural Network)</u></h5>
+<p>最後一個主題，我們要來講第三種「特徵轉換」— Extraction Models，其實就是現今很流行的「類神經網路」(Neural Network) 和「深度學習」(Deep Learning)，包括下圍棋的AlphaGo、Tesla的自動駕駛都是採用這一類的Machine Learning。</p>
+<p>Extraction Models的基本款就是廣為人知的「神經網路」(Neural Network)，它的特色是使用神經元來做非線性的特徵轉換，那如果具有多層神經元，就是做了多次的非線性特徵轉換，這就是所謂的「深度學習」(Deep …</p></dd>
+                <dt>2017 / 4月 17</dt>
+                <dd><a href="https://www.ycc.idv.tw/python-play-with-data_2.html">Python玩數據 (2)：Numpy [1/2]</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>在上一次我們已經成功了安裝了IPython，這將會是我們這系列教學的主要舞台，而今天我要教大家在這個舞台上利用Numpy來做一些簡單的科學計算。</p>
+<h5><u>IPython</u></h5>
+<p>像上次一樣，打開IPython，緊接著把numpy和pandas載入，載入numpy之後我們習慣用<code>as</code>將它縮寫為<code>np</code>，pandas則縮寫為<code>pd</code>。</p>
+<p><img alt="ipython" src="http://www.ycc.idv.tw/media/PlayDataWithPython/ipython.jpeg"></p>
+<p>IPython是一個具有互動式介面的python執行介面，你可以一邊寫一邊理解目前的狀況，舉個例子</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">12</span> <span class="c"># integer(整數)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>     <span class="c"># check variable a</span>
+<span class="mi">12</span>
+</pre></div>
+
+
+<p>在第一行中，我令變數a為12，而第二行只要把變數a直接key出來，我們就可以立刻查看變數裡頭有什麼內容，注意喔！在一般的python語言中，直接把變數key出來這件事是沒有意義的，這只有在IPython上才有的方便功能，<strong>有了這樣一個互動式的介面，讓我們在處理數據的時候可以隨時查看，目前數據的狀況</strong>。</p>
+<h5><u>Python常見的資料型別</u></h5>
+<p>Python常見的資料型別有整數(integer)、浮點數(floating-point number)、字串(string)、串列(list)、序對(tuple)、字典(dictionary …</p></dd>
+                <dt>2017 / 4月 07</dt>
+                <dd><a href="https://www.ycc.idv.tw/big-data-a-revolution.html">大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><img alt="cover" src="http://www.ycc.idv.tw/media/Reading/BigData_pic.jpg"></p>
+<p>最近，Big Data這個詞相當的紅，但是對於這個詞我們還是有很多的誤會，一個常見的疑問是，究竟多大才可以稱得上是大數據呢？事實上，我接下來要介紹的這本書告訴你，大數據多「大」不是重點，重點是你怎麼看待和處理數據。</p>
+<p>「<a href="http://www.books.com.tw/products/0010587258">大數據</a>」這本書分為三個部分，在第一個部分，作者為讀者介紹大數據的三大思維變革，包括：採用全體數據取代抽樣數據、容忍資料的混雜特性、「是什麼」比「為什麼」還重要，第二部分則在講述大數據如何改變了商業、市場和社會的本質。第三部分在探討大數據會對人類產生什麼不好的影響，而我們如何去避免。本篇我主要著墨於第一部分和第二部分。</p>
+<h5><u>樣本=總體</u></h5>
+<blockquote>
+<p>大數據是指不採用統計「隨機採樣」這樣的捷徑，而直接處理所有的數據。</p>
+</blockquote>
+<p>在資料分析中，如果要研究的對象（母群體）非常的龐大、資料量非常大，我們通常會採取「隨機採樣」來處理，這條捷徑在處理特定問題非常成功，也因此它成為現代社會、現代測量領域的主要路數，但這方式存在著一些缺陷。</p>
+<p>「隨機採樣」的缺陷之一是無法瞭解更深層次的細節。在宏觀領域起作用的方法在微觀領域失去了作用。隨機採樣就像印象派的畫作一樣 …</p></dd>
+            </dl>
+        </div>
+    </div>
+<!-- /Navigation -->
+<div class="container navigation">
+    	<a class="navigate pull-left" href="https://www.ycc.idv.tw/index.html"><i class="fa fa-caret-left"></i> Previous</a>
+    	<a class="navigate pull-right" href="https://www.ycc.idv.tw/index3.html">Next <i class="fa fa-caret-right"></i></a>
+</div>              
+<!-- /Navigation --> 
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://www.ycc.idv.tw/archives.html">Archives</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tags.html">Tags</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Contact Me</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
+                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
+                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; YC Note 2018</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>
