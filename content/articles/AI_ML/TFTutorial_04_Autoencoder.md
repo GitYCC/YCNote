@@ -18,7 +18,7 @@ Autoencoder是一個Neurel Network重要的工具，我個人認為它還漂亮�
 
 ### Autoencoder觀念解析
 
-在「機器學習技法」的系列文章，我也[曾經介紹過Autoencoder](http://www.ycc.idv.tw/tensorflow-tutorial_4.html)，可以搭配這篇服用。
+在「機器學習技法」的系列文章，我也[曾經介紹過Autoencoder](http://www.ycc.idv.tw/ml-course-techniques_6.html)，可以搭配這篇服用。
 
 Autoencoder概念很簡單，就是做資訊的壓縮，概念是這樣的，當我在一層當中使用神經元愈多，可以儲存的資訊量也就愈多，相反的神經元越少，可以儲存的資訊量越少，如果我要使用Neurel Network作資料壓縮的話，我希望的是可以使用比原本更少的資訊量來儲存，如果原本是一張MNIST的圖，有28x28=784個Pixels，所以可以想知，如果我要作壓縮就要使得壓縮後的神經元可以比784個更少。
 
