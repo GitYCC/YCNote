@@ -98,7 +98,7 @@
 <p>本單元程式碼Autoencoder部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/04_1_Autoencoder_on_MNIST.py">Github</a>下載，De-noise Autoencoder部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/04_2_DenoiseAutoencoder_on_MNIST.py">Github</a>下載。</p>
 <p><br/></p>
 <h3>Autoencoder觀念解析</h3>
-<p>在「機器學習技法」的系列文章，我也<a href="http://www.ycc.idv.tw/tensorflow-tutorial_4.html">曾經介紹過Autoencoder</a>，可以搭配這篇服用。</p>
+<p>在「機器學習技法」的系列文章，我也<a href="http://www.ycc.idv.tw/ml-course-techniques_6.html">曾經介紹過Autoencoder</a>，可以搭配這篇服用。</p>
 <p>Autoencoder概念很簡單，就是做資訊的壓縮，概念是這樣的，當我在一層當中使用神經元愈多，可以儲存的資訊量也就愈多，相反的神經元越少，可以儲存的資訊量越少，如果我要使用Neurel Network作資料壓縮的話，我希望的是可以使用比原本更少的資訊量來儲存，如果原本是一張MNIST的圖，有28x28=784個Pixels，所以可以想知，如果我要作壓縮就要使得壓縮後的神經元可以比784個更少。</p>
 <p>但是什麼都不做我們就可以平白無故的做到壓縮？當然不行，我們還得從資料中找到一些規律，套用這些規律把多餘的東西去除，留下精髓，我們才可以把資料作壓縮，所以在實作上我們會建立一個神經元由大到小的Neurel Network，逐步的轉換，逐步的壓縮資訊。</p>
 <p>那麼壓縮的目的是為了什麼？當然是有辦法還原回去原本狀態，這樣的壓縮才是有意義的，例如：將文檔打包成RAR，檔案大小會變小，但如果實際要再使用這個檔案，那就必須先做解壓縮，然後還原回去原本的檔案，這裡的還原率必須是百分之一百的，Autoencoder一樣的有一個機制可以還原，在實作上我們會建立一個神經元由小到大的Neurel Network，逐步的還原回去原本的狀態。</p>
