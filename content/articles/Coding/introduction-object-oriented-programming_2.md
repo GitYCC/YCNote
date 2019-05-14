@@ -294,7 +294,7 @@ class Cat:
     def shout_num(self):
         return self.__shout_num
         
-    @shoutNum.setter  #{2}
+    @shout_num.setter  #{2}
     def shout_num(self,num):
 	    if num < 0: raise ValueError()
         self.__shout_num = num
