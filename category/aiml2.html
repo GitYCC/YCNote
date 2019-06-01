@@ -91,6 +91,15 @@
         <div class="container content archive">
             <h2><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML : All Articles</u> </a></h2>
             <dl class="dl-horizontal">
+            	<dt>2019 / 6月 01</dt>
+            	<dd><a href="https://www.ycc.idv.tw/wide-and-deep-learning.html">[Paper] Wide & Deep Learning for Recommender Systems</a></dd>
+              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>結論寫在前面</u></h5>
+<p>以往認為deep learning有辦法完全取代feature engineering，Google在2016年寫下的這篇paper，指出在數據相對稀疏（sparse）的情況下feature engineering仍然有其重要性，此篇paper使用聯合訓練（jointly train）deep和wide結構的方法，得到比純粹deep或純粹wide的效果還好的成果，這裡的wide就是我們一般所說的feature engineering。</p>
+<h5><u>Memorization and Generalization</u></h5>
+<p>Memorization指的就是wide learning，此部分的產生需要較多的人為參與，也就是feature engineering，通常我們會依照人為的認知、或是統計數據、或是反覆實驗的結果，將一些有關聯性的變數進行cross-product以讓model得以「記住」這些相關性，通常這種基於memorization的結構會比較具有解釋性。</p>
+<p>Generalization指的就是deep Learning，此部份與wide learning相反，結構本身因為它的深度結構，等效於多次的non-linear transformation，也因此model自身在學習的過程就會將隱藏的feature組合給找出來，所以不用太多的人為參與，所以它會比較「一般化」。</p>
+<p>近年來deep learning大行其道，所以人們往往認為已經沒有必要再去做feature engineering了，只需要設定好深度結構，機器自動會去學出我們人類已知的feature組合，甚至學出隱藏的feature組合，但這篇paper指出這樣的想法是錯誤的 …</p></dd>
+              
             	<dt>2017 / 11月 25</dt>
             	<dd><a href="https://www.ycc.idv.tw/tensorflow-tutorial_6.html">實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)</a></dd>
               <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>如果我們想要處理的問題是具有時序性的，該怎麼辦呢？本章將會介紹有時序性的Neurel Network。</p>

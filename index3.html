@@ -92,6 +92,17 @@
         <div class="container content archive">
             <h2><a href="https://www.ycc.idv.tw/index3.html">Last Posts <small>- page 3</small></a></h2>
             <dl class="dl-horizontal">
+                <dt>2017 / 4月 07</dt>
+                <dd><a href="https://www.ycc.idv.tw/big-data-a-revolution.html">大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think</a></dd>
+                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><img alt="cover" src="http://www.ycc.idv.tw/media/Reading/BigData_pic.jpg"></p>
+<p>最近，Big Data這個詞相當的紅，但是對於這個詞我們還是有很多的誤會，一個常見的疑問是，究竟多大才可以稱得上是大數據呢？事實上，我接下來要介紹的這本書告訴你，大數據多「大」不是重點，重點是你怎麼看待和處理數據。</p>
+<p>「<a href="http://www.books.com.tw/products/0010587258">大數據</a>」這本書分為三個部分，在第一個部分，作者為讀者介紹大數據的三大思維變革，包括：採用全體數據取代抽樣數據、容忍資料的混雜特性、「是什麼」比「為什麼」還重要，第二部分則在講述大數據如何改變了商業、市場和社會的本質。第三部分在探討大數據會對人類產生什麼不好的影響，而我們如何去避免。本篇我主要著墨於第一部分和第二部分。</p>
+<h5><u>樣本=總體</u></h5>
+<blockquote>
+<p>大數據是指不採用統計「隨機採樣」這樣的捷徑，而直接處理所有的數據。</p>
+</blockquote>
+<p>在資料分析中，如果要研究的對象（母群體）非常的龐大、資料量非常大，我們通常會採取「隨機採樣」來處理，這條捷徑在處理特定問題非常成功，也因此它成為現代社會、現代測量領域的主要路數，但這方式存在著一些缺陷。</p>
+<p>「隨機採樣」的缺陷之一是無法瞭解更深層次的細節。在宏觀領域起作用的方法在微觀領域失去了作用。隨機採樣就像印象派的畫作一樣 …</p></dd>
                 <dt>2017 / 4月 02</dt>
                 <dd><a href="https://www.ycc.idv.tw/ml-course-techniques_5.html">機器學習技法 學習筆記 (5)：Boost Aggregation Models</a></dd>
                 <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
@@ -171,18 +182,6 @@
 <p>林軒田教授的機器學習是兩學期的課，第一學期是《機器學習基石》，第二學期就是接下來這個系列要講的《機器學習技法》，這兩堂課程是有相當大的銜接關係的，所以如果想看這系列的文章，請先看<a href="http://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">這四篇《機器學習基石》的介紹</a>或者<a href="https://www.coursera.org/learn/ntumlone-mathematicalfoundations">直接到Coursera上學習</a>。</p>
 <p>《機器學習技法》課程影片可以到老師的Youtube [ <a href="https://www.youtube.com/playlist?list=PLXVfgk9fNX2IQOYPmqjqWsNUFl2kpk1U2">https://www.youtube.com/playlist?list=PLXVfgk9fNX2IQOYPmqjqWsNUFl2kpk1U2</a> ]上收看，投影片可以到老師的個人網站上下載 [ <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/</a> ]。</p>
 <p>以前，我曾經和實驗室的英國學長聊英國的教育方法，然後我驚人的發現，他的學校在大一就已經學過量子場論（物理上很難的學科XDD）了，我就很好奇量子場論不是需要很深厚的數學基礎嗎？大一是要怎麼教啊？他告訴我，他們大一就會完整走過物理的各大領域，不過是用非常概念的方式來學習 …</p></dd>
-                <dt>2016 / 9月 18</dt>
-                <dd><a href="https://www.ycc.idv.tw/ml-course-foundations_4.html">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>前言</u></h5>
-<p>在上一回中，我們已經了解了機器學習基本的操作該怎麼做。而這一篇中，我們來看<strong>機器可以怎麼學得更好?</strong> 基本上有三招：Feature Transformation（特徵轉換）、Regularization（正規化）和Validation（驗證），我們來看看。</p>
-<p><br/></p>
-<h5><u>Feature Transformation（特徵轉換）</u></h5>
-<p><img alt="ML" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.013.jpeg"></p>
-<p>在上一回當中我們講了很多的線性模型，大家有沒有懷疑說，數據呈現的方式一定可以用線性描述嗎？我的答案是通常線性描述會表現不錯，但不是絕對，<strong>那我們怎麼用非線性的方法來描述我們的數據，這邊提供一個方法叫做「非線性轉換」，或者又稱為「特徵轉換」（還記得變數<span class="math">\(x\)</span>又可以稱為特徵Features）</strong>，聽起來有點困難齁～其實不會啦！</p>
-<p>假設今天你的Data分布是圓圈狀的分布，顯而易見的你很難用一條線去區分他們，那我們應該怎麼做呢？假設今天有一個轉換可以把這個圓圈狀分布的空間轉換到另外一個空間，而且在這個新的空間，我們可以做到線性可分，這樣問題就解決了，我們非常擅長做線性可分啊！怎麼做呢？我們知道這個空間分布是圓圈分布，所以套用以前學過的公式：
-</p>
-<div class="math">$$
-H(x_1, x_2) = sign(-A\times …</div></dd>
             </dl>
         </div>
     </div>
