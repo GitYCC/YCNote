@@ -13,8 +13,6 @@ related_posts: ml-course-techniques_6,tensorflow-tutorial_2,tensorflow-tutorial_
 
 本單元程式碼Skip-Gram Word2Vec部分可於[Github](https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_1_word2vec_SkipGram.py)下載，CBOW Word2Vec部分可於[Github](https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_2_word2vec_CBOW.py)下載。
 
-<br/>
-
 
 ### Word2Vec觀念解析
 
@@ -46,8 +44,6 @@ Word2Vec的Input和Output這次變成是上下文的文字組合，舉個例子�
 
 另外，經研究指出這個Embedding空間的效果不只是可以算出詞彙間的相似性，還可以顯示詞彙間的比較關係，例如：北京之於中國，等同於台北之於台灣，這樣的比較關係也顯示在這個Embedding空間裡頭，所以在這空間裡會有以下的向量關係式：$V_{北京} - V_{中國}+V_{台灣}=V_{台北}$，是不是很神奇啊！
 
-<br/>
-
 ### Word2Vec的兩種常用方法：Skip-Gram和CBOW
 
 ![Skip-Gram和CBOW](https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.009.jpeg)
@@ -58,26 +54,26 @@ Skip-Gram如上圖所示，當我輸入一個$word(t)$時，我希望它能輸�
 
 而CBOW(Continuous Bag of Words)使用另外一種方法來建立上下文關係，它將一排字挖掉中間一個字，然後希望由上下文的關係有辦法猜出中間那個字，就像是填空題，此時輸入層就變成會有多於1個字，那該怎麼處理，答案是轉換到Embedding空間後再相加平均，因為是線性轉換，所以直接線性累加就可以了。
 
-<br/>
-
 ### 準備文本語料庫
 
 先帶入一些待會會用到的函式庫，並且決定我們要取用多少`VOCABULARY_SIZE`個詞彙量來做訓練。
 
 
 ```python
-%matplotlib inline
-from __future__ import print_function
-from __future__ import generators
 import collections
 import os
 import zipfile
-from six.moves.urllib.request import urlretrieve
-import tensorflow as tf
-import numpy as np
 import random
 import math
 import time
+
+from urllib.request import urlretrieve
+import tensorflow as tf
+import numpy as np
+
+tf.logging.set_verbosity(tf.logging.ERROR)
+
+%matplotlib inline
 
 VOCABULARY_SIZE = 100000
 ```
@@ -86,75 +82,79 @@ VOCABULARY_SIZE = 100000
 
 
 ```python
-def maybe_download(url,filename, expected_bytes):
-  """Download a file if not present, and make sure it's the right size."""
-  if not os.path.exists(filename):
-    filename, _ = urlretrieve(url, filename)
-  statinfo = os.stat(filename)
-  if statinfo.st_size == expected_bytes:
-    print('Found and verified %s' % filename)
-  else:
-    print(statinfo.st_size)
-    raise Exception(
-      'Failed to verify ' + filename + '. Can you get to it with a browser?')
-  return filename
+def maybe_download(url, filename, expected_bytes):
+    """Download a file if not present, and make sure it's the right size."""
+    if not os.path.exists(filename):
+        filename, _ = urlretrieve(url, filename)
+    statinfo = os.stat(filename)
+    if statinfo.st_size == expected_bytes:
+        print('Found and verified %s' % filename)
+    else:
+        print(statinfo.st_size)
+        raise Exception(
+          'Failed to verify ' + filename + '. Can you get to it with a browser?')
+    return filename
+
 
 def read_data(filename):
-  """Extract the first file enclosed in a zip file as a list of words"""
-  with zipfile.ZipFile(filename) as f:
-    data = tf.compat.as_str(f.read(f.namelist()[0])).split()
-  return data
-  
-def build_dataset(words,vocabulary_size=VOCABULARY_SIZE):
-  count = [['UNK', -1]]
-  count.extend(collections.Counter(words).most_common(vocabulary_size - 1))
-  dictionary = dict()
-  for word, _ in count:
-    dictionary[word] = len(dictionary)
-  data = list()
-  unk_count = 0
-  for word in words:
-    if word in dictionary:
-      index = dictionary[word]
-    else:
-      index = 0  # dictionary['UNK']
-      unk_count = unk_count + 1
-    data.append(index)
-  count[0][1] = unk_count
-  reverse_dictionary = dict(zip(dictionary.values(), dictionary.keys())) 
-  return data, count, dictionary, reverse_dictionary
+    """Extract the first file enclosed in a zip file as a list of words"""
+    with zipfile.ZipFile(filename) as f:
+        data = tf.compat.as_str(f.read(f.namelist()[0])).split()
+    return data
 
-print("Downloading text8.zip")
-filename = maybe_download('http://mattmahoney.net/dc/text8.zip','./text8.zip', 31344016)
 
-print("=====")
+def build_dataset(words, vocabulary_size=VOCABULARY_SIZE):
+    count = [['UNK', -1]]
+    count.extend(collections.Counter(words).most_common(vocabulary_size - 1))
+    dictionary = dict()
+    for word, _ in count:
+        dictionary[word] = len(dictionary)
+    data = list()
+    unk_count = 0
+    for word in words:
+        if word in dictionary:
+            index = dictionary[word]
+        else:
+            index = 0  # dictionary['UNK']
+            unk_count = unk_count + 1
+        data.append(index)
+    count[0][1] = unk_count
+    reverse_dictionary = dict(zip(dictionary.values(), dictionary.keys()))
+    return data, count, dictionary, reverse_dictionary
+
+
+print('Downloading text8.zip')
+filename = maybe_download('http://mattmahoney.net/dc/text8.zip', './text8.zip', 31344016)
+
+print('=====')
 words = read_data(filename)
 print('Data size %d' % len(words))
 print('First 10 words: {}'.format(words[:10]))
 
-print("=====")
+print('=====')
 data, count, dictionary, reverse_dictionary = build_dataset(words,
-                                                            vocabulary_size=VOCABULARY_SIZE)
+                                                                vocabulary_size=VOCABULARY_SIZE)
 del words  # Hint to reduce memory.
 
 print('Most common words (+UNK)', count[:5])
 print('Sample data', data[:10])
 ```
 
-    Downloading text8.zip
-    Found and verified ./text8.zip
-    =====
-    Data size 17005207
-    First 10 words: ['anarchism', 'originated', 'as', 'a', 'term', 'of', 'abuse', 'first', 'used', 'against']
-    =====
-    Most common words (+UNK) [['UNK', 189230], ('the', 1061396), ('of', 593677), ('and', 416629), ('one', 411764)]
-    Sample data [5234, 3081, 12, 6, 195, 2, 3134, 46, 59, 156]
+```yaml
+Downloading text8.zip
+Found and verified ./text8.zip
+=====
+Data size 17005207
+First 10 words: ['anarchism', 'originated', 'as', 'a', 'term', 'of', 'abuse', 'first', 'used', 'against']
+=====
+Most common words (+UNK) [['UNK', 189230], ('the', 1061396), ('of', 593677), ('and', 416629), ('one', 411764)]
+Sample data [5234, 3081, 12, 6, 195, 2, 3134, 46, 59, 156]
+```
+
 
 我們取用`VOCABULARY_SIZE = 100000`，也是說我們將文本中的詞彙按出現次數的多寡來排列，取前面`VOCABULARY_SIZE`個保留，其餘詞彙皆歸類到「UNK Token」裡頭，UNK代表UNKnown的縮寫。
 
 我們文本的字詞數量總共有17005207個字，開頭前十個字的句子是'anarchism originated as a term of abuse first used against'。所有的這17005207個字會依照`dictionary`給予每個字Index，而文本會被表示為一個由整數所構成的List，這會放在`data`裡頭，而這個Index也就直接當作One-hot Encoding中代表這個詞彙的維度位置。當我想要把Index轉換回去我們看得懂的字的時候，就需要`reverse_dictionary`的幫忙，有了這些，我們的語料庫就已經建立完成了。
-
-<br/>
 
 ### 實作Skip-Gram
 
@@ -162,27 +162,27 @@ print('Sample data', data[:10])
 
 
 ```python
-def skip_gram_batch_generator(data,batch_size,num_skips,skip_window):
+def skip_gram_batch_generator(data, batch_size, num_skips, skip_window):
     assert batch_size % num_skips == 0
     assert num_skips <= 2 * skip_window
-    
+
     batch = np.ndarray(shape=(batch_size), dtype=np.int32)
     labels = np.ndarray(shape=(batch_size, 1), dtype=np.int32)
-    
-    span = 2 * skip_window + 1 # [ skip_window target skip_window ]
+
+    span = 2 * skip_window + 1  # [ skip_window target skip_window ]
     buffer = collections.deque(maxlen=span)
-    
+
     # initialization
     data_index = 0
     for _ in range(span):
         buffer.append(data[data_index])
         data_index = (data_index + 1) % len(data)
-    
+
     # generate
     k = 0
     while True:
         target = skip_window  # target label at the center of the buffer
-        targets_to_avoid = [ target ]
+        targets_to_avoid = [target]
         for _ in range(num_skips):
             while target in targets_to_avoid:
                 target = random.randint(0, span - 1)
@@ -190,164 +190,170 @@ def skip_gram_batch_generator(data,batch_size,num_skips,skip_window):
             batch[k] = buffer[skip_window]
             labels[k, 0] = buffer[target]
             k += 1
-            
-        # Recycle 
-        if data_index == len(data): data_index = 0
-        
+
+        # Recycle
+        if data_index == len(data):
+            data_index = 0
+
         # scan data
         buffer.append(data[data_index])
         data_index = (data_index + 1) % len(data)
-        
+
         # Enough num to output
         if k == batch_size:
             k = 0
             yield (batch.copy(), labels.copy())
 
+            
 # demonstrate generator
 print('data:', [reverse_dictionary[di] for di in data[:10]])
 
 for num_skips, skip_window in [(2, 1), (4, 2)]:
-    batch_generator = skip_gram_batch_generator(data=data,batch_size=8,num_skips=num_skips,skip_window=skip_window)
+    batch_generator = skip_gram_batch_generator(data=data, batch_size=8, num_skips=num_skips, skip_window=skip_window)
     batch, labels = next(batch_generator)
     print('\nwith num_skips = %d and skip_window = %d:' % (num_skips, skip_window))
     print('    batch:', [reverse_dictionary[bi] for bi in batch])
     print('    labels:', [reverse_dictionary[li] for li in labels.reshape(8)])
 ```
 
-    data: ['anarchism', 'originated', 'as', 'a', 'term', 'of', 'abuse', 'first', 'used', 'against']
-    
-    with num_skips = 2 and skip_window = 1:
-        batch: ['originated', 'originated', 'as', 'as', 'a', 'a', 'term', 'term']
-        labels: ['as', 'anarchism', 'originated', 'a', 'as', 'term', 'a', 'of']
-    
-    with num_skips = 4 and skip_window = 2:
-        batch: ['as', 'as', 'as', 'as', 'a', 'a', 'a', 'a']
-        labels: ['term', 'anarchism', 'originated', 'a', 'originated', 'term', 'as', 'of']
+```yaml
+data: ['anarchism', 'originated', 'as', 'a', 'term', 'of', 'abuse', 'first', 'used', 'against']
+
+with num_skips = 2 and skip_window = 1:
+    batch: ['originated', 'originated', 'as', 'as', 'a', 'a', 'term', 'term']
+    labels: ['as', 'anarchism', 'originated', 'a', 'term', 'as', 'of', 'a']
+
+with num_skips = 4 and skip_window = 2:
+    batch: ['as', 'as', 'as', 'as', 'a', 'a', 'a', 'a']
+    labels: ['originated', 'term', 'anarchism', 'a', 'term', 'as', 'originated', 'of']
+```
+
 
 
 ```python
-class SkipGram(object):
-    def __init__(self,n_vocabulary,n_embedding,reverse_dictionary,learning_rate=1.0):
+class SkipGram:
+
+    def __init__(self, n_vocabulary, n_embedding, reverse_dictionary, learning_rate=1.0):
         self.n_vocabulary = n_vocabulary
         self.n_embedding = n_embedding
         self.reverse_dictionary = reverse_dictionary
-        
+
         self.weights = None
         self.biases = None
-        
-        self.graph = tf.Graph() # initialize new grap
-        self.build(learning_rate) # building graph
-        self.sess = tf.Session(graph=self.graph) # create session by the graph 
-        
-    def build(self,learning_rate):
+
+        self.graph = tf.Graph()  # initialize new grap
+        self.build(learning_rate)  # building graph
+        self.sess = tf.Session(graph=self.graph)  # create session by the graph
+
+    def build(self, learning_rate):
         with self.graph.as_default():
             ### Input
             self.train_dataset = tf.placeholder(tf.int32, shape=[None])
-            self.train_labels  = tf.placeholder(tf.int32, shape=[None, 1])
+            self.train_labels = tf.placeholder(tf.int32, shape=[None, 1])
 
             ### Optimalization
             # build neurel network structure and get their loss
-            self.loss = self.structure( dataset=self.train_dataset,
-                                        labels=self.train_labels,
-                                      )
-            
+            self.loss = self.structure(
+                dataset=self.train_dataset,
+                labels=self.train_labels,
+            )
+
             # normalize embeddings
             self.norm = tf.sqrt(
                           tf.reduce_sum(
                             tf.square(self.weights['embeddings']), 1, keep_dims=True))
             self.normalized_embeddings = self.weights['embeddings'] / self.norm
-            
+
             # define training operation
             self.optimizer = tf.train.AdagradOptimizer(learning_rate=learning_rate)
             self.train_op = self.optimizer.minimize(self.loss)
-            
+
             ### Prediction
             self.new_dataset = tf.placeholder(tf.int32, shape=[None])
-            self.new_labels  = tf.placeholder(tf.int32, shape=[None, 1])
-            self.new_loss = self.structure( dataset=self.new_dataset,
-                                            labels=self.new_labels,
-                                          )
-            
+            self.new_labels = tf.placeholder(tf.int32, shape=[None, 1])
+            self.new_loss = self.structure(
+                dataset=self.new_dataset,
+                labels=self.new_labels,
+            )
+
             # similarity
             self.new_embed = tf.nn.embedding_lookup(
                                self.normalized_embeddings, self.new_dataset)
-            self.new_similarity = tf.matmul(self.new_embed, 
+            self.new_similarity = tf.matmul(self.new_embed,
                                             tf.transpose(self.normalized_embeddings))
-            
+
             ### Initialization
-            self.init_op = tf.global_variables_initializer()  
-    
-    def structure(self,dataset,labels):
+            self.init_op = tf.global_variables_initializer()
+
+    def structure(self, dataset, labels):
         ### Variable
         if (not self.weights) and (not self.biases):
             self.weights = {
                 'embeddings': tf.Variable(
-                                tf.random_uniform([self.n_vocabulary, self.n_embedding], 
+                                tf.random_uniform([self.n_vocabulary, self.n_embedding],
                                                   -1.0, 1.0)),
                 'softmax': tf.Variable(
                              tf.truncated_normal([self.n_vocabulary, self.n_embedding],
-                               stddev=1.0 / math.sqrt(self.n_embedding)))
+                                                 stddev=1.0/math.sqrt(self.n_embedding)))
             }
             self.biases = {
                 'softmax': tf.Variable(tf.zeros([self.n_vocabulary]))
             }
-                              
 
         ### Structure
         # Look up embeddings for inputs.
         embed = tf.nn.embedding_lookup(self.weights['embeddings'], dataset)
-        
+
         # Compute the softmax loss, using a sample of the negative labels each time.
         num_softmax_sampled = 64
-        
+
         loss = tf.reduce_mean(
-                 tf.nn.sampled_softmax_loss(weights=self.weights['softmax'], 
-                                            biases=self.biases['softmax'], 
+                 tf.nn.sampled_softmax_loss(weights=self.weights['softmax'],
+                                            biases=self.biases['softmax'],
                                             inputs=embed,
-                                            labels=labels, 
-                                            num_sampled=num_softmax_sampled, 
+                                            labels=labels,
+                                            num_sampled=num_softmax_sampled,
                                             num_classes=self.n_vocabulary))
 
         return loss
-    
-    
+
     def initialize(self):
         self.weights = None
         self.biases = None
         self.sess.run(self.init_op)
-    
-    def online_fit(self,X,Y):      
+
+    def online_fit(self, X, Y):
         feed_dict = {self.train_dataset: X,
                      self.train_labels: Y}
         _, loss = self.sess.run([self.train_op, self.loss], feed_dict=feed_dict)
-        
+
         return loss
-    
-    def nearest_words(self,X,top_nearest):
+
+    def nearest_words(self, X, top_nearest):
         similarity = self.sess.run(self.new_similarity,
                                    feed_dict={self.new_dataset: X})
         X_size = X.shape[0]
-        
+
         valid_words = []
         nearests = []
         for i in range(X_size):
             valid_word = self.find_word(X[i])
-            valid_words.append(valid_word)    
-            
+            valid_words.append(valid_word)
+
             # select highest similarity word
-            nearest = (-similarity[i, :]).argsort()[1:top_nearest+1]  
-            nearests.append(list(map(lambda x:self.find_word(x),nearest)))
-            
-        return (valid_words,np.array(nearests))
-    
-    def evaluate(self,X,Y):
+            nearest = (-similarity[i, :]).argsort()[1:top_nearest+1]
+            nearests.append(list(map(lambda x: self.find_word(x), nearest)))
+
+        return (valid_words, np.array(nearests))
+
+    def evaluate(self, X, Y):
         return self.sess.run(self.new_loss, feed_dict={self.new_dataset: X,
                                                        self.new_labels: Y})
-    
+
     def embedding_matrix(self):
         return self.sess.run(self.normalized_embeddings)
-    
-    def find_word(self,index):
+
+    def find_word(self, index):
         return self.reverse_dictionary[index]
 ```
 
@@ -356,16 +362,21 @@ class SkipGram(object):
 
 ```python
 # build skip-gram batch generator
-batch_generator = skip_gram_batch_generator(data=data,
-                                            batch_size=128,
-                                            num_skips=2,
-                                            skip_window=1)
+batch_generator = skip_gram_batch_generator(
+    data=data,
+    batch_size=128,
+    num_skips=2,
+    skip_window=1
+)
 
 # build skip-gram model
-model_SkipGram = SkipGram(n_vocabulary=VOCABULARY_SIZE,
-                          n_embedding=100,
-                          reverse_dictionary=reverse_dictionary,
-                          learning_rate=1.0)
+model_SkipGram = SkipGram(
+    n_vocabulary=VOCABULARY_SIZE,
+    n_embedding=100,
+    reverse_dictionary=reverse_dictionary,
+    learning_rate=1.0
+)
+
 # initial model
 model_SkipGram.initialize()
 
@@ -378,89 +389,93 @@ for epoch in range(epochs):
     avg_loss = 0
     for _ in range(num_batchs_in_epoch):
         batch, labels = next(batch_generator)
-        loss = model_SkipGram.online_fit(X=batch,
-                                         Y=labels)
+        loss = model_SkipGram.online_fit(X=batch, Y=labels)
         avg_loss += loss
     avg_loss = avg_loss / num_batchs_in_epoch
-    print("Epoch %d/%d: %ds loss = %9.4f" % ( epoch+1, epochs, time.time()-start_time,
-                                                   avg_loss ))
+    print('Epoch %d/%d: %ds loss = %9.4f' % ( epoch+1, epochs, time.time()-start_time, avg_loss ))
 ```
 
-    Epoch 1/50: 18s loss =    4.2115
-    Epoch 2/50: 17s loss =    3.7554
-    Epoch 3/50: 15s loss =    3.6211
-    Epoch 4/50: 15s loss =    3.5072
-    Epoch 5/50: 15s loss =    3.5084
-    Epoch 6/50: 15s loss =    3.4988
-    Epoch 7/50: 15s loss =    3.5165
-    Epoch 8/50: 15s loss =    3.3949
-    Epoch 9/50: 15s loss =    3.4382
-    Epoch 10/50: 15s loss =    3.4121
-    Epoch 11/50: 15s loss =    3.4027
-    Epoch 12/50: 15s loss =    3.4074
-    Epoch 13/50: 15s loss =    3.3222
-    Epoch 14/50: 15s loss =    3.3448
-    Epoch 15/50: 16s loss =    3.3616
-    Epoch 16/50: 15s loss =    3.3389
-    Epoch 17/50: 15s loss =    3.3729
-    Epoch 18/50: 15s loss =    3.3911
-    Epoch 19/50: 15s loss =    3.3512
-    Epoch 20/50: 15s loss =    3.3107
-    Epoch 21/50: 16s loss =    3.3046
-    Epoch 22/50: 15s loss =    3.3103
-    Epoch 23/50: 15s loss =    3.3042
-    Epoch 24/50: 15s loss =    3.2634
-    Epoch 25/50: 15s loss =    3.3181
-    Epoch 26/50: 15s loss =    3.2808
-    Epoch 27/50: 15s loss =    3.2464
-    Epoch 28/50: 15s loss =    3.2246
-    Epoch 29/50: 15s loss =    3.2666
-    Epoch 30/50: 15s loss =    3.2275
-    Epoch 31/50: 15s loss =    3.2312
-    Epoch 32/50: 15s loss =    3.3022
-    Epoch 33/50: 15s loss =    3.2504
-    Epoch 34/50: 15s loss =    3.2484
-    Epoch 35/50: 15s loss =    3.2368
-    Epoch 36/50: 15s loss =    3.2693
-    Epoch 37/50: 15s loss =    3.2177
-    Epoch 38/50: 15s loss =    3.2395
-    Epoch 39/50: 15s loss =    3.2151
-    Epoch 40/50: 15s loss =    3.0505
-    Epoch 41/50: 15s loss =    2.9364
-    Epoch 42/50: 15s loss =    3.1546
-    Epoch 43/50: 15s loss =    3.1810
-    Epoch 44/50: 15s loss =    3.2778
-    Epoch 45/50: 15s loss =    3.1340
-    Epoch 46/50: 15s loss =    3.2218
-    Epoch 47/50: 15s loss =    3.2395
-    Epoch 48/50: 15s loss =    3.2422
-    Epoch 49/50: 15s loss =    3.0131
-    Epoch 50/50: 15s loss =    3.1287
+```yaml
+Epoch 1/50: 17s loss =    4.2150
+Epoch 2/50: 16s loss =    3.7561
+Epoch 3/50: 16s loss =    3.6276
+Epoch 4/50: 16s loss =    3.5098
+Epoch 5/50: 16s loss =    3.5123
+Epoch 6/50: 16s loss =    3.5000
+Epoch 7/50: 16s loss =    3.5155
+Epoch 8/50: 16s loss =    3.3983
+Epoch 9/50: 16s loss =    3.4418
+Epoch 10/50: 16s loss =    3.4118
+Epoch 11/50: 15s loss =    3.3993
+Epoch 12/50: 15s loss =    3.4074
+Epoch 13/50: 16s loss =    3.3243
+Epoch 14/50: 16s loss =    3.3448
+Epoch 15/50: 15s loss =    3.3607
+Epoch 16/50: 15s loss =    3.3408
+Epoch 17/50: 15s loss =    3.3705
+Epoch 18/50: 15s loss =    3.3894
+Epoch 19/50: 15s loss =    3.3536
+Epoch 20/50: 15s loss =    3.3123
+Epoch 21/50: 15s loss =    3.3046
+Epoch 22/50: 15s loss =    3.3117
+Epoch 23/50: 15s loss =    3.3023
+Epoch 24/50: 15s loss =    3.2623
+Epoch 25/50: 15s loss =    3.3197
+Epoch 26/50: 15s loss =    3.2833
+Epoch 27/50: 15s loss =    3.2456
+Epoch 28/50: 15s loss =    3.2272
+Epoch 29/50: 15s loss =    3.2663
+Epoch 30/50: 15s loss =    3.2274
+Epoch 31/50: 15s loss =    3.2335
+Epoch 32/50: 16s loss =    3.3003
+Epoch 33/50: 16s loss =    3.2507
+Epoch 34/50: 15s loss =    3.2486
+Epoch 35/50: 15s loss =    3.2382
+Epoch 36/50: 15s loss =    3.2687
+Epoch 37/50: 15s loss =    3.2145
+Epoch 38/50: 15s loss =    3.2437
+Epoch 39/50: 15s loss =    3.2171
+Epoch 40/50: 15s loss =    3.0492
+Epoch 41/50: 15s loss =    2.9380
+Epoch 42/50: 15s loss =    3.1556
+Epoch 43/50: 15s loss =    3.1804
+Epoch 44/50: 16s loss =    3.2800
+Epoch 45/50: 15s loss =    3.1366
+Epoch 46/50: 15s loss =    3.2190
+Epoch 47/50: 15s loss =    3.2381
+Epoch 48/50: 15s loss =    3.2419
+Epoch 49/50: 15s loss =    3.0127
+Epoch 50/50: 15s loss =    3.1232
+```
+
 
 我們來看看效果如何，我們使用Embedding Vectors彼此間的Cosine來定義出字詞間的相關性，並且列出8個最為靠近的字詞。
 
 
 ```python
-valid_words_index = np.array([10,20,30,40,50,210,239,392,396])
+valid_words_index = np.array([10, 20, 30, 40, 50, 210, 239, 392, 396])
 
-valid_words, nearests = model_SkipGram.nearest_words(X=valid_words_index,top_nearest=8)
+valid_words, nearests = model_SkipGram.nearest_words(X=valid_words_index, top_nearest=8)
 for i in range(len(valid_words)):
-    print("Nearest to '{}': ".format(valid_words[i]),nearests[i])
+    print('Nearest to \'{}\': '.format(valid_words[i]), nearests[i])
 ```
 
-    Nearest to 'two':  ['three' 'four' 'five' 'eight' 'six' 'seven' 'nine' 'one']
-    Nearest to 'that':  ['which' 'however' 'eophona' 'clemency' 'invariants' 'ratchet' 'what'
-     'fiona']
-    Nearest to 'his':  ['her' 'their' 'my' 'your' 'its' 'our' 'thy' 'witchcraft']
-    Nearest to 'were':  ['are' 'was' 'include' 'have' 'cyanobacterial' 'seem' 'be' 'those']
-    Nearest to 'all':  ['both' 'various' 'many' 'counting' 'some' 'every' 'several' 'risked']
-    Nearest to 'area':  ['region' 'areas' 'suctoria' 'regions' 'island' 'pwned' 'territory'
-     'plains']
-    Nearest to 'east':  ['west' 'eastern' 'southeast' 'south' 'southwest' 'curable' 'north'
-     'hispaniolan']
-    Nearest to 'himself':  ['him' 'themselves' 'them' 'itself' 'megalith' 'herself' 'successfully'
-     'armas']
-    Nearest to 'white':  ['red' 'black' 'blue' 'yellow' 'green' 'overdraft' 'horse' 'dark']
+```yaml
+Nearest to 'two':  ['three' 'four' 'five' 'eight' 'six' 'one' 'seven' 'zero']
+Nearest to 'that':  ['which' 'however' 'thus' 'what' 'sepulchres' 'dancewriting' 'tatars'
+ 'resent']
+Nearest to 'his':  ['her' 'their' 'your' 'my' 'its' 'our' 'othniel' 'personal']
+Nearest to 'were':  ['are' 'was' 'have' 'remain' 'junkanoo' 'those' 'include' 'had']
+Nearest to 'all':  ['both' 'various' 'many' 'several' 'every' 'these' 'some' 'obtaining']
+Nearest to 'area':  ['areas' 'region' 'territory' 'location' 'xylophone' 'stadium' 'city'
+ 'island']
+Nearest to 'east':  ['west' 'south' 'southeast' 'north' 'eastern' 'southwest' 'central'
+ 'mainland']
+Nearest to 'himself':  ['him' 'themselves' 'herself' 'them' 'itself' 'wignacourt' 'majored'
+ 'mankiewicz']
+Nearest to 'white':  ['black' 'red' 'blue' 'green' 'yellow' 'dark' 'papyri' 'kemal']
+```
+
 
 結果相當驚人，與'two'靠近的真的都是數字類型的文字，與'that'靠近的都是文法功能性的詞彙，與'his'靠近的都是所有格代名詞，與'were'靠近的是be動詞，與'all'最靠近的是'both'，與'east'靠近的都是一些代表方向的詞彙，與'white'靠近的都是一些顏色的詞彙，真的是太神奇了！
 
@@ -475,28 +490,28 @@ def plot(embeddings, labels):
     assert embeddings.shape[0] >= len(labels), 'More labels than embeddings'
     pylab.figure(figsize=(15,15))  # in inches
     for i, label in enumerate(labels):
-        x, y = embeddings[i,:]
-        pylab.scatter(x, y, color="blue")
+        x, y = embeddings[i, :]
+        pylab.scatter(x, y, color='blue')
         pylab.annotate(label, xy=(x, y), xytext=(5, 2), textcoords='offset points',
                    ha='right', va='bottom')
     pylab.show()
 
 visualization_words = 800
 # transform embeddings to 2D by t-SNE
-embed = model_SkipGram.embedding_matrix()[1:visualization_words+1,:]
+embed = model_SkipGram.embedding_matrix()[1:visualization_words+1, :]
 tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000, method='exact')
 two_d_embed = tsne.fit_transform(embed)
 # list labels
 words = [model_SkipGram.reverse_dictionary[i] for i in range(1, visualization_words+1)]
 # plot
-plot(two_d_embed,words)
+plot(two_d_embed, words)
 ```
+
 
 ![png](https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/05_output_13_0.png)
 
-如此一來你將可以簡單的看出，哪些詞彙彼此相似而靠近。
 
-<br/>
+如此一來你將可以簡單的看出，哪些詞彙彼此相似而靠近。
 
 ### 實作CBOW (Continuous Bag of Words)
 
@@ -504,15 +519,15 @@ plot(two_d_embed,words)
 
 
 ```python
-def cbow_batch_generator(data,batch_size,context_window):
-    span = 2 * context_window + 1 # [ context_window target context_window ]
+def cbow_batch_generator(data, batch_size, context_window):
+    span = 2 * context_window + 1  # [ context_window target context_window ]
     num_bow = span - 1
-    
+
     batch = np.ndarray(shape=(batch_size, num_bow), dtype=np.int32)
     labels = np.ndarray(shape=(batch_size, 1), dtype=np.int32)
-    
+
     buffer = collections.deque(maxlen=span)
-    
+
     # initialization
     data_index = 0
     for _ in range(span):
@@ -522,35 +537,37 @@ def cbow_batch_generator(data,batch_size,context_window):
     # generate
     k = 0
     target = context_window
-    while True:        
+    while True:
         bow = list(buffer)
         del bow[target]
-        for i,w in enumerate(bow):
-            batch[k,i] = w
-        labels[k,0] = buffer[target]
+        for i, w in enumerate(bow):
+            batch[k, i] = w
+        labels[k, 0] = buffer[target]
         k += 1
-        
-        # Recycle 
-        if data_index == len(data): data_index = 0
-        
+
+        # Recycle
+        if data_index == len(data):
+            data_index = 0
+
         # scan data
         buffer.append(data[data_index])
         data_index = (data_index + 1) % len(data)
-        
+
         # Enough num to output
         if k == batch_size:
             k = 0
             yield (batch, labels)
-        
-        
+
             
 # demonstrate generator
 print('data:', [reverse_dictionary[di] for di in data[:10]])
 
 for context_window in [1, 2]:
-    batch_generator = cbow_batch_generator(data=data,
-                                           batch_size=8,
-                                           context_window=context_window)
+    batch_generator = cbow_batch_generator(
+        data=data,
+        batch_size=8,
+        context_window=context_window
+    )
     batch, labels = next(batch_generator)
 
     print('\nwith context_window = %d:' % (context_window))
@@ -559,77 +576,83 @@ for context_window in [1, 2]:
     for i in range(batch.shape[0]):
         tmp = []
         for j in range(batch.shape[1]):
-            tmp.append(reverse_dictionary[batch[i,j]])
+            tmp.append(reverse_dictionary[batch[i, j]])
         show_batch.append(tmp)
     print(show_batch)
     print('labels:', [reverse_dictionary[li] for li in labels.reshape(8)])
 ```
 
-    data: ['anarchism', 'originated', 'as', 'a', 'term', 'of', 'abuse', 'first', 'used', 'against']
-    
-    with context_window = 1:
-    batch:
-    [['anarchism', 'as'], ['originated', 'a'], ['as', 'term'], ['a', 'of'], ['term', 'abuse'], ['of', 'first'], ['abuse', 'used'], ['first', 'against']]
-    labels: ['originated', 'as', 'a', 'term', 'of', 'abuse', 'first', 'used']
-    
-    with context_window = 2:
-    batch:
-    [['anarchism', 'originated', 'a', 'term'], ['originated', 'as', 'term', 'of'], ['as', 'a', 'of', 'abuse'], ['a', 'term', 'abuse', 'first'], ['term', 'of', 'first', 'used'], ['of', 'abuse', 'used', 'against'], ['abuse', 'first', 'against', 'early'], ['first', 'used', 'early', 'working']]
-    labels: ['as', 'a', 'term', 'of', 'abuse', 'first', 'used', 'against']
+```yaml
+data: ['anarchism', 'originated', 'as', 'a', 'term', 'of', 'abuse', 'first', 'used', 'against']
+
+with context_window = 1:
+batch:
+[['anarchism', 'as'], ['originated', 'a'], ['as', 'term'], ['a', 'of'], ['term', 'abuse'], ['of', 'first'], ['abuse', 'used'], ['first', 'against']]
+labels: ['originated', 'as', 'a', 'term', 'of', 'abuse', 'first', 'used']
+
+with context_window = 2:
+batch:
+[['anarchism', 'originated', 'a', 'term'], ['originated', 'as', 'term', 'of'], ['as', 'a', 'of', 'abuse'], ['a', 'term', 'abuse', 'first'], ['term', 'of', 'first', 'used'], ['of', 'abuse', 'used', 'against'], ['abuse', 'first', 'against', 'early'], ['first', 'used', 'early', 'working']]
+labels: ['as', 'a', 'term', 'of', 'abuse', 'first', 'used', 'against']
+```
+
 
 
 ```python
-class CBOW(object):
-    def __init__(self,n_vocabulary,n_embedding,context_window,reverse_dictionary,learning_rate=1.0):
+class CBOW:
+
+    def __init__(self, n_vocabulary, n_embedding,
+                 context_window, reverse_dictionary, learning_rate=1.0):
         self.n_vocabulary = n_vocabulary
         self.n_embedding = n_embedding
         self.context_window = context_window
         self.reverse_dictionary = reverse_dictionary
-        
+
         self.weights = None
         self.biases = None
-        
-        self.graph = tf.Graph() # initialize new grap
-        self.build(learning_rate) # building graph
-        self.sess = tf.Session(graph=self.graph) # create session by the graph 
-        
-    def build(self,learning_rate):
+
+        self.graph = tf.Graph()  # initialize new grap
+        self.build(learning_rate)  # building graph
+        self.sess = tf.Session(graph=self.graph)  # create session by the graph
+
+    def build(self, learning_rate):
         with self.graph.as_default():
             ### Input
             self.train_dataset = tf.placeholder(tf.int32, shape=[None, self.context_window*2])
-            self.train_labels  = tf.placeholder(tf.int32, shape=[None, 1])
+            self.train_labels = tf.placeholder(tf.int32, shape=[None, 1])
 
             ### Optimalization
             # build neurel network structure and get their predictions and loss
-            self.loss = self.structure( dataset=self.train_dataset,
-                                        labels=self.train_labels,
-                                      )
-            
+            self.loss = self.structure(
+                dataset=self.train_dataset,
+                labels=self.train_labels,
+            )
+
             # normalize embeddings
             self.norm = tf.sqrt(
                           tf.reduce_sum(
                             tf.square(self.weights['embeddings']), 1, keep_dims=True))
             self.normalized_embeddings = self.weights['embeddings'] / self.norm
-            
+
             # define training operation
             self.optimizer = tf.train.AdagradOptimizer(learning_rate=learning_rate)
             self.train_op = self.optimizer.minimize(self.loss)
-            
+
             ### Prediction
             self.new_dataset = tf.placeholder(tf.int32, shape=[None])
-            self.new_labels  = tf.placeholder(tf.int32, shape=[None, 1])
-            
+            self.new_labels = tf.placeholder(tf.int32, shape=[None, 1])
+
             # similarity
             self.new_embed = tf.nn.embedding_lookup(
                                self.normalized_embeddings, self.new_dataset)
-            
-            self.new_similarity = tf.matmul(self.new_embed, 
+
+            self.new_similarity = tf.matmul(self.new_embed,
                                             tf.transpose(self.normalized_embeddings))
-            
+
             ### Initialization
-            self.init_op = tf.global_variables_initializer()  
-    
-    def structure(self,dataset,labels):
+            self.init_op = tf.global_variables_initializer()
+
+    def structure(self, dataset, labels):
         ### Variable
         if (not self.weights) and (not self.biases):
             self.weights = {
@@ -637,69 +660,67 @@ class CBOW(object):
                                 tf.random_uniform([self.n_vocabulary, self.n_embedding],
                                                   -1.0, 1.0)),
                 'softmax': tf.Variable(
-                             tf.truncated_normal([self.n_vocabulary, self.n_embedding],
-                               stddev=1.0 / math.sqrt(self.n_embedding)))
+                            tf.truncated_normal([self.n_vocabulary, self.n_embedding],
+                                                stddev=1.0 / math.sqrt(self.n_embedding)))
             }
             self.biases = {
                 'softmax': tf.Variable(tf.zeros([self.n_vocabulary]))
             }
-                              
 
         ### Structure
         # Look up embeddings for inputs.
         embed_bow = tf.nn.embedding_lookup(self.weights['embeddings'], dataset)
-        embed = tf.reduce_mean(embed_bow,axis=1)
-        
+        embed = tf.reduce_mean(embed_bow, axis=1)
+
         # Compute the softmax loss, using a sample of the negative labels each time.
         num_softmax_sampled = 64
-        
+
         loss = tf.reduce_mean(
-                 tf.nn.sampled_softmax_loss(weights=self.weights['softmax'], 
-                                            biases=self.biases['softmax'], 
+                 tf.nn.sampled_softmax_loss(weights=self.weights['softmax'],
+                                            biases=self.biases['softmax'],
                                             inputs=embed,
-                                            labels=labels, 
-                                            num_sampled=num_softmax_sampled, 
+                                            labels=labels,
+                                            num_sampled=num_softmax_sampled,
                                             num_classes=self.n_vocabulary))
 
         return loss
-    
-    
+
     def initialize(self):
         self.weights = None
         self.biases = None
         self.sess.run(self.init_op)
-    
-    def online_fit(self,X,Y):      
+
+    def online_fit(self, X, Y):
         feed_dict = {self.train_dataset: X,
                      self.train_labels: Y}
         _, loss = self.sess.run([self.train_op, self.loss], feed_dict=feed_dict)
-        
+
         return loss
-    
-    def nearest_words(self,X,top_nearest):
+
+    def nearest_words(self, X, top_nearest):
         similarity = self.sess.run(self.new_similarity, feed_dict={self.new_dataset: X})
         X_size = X.shape[0]
-        
+
         valid_words = []
         nearests = []
         for i in range(X_size):
             valid_word = self.find_word(X[i])
-            valid_words.append(valid_word)    
-            
+            valid_words.append(valid_word)
+
             # select highest similarity word
             nearest = (-similarity[i, :]).argsort()[1:top_nearest+1]
-            nearests.append(list(map(lambda x:self.find_word(x),nearest)))
-            
-        return (valid_words,np.array(nearests))
-    
-    def evaluate(self,X,Y):
+            nearests.append(list(map(lambda x: self.find_word(x), nearest)))
+
+        return (valid_words, np.array(nearests))
+
+    def evaluate(self, X, Y):
         return self.sess.run(self.new_loss, feed_dict={self.new_dataset: X,
                                                        self.new_labels: Y})
-    
+
     def embedding_matrix(self):
         return self.sess.run(self.normalized_embeddings)
-    
-    def find_word(self,index):
+
+    def find_word(self, index):
         return self.reverse_dictionary[index]
 ```
 
@@ -708,16 +729,20 @@ class CBOW(object):
 context_window = 1
 
 # build CBOW batch generator
-batch_generator = cbow_batch_generator(data=data,
-                                       batch_size=128,
-                                       context_window=context_window)
+batch_generator = cbow_batch_generator(
+    data=data,
+    batch_size=128,
+    context_window=context_window
+)
 
 # build CBOW model
-model_CBOW = CBOW(n_vocabulary=VOCABULARY_SIZE,
-                  n_embedding=100,
-                  context_window=context_window,
-                  reverse_dictionary=reverse_dictionary,
-                  learning_rate=1.0)
+model_CBOW = CBOW(
+    n_vocabulary=VOCABULARY_SIZE,
+    n_embedding=100,
+    context_window=context_window,
+    reverse_dictionary=reverse_dictionary,
+    learning_rate=1.0
+)
 
 # initialize model
 model_CBOW.initialize()
@@ -731,86 +756,90 @@ for epoch in range(epochs):
     avg_loss = 0
     for _ in range(num_batchs_in_epoch):
         batch, labels = next(batch_generator)
-        loss = model_CBOW.online_fit(X=batch,
-                                     Y=labels)
+        loss = model_CBOW.online_fit(X=batch, Y=labels)
         avg_loss += loss
     avg_loss = avg_loss / num_batchs_in_epoch
-    print("Epoch %d/%d: %ds loss = %9.4f" % ( epoch+1, epochs, time.time()-start_time,
-                                                   avg_loss ))
+    print('Epoch %d/%d: %ds loss = %9.4f' % ( epoch+1, epochs, time.time()-start_time, avg_loss ))
 ```
 
-    Epoch 1/50: 14s loss =    3.8643
-    Epoch 2/50: 14s loss =    3.2952
-    Epoch 3/50: 14s loss =    3.1950
-    Epoch 4/50: 14s loss =    3.1204
-    Epoch 5/50: 14s loss =    3.0737
-    Epoch 6/50: 14s loss =    3.0243
-    Epoch 7/50: 14s loss =    2.9382
-    Epoch 8/50: 14s loss =    2.9539
-    Epoch 9/50: 14s loss =    2.9690
-    Epoch 10/50: 14s loss =    2.9003
-    Epoch 11/50: 14s loss =    2.8737
-    Epoch 12/50: 14s loss =    2.8308
-    Epoch 13/50: 14s loss =    2.8444
-    Epoch 14/50: 14s loss =    2.7676
-    Epoch 15/50: 14s loss =    2.7811
-    Epoch 16/50: 14s loss =    2.7926
-    Epoch 17/50: 14s loss =    2.7528
-    Epoch 18/50: 14s loss =    2.7552
-    Epoch 19/50: 14s loss =    2.7353
-    Epoch 20/50: 14s loss =    2.6232
-    Epoch 21/50: 14s loss =    2.5206
-    Epoch 22/50: 14s loss =    2.7120
-    Epoch 23/50: 14s loss =    2.6625
-    Epoch 24/50: 14s loss =    2.7351
-    Epoch 25/50: 14s loss =    2.5335
-    Epoch 26/50: 14s loss =    2.6600
-    Epoch 27/50: 14s loss =    2.6636
-    Epoch 28/50: 14s loss =    2.5972
-    Epoch 29/50: 14s loss =    2.5400
-    Epoch 30/50: 14s loss =    2.6047
-    Epoch 31/50: 14s loss =    2.5544
-    Epoch 32/50: 14s loss =    2.5932
-    Epoch 33/50: 14s loss =    2.5554
-    Epoch 34/50: 14s loss =    2.5256
-    Epoch 35/50: 14s loss =    2.5664
-    Epoch 36/50: 14s loss =    2.5977
-    Epoch 37/50: 14s loss =    2.5392
-    Epoch 38/50: 14s loss =    2.5666
-    Epoch 39/50: 14s loss =    2.5123
-    Epoch 40/50: 14s loss =    2.5169
-    Epoch 41/50: 14s loss =    2.4920
-    Epoch 42/50: 14s loss =    2.4872
-    Epoch 43/50: 14s loss =    2.5512
-    Epoch 44/50: 14s loss =    2.4895
-    Epoch 45/50: 14s loss =    2.5202
-    Epoch 46/50: 14s loss =    2.5011
-    Epoch 47/50: 14s loss =    2.2540
-    Epoch 48/50: 14s loss =    2.4145
-    Epoch 49/50: 14s loss =    2.4916
-    Epoch 50/50: 14s loss =    2.4924
+```yaml
+Epoch 1/50: 15s loss =    3.8700
+Epoch 2/50: 15s loss =    3.2961
+Epoch 3/50: 15s loss =    3.1988
+Epoch 4/50: 15s loss =    3.1201
+Epoch 5/50: 15s loss =    3.0734
+Epoch 6/50: 15s loss =    3.0239
+Epoch 7/50: 15s loss =    2.9378
+Epoch 8/50: 15s loss =    2.9549
+Epoch 9/50: 15s loss =    2.9651
+Epoch 10/50: 15s loss =    2.9028
+Epoch 11/50: 15s loss =    2.8770
+Epoch 12/50: 15s loss =    2.8298
+Epoch 13/50: 15s loss =    2.8437
+Epoch 14/50: 15s loss =    2.7681
+Epoch 15/50: 15s loss =    2.7823
+Epoch 16/50: 15s loss =    2.7867
+Epoch 17/50: 15s loss =    2.7540
+Epoch 18/50: 15s loss =    2.7567
+Epoch 19/50: 15s loss =    2.7340
+Epoch 20/50: 15s loss =    2.6212
+Epoch 21/50: 15s loss =    2.5187
+Epoch 22/50: 15s loss =    2.7150
+Epoch 23/50: 15s loss =    2.6647
+Epoch 24/50: 15s loss =    2.7381
+Epoch 25/50: 15s loss =    2.5337
+Epoch 26/50: 15s loss =    2.6587
+Epoch 27/50: 15s loss =    2.6648
+Epoch 28/50: 15s loss =    2.5963
+Epoch 29/50: 15s loss =    2.5418
+Epoch 30/50: 15s loss =    2.6041
+Epoch 31/50: 15s loss =    2.5535
+Epoch 32/50: 15s loss =    2.5928
+Epoch 33/50: 15s loss =    2.5535
+Epoch 34/50: 15s loss =    2.5233
+Epoch 35/50: 15s loss =    2.5658
+Epoch 36/50: 15s loss =    2.5966
+Epoch 37/50: 15s loss =    2.5422
+Epoch 38/50: 15s loss =    2.5673
+Epoch 39/50: 15s loss =    2.5142
+Epoch 40/50: 15s loss =    2.5175
+Epoch 41/50: 15s loss =    2.4909
+Epoch 42/50: 15s loss =    2.4872
+Epoch 43/50: 15s loss =    2.5513
+Epoch 44/50: 15s loss =    2.4917
+Epoch 45/50: 15s loss =    2.5198
+Epoch 46/50: 15s loss =    2.5007
+Epoch 47/50: 15s loss =    2.2530
+Epoch 48/50: 15s loss =    2.4154
+Epoch 49/50: 15s loss =    2.4927
+Epoch 50/50: 15s loss =    2.4948
+```
+
 
 
 ```python
-valid_words_index = np.array([10,20,30,40,50,210,239,392,396])
+valid_words_index = np.array([10, 20, 30, 40, 50, 210, 239, 392, 396])
 
-valid_words, nearests = model_CBOW.nearest_words(X=valid_words_index,top_nearest=8)
+valid_words, nearests = model_CBOW.nearest_words(X=valid_words_index, top_nearest=8)
 for i in range(len(valid_words)):
-    print("Nearest to '{}': ".format(valid_words[i]),nearests[i])
+    print('Nearest to \'{}\': '.format(valid_words[i]), nearests[i])
 ```
 
-    Nearest to 'two':  ['three' 'four' 'five' 'six' 'seven' 'eight' 'one' 'xx']
-    Nearest to 'that':  ['which' 'however' 'furthermore' 'what' 'nevertheless' 'imaginable'
-     'assemblage' 'where']
-    Nearest to 'his':  ['her' 'their' 'my' 'your' 'its' 'whose' 'our' 'dufay']
-    Nearest to 'were':  ['are' 'remain' 'include' 'have' 'was' 'tend' 'those' 'appear']
-    Nearest to 'all':  ['both' 'various' 'unacknowledged' 'every' 'faked' 'aurangazeb' 'some'
-     'many']
-    Nearest to 'area':  ['region' 'areas' 'regions' 'land' 'campus' 'streets' 'harbour' 'tacos']
-    Nearest to 'east':  ['west' 'south' 'southwest' 'north' 'northeast' 'eastern' 'southeast'
-     'highlights']
-    Nearest to 'himself':  ['him' 'themselves' 'them' 'itself' 'herself' 'papp' 'aafk' 'heartbroken']
-    Nearest to 'white':  ['red' 'black' 'blue' 'dark' 'yellow' 'culturally' 'dead' 'angelman']
+```yaml
+Nearest to 'two':  ['three' 'four' 'five' 'six' 'seven' 'eight' 'nine' 'zero']
+Nearest to 'that':  ['which' 'what' 'furthermore' 'however' 'talmudic' 'endress' 'tonight'
+ 'how']
+Nearest to 'his':  ['her' 'their' 'my' 'your' 'its' 'our' 'the' 'photographs']
+Nearest to 'were':  ['are' 'have' 'include' 'contain' 'was' 'vigorous' 'tend' 'substituting']
+Nearest to 'all':  ['various' 'both' 'many' 'every' 'shamed' 'everyone' 'those' 'wiccan']
+Nearest to 'area':  ['areas' 'region' 'regions' 'taipan' 'northeast' 'boundaries' 'hattin'
+ 'surface']
+Nearest to 'east':  ['west' 'southeast' 'south' 'northwest' 'southwest' 'eastern' 'northeast'
+ 'north']
+Nearest to 'himself':  ['him' 'themselves' 'herself' 'itself' 'them' 'donal' 'activex' 'carnaval']
+Nearest to 'white':  ['black' 'red' 'morel' 'green' 'bluish' 'dead' 'blue' 'lessig']
+```
+
 
 
 ```python
@@ -819,29 +848,29 @@ from sklearn.manifold import TSNE
 
 def plot(embeddings, labels):
     assert embeddings.shape[0] >= len(labels), 'More labels than embeddings'
-    pylab.figure(figsize=(15,15))  # in inches
+    pylab.figure(figsize=(15, 15))  # in inches
     for i, label in enumerate(labels):
-        x, y = embeddings[i,:]
-        pylab.scatter(x, y, color="blue")
+        x, y = embeddings[i, :]
+        pylab.scatter(x, y, color='blue')
         pylab.annotate(label, xy=(x, y), xytext=(5, 2), textcoords='offset points',
                    ha='right', va='bottom')
     pylab.show()
 
 visualization_words = 800
 # transform embeddings to 2D by t-SNE
-embed = model_CBOW.embedding_matrix()[1:visualization_words+1,:]
+embed = model_CBOW.embedding_matrix()[1:visualization_words+1, :]
 tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000, method='exact')
 two_d_embed = tsne.fit_transform(embed)
 # list labels
 words = [model_CBOW.reverse_dictionary[i] for i in range(1, visualization_words+1)]
 # plot
-plot(two_d_embed,words)
+plot(two_d_embed, words)
 ```
+
 
 ![png](https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/05_output_20_0.png)
 
-<br/>
 
 ### Reference
-
 * https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/5_word2vec.ipynb
+
