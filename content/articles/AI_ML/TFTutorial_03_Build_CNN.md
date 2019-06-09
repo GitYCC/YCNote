@@ -8,7 +8,6 @@ Illustration: tensorflow-logo.jpg
 Alias: /YCNote/post/41.html
 related_posts: ml-course-techniques_6,tensorflow-tutorial_1,tensorflow-tutorial_2,tensorflow-tutorial_4,tensorflow-tutorial_5
 
-
 這一章我們終於要討論到影像辨識的重頭戲啦！通常，處理影像類別我們會用Convolutional Neurel Network，聽起來很難很厲害，不過只要了解背後概念你就知道為什麼要這麼做了，讓我們看下去。
 
 本單元程式碼可於[Github](https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/03_CNN_classification_on_MNIST.py)下載。
@@ -99,11 +98,13 @@ Convolution Layer不同於Fully-connected Layer有兩點，第一，每個Pixels
 
 
 ```python
-from __future__ import print_function
+import random
+
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
-import random
+
+tf.logging.set_verbosity(tf.logging.ERROR)
 
 # Config the matplotlib backend as plotting inline in IPython
 %matplotlib inline
@@ -112,57 +113,63 @@ import random
 
 ```python
 with tf.Session() as sess:
-    img =tf.constant([[[[1],[2],[0],[0],[0]],
-                       [[3],[0],[0],[1],[2]],
-                       [[0],[0],[0],[3],[0]],
-                       [[1],[0],[0],[1],[0]],
-                       [[0],[0],[0],[0],[0]]]],tf.float32)
+    img =tf.constant([[[[1], [2], [0], [0], [0]],
+                       [[3], [0], [0], [1], [2]],
+                       [[0], [0], [0], [3], [0]],
+                       [[1], [0], [0], [1], [0]],
+                       [[0], [0], [0], [0], [0]]]], tf.float32)
     # shape of img: [batch, in_height, in_width, in_channels]
     
-    filter_ = tf.constant([[[[1]],[[2]]],
-                           [[[3]],[[0]]]],tf.float32)
+    filter_ = tf.constant([[[[1]], [[2]]],
+                                 [[[3]], [[0]]]], tf.float32)
     # shape of filter: [filter_height, filter_width, in_channels, out_channels]
     
     conv_strides = (1,1)
     padding_method = 'VALID'
     
-    conv = tf.nn.conv2d(img, filter_, 
-                        strides=[1,conv_strides[0],conv_strides[1],1], 
-                        padding=padding_method)
-    print("Shape of conv:")
+    conv = tf.nn.conv2d(
+        img,
+        filter_, 
+        strides=[1, conv_strides[0], conv_strides[1], 1], 
+        padding=padding_method
+    )
+    print('Shape of conv:')
     print(conv.eval().shape)
-    print("Conv:")
+    print('Conv:')
     print(conv.eval())
 ```
 
-    Shape of conv:
-    (1, 4, 4, 1)
-    Conv:
-    [[[[ 14.]
-       [  2.]
-       [  0.]
-       [  3.]]
-    
-      [[  3.]
-       [  0.]
-       [  2.]
-       [ 14.]]
-    
-      [[  3.]
-       [  0.]
-       [  6.]
-       [  6.]]
-    
-      [[  1.]
-       [  0.]
-       [  2.]
-       [  1.]]]]
+```yaml
+Shape of conv:
+(1, 4, 4, 1)
+Conv:
+[[[[14.]
+   [ 2.]
+   [ 0.]
+   [ 3.]]
+
+  [[ 3.]
+   [ 0.]
+   [ 2.]
+   [14.]]
+
+  [[ 3.]
+   [ 0.]
+   [ 6.]
+   [ 6.]]
+
+  [[ 1.]
+   [ 0.]
+   [ 2.]
+   [ 1.]]]]
+```
+
 
 首先一開始是圖片`img`的部分，Rank為4，每個維度分別為`[batch, in_height, in_width, in_channels]`，in_channels的部分一般是RGB，這邊我採用和MNIST相同的灰階表示，所以in_channels只有1個維度。
 
 `filter_`的部分Rank為4，每個維度分別為`[filter_height, filter_width, in_channels, out_channels]`，當如果我想要使用多個filters的時候，我的out_channels就不只1而已，如果有RGB的話，in_channels則會是3。
 
-接下來來看一下`tf.nn.conv2d`裡頭的參數`strides`，這可能會讓人感到困惑，它的設定值是`[1,conv_strides[0],conv_strides[1],1]`，我特別把第二、三項額外用`conv_strides`來表示，因為這兩個值才是真正代表在圖片上平移每步的距離，那第一項和最後一項的1代表什麼意義呢？是這樣的，Tensorflow是站在維度的角度看平移這件事情，這四個維度分別表示`[batch, in_height, in_width, in_channels]`的移動量，所以一般情況下只有`in_height`和`in_width`需要指定平移的距離。
+接下來來看一下`tf.nn.conv2d`裡頭的參數`strides`，這可能會讓人感到困惑，它的設定值是`[1, conv_strides[0], conv_strides[1], 1]`，我特別把第二、三項額外用`conv_strides`來表示，因為這兩個值才是真正代表在圖片上平移每步的距離，那第一項和最後一項的1代表什麼意義呢？是這樣的，Tensorflow是站在維度的角度看平移這件事情，這四個維度分別表示`[batch, in_height, in_width, in_channels]`的移動量，所以一般情況下只有`in_height`和`in_width`需要指定平移的距離。
 
 最後一個參數就是`padding`，有兩種可以選擇，分別為`VALID`和`SAME`，`VALID`指的就是沒有額外鋪上0的邊界的情形，`SAME`則是額外鋪上0的邊界，並且使得輸出的維度和輸入一樣。
 
@@ -173,28 +180,29 @@ with tf.Session() as sess:
 
 ```python
 with tf.Session() as sess:
-    img =tf.constant([[[[1],[2],[0],[0]],
-                       [[3],[0],[0],[1]],
-                       [[0],[0],[0],[3]],
-                       [[1],[0],[0],[1]]]],tf.float32)
+    img =tf.constant([[[[1], [2], [0], [0]],
+                       [[3], [0], [0], [1]],
+                       [[0], [0], [0], [3]],
+                       [[1], [0], [0], [1]]]], tf.float32)
     # shape of img: [batch, in_height, in_width, in_channels]
     
-    pooling = tf.nn.max_pool(img,
-                    ksize=[1,2,2,1],strides=[1,2,2,1],padding='VALID')
-    print("Shape of pooling:")
+    pooling = tf.nn.max_pool(img, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
+    print('Shape of pooling:')
     print(pooling.eval().shape)
-    print("Pooling:")
+    print('Pooling:')
     print(pooling.eval())
 ```
 
-    Shape of pooling:
-    (1, 2, 2, 1)
-    Pooling:
-    [[[[ 3.]
-       [ 1.]]
-    
-      [[ 1.]
-       [ 3.]]]]
+```yaml
+Shape of pooling:
+(1, 2, 2, 1)
+Pooling:
+[[[[3.]
+   [1.]]
+
+  [[1.]
+   [3.]]]]
+```
 
 `tf.nn.max_pool`的參數中`ksize`代表kernel size，也就是要Pooling的大小，一樣依照Input layer的Rank去配置，還有`strides`決定平移的方法。
 
@@ -218,274 +226,287 @@ with tf.Session() as sess:
 
 
 ```python
-class CNNLogisticClassification(object):
-    def __init__(self,shape_picture,n_labels,
-                 learning_rate=0.5,dropout_ratio=0.5,alpha=0.0):
+class CNNLogisticClassification:
+
+    def __init__(self, shape_picture, n_labels,
+                 learning_rate=0.5, dropout_ratio=0.5, alpha=0.0):
         self.shape_picture = shape_picture
         self.n_labels = n_labels
-        
+
         self.weights = None
         self.biases = None
-        
-        self.graph = tf.Graph() # initialize new grap
-        self.build(learning_rate,dropout_ratio,alpha) # building graph
-        self.sess = tf.Session(graph=self.graph) # create session by the graph 
-        
-    def build(self,learning_rate,dropout_ratio,alpha):
+
+        self.graph = tf.Graph()  # initialize new grap
+        self.build(learning_rate, dropout_ratio, alpha)  # building graph
+        self.sess = tf.Session(graph=self.graph)  # create session by the graph
+
+    def build(self, learning_rate, dropout_ratio, alpha):
         with self.graph.as_default():
             ### Input
-            self.train_pictures = tf.placeholder(tf.float32, 
+            self.train_pictures = tf.placeholder(tf.float32,
                                                  shape=[None]+self.shape_picture)
-            self.train_labels   = tf.placeholder(tf.int32, 
-                                                 shape=(None,self.n_labels))
+            self.train_labels = tf.placeholder(tf.int32,
+                                               shape=(None, self.n_labels))
 
             ### Optimalization
             # build neurel network structure and get their predictions and loss
-            self.y_,self.original_loss = self.structure(pictures=self.train_pictures,
-                                                        labels=self.train_labels,
-                                                        dropout_ratio=dropout_ratio,
-                                                        train=True, )
+            self.y_, self.original_loss = self.structure(pictures=self.train_pictures,
+                                                         labels=self.train_labels,
+                                                         dropout_ratio=dropout_ratio,
+                                                         train=True, )
             # regularization loss
-            self.regularization = tf.reduce_mean(
-                                   [tf.nn.l2_loss(w)/tf.size(w,out_type=tf.float32)
-                                        for w in self.weights.values()])
+            self.regularization = \
+                tf.reduce_sum([tf.nn.l2_loss(w) for w in self.weights.values()]) \
+                / tf.reduce_sum([tf.size(w, out_type=tf.float32) for w in self.weights.values()])
+
             # total loss
             self.loss = self.original_loss + alpha * self.regularization
-            
+
             # define training operation
             optimizer = tf.train.GradientDescentOptimizer(learning_rate)
             self.train_op = optimizer.minimize(self.loss)
-            
+
             ### Prediction
-            self.new_pictures = tf.placeholder(tf.float32, 
+            self.new_pictures = tf.placeholder(tf.float32,
                                                shape=[None]+self.shape_picture)
-            self.new_labels   = tf.placeholder(tf.int32, 
-                                               shape=(None,self.n_labels))
-            self.new_y_,self.new_loss = self.structure(pictures=self.new_pictures,
-                                                       labels=self.new_labels,)
-            
+            self.new_labels = tf.placeholder(tf.int32,
+                                             shape=(None, self.n_labels))
+            self.new_y_, self.new_original_loss = self.structure(pictures=self.new_pictures,
+                                                                 labels=self.new_labels)
+            self.new_loss = self.new_original_loss + alpha * self.regularization
+
             ### Initialization
             self.init_op = tf.global_variables_initializer()
-    
-    def structure(self,pictures,labels,dropout_ratio=None,train=False):
-        
+
+    def structure(self, pictures, labels, dropout_ratio=None, train=False):
         ### Variable
-        ## LeNet5 Architecture(http://yann.lecun.com/exdb/lenet/) 
+        ## LeNet5 Architecture(http://yann.lecun.com/exdb/lenet/)
         # input:(batch,28,28,1) => conv1[5x5,6] => (batch,24,24,6)
         # pool2 => (batch,12,12,6) => conv2[5x5,16] => (batch,8,8,16)
         # pool4 => fatten5 => (batch,4x4x16) => fc6 => (batch,120)
         # (batch,120) => fc7 => (batch,84)
         # (batch,84) => fc8 => (batch,10) => softmax
-        
+
         if (not self.weights) and (not self.biases):
-            
             self.weights = {
-                'conv1': tf.Variable(tf.truncated_normal(shape=(5,5,1,6),
-                                                         stddev=0.1)), 
-                'conv3': tf.Variable(tf.truncated_normal(shape=(5,5,6,16),
+                'conv1': tf.Variable(tf.truncated_normal(shape=(5, 5, 1, 6),
                                                          stddev=0.1)),
-                'fc6':   tf.Variable(tf.truncated_normal(shape=(4*4*16,120),
+                'conv3': tf.Variable(tf.truncated_normal(shape=(5, 5, 6, 16),
                                                          stddev=0.1)),
-                'fc7':   tf.Variable(tf.truncated_normal(shape=(120,84),
-                                                         stddev=0.1)),    
-                'fc8':   tf.Variable(tf.truncated_normal(shape=(84,self.n_labels),
-                                                         stddev=0.1)),                   
+                'fc6': tf.Variable(tf.truncated_normal(shape=(4*4*16, 120),
+                                                       stddev=0.1)),
+                'fc7': tf.Variable(tf.truncated_normal(shape=(120, 84),
+                                                       stddev=0.1)),
+                'fc8': tf.Variable(tf.truncated_normal(shape=(84, self.n_labels),
+                                                       stddev=0.1)),
             }
-            self.biases  = {
-                'conv1': tf.Variable(tf.zeros( shape=(6) )),
-                'conv3': tf.Variable(tf.zeros( shape=(16) )),
-                'fc6':   tf.Variable(tf.zeros( shape=(120) )),
-                'fc7':   tf.Variable(tf.zeros( shape=(84) )),
-                'fc8':   tf.Variable(tf.zeros( shape=(self.n_labels) )),
-            } 
-        
+            self.biases = {
+                'conv1': tf.Variable(tf.zeros(shape=(6))),
+                'conv3': tf.Variable(tf.zeros(shape=(16))),
+                'fc6': tf.Variable(tf.zeros(shape=(120))),
+                'fc7': tf.Variable(tf.zeros(shape=(84))),
+                'fc8': tf.Variable(tf.zeros(shape=(self.n_labels))),
+            }
+
         ### Structure
-        conv1 = self.getConv2DLayer(pictures,
-                                    self.weights['conv1'],self.biases['conv1'],
-                                    activation=tf.nn.relu)
+        conv1 = self.get_conv_2d_layer(pictures,
+                                       self.weights['conv1'], self.biases['conv1'],
+                                       activation=tf.nn.relu)
         pool2 = tf.nn.max_pool(conv1,
-                               ksize=[1,2,2,1],strides=[1,2,2,1],padding='VALID')
-        conv3 = self.getConv2DLayer(pool2,
-                                    self.weights['conv3'],self.biases['conv3'],
-                                    activation=tf.nn.relu)
+                               ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
+        conv3 = self.get_conv_2d_layer(pool2,
+                                       self.weights['conv3'], self.biases['conv3'],
+                                       activation=tf.nn.relu)
         pool4 = tf.nn.max_pool(conv3,
-                               ksize=[1,2,2,1],strides=[1,2,2,1],padding='VALID')
-        fatten5 = self.getFlattenLayer(pool4)
-        
-        if train: fatten5 = tf.nn.dropout(fatten5,keep_prob=1-dropout_ratio[0])
-        
-        fc6 = self.getDenseLayer(fatten5,
-                                 self.weights['fc6'],self.biases['fc6'],
-                                 activation=tf.nn.relu)
-        
-        if train: fc6 = tf.nn.dropout(fc6,keep_prob=1-dropout_ratio[1])
-        
-        fc7 = self.getDenseLayer(fc6,
-                                 self.weights['fc7'],self.biases['fc7'],
-                                 activation=tf.nn.relu)
-            
-        logits = self.getDenseLayer(fc7,self.weights['fc8'],self.biases['fc8'])
-        
+                               ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
+        fatten5 = self.get_flatten_layer(pool4)
+
+        if train:
+            fatten5 = tf.nn.dropout(fatten5, keep_prob=1-dropout_ratio[0])
+
+        fc6 = self.get_dense_layer(fatten5,
+                                   self.weights['fc6'], self.biases['fc6'],
+                                   activation=tf.nn.relu)
+
+        if train:
+            fc6 = tf.nn.dropout(fc6, keep_prob=1-dropout_ratio[1])
+
+        fc7 = self.get_dense_layer(fc6,
+                                   self.weights['fc7'], self.biases['fc7'],
+                                   activation=tf.nn.relu)
+
+        logits = self.get_dense_layer(fc7, self.weights['fc8'], self.biases['fc8'])
+
         y_ = tf.nn.softmax(logits)
         loss = tf.reduce_mean(
                  tf.nn.softmax_cross_entropy_with_logits(labels=labels,
                                                          logits=logits))
 
-        return (y_,loss)
-    
-    def getDenseLayer(self,input_layer,weight,bias,activation=None):
-        x = tf.add(tf.matmul(input_layer,weight),bias)
-        if activation:
-            x = activation(x)
-        return x
-    
-    def getConv2DLayer(self,input_layer,
-                       weight,bias,
-                       strides=(1,1),padding='VALID',activation=None):
-        x = tf.add(
-              tf.nn.conv2d(input_layer,
-                           weight,
-                           [1,strides[0],strides[1],1],
-                           padding=padding),bias)
+        return (y_, loss)
+
+    def get_dense_layer(self, input_layer, weight, bias, activation=None):
+        x = tf.add(tf.matmul(input_layer, weight), bias)
         if activation:
             x = activation(x)
         return x
 
-    def getFlattenLayer(self,input_layer):
+    def get_conv_2d_layer(self, input_layer,
+                          weight, bias,
+                          strides=(1, 1), padding='VALID', activation=None):
+        x = tf.add(
+              tf.nn.conv2d(input_layer,
+                           weight,
+                           [1, strides[0], strides[1], 1],
+                           padding=padding), bias)
+        if activation:
+            x = activation(x)
+        return x
+
+    def get_flatten_layer(self, input_layer):
         shape = input_layer.get_shape().as_list()
         n = 1
         for s in shape[1:]:
             n *= s
-        x = tf.reshape(input_layer,[-1,n])
+        x = tf.reshape(input_layer, [-1, n])
         return x
-    
-    def fit(self,X,y,epochs=10,
-            validation_data=None,test_data=None,batch_size=None):
+
+    def fit(self, X, y, epochs=10,
+            validation_data=None, test_data=None, batch_size=None):
         X = self._check_array(X)
         y = self._check_array(y)
-        
+
         N = X.shape[0]
         random.seed(9000)
-        if not batch_size: batch_size=N
-        
+        if not batch_size:
+            batch_size = N
+
         self.sess.run(self.init_op)
         for epoch in range(epochs):
-            print("Epoch %2d/%2d: "%(epoch+1,epochs))
-            
+            print('Epoch %2d/%2d: ' % (epoch+1, epochs))
+
             # mini-batch gradient descent
             index = [i for i in range(N)]
             random.shuffle(index)
-            while len(index)>0:
+            while len(index) > 0:
                 index_size = len(index)
-                batch_index=[index.pop() for _ in range(min(batch_size,index_size))]    
-            
+                batch_index = [index.pop() for _ in range(min(batch_size, index_size))]
+
                 feed_dict = {
-                    self.train_pictures: X[batch_index,:], 
-                    self.train_labels: y[batch_index], 
+                    self.train_pictures: X[batch_index, :],
+                    self.train_labels: y[batch_index],
                 }
                 _, loss = self.sess.run([self.train_op, self.loss],
                                         feed_dict=feed_dict)
-                
-                print("[%d/%d] loss = %.4f     "%(N-len(index),N,loss),end='\r')
 
-            
+                print('[%d/%d] loss = %.4f     ' % (N-len(index), N, loss), end='\r')
+
             # evaluate at the end of this epoch
             y_ = self.predict(X)
-            train_loss = self.evaluate(X,y)
-            train_acc = self.accuracy(y_,y)
-            msg = "[%d/%d] loss = %8.4f, acc = %3.2f%%"%(N,N,train_loss,train_acc*100)
-            
+            train_loss = self.evaluate(X, y)
+            train_acc = self.accuracy(y_, y)
+            msg = '[%d/%d] loss = %8.4f, acc = %3.2f%%' % (N, N, train_loss, train_acc*100)
+
             if validation_data:
-                val_loss = self.evaluate(validation_data[0],validation_data[1])
-                val_acc = self.accuracy(self.predict(validation_data[0]),validation_data[1])
-                msg+=", val_loss = %8.4f, val_acc = %3.2f%%"%( val_loss, val_acc*100 )
-            
+                val_loss = self.evaluate(validation_data[0], validation_data[1])
+                val_acc = self.accuracy(self.predict(validation_data[0]), validation_data[1])
+                msg += ', val_loss = %8.4f, val_acc = %3.2f%%' % (val_loss, val_acc*100)
+
             print(msg)
-            
-            
+
         if test_data:
-            test_acc = self.accuracy(self.predict(test_data[0]),test_data[1])
-            print("test_acc = %3.2f%%" % (test_acc*100))
-            
+            test_acc = self.accuracy(self.predict(test_data[0]), test_data[1])
+            print('test_acc = %3.2f%%' % (test_acc*100))
+
     def accuracy(self, predictions, labels):
-        return (np.sum(np.argmax(predictions,1)==np.argmax(labels,1))/predictions.shape[0])
-    
-    def predict(self,X):
+        return (np.sum(np.argmax(predictions, 1) == np.argmax(labels, 1))/predictions.shape[0])
+
+    def predict(self, X):
         X = self._check_array(X)
         return self.sess.run(self.new_y_, feed_dict={self.new_pictures: X})
-    
-    def evaluate(self,X,y):
+
+    def evaluate(self, X, y):
         X = self._check_array(X)
         y = self._check_array(y)
-        return self.sess.run(self.new_loss, feed_dict={self.new_pictures: X, 
+        return self.sess.run(self.new_loss, feed_dict={self.new_pictures: X,
                                                        self.new_labels: y})
-    
-    def _check_array(self,ndarray):
+
+    def _check_array(self, ndarray):
         ndarray = np.array(ndarray)
-        if len(ndarray.shape)==1: 
-            ndarray=np.reshape(ndarray,(1,ndarray.shape[0]))
+        if len(ndarray.shape) == 1:
+            ndarray = np.reshape(ndarray, (1, ndarray.shape[0]))
         return ndarray
-    
 ```
 
 
 ```python
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+mnist = input_data.read_data_sets('MNIST_data/', one_hot=True)
 
 train_data = mnist.train
 valid_data = mnist.validation
 test_data = mnist.test
 ```
 
-    Extracting MNIST_data/train-images-idx3-ubyte.gz
-    Extracting MNIST_data/train-labels-idx1-ubyte.gz
-    Extracting MNIST_data/t10k-images-idx3-ubyte.gz
-    Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
+```yaml
+Successfully downloaded train-images-idx3-ubyte.gz 9912422 bytes.
+Extracting MNIST_data/train-images-idx3-ubyte.gz
+Successfully downloaded train-labels-idx1-ubyte.gz 28881 bytes.
+Extracting MNIST_data/train-labels-idx1-ubyte.gz
+Successfully downloaded t10k-images-idx3-ubyte.gz 1648877 bytes.
+Extracting MNIST_data/t10k-images-idx3-ubyte.gz
+Successfully downloaded t10k-labels-idx1-ubyte.gz 4542 bytes.
+Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
+```
+
 
 
 ```python
-model = CNNLogisticClassification(   shape_picture=[28,28,1],
-                                     n_labels=10,
-                                     learning_rate=0.07,
-                                     dropout_ratio=[0.2,0.1],
-                                     alpha=0.1,
-                                 )
+model = CNNLogisticClassification(
+    shape_picture=[28, 28, 1],
+    n_labels=10,
+    learning_rate=0.07,
+    dropout_ratio=[0.2, 0.1],
+    alpha=0.1,
+)
 
-train_img = np.reshape(train_data.images,[-1,28,28,1])
-valid_img = np.reshape(valid_data.images,[-1,28,28,1])
-test_img  = np.reshape(test_data.images,[-1,28,28,1])
+train_img = np.reshape(train_data.images, [-1, 28, 28, 1])
+valid_img = np.reshape(valid_data.images, [-1, 28, 28, 1])
+test_img  = np.reshape(test_data.images, [-1, 28, 28, 1])
 
-model.fit(X=train_img,
-          y=train_data.labels,
-          epochs=10,
-          validation_data=(valid_img,valid_data.labels),
-          test_data=(test_img,test_data.labels),
-          batch_size = 32,
-         )
+model.fit(
+    X=train_img,
+    y=train_data.labels,
+    epochs=10,
+    validation_data=(valid_img, valid_data.labels),
+    test_data=(test_img, test_data.labels),
+    batch_size=32,
+)
 ```
 
-    Epoch  1/10: 
-    [55000/55000] loss =   0.0781, acc = 97.52%, val_loss =   0.0785, val_acc = 97.50%
-    Epoch  2/10: 
-    [55000/55000] loss =   0.0473, acc = 98.50%, val_loss =   0.0545, val_acc = 98.38%
-    Epoch  3/10: 
-    [55000/55000] loss =   0.0446, acc = 98.57%, val_loss =   0.0526, val_acc = 98.46%
-    Epoch  4/10: 
-    [55000/55000] loss =   0.0364, acc = 98.95%, val_loss =   0.0457, val_acc = 98.64%
-    Epoch  5/10: 
-    [55000/55000] loss =   0.0306, acc = 99.05%, val_loss =   0.0400, val_acc = 98.84%
-    Epoch  6/10: 
-    [55000/55000] loss =   0.0260, acc = 99.18%, val_loss =   0.0393, val_acc = 98.90%
-    Epoch  7/10: 
-    [55000/55000] loss =   0.0220, acc = 99.34%, val_loss =   0.0390, val_acc = 98.78%
-    Epoch  8/10: 
-    [55000/55000] loss =   0.0222, acc = 99.35%, val_loss =   0.0362, val_acc = 98.90%
-    Epoch  9/10: 
-    [55000/55000] loss =   0.0183, acc = 99.43%, val_loss =   0.0326, val_acc = 99.02%
-    Epoch 10/10: 
-    [55000/55000] loss =   0.0176, acc = 99.48%, val_loss =   0.0331, val_acc = 99.04%
-    test_acc = 99.10%
+```yaml
+Epoch  1/10: 
+[55000/55000] loss =   0.0894, acc = 97.21%, val_loss =   0.0872, val_acc = 97.34%
+Epoch  2/10: 
+[55000/55000] loss =   0.0532, acc = 98.41%, val_loss =   0.0589, val_acc = 98.30%
+Epoch  3/10: 
+[55000/55000] loss =   0.0567, acc = 98.27%, val_loss =   0.0578, val_acc = 98.18%
+Epoch  4/10: 
+[55000/55000] loss =   0.0384, acc = 98.85%, val_loss =   0.0475, val_acc = 98.56%
+Epoch  5/10: 
+[55000/55000] loss =   0.0307, acc = 99.10%, val_loss =   0.0431, val_acc = 98.82%
+Epoch  6/10: 
+[55000/55000] loss =   0.0299, acc = 99.09%, val_loss =   0.0388, val_acc = 98.88%
+Epoch  7/10: 
+[55000/55000] loss =   0.0280, acc = 99.17%, val_loss =   0.0403, val_acc = 98.86%
+Epoch  8/10: 
+[55000/55000] loss =   0.0233, acc = 99.31%, val_loss =   0.0372, val_acc = 99.02%
+Epoch  9/10: 
+[55000/55000] loss =   0.0225, acc = 99.32%, val_loss =   0.0356, val_acc = 99.02%
+Epoch 10/10: 
+[55000/55000] loss =   0.0234, acc = 99.27%, val_loss =   0.0411, val_acc = 98.84%
+test_acc = 98.89%
+```
+
 
 太棒了！我們的預測效果如果跟之前的結果比較，在Epoch=3已經達到98.5%了，在Epoch=10更是高達99%！
 
@@ -499,8 +520,8 @@ model.fit(X=train_img,
 ```python
 fig, axis = plt.subplots(1, 6, figsize=(7, 0.9))
 for i in range(0,6):
-    img = model.sess.run(model.weights['conv1'])[:,:,:,i]
-    img = np.reshape(img,(5,5))
+    img = model.sess.run(model.weights['conv1'])[:, :, :, i]
+    img = np.reshape(img, (5,5))
     axis[i].imshow(img, cmap='gray')
 plt.show()
 ```
@@ -516,8 +537,8 @@ plt.show()
 fig, axis = plt.subplots(12, 8, figsize=(10, 12))
 for i in range(6):
     for j in range(16):
-        img = model.sess.run(model.weights['conv3'])[:,:,i,j]
-        img = np.reshape(img,(5,5))
+        img = model.sess.run(model.weights['conv3'])[:, :, i, j]
+        img = np.reshape(img, (5, 5))
         axis[i*2+j//8][j%8].imshow(img, cmap='gray')
 plt.show()
 ```
@@ -535,32 +556,33 @@ plt.show()
 
 ```python
 fig, axis = plt.subplots(3, 16, figsize=(16, 3))
-picture = np.reshape(test_img[0,:,:,:],(1,28,28,1))
+picture = np.reshape(test_img[0, :, :, :],(1, 28, 28, 1))
 
 with model.sess.as_default():
     conv1 = model.getConv2DLayer(picture,
-                         model.weights['conv1'],model.biases['conv1'],
+                         model.weights['conv1'], model.biases['conv1'],
                          activation=tf.nn.relu)
     pool2 = tf.nn.max_pool(conv1,
-                         ksize=[1,2,2,1],strides=[1,2,2,1],padding='VALID')
+                         ksize=[1,2,2,1], strides=[1,2,2,1], padding='VALID')
     
     conv3 = model.getConv2DLayer(pool2,
-                         model.weights['conv3'],model.biases['conv3'],
+                         model.weights['conv3'], model.biases['conv3'],
                          activation=tf.nn.relu)
     eval_conv1 = conv1.eval()
     eval_conv3 = conv3.eval()
 
-axis[0][0].imshow(np.reshape(picture,(28,28)), cmap='gray')
+axis[0][0].imshow(np.reshape(picture, (28, 28)), cmap='gray')
 for i in range(6):
-    img = eval_conv1[:,:,:,i]
-    img = np.reshape(img,(24,24))
+    img = eval_conv1[:, :, :, i]
+    img = np.reshape(img, (24, 24))
     axis[1][i].imshow(img, cmap='gray')
 for i in range(16):
-    img = eval_conv3[:,:,:,i]
-    img = np.reshape(img,(8,8))
+    img = eval_conv3[:, :, :, i]
+    img = np.reshape(img, (8, 8))
     axis[2][i].imshow(img, cmap='gray')
 plt.show()
 ```
+
 
 ![png](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA6IAAADFCAYAAABO4U/4AAAABHNCSVQICAgIfAhkiAAAAAlwSFlz%0AAAALEgAACxIB0t1+/AAAIABJREFUeJzt3X18VNWB//HPISEQEp6fCShgEAWlFILoqlVrVaSKtOXX%0AQlvrbrVUf/RBt7XV7c/60O0ubfel1pfrrlYr2tWqW2qhLUWsBVtbqRJUhKABBCE8PxpUAnk4vz9m%0Abh7vZGYyM3fmnvm+X6+8kjlzc+/5zjmZ5Obcc66x1iIiIiIiIiISlG7ZroCIiIiIiIjkF52IioiI%0AiIiISKB0IioiIiIiIiKB0omoiIiIiIiIBEonoiIiIiIiIhIonYiKiIiIiIhIoPLyRNQY83NjzD5j%0AzPoYzxtjzH3GmM3GmHXGmClB1zFVrmd0PR+4n1H5wp0P3M/oej5wP6PyhTsfuJ9R+cKdD/IjY6bk%0A5YkosAiY0cnzlwPjoh/zgf8KoE7ptgi3My7C7XzgfsZFKF+Y84H7GRfhdj5wP+MilC/M+cD9jItQ%0AvjDng/zImBEpnYgaY2YYY96OnuHfkq5KZZq19s/AoU42uQp43EasBvoZY4YHU7v0cD2j6/nA/YzK%0AF+584H5G1/OB+xmVL9z5wP2MyhfufJAfGTPFWGu79o3GFADVwCVADfAqMM9aW5W+6mWOMWY08Dtr%0A7Rk+z/0OWGitfSn6+AXgu9baNT7bzify3w1KSkqmnnbaaZmsdlKOHz/O5s2bmThxYofnNm/ezLBh%0AwygtLQWgsrKyHviHMGVMJl91dTVHjx49Yq3t337bXM0H6WlD1/NB7mZUH1UbenI1H+h9Rn00Ilfz%0Agfqo+mhEruYD99swWZWVlQestYPjbmit7dIHcA7wXKvHtwK3xvkeG+KPw/Fek6lTp9pcsnXrVjtx%0A4kTf5z75yU/av/zlL82PgVqgwoYoYzL5Pv7xj1ugyoYon7Xpb0PX89kcy6g+qjb0+8ilfNbqfUZ9%0ANLfzWas+qj6a2/msdb8NkwWssXHyWWtTujS3DNjR6nFNtKwNY8x8Y8waY0yHs/6Q2Z7tCqRTWVkZ%0AO3a0bj6KgJ1Zqk7atc9XU1MDUJ+1CmVAvrUhjudTHw0ftWH45Vs+9dHwybd86qP5JeOLFVlrH7LW%0AVlhrKzJ9rAxz6odi1qxZPP7441hrWb16NUCjtXZ3tuuVLu3z9e3bF9SGoZJv+dRHw0dtGH75lk99%0ANHzyLZ/6aH4pTOF7dwKjWj0eic7uc8a8efNYtWoVBw4cYOTIkdx5553U10d+rq+//npmzpzJsmXL%0AKC8vp1evXgDvZrXCSUo236OPPsq0adOyXOvkqA3zK5/6aO5RG+ZfG+J4PvXR3KN86qN5LZHrd/0+%0AiJzEvgOMITLE/AYwMc73ZHueZyofca91zodruV3PqHy5S300P/LZPMiofLlLfVT5cp36aH7ks3mS%0AscsjotbaBmPM14DngALg59baDV3dn4iIiIiIiOSHVC7NxVq7DFiWprqIiIiIiIhIHsj4YkUiIiIi%0AIiIirelEVERERERERAKlE1EREREREREJlE5ERUREREREJFA6ERUREREREZFApbRqbqbMmTMHgK98%0A5Svs2rULgLq6OgCeeOIJ9uzZA8DmzZuzU0ERERERERHpspw8Ef3xj38MwOjRozs899WvfpWjR48C%0AsGFD125bWlNT03yMNWvWdK2SIiIiIiIi0iW6NFdEREREREQClZMjol/5ylcAmDRpEhs3bgTg9NNP%0AB2DKlClceOGFAJx99tkA7Nixg1GjRvnuq6Ghgf379wMwfPjw5vLt27cDGhEVEREREREJmkZERURE%0AREREJFA5OSL6wgsvtPkMsHz58uav+/fvD8DkyZMBqKysZNq0ab77qquro7q6GqB5dHXAgAFs2bIl%0A/RUXERERERGRuHLyRDSew4cPA7By5crmstYnre195jOfAVpOYN98802efvrpDNZQREREREREYtGl%0AuSIiIiIiIhIo509EhwwZwgMPPMADDzxAt27d6NatG3fddReHDh3i0KFDyexqUKbqmAnLly9n/Pjx%0AlJeXs3Dhwg7PL1q0iMGDBzN58mTvEudQ5QP3M7qeD5LLCEwwxlwXeCVT4Hobup4P3M+ofOHOB+5n%0AdD0f6Hdh2NvQ9XwZZa0N7AOwQX8MGTLE7t271+7du9d6Pv3pT3dlX2vi5Zs6darNBQ0NDXbs2LF2%0Ay5Yt9vjx43bSpEl2w4YNbbZ59NFH7YIFC5ofJ5LP5kFG5QtOshnVR/Mjn82DjMoXDPXRCLVh7uaz%0AVr8LrQ13G+bD+0xXJJrR+RHRBQsWMHjwYAYPHszhw4c5fPgwr7/+erarlVGvvPIK5eXljB07lqKi%0AIubOncuSJUuyXa20cj2j6/nA/YzKF36uZ1S+8HM9o+v5wP2MyiedcfZE9Nxzz+Xcc8/llltuaS6b%0A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%0A)
 
@@ -568,29 +590,29 @@ plt.show()
 
 ```python
 fig, axis = plt.subplots(3, 16, figsize=(16, 3))
-picture = np.reshape(test_img[10,:,:,:],(1,28,28,1))
+picture = np.reshape(test_img[10, :, :, :],(1, 28, 28, 1))
 
 with model.sess.as_default():
     conv1 = model.getConv2DLayer(picture,
-                         model.weights['conv1'],model.biases['conv1'],
+                         model.weights['conv1'], model.biases['conv1'],
                          activation=tf.nn.relu)
     pool2 = tf.nn.max_pool(conv1,
-                         ksize=[1,2,2,1],strides=[1,2,2,1],padding='VALID')
+                         ksize=[1,2,2,1], strides=[1,2,2,1], padding='VALID')
     
     conv3 = model.getConv2DLayer(pool2,
-                         model.weights['conv3'],model.biases['conv3'],
+                         model.weights['conv3'], model.biases['conv3'],
                          activation=tf.nn.relu)
     eval_conv1 = conv1.eval()
     eval_conv3 = conv3.eval()
 
-axis[0][0].imshow(np.reshape(picture,(28,28)), cmap='gray')
+axis[0][0].imshow(np.reshape(picture, (28, 28)), cmap='gray')
 for i in range(6):
-    img = eval_conv1[:,:,:,i]
-    img = np.reshape(img,(24,24))
+    img = eval_conv1[:, :, :, i]
+    img = np.reshape(img, (24, 24))
     axis[1][i].imshow(img, cmap='gray')
 for i in range(16):
-    img = eval_conv3[:,:,:,i]
-    img = np.reshape(img,(8,8))
+    img = eval_conv3[:, :, :, i]
+    img = np.reshape(img, (8, 8))
     axis[2][i].imshow(img, cmap='gray')
 plt.show()
 ```
@@ -602,29 +624,29 @@ plt.show()
 
 ```python
 fig, axis = plt.subplots(3, 16, figsize=(16, 3))
-picture = np.reshape(test_img[15,:,:,:],(1,28,28,1))
+picture = np.reshape(test_img[15, :, :, :], (1, 28, 28, 1))
 
 with model.sess.as_default():
     conv1 = model.getConv2DLayer(picture,
-                         model.weights['conv1'],model.biases['conv1'],
+                         model.weights['conv1'], model.biases['conv1'],
                          activation=tf.nn.relu)
     pool2 = tf.nn.max_pool(conv1,
-                         ksize=[1,2,2,1],strides=[1,2,2,1],padding='VALID')
+                         ksize=[1,2,2,1], strides=[1,2,2,1], padding='VALID')
     
     conv3 = model.getConv2DLayer(pool2,
-                         model.weights['conv3'],model.biases['conv3'],
+                         model.weights['conv3'], model.biases['conv3'],
                          activation=tf.nn.relu)
     eval_conv1 = conv1.eval()
     eval_conv3 = conv3.eval()
 
-axis[0][0].imshow(np.reshape(picture,(28,28)), cmap='gray')
+axis[0][0].imshow(np.reshape(picture, (28, 28)), cmap='gray')
 for i in range(6):
-    img = eval_conv1[:,:,:,i]
-    img = np.reshape(img,(24,24))
+    img = eval_conv1[:, :, :, i]
+    img = np.reshape(img, (24, 24))
     axis[1][i].imshow(img, cmap='gray')
 for i in range(16):
-    img = eval_conv3[:,:,:,i]
-    img = np.reshape(img,(8,8))
+    img = eval_conv3[:, :, :, i]
+    img = np.reshape(img, (8, 8))
     axis[2][i].imshow(img, cmap='gray')
 plt.show()
 ```

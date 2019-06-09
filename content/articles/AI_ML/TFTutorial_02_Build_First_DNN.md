@@ -8,52 +8,63 @@ Illustration: tensorflow-logo.jpg
 Alias: /YCNote/post/39.html
 related_posts: ml-course-techniques_6,tensorflow-tutorial_1,tensorflow-tutorial_3,tensorflow-tutorial_4,tensorflow-tutorial_5
 
-
-接續著[上一回](http://www.ycc.idv.tw/tensorflow-tutorial_1.html)，我們已經有一個單層的Neurel Network，緊接著我們來試著一步一步改造它，讓它成為我們常使用的Deep Neurel Network的形式。
+接續著[上一回](http://www.ycc.idv.tw/YCNote/post/38)，我們已經有一個單層的Neurel Network，緊接著我們來試著一步一步改造它，讓它成為我們常使用的Deep Neurel Network的形式。
 
 本單元程式碼可於[Github](https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py)下載。
 
-<br/>
+
+```python
+import random
+
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
+tf.logging.set_verbosity(tf.logging.ERROR)
+
+# Config the matplotlib backend as plotting inline in IPython
+%matplotlib inline
+```
 
 ### 增加Hidden Layer
 
-在上一回當中，我們只有一層Neurel Network，也就是做完一個線性轉換後，就直接使用Softmax Layer來轉換成機率表示方式，這樣的結構並不夠powerful，我們需要把它的結構弄的又窄又深，這樣效果才會好，詳細原因請參考[這一篇的介紹](http://www.ycc.idv.tw/ml-course-techniques_6.html)。
+在上一回當中，我們只有一層Neurel Network，也就是做完一個線性轉換後，就直接使用Softmax Layer來轉換成機率表示方式，這樣的結構並不夠powerful，我們需要把它的結構弄的又窄又深，這樣效果才會好，詳細原因請參考[這一篇的介紹](http://www.ycc.idv.tw/YCNote/post/35)。
 
 因此，我們來試著加入一層Hidden Layer，來打造成兩層的Neurel Network，並在兩層之間加入Activation Function，為我的Model增加非線性因子。
 
 
 ```python
-    def structure(self,features,labels,n_hidden,activation):
-        # build neurel network structure and return their predictions and loss
-        ### Variable
-        if (not self.weights) or (not self.biases):
-            self.weights = {
-                'fc1': tf.Variable(tf.truncated_normal( shape=(self.n_features,n_hidden) )),
-                'fc2': tf.Variable(tf.truncated_normal( shape=(n_hidden,self.n_labels) )),
-            }
-            self.biases  = {
-                'fc1': tf.Variable(tf.zeros( shape=(n_hidden) )),
-                'fc2': tf.Variable(tf.zeros( shape=(self.n_labels) )),
-            } 
-        ### Structure
-        # layer 1
-        fc1 = self.getDenseLayer(features,self.weights['fc1'],
-                                 self.biases['fc1'], activation=activation)
-            
-        # layer 2
-        logits = self.getDenseLayer(fc1,self.weights['fc2'],self.biases['fc2'])
-        
-        y_ = tf.nn.softmax(logits)
+def structure(self, features, labels, n_hidden, activation, dropout_ratio=0, train=False):
+    # build neurel network structure and return their predictions and loss
+    ### Variable
+    if (not self.weights) or (not self.biases):
+        self.weights = {
+            'fc1': tf.Variable(tf.truncated_normal(shape=(self.n_features, n_hidden))),
+            'fc2': tf.Variable(tf.truncated_normal(shape=(n_hidden, self.n_labels))),
+        }
+        self.biases = {
+            'fc1': tf.Variable(tf.zeros(shape=(n_hidden))),
+            'fc2': tf.Variable(tf.zeros(shape=(self.n_labels))),
+        }
+    ### Structure
+    # layer 1
+    fc1 = self.getDenseLayer(features, self.weights['fc1'],
+                                       self.biases['fc1'], activation=activation)
+    if train:
+        fc1 = tf.nn.dropout(fc1, keep_prob=1-dropout_ratio)
 
-        loss = tf.reduce_mean(
-                 tf.nn.softmax_cross_entropy_with_logits(labels=labels,logits=logits))
+    # layer 2
+    logits = self.getDenseLayer(fc1, self.weights['fc2'], self.biases['fc2'])
 
-        return (y_,loss)
+    y_ = tf.nn.softmax(logits)
+
+    loss = tf.reduce_mean(
+                tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits))
+
+    return (y_, loss)
 ```
 
 首先在變數需要有二層的fully-connect參數，注意這些參數的大小，受到Hidden Layer的神經元數目`n_hidden`決定。接下來開始建構整個Neurel Network的結構，`fc1`產生一個fully-connect的結果，並且通過Activation Function再輸出，然後進到下一層，第二層直接使用`fc1`的結果當作新的輸入，再做一次fully-connect，並且讓它通過Softmax Layer來完成最後的Logistic轉換，它的loss一樣的是使用cross-entropy來評估。
-
-<br/>
 
 ### Activation Function的選擇
 
@@ -61,28 +72,26 @@ related_posts: ml-course-techniques_6,tensorflow-tutorial_1,tensorflow-tutorial_
 
 
 ```python
-import numpy as np
-import tensorflow as tf
-import matplotlib.pyplot as plt
-```
-
-
-```python
 with tf.Session() as sess:
-    x = np.linspace(-3,3)
+    x = np.linspace(-3, 3)
     tanh = tf.nn.tanh(x).eval()
     sigmoid = tf.nn.sigmoid(x).eval()
     relu = tf.nn.relu(x).eval()
     
-    plt.plot(x,tanh,'g',x,sigmoid,'b',x,relu,'r')
-    plt.legend(('tanh', 'sigmoid', 'relu'))
+    plt.plot(x,tanh, 'g', x,sigmoid, 'b', x,relu, 'r')
+    plt.legend(('tanh',  'sigmoid',  'relu'))
     plt.show()
 ```
 
 
 ![png](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAX8AAAD8CAYAAACfF6SlAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz%0AAAALEgAACxIB0t1+/AAAIABJREFUeJzt3Xd8FVX+//HXJ8kloYQAoZckIEWaBAhIFQREBAREUVkV%0AERXL2r+rsK6LXbH87AVZcC0roIgiq6AUKRFB2oIiTVBKkBogIZCE3Nzz++MEkkBouTeZWz7Px2Me%0AMzd3cuczEd+ZnDlzjhhjUEopFVrCnC5AKaVU6dPwV0qpEKThr5RSIUjDXymlQpCGv1JKhSANf6WU%0ACkEa/kopFYI0/JVSKgRp+CulVAiKcLqA06latapJSEhwugyllAooK1eu3G+MqXa2/fw2/BMSElix%0AYoXTZSilVEARkW3nsp82+yilVAjS8FdKqRCk4a+UUiHIb9v8i5KTk0NKSgpZWVlOl+L3oqKiqFu3%0ALi6Xy+lSlFJ+KKDCPyUlhejoaBISEhARp8vxW8YYUlNTSUlJoX79+k6Xo5TyQ143+4hIlIgsE5E1%0AIvKriDxZxD6RIvKpiGwWkZ9EJKE4x8rKyiI2NlaD/yxEhNjYWP0LSSl1Wr5o888GehhjWgGJQB8R%0A6XDSPrcCB40xDYFXgReKezAN/nOjPyel1Jl4Hf7Gysh76cpbTp4bciDwYd7250BP0XRSSqlTffUV%0AfPxxiR/GJ719RCRcRFYDe4E5xpifTtqlDrADwBjjBtKA2CI+Z6SIrBCRFfv27fNFaT536NAh3nnn%0AnWJ/f/fu3fXhNaVU0T7/HK65BsaNg9zcEj2UT8LfGJNrjEkE6gLtRaRFMT9nvDEmyRiTVK3aWZ9O%0AdoS34a+UUkWaNAmuvx4uvhhmzYLw8BI9nE/7+RtjDgHzgT4nvbUTqAcgIhFADJDqy2OXltGjR7Nl%0AyxYSExN58MEH6dmzJ23atKFly5Z89dVXAGzdupWmTZty++2307x5c3r37k1mZuaJz5g6dSrt27en%0AcePGJCcnO3UqSil/8eGHcNNN0KULfPstVKxY4of0uquniFQDcowxh0SkLHAZp97QnQHcDCwBrgG+%0AN8acfF/gvDzw7QOs3r3am484RWLNRF7r89oZ9xk7dixr165l9erVuN1ujh49SsWKFdm/fz8dOnRg%0AwIABAPz2229MnjyZf/3rX1x77bVMmzaNG2+8EQC3282yZcuYOXMmTz75JHPnzvXpeSilAsiECTBy%0AJPTsadv7y5UrlcP6op9/LeBDEQnH/iXxmTHmaxF5ClhhjJkBTAQ+FpHNwAHgeh8c13HGGB599FEW%0ALVpEWFgYO3fuZM+ePQDUr1+fxMREANq2bcvWrVtPfN/gwYOL/LpSKsS88w789a9wxRXwxRcQFVVq%0Ah/Y6/I0xPwOti/j6mALbWcAQb49V0Nmu0EvDJ598wr59+1i5ciUul4uEhIQTfesjIyNP7BceHl6o%0A2ef4e+Hh4bjd7tItWinlH157DR58EAYMgM8+gwKZURp0bJ/zFB0dzeHDhwFIS0ujevXquFwu5s+f%0Az7Zt5zSSqlIq1L34og3+q6+GqVNLPfghwIZ38AexsbF07tyZFi1a0K5dOzZs2EDLli1JSkriwgsv%0AdLo8pZS/e/ppGDMGhg6Fjz6CCGdiWLy871pikpKSzMn94devX0/Tpk0dqijw6M9LKT9ijA39Z56x%0APXv+/e8S6c4pIiuNMUln20+bfZRSqqQZA6NH2+C/9dYSC/7zoc0+SilVkoyBhx6yN3jvugveegvC%0AnL/udr4CpZQKVh4P3HuvDf7774e33/aL4Ae98ldKqZLh8cAdd9iHuB5+GF54AfxoPEv/+BWklFLB%0AJDcXRoywwf+Pf/hd8INe+SullG+53TBsGEyeDE89Bf/8p9MVFUmv/H3gtttuY926dSV6jL59+3Lo%0A0KFTvv7EE0/w8ssvl+ixlVLnKCfH9t+fPBmef95vgx/0yt8nJkyYUOLHmDlzZokfQynlhexsuO46%0AOzjbK6/YJ3j9mF75n6cjR47Qr18/WrVqRYsWLfj0008LTdAyceJEGjduTPv27bn99tu55557ABg+%0AfDh33XUXHTp0oEGDBixYsIARI0bQtGlThg8ffuLzJ0+eTMuWLWnRogWjRo068fWEhAT2798PwLPP%0APkvjxo3p0qULGzduLL2TV0oVLSsLBg+2wf/WW34f/BDAV/4PPACrfTuiM4mJtkfWmXz77bfUrl2b%0Ab775BrDj+7z77rsA/Pnnnzz99NOsWrWK6OhoevToQatWrU5878GDB1myZAkzZsxgwIABLF68mAkT%0AJtCuXTtWr15N9erVGTVqFCtXrqRy5cr07t2b6dOnM2jQoBOfsXLlSqZMmXJiSOk2bdrQtm1b3/4g%0AlFLn7uhRGDQI5s6F996zwzMHAL3yP08tW7Zkzpw5jBo1iuTkZGJiYk68t2zZMrp160aVKlVwuVwM%0AGVJ4INMrr7wSEaFly5bUqFGDli1bEhYWRvPmzdm6dSvLly+ne/fuVKtWjYiICG644QYWLVpU6DOS%0Ak5O56qqrKFeuHBUrVjwxf4BSygEZGdCvnw3+998PmOCHAL7yP9sVeklp3Lgxq1atYubMmTz22GP0%0A7NnznL/3+FDOYWFhhYZ8DgsLw+1243K5fF6vUqqEpKdD376wZImdcP2GG5yu6Lx4feUvIvVEZL6I%0ArBORX0Xk/iL26S4iaSKyOm8ZU9RnBYI///yTcuXKceONN/Lwww+zatWqE++1a9eOhQsXcvDgQdxu%0AN9OmTTuvz27fvj0LFy5k//795ObmMnnyZLp161Zon0suuYTp06eTmZnJ4cOH+e9//+uT81JKnYdD%0Ah+Dyy2HpUpgyJeCCH3xz5e8G/s8Ys0pEooGVIjLHGHNy38dkY0x/HxzPUb/88gsPP/wwYWFhuFwu%0A3n33Xf72t78BUKdOHR599FHat29PlSpVuPDCCws1C51NrVq1GDt2LJdeeinGGPr168fAgQML7dOm%0ATRuuu+46WrVqRfXq1WnXrp1Pz08pdRYHDkDv3vDzz/D557a9PwD5fEhnEfkKeMsYM6fA17oDfzuf%0A8A/UIZ0zMjKoUKECbrebq666ihEjRnDVVVc5Uksg/LyUCij790OvXrB+vZ12sV8/pys6hSNDOotI%0AAnZKx5+KeLujiKwRkVki0tyXx/UnTzzxBImJibRo0YL69esX6qmjlApge/bApZfCxo0wY4ZfBv/5%0A8NkNXxGpAEwDHjDGpJ/09iog3hiTISJ9gelAoyI+YyQwEiAuLs5XpZUqfdpWqSD055/Qsyds3w7f%0AfAM9ejhdkdd8cuUvIi5s8H9ijPni5PeNMenGmIy87ZmAS0SqFrHfeGNMkjEmqVq1ar4oTSmlvLNj%0AB3TrBikp8O23QRH84JvePgJMBNYbY145zT418/ZDRNrnHTfV22MrpVSJ2rrVBv/evTB7NnTt6nRF%0APuOLZp/OwE3ALyJy/JnbR4E4AGPMOOAa4C4RcQOZwPXGXycPVkopgC1b7FV+erp9iCvIetZ5Hf7G%0AmB+AMw5UbYx5C3jL22MppVSp2LjRBn92Nnz/PbRu7XRFPqfDO5SQgoO9KaUCyLp1tqnH7Yb584My%0A+EHD3yvGGDwej9NlKKV85eefoXt3O+vWggXQsqXTFZUYDf/ztHXrVpo0acKwYcNo0aIFH3/8MR07%0AdqRNmzYMGTKEjIyMU76nQoUKJ7Y///zzQkM4K6X8xKpVth9/mTKwcCEE+QOSATuwm2NjOgO//fYb%0AH374IQ0bNmTw4MHMnTuX8uXL88ILL/DKK68wZkzADl2kVGhatsyO1VOxom3qadDA6YpKXOCGv4Pi%0A4+Pp0KEDX3/9NevWraNz584AHDt2jI4dOzpcnVLqvPz4I/TpA9Wq2Zu78fFOV1QqAjf8nRrTGShf%0Avjxg2/wvu+wyJk+efMb98x5xACArK6tEa1NKnYdFi+ywzLVr2+CvW9fpikqNtvl7oUOHDixevJjN%0AmzcDdorHTZs2nbJfjRo1WL9+PR6Phy+//LK0y1RKFWXePHvFHxdn2/hDKPhBw98r1apV44MPPmDo%0A0KFcdNFFdOzYkQ0bNpyy39ixY+nfvz+dOnWiVq1aDlSqlCrk22+hf39o2ND26gnB/y99PqSzrwTq%0AkM7+RH9eShXhv/+Fa66BZs1gzhyoesowYwHNkSGdlVLKr33xBQweDBddZJt9giz4z4eGv1IqNHz6%0AKVx7rR2jZ+5cqFLF6YocFXDh76/NVP5Gf05KFfCf/8Bf/gKdOsF338F5TK8arAIq/KOiokhNTdVg%0AOwtjDKmpqURFRTldilLO+/e/YdgwO17PrFkQHe10RX4hoPr5161bl5SUFPbt2+d0KX4vKiqKuiHW%0AdU2pU7z3Htx5p51w/csvoVw5pyvyGwEV/i6Xi/r16ztdhlIqELz5Jtx3n51r9/PPQf8SLiSgmn2U%0AUuqc/L//Z4N/0CDbw0eD/xS+mMaxnojMF5F1IvKriNxfxD4iIm+IyGYR+VlE2nh7XKWUKtLzz8Pf%0A/gZDhsBnn9lROtUpfHHl7wb+zxjTDOgA/FVEmp20zxVAo7xlJPCuD46rlFL5jIEnn4RHH7U9eyZN%0AApfL6ar8ltfhb4zZZYxZlbd9GFgP1Dlpt4HAR8ZaClQSkdB7nlopVTKMgccegyeegOHD4aOPICKg%0AbmmWOp+2+YtIAtAa+Omkt+oAOwq8TuHUXxBKKXX+jIFHHoHnnoPbb4eJEyE83Omq/J7Pwl9EKgDT%0AgAeMMenF/IyRIrJCRFZod06l1FkZYyd2evll+OtfYdw4CNN+LOfCJz8lEXFhg/8TY8wXReyyE6hX%0A4HXdvK8VYowZb4xJMsYkVatWzRelKaWClccDd98Nb7wBDz5ou3Zq8J8zX/T2EWAisN4Y88ppdpsB%0ADMvr9dMBSDPG7PL22EqpEJWba5t4xo2D0aNt184Ckyaps/PFHZHOwE3ALyJyfFLdR4E4AGPMOGAm%0A0BfYDBwFbvHBcZVSocjthltuseP1jBljb/Jq8J83r8PfGPMDcMafvLGD8fzV22MppUJcTo4dp2fK%0AFHjmGfjHP5yuKGBpXyilVGA4dgyGDrVP7L74Ijz8sNMVBTQNf6WU/8vOtk/s/ve/8NprcP8pAwmo%0A86Thr5Tyb5mZdvatb7+Fd96Bu+5yuqKgoOGvlPJfR4/CgAHw/fcwYQLceqvTFQUNDX+llH/KyID+%0A/SE5GT74wN7oVT6j4a+U8j/p6dC3Lyxdart0Dh3qdEVBR8NfKeVfDh6EPn1g1SrbpfOaa5yuKChp%0A+Cul/Edqqp1y8ZdfYNo0296vSoSGv1LKP+zdC5ddBhs3wvTpttlHlRgNf6WU83btgl694I8/bF/+%0Ayy5zuqKgp+GvlHLWzp3Qo4ddz5wJ3bs7XVFI0PBXSjln+3Yb/Hv32oe4unRxuqKQoeGvlHLGH3/A%0ApZfCoUMwezZ06OB0RSFFw18pVfp++81e8R85AvPmQdu2TlcUcjT8lVKla8MGG/w5OTB/PrRq5XRF%0AIUnnPFNKlZ61a6FbNzsFowa/o3w1h+/7IrJXRNae5v3uIpImIqvzljG+OK5SKoCsWWPb+MPDYcEC%0AaNHC6YpCmq+afT4A3gI+OsM+ycaY/j46nlIqkKxcafvuV6hgR+hs2NDpikKeT678jTGLgAO++Cyl%0AVJBZuhR69oSYGFi4UIPfT5Rmm39HEVkjIrNEpHlRO4jISBFZISIr9u3bV4qlKaVKxA8/2LF6qla1%0AwV+/vtMVqTylFf6rgHhjTCvgTWB6UTsZY8YbY5KMMUnVqlUrpdKUUiViwQI7Omft2jb44+KcrkgV%0AUCrhb4xJN8Zk5G3PBFwiUrU0jq2UcsCcOXZgtvh4+0ugTh2nK1InKZXwF5GaIiJ52+3zjptaGsdW%0ASpWyWbPgyiuhUSMb/DVrOl2RKoJPevuIyGSgO1BVRFKAxwEXgDFmHHANcJeIuIFM4HpjjPHFsZVS%0AfmTGDBgyxHbjnD0bYmOdrkidhk/C3xhzxjnWjDFvYbuCKqWC1bRpcP310KaNHaStcmWnK1JnoE/4%0AKqW8N3kyXHcdtG9v2/s1+P2ehr9SyjsffQQ33gidO8N330HFik5XpM6Bhr9SqvgmToThw+2wDTNn%0A2id4VUDQ8FdKFc+778Jtt8Hll9upF8uXd7oidR40/JVS5+/11+Huu22XzunToWxZpytS50nDXyl1%0Afl56CR54AAYPhs8/h8hIpytSxaDhr5Q6d88+C488Yrt0TpkCZco4XZEqJg1/pdTZGQOPPw6PPQY3%0A3QQffwwul9NVKS/oNI5KqTMzBh59FMaOhREjYPx4OyGLCmga/kqp0zMG/u//4NVX4c474e23IUwb%0ADIKB/ldUShXN44H77rPBf9998M47GvxBRK/8lVKn8njslf6//mWv/F96CezAvCpI6K9xpVRhublw%0A6602+B99VIM/SOmVv1Iqn9sNN98MkybBk0/CP/+pwR+kNPyVUlZODtxwA0ydCs89B3//u9MVqRKk%0A4a+UgmPH7JDM06fDyy/bdn4V1HzS5i8i74vIXhFZe5r3RUTeEJHNIvKziLTxxXGVUj6QlWWHapg+%0AHd54Q4M/RPjqhu8HQJ8zvH8F0ChvGQm866PjKqW8kZkJAwfCN9/AuHFw771OV6RKia+mcVwkIgln%0A2GUg8FHevL1LRaSSiNQyxuzyxfGVUsVw5IgdlXPBAnj/fbjlFqcrCkjGGNweN8dyj5HjycHtcZOT%0Am7fOe+32uMn15OZvm9wTX8s1uSfWHuMh15NLTFQMl8RfUqJ1l1abfx1gR4HXKXlfKxT+IjIS+5cB%0AcXFxpVSaUiHo8GHo1w8WL86fiSvIZLmzSMtKIy07jfTsdDKOZRS5HM05SmZOpl27M8l02+0sdxbZ%0A7my7zs0+sX0s91ihJceT4/PaL65zMUtvW+rzzy3Ir274GmPGA+MBkpKSjMPlKBWc0tLgiitg2TLb%0ApfO665yu6KwyczLZnbGbXRm72J2xm71H9pJ6NJXUzFT2H91PamYqqUdTOZB5gLTsNNKy0sjOzT6n%0Azw6XcMq5ylHWVdauI8pS1lWWshFliYyIJCYqhsjwSKIiooiMiKRMWBm7Di9DmfAyuMJcdh3uwhXm%0AwhXuIiIsAleYXRdcwsPC87clnPCwcMIIx33MRfbRvCXTRXRUuRL+iZZe+O8E6hV4XTfva0qp0nTw%0AIPTuDWvW2C6dV13ldEVk5mSyPW37iWVb2rYT2zsP72R3xm7Ss9OL/N7yrvJULVeV2HKxxJaNJaFS%0AApWiKhETGUNMVAwxkTFUiqpExciKREdGU6FMBSqUqUB5V3m7LlOeMuHFG5baGNtyduiQ/bEeOgRp%0AB+3v1rQ02Jeev334MKSn23XB7YwMu5iTLnU7dID+S4pV1jkrrfCfAdwjIlOAi4E0be9XqpTt3w+X%0AXQbr1sG0aba9v5R4jIdth7axMXUjm1I3sXH/RjYd2MSm1E1sT9teaN8wCaNOdB3iYuJoXbM1NSvU%0APGWpXr46sWVjiYzwzUQymZn2x7Nvn13v3w+pqXY5cMAuBbcPHbKL233mz3W57Hz2MTEQHW2X6tXh%0AggvyX1eocOpSs6ZPTuuMfBL+IjIZ6A5UFZEU4HHABWCMGQfMBPoCm4GjgN5ZUqo07d0LvXrBpk3w%0A1VfQ50yd87yTmZPJr/t+ZfXu1azevZo1e9awZvcaDh87fGKfmMgYmlRtwiXxl9CoSiPqV6pPfKV4%0A4mPiqR1dG1e4d3MFGGOvuHftssvu3fZHsGePXRfc3rcPjh49/WdVqgRVqtglNhYaNIDKle3XC65j%0AYux2TEx+4EdF+e8D0r7q7TP0LO8b4K++OJZS6jzt2gU9e8LWrbZLZ8+ePv34lPQUFm9fzOIdi/lh%0A+w/8vOdnck0uANFlomlVsxU3t7qZi2pcRNNqTWkc25hq5aohxUzFzExISYGdO4tedu+2S1bWqd/r%0Actkr7+rVoUYNuPBCu121av5SrZpdV6liQz3Cr+6M+k6QnpZSCrAp2aMH/PknzJoF3bp5/ZE703cy%0Aa/MsFmxdwA/bf2Bb2jYAyrnK0aFuB0Z3GU3rmq1JrJlI/cr1CZNzf5zIGNvk8scf9nfVtm2wYwds%0A356/3r//1O+LjoY6dezSpQvUqmWbTmrVyt+uUcNemfvrlXhp0/BXKlht22aDf98+mD0bOnUq1sfk%0A5Obw444fmfnbTGZtnsUve38BoFaFWnSJ68KDHR6kc1xnWtVodU7NNZmZ8PvvsGVL/nI87LduPbUJ%0ApmJFiIuDevWgXTu7rlcvP+zr1LHhr86Phr9Swej33+HSS223krlzoX378/r2LHcWs36bxeS1k/lu%0Ay3ekZ6fjCnPRJa4LL/Z6kb6N+tKsWrPTNt1kZ9tQ37Sp8LJli/0jpKCKFW07euPGcPnlkJBgl/r1%0AbejHxBTvR6DOTMNfqWCzaZO94s/MhHnzoM25DaXl9riZ/8d8Jq+dzLT100jPTqd6+epc1/w6+jbq%0AS8/6PYmOLHyJnZoK69cXXjZutH90eDz5+9WoAY0a2c5GF1xQeImN1aYYJ2j4KxVM1q+3we92w/z5%0AcNFFZ/+Wfet5b+V7TFk7hT1H9lAxsiKDmw5maIuh9Kjfg4iwCA4ehDXLYe1a+PXX/PW+ffmfExUF%0ATZrAxRfDsGH2Sr5xYxv6evXufzT8lQoWv/xie/KEhcHChdCs2Wl3zfXk8vWmr3lz2ZvM+2MeZcLL%0AcGXjK7n2whu4wNOXDb9GMm88vLLGBv3OAo9kRkdD8+b2MYFmzaBpU7vEx+sUv4FEw1+pYPC//9k2%0AlchI+P57ewlehP1H9zNx1UTeXfEu2/amUv1wb/qHzabCga5s/CKKm361Q/sDlCljw71nTxv2LVrY%0ApV49baYJBhr+SgW65cvtkA0VK9rgv+CCU3ZZv2MXj/7nc75euBt3SkvKpiYje+qy1whfY/u6t25t%0AnwNr1couTZrYfvEqOGn4KxXIliyxT+vGxtrgT0jgyBFYtQpWrIDkJZnM//Ewh3bWAuxY/bXrHePi%0AjmVo3dreC27TxvaFV6FFw1+pQJWcjOnbl2OxtfjiznnMf64eP/1k2+iP97SRiqmYOstp093DfVd1%0Aon/3WsTGFm8gMxVcNPyVCiD79sHSpbBn8vfc8OmVbDdxXJoxj12jalO5MrRtl0vnVsks402O1VjC%0ATZ0v45+X/JOGVRo6XbryMxr+Svmp3FzbnXLxYtu6s2QJbN4MvfmO6QxiZ9mGfDh0Li9eWoN27Qxr%0Ac7/kodkPsj1tO9c1v46nLl1A49jGTp+G8lMa/kr5iYwM+OknG/aLF9sr/PS8Yexr1ICOHWFsl6+5%0A6pOroWkzGs6bw3NVq7Jh/wbunXUfc36fQ8vqLVlw8wK6JXg/ho8Kbhr+Sjlk924b8snJ8MMPsHq1%0AvdoXsV0q//IX6NzZDslTvz7IV9Ph2mvtg1uzZ3O4vIun5zzCq0tfpbyrPG/0eYO72t1FRJj+b63O%0ATv+VKFUKjLHj2iQn5y+bN9v3ypa1T8X+/e92RMqLL7ajTxYydar9bZCUBLNm8f3BVdzy0S1sT9vO%0AiMQRPN/reaqXr17q56UCl68mc+kDvA6EAxOMMWNPen848BL5Uze+ZYyZ4ItjK+WPPB7bXr9okQ36%0ARYvssPpge2V26QJ33GHXbdrYB6pOa9IkuOkm6NSJo9On8vclj/PGsjdoHNuYxSMW06le8UbrVKHN%0A6/AXkXDgbeAyIAVYLiIzjDHrTtr1U2PMPd4eTyl/5Hbbh2wXLcoP/IMH7Xt169oBNrt2hUsusROI%0AnPMwCB98ACNGQLduLB83hhsnd2NT6ibubX8vY3uNpZyr5Cf6VsHJF1f+7YHNxpjfAfLm6R0InBz+%0ASgWN7Gz7YO3xsF+82N6wBTuQ2eDBNuy7dbNj3hRrOITx4+GOO/D06skzDybx5Ke9qBNdh7k3zaVn%0AA9/OxqVCjy/Cvw6wo8DrFOwk7Se7WkQuATYBDxpjdhSxj1J+6cgR2/tm0SI7ZtrSpfYXANhxb4YN%0As0HftauPnpZ9+2245x6OXtadngNTWbr8BYYnDue1y18jJkqHyFTeK60bvv8FJhtjskXkDuBDoMfJ%0AO4nISGAkQFxcXCmVptSp0tLs1fzxK/vly23TTliYHQPn7rttE07XrrYN36defRUeeojdPS+mVbf/%0AkZMRxpfXfcmgCwf5+EAqlPki/HcC9Qq8rkv+jV0AjDGpBV5OAF4s6oOMMeOB8QBJSUnGB7UpdU72%0A7bPdLY+H/erV9qZtRISdOvChh+yVfefOJTw2/QsvwOjRrL3kQlp3+omLqrXh8yGfU79y/RI8qApF%0Avgj/5UAjEamPDf3rgb8U3EFEahlj8vo6MABY74PjKlVs27cX7omzYYP9elSUfZjqn/+0V/YdOkC5%0A0rqn+vTTMGYM8zrW4PJuG7gl6Tbe7PsmURFRpVSACiVeh78xxi0i9wDfYbt6vm+M+VVEngJWGGNm%0AAPeJyADADRwAhnt7XKXOlccD69blP0yVnAw78u44xcTYq/nhw20TTtu2dkj8UmUMjBkDzzzD1KRy%0ADL/iEOP7T2RE6xGlXIgKJWKMf7auJCUlmRUrVjhdhgpAmZl2OOPFi23YL14Mhw7Z92rWtCHfpYu9%0Asm/ZEsLDHSzWGBg9Gl58kYltheduiOfz67+gda3WDhalApmIrDTGJJ1tP33CVwW83bvhxx/zx8RZ%0AtQpycux7TZrANdfYsO/aNW+YBH+ZhcoYzAMPIG+8wdvt4Ku/9mDFtVOpXLay05WpEKDhrwJKTg6s%0AWZM/yuWSJbB1q30vMjL/5mznzrbtvmpVR8s9PY8H9913EvHev3i1A6z/+2180+8dXOE6dZYqHRr+%0Aym8ZY2/MLltmR7tctsw252Rm2vfr1LEBf++9dvCzsw6T4C88HjJvHUbZDz7hxc4Q9sKLvNfpb4jf%0A/EmiQoGGv/IbBw7YcF++PD/w9+yx70VG2v71d9xhA79jRzuReMDJzeXQDVdT6dOveL57BE3ensLg%0AZlc7XZUKQRr+yhFpaXYsnONhv2IF/P57/vtNmsDll0P79naUy4suCpCr+jNxu9l9dR9qzpjHi5dX%0AoNfE72lI469ZAAARxUlEQVRXp53TVakQpeGvStzevTboV63KX2/Zkv9+QoIdqXjkSLtu27aIIY0D%0AXU4OKf27UXf2El4ZWJ3rP1xOXIw+xa6co+GvfMbtho0b4eef7U3Z48vxoYwBGjSwbfMjRth127ZQ%0ArZpzNZeK7Gy2Xt6BhIWref3aeIZ/sIoqZas4XZUKcRr+6rwZYx+SWru28LJuXf5gZy4XNGsGl10G%0ArVrZoE9MDMIr+rMwmZls6dGahks38s7Nzbht/DLKlynvdFlKafir08vNtd0o168vvPz6Kxw+nL9f%0AnTp2ZMt777VBf9FFdsz6gG+j95LnSAa/XdKCRqu2MeHO9tz+1g/alVP5DQ1/RWoqbNpUeNm40a6P%0AX8mDnUS8aVM7fHGLFnZp3hwq6zNJp8hJO8jmLk1psnYPkx7qxYiXvyNMznUGF6VKnoZ/CDDGPgW7%0AZUv+snlz/vrAgfx9w8Ntu3zjxra3TdOm9iq+aVMN+XOVdWAvWzo1pcmmA3z12DXc8NRn2odf+R0N%0A/yDg8dgeNdu322aagssff8C2bfkPRoEdkz4+Hi64AIYMsd0qGze2S0KCba9XxXN0359s7dSMxr+n%0AMffZEVz194lOl6RUkTT8/dzxYN+5s/Cyfbu96Xp8fXwsm+OqVLHj2DRvDv362e0LLrBLfLy2x5eE%0Aw7u2sbNTCxpuz2DRy/fS58E3nC5JqdPS8HfI0aM21Pfsscvu3bZL5K5dhbd37bJdKAsKD7c3WePi%0A7ANQQ4bY7Xr17JV7fDxUrOjIaYWsQzs2s7dTKxJ2H+XHNx+m591FzleklN/Q8PeB3Fw7ZPCBA/bm%0A6f79hZd9++x679785fhk3yerWtXOAVuzpm1rr1Mnf6lb166rV3d4GGJVyP7ff+VQ1yTq7c1i5bjH%0A6X7rE06XpNRZafhjm1YOH4b0dDvswMnLoUNw8KBdH98+vqSm5o8VXxSXyz7EVLWqXXfoYMO7Rg27%0APr5dq5bd1uaYwLJn0//IuKQDtQ4cY+37Y+l80yinS1LqnPgk/EWkD/A6diavCcaYsSe9Hwl8BLQF%0AUoHrjDFbfXHskx05Ah99ZK+si1oOH85f0tPt+nRX4QW5XLa3y/GlalV7gzQ21ravF1yqVs1foqP9%0AaPx45Tvp6aS9/CxlXnmZ6jkeNv3nddpde5/TVSl1zrwOfxEJB94GLgNSgOUiMsMYs67AbrcCB40x%0ADUXkeuAF4Dpvj12UzEy4++781+XLQ4UK+Ut0tL0Cb9DAblesaNfR0XZKv5OXihVt2JctqyGusH/u%0Avf46ua+9SkxaOrMbR1D9jfdpffnNTlem1HnxxZV/e2CzMeZ3ABGZAgwECob/QOCJvO3PgbdEREwJ%0AzCFZpZKH3evTKF/eTrwd5ovnarLzFhW6MjLg3Xfhrbfg8GHmtCzL2G4VeGn09yTqyJwqAPki/OsA%0AOwq8TgEuPt0+eRO+pwGxwH4fHL+QsIOp1Gha3dcfqxSIkD6gD4MbrmB1dQ9zh80lsWai01UpVSx+%0AdcNXREYCIwHi4oo53G358vDaaz6sSikgLIzf2iTQdcntGIQFwxbQonoLp6tSqth8Ef47gYJzKtXN%0A+1pR+6SISAQQg73xW4gxZjwwHiApKal4TULlysH99xfrW5U6nTW719Dr4164wlzMGzaPptWaOl2S%0AUl7xRYv4cqCRiNQXkTLA9cCMk/aZARy/I3YN8H1JtPcrVRJW/LmCHh/1ICoiioXDF2rwq6Dg9ZV/%0AXhv+PcB32K6e7xtjfhWRp4AVxpgZwETgYxHZDBzA/oJQyu8t3r6YvpP6UqVsFeYNm0eDyg2cLkkp%0An/BJm78xZiYw86SvjSmwnQUM8cWxlCot3//xPVdOvpK6Fesyb9g86las63RJSvmMDjCuVBFm/jaT%0Avp/0pUHlBiwcvlCDXwUdDX+lTvLF+i8YNGUQzas3Z8HNC6hZoabTJSnlcxr+ShUw6ZdJXDv1WpJq%0AJzFv2Dxiy8U6XZJSJULDX6k841aM48YvbqRrfFdm3zSbSlEhNtu8Cika/irkGWN4euHT3PXNXfRt%0A1JeZf5lJhTIVnC5LqRLlV0/4KlXaPMbDA98+wJvL3mRYq2FMuHICrnCdx1IFPw1/FbJycnMY/tVw%0AJv0yiYc6PMRLvV8iTPSPYRUaNPxVSDpy7AhDpg5h1uZZPN/zeUZ1HoXomN0qhGj4q5BzIPMA/Sf1%0A56edPzG+/3hub3u70yUpVeo0/FVI2XxgM/0m9WProa1MHTKVwU0HO12SUo7Q8FchI3lbMoM+HYQg%0AzL1pLl3juzpdklKO0btbKiT85+f/0OvjXlQtV5Wlty3V4FchT8NfBTVjDE8seIKbvryJTvU6seTW%0AJTSs0tDpspRynDb7qKCV5c7i1hm3MumXSQxPHM57/d+jTHgZp8tSyi9o+KugtCNtB0OmDuGnnT/x%0AXI/nGN1ltHblVKoADX8VdOb+Ppeh04aS7c5m2rXTtEePUkXwqs1fRKqIyBwR+S1vXfk0++WKyOq8%0A5eQpHpXyCY/x8OyiZ+n9cW9qVqjJipErNPiVOg1vb/iOBuYZYxoB8/JeFyXTGJOYtwzw8phKneJg%0A5kEGTB7AY/MfY2jLoSy9dSmNYxs7XZZSfsvbZp+BQPe87Q+BBcAoLz9TqfPyv13/4+rPriYlPYW3%0A+77NXUl3afu+Umfh7ZV/DWPMrrzt3UCN0+wXJSIrRGSpiAw63YeJyMi8/Vbs27fPy9JUsHN73Dyf%0A/DwXT7iYHE8Oybckc3e7uzX4lToHZ73yF5G5QFHz2P2j4AtjjBERc5qPiTfG7BSRBsD3IvKLMWbL%0AyTsZY8YD4wGSkpJO91lK8Vvqb9w8/WaWpCxhSLMhvNPvHaqWq+p0WUoFjLOGvzGm1+neE5E9IlLL%0AGLNLRGoBe0/zGTvz1r+LyAKgNXBK+Ct1Nh7j4d3l7/LI3EcoE16GSYMncX2L6/VqX6nz5G2zzwzg%0A5rztm4GvTt5BRCqLSGTedlWgM7DOy+OqELQjbQeX/+dy7pl1D13jurL2rrUMbTlUg1+pYvD2hu9Y%0A4DMRuRXYBlwLICJJwJ3GmNuApsB7IuLB/rIZa4zR8FfnzO1x8/aytxmzYAy5nlzG9RvHyLYjNfSV%0A8oJX4W+MSQV6FvH1FcBteds/Ai29OY4KXQu2LuDeWfeydu9ael/Qm3f6vsMFVS5wuiylAp4+4av8%0AUkp6Cg/PeZgpa6cQHxPPl9d9ycAmA/VqXykf0fBXfiUzJ5PXf3qdZxY9Q67J5fFujzOq8yjKuso6%0AXZpSQUXDX/mFLHcWE1ZN4Lnk59iVsYtBFw7ild6vUL9yfadLUyooafgrR2W7s5n4v4k8l/wcOw/v%0A5JL4S5h09SS6J3R3ujSlgpqGv3JEtjubD1Z/wLPJz7IjfQed63Xmw0Ef0qN+D23XV6oUaPirUpWS%0AnsJ7K95j/Krx7D2yl451OzJxwER6Neiloa9UKdLwVyXOGEPy9mTeWvYWX6z/Ao/x0L9xf+5tf6+G%0AvlIO0fBXJWbvkb1M/XUq41eN5+c9P1M5qjIPdniQu9vdrTdylXKYhr/yqfTsdKZvmM6kXyYx9/e5%0A5JpcEmsmMuHKCQxtOZRyrnJOl6iUQsNf+UBaVhqzt8zms3Wf8fWmr8lyZ5FQKYFHOj/C0BZDaVlD%0AH/BWyt9o+KvzZozh5z0/M2vzLGZtnsXi7YvJNblUL1+d29vcztAWQ+lQt4O25SvlxzT81VkZY9h8%0AYDOLdywmeVsy3235jp2HdwKQWDORUZ1HcUWjK+hQtwMRYfpPSqlAoP+nqlNk5mSyZs8aFm9fzOId%0Adtl7xE7VUDmqMr0a9OKKhlfQp2EfakXXcrhapVRxaPiHuL1H9rJm9xpW717N6j2rWb17NRv2b8Bj%0APABcUPkC+jTsQ5d6Xegc15kLq15ImHg7DYRSymka/iHgaM5RthzYwqbUTXY5sOnE9v6j+0/sFxcT%0AR2LNRK5uejWJNRPpVK8TNSsUNYOnUirQafgHuIxjGezO2H1i2ZG2g21p29ietv3EumDAA9SOrk3j%0A2MZc3fRqmsQ2IbFmIq1qtqJK2SoOnYVSqrR5Ff4iMgR4AjtbV/u8SVyK2q8P8DoQDkwwxoz15rjB%0AyO1xk5aVRlp2GoeyDpGWZdepmamkHk09sd6fuZ/Uo6nsObKH3Rm7yTiWccpnlXeVJ75SPPEx8bSr%0A3Y64mDjqV6pPk6pNaFSlEdGR0Q6coVLKn3h75b8WGAy8d7odRCQceBu4DEgBlovIDH+bytEYQ67J%0AJSc3B7fHTY4nb52bw7HcY+R47Lrgku3OJsudRXZudqHtzJxMjuYcJdOdWWj7SM4Rjhw7QsaxjBPL%0AkZwjpGenczTn6BnriwyPJLZcLLFlY4ktF0tS7SRqVahFzQo1Cy31KtajUlQl7WaplDojb6dxXA+c%0ALWjaA5uNMb/n7TsFGEgJTeKeejSVrv/uSq7JxWM85HpyyTW5hdZuj5tck7cu8NrXIsIiKBtRlrKu%0AspSNKEuFMhVOLLHlYu22qwLRkdHERMYQExVTaF0pqtKJwC/nKqeBrpTymdJo868D7CjwOgW4uKgd%0ARWQkMBIgLi6uWAdzhbtoXr054RJOmIQRHhZOuOQtedsRYRFEhEUQHma3j3/NFe6y6zBXoddlwssU%0AWlxhLsqElyEyIpKoiCgiw/PWEZFEhkeeCHtXuKtY56CUUiXtrOEvInOBorp8/MMY85UvizHGjAfG%0AAyQlJZnifEbFyIpMHTLVl2UppVTQOWv4G2N6eXmMnUC9Aq/r5n1NKaWUQ0rjaZ3lQCMRqS8iZYDr%0AgRmlcFyllFKn4VX4i8hVIpICdAS+EZHv8r5eW0RmAhhj3MA9wHfAeuAzY8yv3pWtlFLKG9729vkS%0A+LKIr/8J9C3weiYw05tjKaWU8h0dpEUppUKQhr9SSoUgDX+llApBGv5KKRWCxJhiPUtV4kRkH7DN%0Ai4+oCuw/617+L1jOA/Rc/FWwnEuwnAd4dy7xxphqZ9vJb8PfWyKywhiT5HQd3gqW8wA9F38VLOcS%0ALOcBpXMu2uyjlFIhSMNfKaVCUDCH/3inC/CRYDkP0HPxV8FyLsFyHlAK5xK0bf5KKaVOL5iv/JVS%0ASp1G0Ia/iDwtIj+LyGoRmS0itZ2uqbhE5CUR2ZB3Pl+KSCWnayouERkiIr+KiEdEAq5nhoj0EZGN%0AIrJZREY7XY83ROR9EdkrImudrsUbIlJPROaLyLq8f1v3O11TcYlIlIgsE5E1eefyZIkdK1ibfUSk%0AojEmPW/7PqCZMeZOh8sqFhHpDXxvjHGLyAsAxphRDpdVLCLSFPBg533+mzFmhcMlnbO8+ag3UWA+%0AamCov81Hfa5E5BIgA/jIGNPC6XqKS0RqAbWMMatEJBpYCQwKxP8uYudqLW+MyRARF/ADcL8xZqmv%0AjxW0V/7Hgz9PeSBgf8sZY2bnDY0NsBQ7IU5AMsasN8ZsdLqOYjoxH7Ux5hhwfD7qgGSMWQQccLoO%0AbxljdhljVuVtH8YOHV/H2aqKx1gZeS9deUuJZFfQhj+AiDwrIjuAG4AxTtfjIyOAWU4XEaKKmo86%0AIEMmWIlIAtAa+MnZSopPRMJFZDWwF5hjjCmRcwno8BeRuSKytohlIIAx5h/GmHrAJ9gJZfzW2c4l%0Ab59/AG7s+fitczkXpXxNRCoA04AHTvrLP6AYY3KNMYnYv/Dbi0iJNMl5NZmL085jfuFPsJPJPF6C%0A5XjlbOciIsOB/kBP4+c3anww77O/0vmo/VRe+/g04BNjzBdO1+MLxphDIjIf6AP4/KZ8QF/5n4mI%0ANCrwciCwwalavCUifYBHgAHGmKNO1xPCdD5qP5R3k3QisN4Y84rT9XhDRKod780nImWxnQtKJLuC%0AubfPNKAJtmfJNuBOY0xAXqWJyGYgEkjN+9LSAO65dBXwJlANOASsNsZc7mxV505E+gKvAeHA+8aY%0AZx0uqdhEZDLQHTuC5B7gcWPMREeLKgYR6QIkA79g/38HeDRv+tiAIiIXAR9i/32FYec8f6pEjhWs%0A4a+UUur0grbZRyml1Olp+CulVAjS8FdKqRCk4a+UUiFIw18ppUKQhr9SSoUgDX+llApBGv5KKRWC%0A/j+3uXalz1k0gQAAAABJRU5ErkJggg==%0A)
 
-<br/>
+
+這些Activation Function的使用時機可以簡單這樣說，當我們想要輸出值在+1和-1之間時使用tanh，而當我們想要一個輸出值衡為正時使用sigmoid，它可以將輸出值壓在+1和0之間。tanh比sigmoid多了兩個好處，第一，tanh的梯度變化大於sigmoid，有利於訓練效率，第二，tanh的輸出均值為0，可以避免將前層的梯度偏差帶到下一層。
+
+不過，以上的這兩種Activation Function在非常深的網路都會有一個共通問題—梯度消失，仔細看上圖，tanh和sigmoid在極大和極小的地方都會彎成平的，所以每過一次這種Activation Function，訊號就會減小一點，當我們在深網路做Backpropagation時，訊號在過程中不斷的被磨損，到了前面的幾層就已經耗損完畢，此時更新的梯度近乎0，也就是梯度消失，那麼前面的這些層就再也訓練不到了。
+
+Relu正可以解決梯度消失的問題，如上圖，在正的部分Relu是線性的，所以多少訊號進來就多少訊號出去，如此一來就不會有耗損的問題，但特別注意，因為tanh和sigmoid會將輸出值限制在一個範圍內，所以有Normalization的味道，但是Relu沒有限制，Normalization可以使我們訓練的效率提升（因為梯度的方向可以直指低點），所以Relu常常會搭配Normalization Layer一起使用，來額外做Normalization，或者是最近一篇Paper提到的一種新的Activation Function：SELU，類似於Relu但是輸出值會是Normalize過的，非常神奇，在這邊我不多論述。
 
 ### Mini-Batch Gradient Descent
 
@@ -98,34 +107,32 @@ with tf.Session() as sess:
 
 
 ```python
-    def fit(self,X,y,epochs=10,validation_data=None,test_data=None,batch_size=None):
-        
-        ...略...
-        
-        for epoch in range(epochs):
-            print("Epoch %2d/%2d: "%(epoch+1,epochs))
-            
-            # mini-batch gradient descent
-            index = [i for i in range(N)]
-            random.shuffle(index)
-            while len(index)>0:
-                index_size = len(index)
-                batch_index = [index.pop() for _ in range(min(batch_size,index_size))]    
-            
-                feed_dict = {
-                    self.train_features: X[batch_index,:], 
-                    self.train_labels: y[batch_index], 
-                }
-                _, loss = self.sess.run([self.train_op, self.loss], feed_dict=feed_dict)
-                
-                print("[%d/%d] loss = %9.4f     " % ( N-len(index), N, loss ), end='\r')
+def fit(self, X, y, epochs=10, validation_data=None, test_data=None, batch_size=None):
+    ...略...
 
-            ...略...
+    self.sess.run(self.init_op)
+    for epoch in range(epochs):
+        print('Epoch %2d/%2d: ' % (epoch+1, epochs))
+
+        # mini-batch gradient descent
+        index = [i for i in range(N)]
+        random.shuffle(index)
+        while len(index) > 0:
+            index_size = len(index)
+            batch_index = [index.pop() for _ in range(min(batch_size, index_size))]
+
+            feed_dict = {
+                self.train_features: X[batch_index, :],
+                self.train_labels: y[batch_index],
+            }
+            _, loss = self.sess.run([self.train_op, self.loss], feed_dict=feed_dict)
+
+            print('[%d/%d] loss = %9.4f     ' % (N-len(index), N, loss), end='\r')
+
+        ...略...
 ```
 
 在每一個`epoch`都完整的看過數據一遍，而mini-batch gradient descent是隨機取`batch_size`筆數據來更新權重，所以我採用這樣的作法，先依照數據的筆數`N`列出可能的Index有哪些，然後再做一個`random.shuffle`來做到隨機採樣，然後接下來只要簡單的從前面取`batch_size`筆數據進行更新，直到用盡所有的index為止，就可以做到mini-batch的效果。
-
-<br/>
 
 ### Regularization
 
@@ -144,16 +151,12 @@ with tf.Session() as sess:
 
 ```python
 # regularization loss
-regularization = tf.reduce_mean(
-                    [tf.nn.l2_loss(w)/tf.size(w,out_type=tf.float32)
-                                      for w in self.weights.values()])
+regularization = tf.reduce_mean([tf.nn.l2_loss(w) / tf.size(w, out_type=tf.float32) for w in self.weights.values()])
 # total loss
 loss = original_loss + alpha * regularization
 ```
 
 在這裡我習慣將Loss對Weights的個數做平均，這有一個好處當我在調整神經元數目時，`alpha`可以不需要大動作調整。
-
-<br/>
 
 ### Dropout
 
@@ -165,23 +168,26 @@ Dropout是Deep Learning常用的Regularization技巧，它的作法是在訓練�
 ```python
 with tf.Session() as sess:
     S = tf.constant([[1, 1, 1, 1, 1, 1, 1, 1],
-                     [3, 3, 3, 3, 3, 3, 3, 3],
-                     [5, 5, 5, 5, 5, 5, 5, 5]],tf.float32) # 3 Data, 8 dim. Score
-    print("Original S =")
+                           [3, 3, 3, 3, 3, 3, 3, 3],
+                           [5, 5, 5, 5, 5, 5, 5, 5]],tf.float32)  # 3 Data, 8 dim. Score
+    print('Original S =')
     print(S.eval())
-    S_drop = tf.nn.dropout(S,keep_prob=0.5) # dropout ratio = 1 - keep_prob = 0.5
-    print("Dropout S =")
+    S_drop = tf.nn.dropout(S,keep_prob=0.5)  # dropout ratio = 1 - keep_prob = 0.5
+    print('Dropout S =')
     print(S_drop.eval())
 ```
 
-    Original S =
-    [[ 1.  1.  1.  1.  1.  1.  1.  1.]
-     [ 3.  3.  3.  3.  3.  3.  3.  3.]
-     [ 5.  5.  5.  5.  5.  5.  5.  5.]]
-    Dropout S =
-    [[  2.   2.   2.   0.   0.   2.   0.   0.]
-     [  6.   0.   6.   0.   6.   6.   0.   0.]
-     [ 10.  10.  10.  10.  10.   0.   0.  10.]]
+```yaml
+Original S =
+[[1. 1. 1. 1. 1. 1. 1. 1.]
+ [3. 3. 3. 3. 3. 3. 3. 3.]
+ [5. 5. 5. 5. 5. 5. 5. 5.]]
+Dropout S =
+[[ 2.  0.  0.  2.  0.  0.  2.  0.]
+ [ 0.  0.  6.  0.  0.  6.  0.  6.]
+ [10. 10. 10.  0. 10. 10. 10. 10.]]
+```
+
 
 我們看到因為dropout 0.5倍，所以輸出值權重乘上2倍，另外一提，Tensorflow的Dropout機制是隨機的，所以Drop out的比例會接近我們想要的比例，但不是絕對剛好。
 
@@ -194,18 +200,15 @@ with tf.Session() as sess:
         ... 略 ...
         
         # layer 1
-        fc1 = self.getDenseLayer(features,self.weights['fc1'],
-                                 self.biases['fc1'], activation=activation)
+        fc1 = self.getDenseLayer(features,self.weights['fc1'], self.biases['fc1'], activation=activation)
         if train:
-            fc1 = tf.nn.dropout(fc1,keep_prob=1-dropout_ratio)
+            fc1 = tf.nn.dropout(fc1, keep_prob=1-dropout_ratio)
             
         # layer 2
-        logits = self.getDenseLayer(fc1,self.weights['fc2'],self.biases['fc2'])
+        logits = self.getDenseLayer(fc1, self.weights['fc2'], self.biases['fc2'])
         
         ... 略 ...
 ```
-
-<br/>
 
 ### Optimizer的選擇
 
@@ -233,8 +236,6 @@ self.train_op = optimizer.minimize(self.loss)
 
 如果想要了解每個Optimizer的演算法可以參考[這篇有詳細的說明](http://ruder.io/optimizing-gradient-descent/)。
 
-<br/>
-
 ### 來看看程式怎麼寫
 
 講了那麼多，來看看完整的程式怎麼寫？照慣例，先畫個流程圖。
@@ -243,219 +244,214 @@ self.train_op = optimizer.minimize(self.loss)
 
 
 ```python
-from __future__ import print_function
-import numpy as np
-import tensorflow as tf
-import matplotlib.pyplot as plt
-import random
+class DNNLogisticClassification:
 
-# Config the matplotlib backend as plotting inline in IPython
-%matplotlib inline
-```
+    def __init__(self, n_features, n_labels,
+                 learning_rate=0.5, n_hidden=1000, activation=tf.nn.relu,
+                 dropout_ratio=0.5, alpha=0.0):
 
-
-```python
-class DNNLogisticClassification(object):
-    def __init__(self,n_features,n_labels,
-                 learning_rate=0.5,n_hidden=1000,activation=tf.nn.relu,
-                 dropout_ratio=0.5,alpha=0.0):
-        
         self.n_features = n_features
         self.n_labels = n_labels
-        
+
         self.weights = None
         self.biases = None
-        
-        self.graph = tf.Graph() # initialize new graph
-        self.build(learning_rate,n_hidden,activation,
-                   dropout_ratio,alpha) # building graph
-        self.sess = tf.Session(graph=self.graph) # create session by the graph 
-        
-    def build(self,learning_rate,n_hidden,activation,dropout_ratio,alpha):
+
+        self.graph = tf.Graph()  # initialize new graph
+        self.build(learning_rate, n_hidden, activation,
+                   dropout_ratio, alpha)  # building graph
+        self.sess = tf.Session(graph=self.graph)  # create session by the graph
+
+    def build(self, learning_rate, n_hidden, activation, dropout_ratio, alpha):
         # Building Graph
         with self.graph.as_default():
             ### Input
-            self.train_features = tf.placeholder(tf.float32, shape=(None,self.n_features))
-            self.train_labels   = tf.placeholder(tf.int32  , shape=(None,self.n_labels))
+            self.train_features = tf.placeholder(tf.float32, shape=(None, self.n_features))
+            self.train_labels = tf.placeholder(tf.int32, shape=(None, self.n_labels))
 
             ### Optimalization
             # build neurel network structure and get their predictions and loss
-            self.y_,self.original_loss = self.structure(features=self.train_features,
-                                                        labels=self.train_labels,
-                                                        n_hidden=n_hidden,
-                                                        activation=activation,
-                                                        dropout_ratio=dropout_ratio,
-                                                        train=True)
+            self.y_, self.original_loss = self.structure(features=self.train_features,
+                                                         labels=self.train_labels,
+                                                         n_hidden=n_hidden,
+                                                         activation=activation,
+                                                         dropout_ratio=dropout_ratio,
+                                                         train=True)
             # regularization loss
-            self.regularization = tf.reduce_mean(
-                                   [tf.nn.l2_loss(w)/tf.size(w,out_type=tf.float32)
-                                        for w in self.weights.values()])
+            self.regularization = \
+                tf.reduce_sum([tf.nn.l2_loss(w) for w in self.weights.values()]) \
+                / tf.reduce_sum([tf.size(w, out_type=tf.float32) for w in self.weights.values()])
+
             # total loss
             self.loss = self.original_loss + alpha * self.regularization
-            
+
             # define training operation
             optimizer = tf.train.GradientDescentOptimizer(learning_rate)
             self.train_op = optimizer.minimize(self.loss)
-            
+
             ### Prediction
-            self.new_features = tf.placeholder(tf.float32, shape=(None,self.n_features))
-            self.new_labels   = tf.placeholder(tf.int32  , shape=(None,self.n_labels))
-            self.new_y_,self.new_loss = self.structure(features=self.new_features,
-                                                       labels=self.new_labels,
-                                                       n_hidden=n_hidden,
-                                                       activation=activation) 
-            
+            self.new_features = tf.placeholder(tf.float32, shape=(None, self.n_features))
+            self.new_labels = tf.placeholder(tf.int32, shape=(None, self.n_labels))
+            self.new_y_, self.new_original_loss = self.structure(features=self.new_features,
+                                                                 labels=self.new_labels,
+                                                                 n_hidden=n_hidden,
+                                                                 activation=activation)
+            self.new_loss = self.new_original_loss + alpha * self.regularization
+
             ### Initialization
             self.init_op = tf.global_variables_initializer()
-    
-    def structure(self,features,labels,n_hidden,activation,dropout_ratio=0,train=False):
+
+    def structure(self, features, labels, n_hidden, activation, dropout_ratio=0, train=False):
         # build neurel network structure and return their predictions and loss
         ### Variable
         if (not self.weights) or (not self.biases):
             self.weights = {
-                'fc1': tf.Variable(tf.truncated_normal( shape=(self.n_features,n_hidden) )),
-                'fc2': tf.Variable(tf.truncated_normal( shape=(n_hidden,self.n_labels) )),
+                'fc1': tf.Variable(tf.truncated_normal(shape=(self.n_features, n_hidden))),
+                'fc2': tf.Variable(tf.truncated_normal(shape=(n_hidden, self.n_labels))),
             }
-            self.biases  = {
-                'fc1': tf.Variable(tf.zeros( shape=(n_hidden) )),
-                'fc2': tf.Variable(tf.zeros( shape=(self.n_labels) )),
-            } 
+            self.biases = {
+                'fc1': tf.Variable(tf.zeros(shape=(n_hidden))),
+                'fc2': tf.Variable(tf.zeros(shape=(self.n_labels))),
+            }
         ### Structure
         # layer 1
-        fc1 = self.getDenseLayer(features,self.weights['fc1'],
-                                 self.biases['fc1'], activation=activation)
+        fc1 = self.get_dense_layer(features, self.weights['fc1'],
+                                   self.biases['fc1'], activation=activation)
         if train:
-            fc1 = tf.nn.dropout(fc1,keep_prob=1-dropout_ratio)
-            
+            fc1 = tf.nn.dropout(fc1, keep_prob=1-dropout_ratio)
+
         # layer 2
-        logits = self.getDenseLayer(fc1,self.weights['fc2'],self.biases['fc2'])
-        
+        logits = self.get_dense_layer(fc1, self.weights['fc2'], self.biases['fc2'])
+
         y_ = tf.nn.softmax(logits)
 
         loss = tf.reduce_mean(
-                 tf.nn.softmax_cross_entropy_with_logits(labels=labels,logits=logits))
+                 tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits))
 
-        return (y_,loss)
-    
-    def getDenseLayer(self,input_layer,weight,bias,activation=None):
+        return (y_, loss)
+
+    def get_dense_layer(self, input_layer, weight, bias, activation=None):
         # fully connected layer
-        x = tf.add(tf.matmul(input_layer,weight),bias)
+        x = tf.add(tf.matmul(input_layer, weight), bias)
         if activation:
             x = activation(x)
         return x
-    
-    def fit(self,X,y,epochs=10,validation_data=None,test_data=None,batch_size=None):
+
+    def fit(self, X, y, epochs=10, validation_data=None, test_data=None, batch_size=None):
         X = self._check_array(X)
         y = self._check_array(y)
-        
+
         N = X.shape[0]
         random.seed(9000)
-        if not batch_size: batch_size=N
-        
+        if not batch_size:
+            batch_size = N
+
         self.sess.run(self.init_op)
         for epoch in range(epochs):
-            print("Epoch %2d/%2d: "%(epoch+1,epochs))
-            
+            print('Epoch %2d/%2d: ' % (epoch+1, epochs))
+
             # mini-batch gradient descent
             index = [i for i in range(N)]
             random.shuffle(index)
-            while len(index)>0:
+            while len(index) > 0:
                 index_size = len(index)
-                batch_index = [index.pop() for _ in range(min(batch_size,index_size))]    
-            
+                batch_index = [index.pop() for _ in range(min(batch_size, index_size))]
+
                 feed_dict = {
-                    self.train_features: X[batch_index,:], 
-                    self.train_labels: y[batch_index], 
+                    self.train_features: X[batch_index, :],
+                    self.train_labels: y[batch_index],
                 }
                 _, loss = self.sess.run([self.train_op, self.loss], feed_dict=feed_dict)
-                
-                print("[%d/%d] loss = %9.4f     " % ( N-len(index), N, loss ), end='\r')
 
-            
+                print('[%d/%d] loss = %9.4f     ' % (N-len(index), N, loss), end='\r')
+
             # evaluate at the end of this epoch
             y_ = self.predict(X)
-            train_loss = self.evaluate(X,y)
-            train_acc = self.accuracy(y_,y)
-            msg = "[%d/%d] loss = %8.4f, acc = %3.2f%%" % ( N, N, train_loss, train_acc*100 )
-            
+            train_loss = self.evaluate(X, y)
+            train_acc = self.accuracy(y_, y)
+            msg = '[%d/%d] loss = %8.4f, acc = %3.2f%%' % (N, N, train_loss, train_acc*100)
+
             if validation_data:
-                val_loss = self.evaluate(validation_data[0],validation_data[1])
-                val_acc = self.accuracy(self.predict(validation_data[0]),validation_data[1])
-                msg += ", val_loss = %8.4f, val_acc = %3.2f%%" % ( val_loss, val_acc*100 )
-            
+                val_loss = self.evaluate(validation_data[0], validation_data[1])
+                val_acc = self.accuracy(self.predict(validation_data[0]), validation_data[1])
+                msg += ', val_loss = %8.4f, val_acc = %3.2f%%' % (val_loss, val_acc*100)
+
             print(msg)
-            
-            
+
         if test_data:
-            test_acc = self.accuracy(self.predict(test_data[0]),test_data[1])
-            print("test_acc = %3.2f%%" % (test_acc*100))
-            
+            test_acc = self.accuracy(self.predict(test_data[0]), test_data[1])
+            print('test_acc = %3.2f%%' % (test_acc*100))
+
     def accuracy(self, predictions, labels):
         return (np.sum(np.argmax(predictions, 1) == np.argmax(labels, 1))/predictions.shape[0])
-    
-    def predict(self,X):
+
+    def predict(self, X):
         X = self._check_array(X)
         return self.sess.run(self.new_y_, feed_dict={self.new_features: X})
-    
-    def evaluate(self,X,y):
+
+    def evaluate(self, X, y):
         X = self._check_array(X)
         y = self._check_array(y)
-        return self.sess.run(self.new_loss, feed_dict={self.new_features: X, 
+        return self.sess.run(self.new_loss, feed_dict={self.new_features: X,
                                                        self.new_labels: y})
-    
-    def _check_array(self,ndarray):
+
+    def _check_array(self, ndarray):
         ndarray = np.array(ndarray)
-        if len(ndarray.shape)==1: ndarray = np.reshape(ndarray,(1,ndarray.shape[0]))
+        if len(ndarray.shape) == 1:
+            ndarray = np.reshape(ndarray, (1, ndarray.shape[0]))
         return ndarray
-    
 ```
 
 
 ```python
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+mnist = input_data.read_data_sets('MNIST_data/', one_hot=True)
 
 train_data = mnist.train
 valid_data = mnist.validation
 test_data = mnist.test
 ```
 
-    Extracting MNIST_data/train-images-idx3-ubyte.gz
-    Extracting MNIST_data/train-labels-idx1-ubyte.gz
-    Extracting MNIST_data/t10k-images-idx3-ubyte.gz
-    Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
+```yaml
+Extracting MNIST_data/train-images-idx3-ubyte.gz
+Extracting MNIST_data/train-labels-idx1-ubyte.gz
+Extracting MNIST_data/t10k-images-idx3-ubyte.gz
+Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
+```
+
 
 
 ```python
-model = DNNLogisticClassification(   n_features=28*28,
-                                     n_labels=10,
-                                     learning_rate=0.5,
-                                     n_hidden=1000,
-                                     activation=tf.nn.relu,
-                                     dropout_ratio=0.5,
-                                     alpha=0.01,
-                                 )
-model.fit(X=train_data.images,
-          y=train_data.labels,
-          epochs=3,
-          validation_data=(valid_data.images,valid_data.labels),
-          test_data=(test_data.images,test_data.labels),
-          batch_size = 32,
-         )
+model = DNNLogisticClassification(
+    n_features=28*28,
+    n_labels=10,
+    learning_rate=0.5,
+    n_hidden=1000,
+    activation=tf.nn.relu,
+    dropout_ratio=0.5,
+    alpha=0.01,
+)
+model.fit(
+    X=train_data.images,
+    y=train_data.labels,
+    epochs=3,
+    validation_data=(valid_data.images, valid_data.labels),
+    test_data=(test_data.images, test_data.labels),
+    batch_size = 32,
+)
 ```
 
-    Epoch  1/ 3: 
-    [55000/55000] loss =   0.5235, acc = 88.03%, val_loss =   0.6335, val_acc = 88.22%
-    Epoch  2/ 3: 
-    [55000/55000] loss =   0.3493, acc = 91.90%, val_loss =   0.4541, val_acc = 91.62%
-    Epoch  3/ 3: 
-    [55000/55000] loss =   0.2653, acc = 93.22%, val_loss =   0.3612, val_acc = 92.68%
-    test_acc = 92.02%
+```yaml
+Epoch  1/ 3: 
+[55000/55000] loss =   0.4948, acc = 88.12%, val_loss =   0.5729, val_acc = 88.14%
+Epoch  2/ 3: 
+[55000/55000] loss =   0.3343, acc = 91.21%, val_loss =   0.3831, val_acc = 91.04%
+Epoch  3/ 3: 
+[55000/55000] loss =   0.2890, acc = 92.73%, val_loss =   0.3708, val_acc = 92.06%
+test_acc = 91.17%
+```
 
-跟上次的結果比，你會發現有長足的進步，精確率來到90幾%，大家可以[下載程式碼](https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py)，試著調整參數使得DNN Model的精確率可以更高，參數包含：
 
-
-
+跟上次的結果比，你會發現有長足的進步，精確率來到90幾，大家可以[下載程式碼](https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py)，試著調整參數使得DNN Model的精確率可以更高，參數包含：
 * Hidden Layer的神經元數量
 * 不同的Activation Function
 * 不同的Batch Size
@@ -464,6 +460,5 @@ model.fit(X=train_data.images,
 * 選擇不同Optimizer
 * 使得DNN更深
 
-
-
 調整Model是重要的工作，試著自己動手做做看，你可以讓你的Model有多準呢？
+

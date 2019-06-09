@@ -9,32 +9,39 @@ Alias: /YCNote/post/38.html
 related_posts: ml-course-techniques_6,tensorflow-tutorial_2,tensorflow-tutorial_3,tensorflow-tutorial_4,tensorflow-tutorial_5
 
 
+
 初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。
 
 本單元程式碼可於[Github]( https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/01_simple_logistic_classification_on_MNIST.py)下載。
 
-### MNIST Dataset
-
-首先，先`import`一些會用到的function，並且定義`summary` function以便於觀察ndarray。
+首先，先`import`一些會用到的function
 
 
 ```python
-from __future__ import print_function
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
+tf.logging.set_verbosity(tf.logging.ERROR)
+
 # Config the matplotlib backend as plotting inline in IPython
 %matplotlib inline
+```
 
+### MNIST Dataset
+
+定義`summary` function以便於觀察ndarray。
+
+
+```python
 def summary(ndarr):
     print(ndarr)
-    print("* shape: {}".format(ndarr.shape))
-    print("* min: {}".format(np.min(ndarr)))
-    print("* max: {}".format(np.max(ndarr)))
-    print("* avg: {}".format(np.mean(ndarr)))
-    print("* std: {}".format(np.std(ndarr)))
-    print("* unique: {}".format(np.unique(ndarr)))
+    print('* shape: {}'.format(ndarr.shape))
+    print('* min: {}'.format(np.min(ndarr)))
+    print('* max: {}'.format(np.max(ndarr)))
+    print('* avg: {}'.format(np.mean(ndarr)))
+    print('* std: {}'.format(np.std(ndarr)))
+    print('* unique: {}'.format(np.unique(ndarr)))
 ```
 
 ndarray是numpy的基本元素，它非常便於我們做矩陣的運算。
@@ -46,17 +53,21 @@ ndarray是numpy的基本元素，它非常便於我們做矩陣的運算。
 
 ```python
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
+mnist = input_data.read_data_sets('MNIST_data/', one_hot=True)
 
 train_data = mnist.train
 valid_data = mnist.validation
 test_data = mnist.test
 ```
 
-```P
+```yaml
+Successfully downloaded train-images-idx3-ubyte.gz 9912422 bytes.
 Extracting MNIST_data/train-images-idx3-ubyte.gz
+Successfully downloaded train-labels-idx1-ubyte.gz 28881 bytes.
 Extracting MNIST_data/train-labels-idx1-ubyte.gz
+Successfully downloaded t10k-images-idx3-ubyte.gz 1648877 bytes.
 Extracting MNIST_data/t10k-images-idx3-ubyte.gz
+Successfully downloaded t10k-labels-idx1-ubyte.gz 4542 bytes.
 Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
 ```
 
@@ -70,61 +81,64 @@ Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
 summary(train_data.images)
 ```
 
-    [[ 0.  0.  0. ...,  0.  0.  0.]
-     [ 0.  0.  0. ...,  0.  0.  0.]
-     [ 0.  0.  0. ...,  0.  0.  0.]
-     ..., 
-     [ 0.  0.  0. ...,  0.  0.  0.]
-     [ 0.  0.  0. ...,  0.  0.  0.]
-     [ 0.  0.  0. ...,  0.  0.  0.]]
-    * shape: (55000, 784)
-    * min: 0.0
-    * max: 1.0
-    * avg: 0.13070042431354523
-    * std: 0.30815958976745605
-    * unique: [ 0.          0.00392157  0.00784314  0.01176471  0.01568628  0.01960784
-      0.02352941  0.02745098  0.03137255  0.03529412  0.03921569  0.04313726
-      0.04705883  0.0509804   0.05490196  0.05882353  0.0627451   0.06666667
-      0.07058824  0.07450981  0.07843138  0.08235294  0.08627451  0.09019608
-      0.09411766  0.09803922  0.10196079  0.10588236  0.10980393  0.1137255
-      0.11764707  0.12156864  0.1254902   0.12941177  0.13333334  0.13725491
-      0.14117648  0.14509805  0.14901961  0.15294118  0.15686275  0.16078432
-      0.16470589  0.16862746  0.17254902  0.17647059  0.18039216  0.18431373
-      0.18823531  0.19215688  0.19607845  0.20000002  0.20392159  0.20784315
-      0.21176472  0.21568629  0.21960786  0.22352943  0.227451    0.23137257
-      0.23529413  0.2392157   0.24313727  0.24705884  0.25098041  0.25490198
-      0.25882354  0.26274511  0.26666668  0.27058825  0.27450982  0.27843139
-      0.28235295  0.28627452  0.29019609  0.29411766  0.29803923  0.3019608
-      0.30588236  0.30980393  0.3137255   0.31764707  0.32156864  0.32549021
-      0.32941177  0.33333334  0.33725491  0.34117648  0.34509805  0.34901962
-      0.35294119  0.35686275  0.36078432  0.36470589  0.36862746  0.37254903
-      0.37647063  0.38039219  0.38431376  0.38823533  0.3921569   0.39607847
-      0.40000004  0.4039216   0.40784317  0.41176474  0.41568631  0.41960788
-      0.42352945  0.42745101  0.43137258  0.43529415  0.43921572  0.44313729
-      0.44705886  0.45098042  0.45490199  0.45882356  0.46274513  0.4666667
-      0.47058827  0.47450984  0.4784314   0.48235297  0.48627454  0.49019611
-      0.49411768  0.49803925  0.50196081  0.50588238  0.50980395  0.51372552
-      0.51764709  0.52156866  0.52549022  0.52941179  0.53333336  0.53725493
-      0.5411765   0.54509807  0.54901963  0.5529412   0.55686277  0.56078434
-      0.56470591  0.56862748  0.57254905  0.57647061  0.58039218  0.58431375
-      0.58823532  0.59215689  0.59607846  0.60000002  0.60392159  0.60784316
-      0.61176473  0.6156863   0.61960787  0.62352943  0.627451    0.63137257
-      0.63529414  0.63921571  0.64313728  0.64705884  0.65098041  0.65490198
-      0.65882355  0.66274512  0.66666669  0.67058825  0.67450982  0.67843139
-      0.68235296  0.68627453  0.6901961   0.69411767  0.69803923  0.7019608
-      0.70588237  0.70980394  0.71372551  0.71764708  0.72156864  0.72549021
-      0.72941178  0.73333335  0.73725492  0.74117649  0.74509805  0.74901962
-      0.75294125  0.75686282  0.76078439  0.76470596  0.76862752  0.77254909
-      0.77647066  0.78039223  0.7843138   0.78823537  0.79215693  0.7960785
-      0.80000007  0.80392164  0.80784321  0.81176478  0.81568635  0.81960791
-      0.82352948  0.82745105  0.83137262  0.83529419  0.83921576  0.84313732
-      0.84705889  0.85098046  0.85490203  0.8588236   0.86274517  0.86666673
-      0.8705883   0.87450987  0.87843144  0.88235301  0.88627458  0.89019614
-      0.89411771  0.89803928  0.90196085  0.90588242  0.90980399  0.91372555
-      0.91764712  0.92156869  0.92549026  0.92941183  0.9333334   0.93725497
-      0.94117653  0.9450981   0.94901967  0.95294124  0.95686281  0.96078438
-      0.96470594  0.96862751  0.97254908  0.97647065  0.98039222  0.98431379
-      0.98823535  0.99215692  0.99607849  1.        ]
+```yaml
+[[0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ ...
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]]
+* shape: (55000, 784)
+* min: 0.0
+* max: 1.0
+* avg: 0.13070042431354523
+* std: 0.30815958976745605
+* unique: [0.         0.00392157 0.00784314 0.01176471 0.01568628 0.01960784
+ 0.02352941 0.02745098 0.03137255 0.03529412 0.03921569 0.04313726
+ 0.04705883 0.0509804  0.05490196 0.05882353 0.0627451  0.06666667
+ 0.07058824 0.07450981 0.07843138 0.08235294 0.08627451 0.09019608
+ 0.09411766 0.09803922 0.10196079 0.10588236 0.10980393 0.1137255
+ 0.11764707 0.12156864 0.1254902  0.12941177 0.13333334 0.13725491
+ 0.14117648 0.14509805 0.14901961 0.15294118 0.15686275 0.16078432
+ 0.16470589 0.16862746 0.17254902 0.1764706  0.18039216 0.18431373
+ 0.18823531 0.19215688 0.19607845 0.20000002 0.20392159 0.20784315
+ 0.21176472 0.21568629 0.21960786 0.22352943 0.227451   0.23137257
+ 0.23529413 0.2392157  0.24313727 0.24705884 0.2509804  0.25490198
+ 0.25882354 0.2627451  0.26666668 0.27058825 0.27450982 0.2784314
+ 0.28235295 0.28627452 0.2901961  0.29411766 0.29803923 0.3019608
+ 0.30588236 0.30980393 0.3137255  0.31764707 0.32156864 0.3254902
+ 0.32941177 0.33333334 0.3372549  0.34117648 0.34509805 0.34901962
+ 0.3529412  0.35686275 0.36078432 0.3647059  0.36862746 0.37254903
+ 0.37647063 0.3803922  0.38431376 0.38823533 0.3921569  0.39607847
+ 0.40000004 0.4039216  0.40784317 0.41176474 0.4156863  0.41960788
+ 0.42352945 0.427451   0.43137258 0.43529415 0.43921572 0.4431373
+ 0.44705886 0.45098042 0.454902   0.45882356 0.46274513 0.4666667
+ 0.47058827 0.47450984 0.4784314  0.48235297 0.48627454 0.4901961
+ 0.49411768 0.49803925 0.5019608  0.5058824  0.50980395 0.5137255
+ 0.5176471  0.52156866 0.5254902  0.5294118  0.53333336 0.5372549
+ 0.5411765  0.54509807 0.54901963 0.5529412  0.5568628  0.56078434
+ 0.5647059  0.5686275  0.57254905 0.5764706  0.5803922  0.58431375
+ 0.5882353  0.5921569  0.59607846 0.6        0.6039216  0.60784316
+ 0.6117647  0.6156863  0.61960787 0.62352943 0.627451   0.6313726
+ 0.63529414 0.6392157  0.6431373  0.64705884 0.6509804  0.654902
+ 0.65882355 0.6627451  0.6666667  0.67058825 0.6745098  0.6784314
+ 0.68235296 0.6862745  0.6901961  0.69411767 0.69803923 0.7019608
+ 0.7058824  0.70980394 0.7137255  0.7176471  0.72156864 0.7254902
+ 0.7294118  0.73333335 0.7372549  0.7411765  0.74509805 0.7490196
+ 0.75294125 0.7568628  0.7607844  0.76470596 0.7686275  0.7725491
+ 0.77647066 0.7803922  0.7843138  0.78823537 0.79215693 0.7960785
+ 0.8000001  0.80392164 0.8078432  0.8117648  0.81568635 0.8196079
+ 0.8235295  0.82745105 0.8313726  0.8352942  0.83921576 0.8431373
+ 0.8470589  0.85098046 0.854902   0.8588236  0.86274517 0.86666673
+ 0.8705883  0.8745099  0.87843144 0.882353   0.8862746  0.89019614
+ 0.8941177  0.8980393  0.90196085 0.9058824  0.909804   0.91372555
+ 0.9176471  0.9215687  0.92549026 0.9294118  0.9333334  0.93725497
+ 0.94117653 0.9450981  0.9490197  0.95294124 0.9568628  0.9607844
+ 0.96470594 0.9686275  0.9725491  0.97647065 0.9803922  0.9843138
+ 0.98823535 0.9921569  0.9960785  1.        ]
+```
+
 
 來試著畫圖來看看，我們使用ndarray的index功能來選出第10張圖片，`train_data.images[10,:]`表示的是選第一軸的第10個和第二軸的全部。
 
@@ -155,19 +169,22 @@ plot_fatten_img(train_data.images[10,:])
 summary(train_data.labels)
 ```
 
-    [[ 0.  0.  0. ...,  1.  0.  0.]
-     [ 0.  0.  0. ...,  0.  0.  0.]
-     [ 0.  0.  0. ...,  0.  0.  0.]
-     ..., 
-     [ 0.  0.  0. ...,  0.  0.  0.]
-     [ 0.  0.  0. ...,  0.  0.  0.]
-     [ 0.  0.  0. ...,  0.  1.  0.]]
-    * shape: (55000, 10)
-    * min: 0.0
-    * max: 1.0
-    * avg: 0.1
-    * std: 0.30000000000000004
-    * unique: [ 0.  1.]
+```yaml
+[[0. 0. 0. ... 1. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ ...
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 0. 0.]
+ [0. 0. 0. ... 0. 1. 0.]]
+* shape: (55000, 10)
+* min: 0.0
+* max: 1.0
+* avg: 0.1
+* std: 0.30000000000000004
+* unique: [0. 1.]
+```
+
 
 所以我們來看看上面那張圖片的標籤，
 
@@ -176,7 +193,10 @@ summary(train_data.labels)
 print(train_data.labels[10])
 ```
 
-    [ 1.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
+```yaml
+[1. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+```
+
 
 看起來的確沒錯，在0的位置標示1.，而其他地方標示為0.，因此這是一個標示為0的label沒有錯，這種表示方法稱為One-Hot Encoding，它具有機率的涵義，所代表的是有100%的機會落在0的類別上。
 
@@ -197,11 +217,11 @@ import numpy as np
 def softmax(x):
     # avoid exp function go to too large,
     # pre-reduce before applying exp function
-    max_score = np.max(x,axis=0)
+    max_score = np.max(x, axis=0)
     x = x - max_score
     
     exp_s = np.exp(x)
-    sum_exp_s = np.sum(exp_s,axis=0)
+    sum_exp_s = np.sum(exp_s, axis=0)
     softmax = exp_s / sum_exp_s
     return softmax
 
@@ -209,19 +229,21 @@ scores = [3.0, 1.0, 0.2]
 print(softmax(scores))
 ```
 
-    [ 0.8360188   0.11314284  0.05083836]
+```yaml
+[0.8360188  0.11314284 0.05083836]
+```
+
 
 ### Cross-Entropy Loss
 
 一旦我們要處理機率預測的問題，就不可以使用單純的「平方誤差」，而必須使用Cross-Entropy Loss，是這樣計算的：
-
 
 $$
 Loss_{cross-entropy} = - \sum_i y_i ln(s_i)
 $$
 其中，$y_i$為目標Label，$s_i$為經過Softmax產生的預測值。
 
-至於如果你想要了解為何需要使用Cross-Entropy Loss？這我在機器學習基石的筆記中已經有提及過，請看[介紹Logistic Regression的部分](http://www.ycc.idv.tw/ml-course-foundations_3.html)。
+至於如果你想要了解為何需要使用Cross-Entropy Loss？這我在機器學習基石的筆記中已經有提及過，請看[介紹Logistic Regression的部分](http://www.ycc.idv.tw/YCNote/post/27)。
 
 ### 分離數據的重要性
 
@@ -289,8 +311,9 @@ tensor = tf.constant([1, 2, 3, 4, 5, 6, 7], dtype=tf.int32)
 
 
 ```python
-tensor = tf.Variable( tf.truncated_normal(shape=(3,5)) )
+tensor = tf.Variable(tf.truncated_normal(shape=(3, 5)))
 ```
+
 
 因為變數通常是未知且待優化的參數，所以我們一般會使用Initalizer來設定它的初始值，`tf.truncated_normal(shape=(3,5))`會隨機產生大小3x5的矩陣，它的值呈常態分佈但只取兩個標準差以內的數值。
 
@@ -307,7 +330,7 @@ tensor = tf.Variable(5, trainable=False)
 
 
 ```python
-tensor = tf.placeholder(tf.float32, shape=(None,1000))
+tensor = tf.placeholder(tf.float32, shape=(None, 1000))
 ```
 
 因為我們在訓練之前還尚未知道Data的數量，所以這裡使用None來表示未知。`tf.placeholder`在Graph階段是沒有數值的，必須等到Session階段才將數值給輸入進去。
@@ -349,7 +372,10 @@ with tf.Session(graph=g1) as sess:
     print(sol) # print tensor, not their value
 ```
 
-    Tensor("Add:0", shape=(), dtype=int32)
+```yaml
+Tensor("Add:0", shape=(), dtype=int32)
+```
+
 
 
 ```python
@@ -357,7 +383,10 @@ with tf.Session(graph=g1) as sess:
     print(sol.eval()) # evaluate their value
 ```
 
-    2
+```yaml
+2
+```
+
 
 
 ```python
@@ -365,7 +394,10 @@ s1 = tf.Session(graph=g1)
 print(s1.run(sol)) # another way of evaluating value
 ```
 
-    2
+```yaml
+2
+```
+
 
 那如果我想使用placeholder來做到x+y呢？
 
@@ -380,18 +412,24 @@ with g2.as_default():
 s2 = tf.Session(graph=g2)
 
 # if x = 2 and y = 3
-print(s2.run(sol,feed_dict={x: 2,y: 3})) 
+print(s2.run(sol, feed_dict={x: 2, y: 3})) 
 ```
 
-    5
+```yaml
+5
+```
+
 
 
 ```python
 # if x = 5 and y = 7
-print(s2.run(sol,feed_dict={x: 5,y: 7})) 
+print(s2.run(sol, feed_dict={x: 5, y: 7})) 
 ```
 
-    12
+```yaml
+12
+```
+
 
 因為x和y是placeholder，所以必須使用`feed_dict`來餵入相關資訊，否則會報錯。
 
@@ -411,150 +449,154 @@ Machine Learning在操作上可以整理成三個大步驟：建構(Building)、
 
 
 ```python
-class SimpleLogisticClassification(object):
-    def __init__(self,n_features,n_labels,learning_rate=0.5):
+class SimpleLogisticClassification:
+
+    def __init__(self, n_features, n_labels, learning_rate=0.5):
         self.n_features = n_features
         self.n_labels = n_labels
-        
+
         self.weights = None
-        self.biases  = None
-        
-        self.graph = tf.Graph() # initialize new graph
-        self.build(learning_rate) # building graph
-        self.sess = tf.Session(graph=self.graph) # create session by the graph     
-    
-    def build(self,learning_rate):
+        self.biases = None
+
+        self.graph = tf.Graph()  # initialize new graph
+        self.build(learning_rate)  # building graph
+        self.sess = tf.Session(graph=self.graph)  # create session by the graph
+
+    def build(self, learning_rate):
         # Building Graph
         with self.graph.as_default():
             ### Input
-            self.train_features = tf.placeholder(tf.float32, shape=(None,self.n_features))
-            self.train_labels   = tf.placeholder(tf.int32  , shape=(None,self.n_labels))
-            
+            self.train_features = tf.placeholder(tf.float32, shape=(None, self.n_features))
+            self.train_labels = tf.placeholder(tf.int32, shape=(None, self.n_labels))
+
             ### Optimalization
             # build neurel network structure and get their predictions and loss
-            self.y_,self.loss = self.structure(features=self.train_features,
-                                                        labels=self.train_labels)
+            self.y_, self.loss = self.structure(features=self.train_features,
+                                                labels=self.train_labels)
             # define training operation
             self.train_op = tf.train.GradientDescentOptimizer(learning_rate).minimize(self.loss)
-            
+
             ### Prediction
-            self.new_features = tf.placeholder(tf.float32, shape=(None,self.n_features))
-            self.new_labels   = tf.placeholder(tf.int32  , shape=(None,self.n_labels))
-            self.new_y_,self.new_loss = self.structure(features=self.new_features,
-                                                       labels=self.new_labels,)
-            
+            self.new_features = tf.placeholder(tf.float32, shape=(None, self.n_features))
+            self.new_labels = tf.placeholder(tf.int32, shape=(None, self.n_labels))
+            self.new_y_, self.new_loss = self.structure(features=self.new_features,
+                                                        labels=self.new_labels)
+
             ### Initialization
             self.init_op = tf.global_variables_initializer()
-            
-    def structure(self,features,labels):
+
+    def structure(self, features, labels):
         # build neurel network structure and return their predictions and loss
         ### Variable
         if (not self.weights) or (not self.biases):
             self.weights = {
-                'fc1': tf.Variable(tf.truncated_normal( shape=(self.n_features,self.n_labels) )),
+                'fc1': tf.Variable(tf.truncated_normal(shape=(self.n_features, self.n_labels))),
             }
-            self.biases  = {
-                'fc1': tf.Variable(tf.zeros( shape=(self.n_labels) )),
-            } 
-            
-        ### Structure   
+            self.biases = {
+                'fc1': tf.Variable(tf.zeros(shape=(self.n_labels))),
+            }
+
+        ### Structure
         # one fully connected layer
-        logits = self.getDenseLayer(features,self.weights['fc1'],self.biases['fc1'])
-        
+        logits = self.get_dense_layer(features, self.weights['fc1'], self.biases['fc1'])
+
         # predictions
         y_ = tf.nn.softmax(logits)
-        
+
         # loss: softmax cross entropy
         loss = tf.reduce_mean(
-                 tf.nn.softmax_cross_entropy_with_logits(labels=labels,logits=logits))
+                 tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits))
 
-        return (y_,loss)
-    
-    def getDenseLayer(self,input_layer,weight,bias,activation=None):
+        return (y_, loss)
+
+    def get_dense_layer(self, input_layer, weight, bias, activation=None):
         # fully connected layer
-        x = tf.add(tf.matmul(input_layer,weight),bias)
+        x = tf.add(tf.matmul(input_layer, weight), bias)
         if activation:
             x = activation(x)
         return x
-    
-    def fit(self,X,y,epochs=10,validation_data=None,test_data=None):
+
+    def fit(self, X, y, epochs=10, validation_data=None, test_data=None):
         X = self._check_array(X)
         y = self._check_array(y)
-        
+
         self.sess.run(self.init_op)
         for epoch in range(epochs):
-            print("Epoch %2d/%2d: "%(epoch+1,epochs))
-            
+            print('Epoch %2d/%2d: ' % (epoch+1, epochs))
+
             # fully gradient descent
             feed_dict = {self.train_features: X, self.train_labels: y}
-            _ = self.sess.run(self.train_op, feed_dict=feed_dict)
-            
+            self.sess.run(self.train_op, feed_dict=feed_dict)
+
             # evaluate at the end of this epoch
             y_ = self.predict(X)
-            train_loss = self.evaluate(X,y)
-            train_acc = self.accuracy(y_,y)
-            msg = " loss = %8.4f, acc = %3.2f%%" % ( train_loss, train_acc*100 )
-            
+            train_loss = self.evaluate(X, y)
+            train_acc = self.accuracy(y_, y)
+            msg = ' loss = %8.4f, acc = %3.2f%%' % (train_loss, train_acc*100)
+
             if validation_data:
-                val_loss = self.evaluate(validation_data[0],validation_data[1])
-                val_acc = self.accuracy(self.predict(validation_data[0]),validation_data[1])
-                msg += ", val_loss = %8.4f, val_acc = %3.2f%%" % ( val_loss, val_acc*100 )
-            
+                val_loss = self.evaluate(validation_data[0], validation_data[1])
+                val_acc = self.accuracy(self.predict(validation_data[0]), validation_data[1])
+                msg += ', val_loss = %8.4f, val_acc = %3.2f%%' % (val_loss, val_acc*100)
+
             print(msg)
-            
+
         if test_data:
-            test_acc = self.accuracy(self.predict(test_data[0]),test_data[1])
-            print("test_acc = %3.2f%%" % (test_acc*100))
-            
+            test_acc = self.accuracy(self.predict(test_data[0]), test_data[1])
+            print('test_acc = %3.2f%%' % (test_acc*100))
+
     def accuracy(self, predictions, labels):
         return (np.sum(np.argmax(predictions, 1) == np.argmax(labels, 1))/predictions.shape[0])
-    
-    def predict(self,X):
+
+    def predict(self, X):
         X = self._check_array(X)
         return self.sess.run(self.new_y_, feed_dict={self.new_features: X})
-    
-    def evaluate(self,X,y):
+
+    def evaluate(self, X, y):
         X = self._check_array(X)
         y = self._check_array(y)
         return self.sess.run(self.new_loss, feed_dict={self.new_features: X, self.new_labels: y})
-    
-    def _check_array(self,ndarray):
+
+    def _check_array(self, ndarray):
         ndarray = np.array(ndarray)
-        if len(ndarray.shape)==1: ndarray = np.reshape(ndarray,(1,ndarray.shape[0]))
+        if len(ndarray.shape) == 1:
+            ndarray = np.reshape(ndarray, (1, ndarray.shape[0]))
         return ndarray
-    
 ```
 
 
 ```python
-model = SimpleLogisticClassification(n_features=28*28,
-                                     n_labels=10,
-                                     learning_rate= 0.5,)
-model.fit(X=train_data.images,
-          y=train_data.labels,
-          epochs=10,
-          validation_data=(valid_data.images,valid_data.labels),
-          test_data=(test_data.images,test_data.labels), )
+model = SimpleLogisticClassification(n_features=28*28, n_labels=10, learning_rate= 0.5)
+model.fit(
+    X=train_data.images,
+    y=train_data.labels,
+    epochs=10,
+    validation_data=(valid_data.images, valid_data.labels),
+    test_data=(test_data.images, test_data.labels),
+)
 ```
 
-    Epoch  1/10: 
-     loss =   9.4080, acc = 12.45%, val_loss =   9.3869, val_acc = 12.78%
-    Epoch  2/10: 
-     loss =   8.2898, acc = 14.57%, val_loss =   8.2863, val_acc = 14.66%
-    Epoch  3/10: 
-     loss =   7.4517, acc = 16.82%, val_loss =   7.4578, val_acc = 16.74%
-    Epoch  4/10: 
-     loss =   6.8298, acc = 19.23%, val_loss =   6.8352, val_acc = 19.10%
-    Epoch  5/10: 
-     loss =   6.3458, acc = 21.83%, val_loss =   6.3448, val_acc = 21.12%
-    Epoch  6/10: 
-     loss =   5.9372, acc = 24.16%, val_loss =   5.9287, val_acc = 23.64%
-    Epoch  7/10: 
-     loss =   5.5760, acc = 26.53%, val_loss =   5.5604, val_acc = 25.98%
-    Epoch  8/10: 
-     loss =   5.2527, acc = 28.88%, val_loss =   5.2306, val_acc = 28.42%
-    Epoch  9/10: 
-     loss =   4.9624, acc = 31.05%, val_loss =   4.9344, val_acc = 30.54%
-    Epoch 10/10: 
-     loss =   4.7012, acc = 33.06%, val_loss =   4.6681, val_acc = 32.52%
-    test_acc = 32.77%
+```yaml
+Epoch  1/10: 
+ loss =   9.2515, acc = 12.81%, val_loss =   9.4888, val_acc = 11.92%
+Epoch  2/10: 
+ loss =   8.2946, acc = 13.89%, val_loss =   8.5156, val_acc = 13.10%
+Epoch  3/10: 
+ loss =   7.5609, acc = 15.92%, val_loss =   7.7680, val_acc = 15.02%
+Epoch  4/10: 
+ loss =   6.9563, acc = 18.31%, val_loss =   7.1521, val_acc = 17.44%
+Epoch  5/10: 
+ loss =   6.4402, acc = 20.94%, val_loss =   6.6249, val_acc = 19.80%
+Epoch  6/10: 
+ loss =   5.9915, acc = 23.35%, val_loss =   6.1650, val_acc = 22.38%
+Epoch  7/10: 
+ loss =   5.5971, acc = 25.79%, val_loss =   5.7596, val_acc = 24.98%
+Epoch  8/10: 
+ loss =   5.2479, acc = 28.18%, val_loss =   5.4001, val_acc = 27.30%
+Epoch  9/10: 
+ loss =   4.9376, acc = 30.46%, val_loss =   5.0803, val_acc = 29.86%
+Epoch 10/10: 
+ loss =   4.6608, acc = 32.71%, val_loss =   4.7947, val_acc = 32.20%
+test_acc = 33.58%
+```
+
