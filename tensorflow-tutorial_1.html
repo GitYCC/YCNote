@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。 本單元程式碼可於Github下載。 MNIST Dataset ...">
+        <meta name="description" content="初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。 本單元程式碼可於Github下載。 首先，先import一些會用到的function import numpy as ...">
         <meta name="keywords" content="Tensorflow">
         <link rel="icon" href="https://www.ycc.idv.tw/static/img/favicon.png">
 
@@ -96,24 +96,28 @@
     <div class="container content">
         <p>初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。</p>
 <p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/01_simple_logistic_classification_on_MNIST.py">Github</a>下載。</p>
-<h3>MNIST Dataset</h3>
-<p>首先，先<code>import</code>一些會用到的function，並且定義<code>summary</code> function以便於觀察ndarray。</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<p>首先，先<code>import</code>一些會用到的function</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
+<span class="n">tf</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+
 <span class="c"># Config the matplotlib backend as plotting inline in IPython</span>
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+</pre></div>
 
-<span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
+
+<h3>MNIST Dataset</h3>
+<p>定義<code>summary</code> function以便於觀察ndarray。</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
     <span class="k">print</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;* shape: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ndarr</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;* min: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;* max: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;* avg: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;* std: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;* unique: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* shape: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ndarr</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* min: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* max: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* avg: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* std: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* unique: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
 </pre></div>
 
 
@@ -121,7 +125,7 @@
 <p>我們使用MNIST Dataset來當作我們練習的標的，MNIST包含一包手寫數字的圖片，每張圖片大小為28x28，每一張圖片都是一個手寫的阿拉伯數字包含0到9，並且標記上它所對應的數字。我們的目標就是要利用MNIST做到手寫數字辨識。</p>
 <p>在Tensorflow你可以很簡單的得到「處理過後的」MNIST，只要利用以下程式碼，</p>
 <div class="highlight"><pre><span class="kn">from</span> <span class="nn">tensorflow.examples.tutorials.mnist</span> <span class="kn">import</span> <span class="n">input_data</span>
-<span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s">&quot;MNIST_data/&quot;</span><span class="p">,</span> <span class="n">one_hot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s">&#39;MNIST_data/&#39;</span><span class="p">,</span> <span class="n">one_hot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 <span class="n">train_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span>
 <span class="n">valid_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">validation</span>
@@ -129,10 +133,14 @@
 </pre></div>
 
 
-<div class="highlight"><pre><span class="n">Extracting</span> <span class="n">MNIST_data</span><span class="o">/</span><span class="n">train</span><span class="o">-</span><span class="n">images</span><span class="o">-</span><span class="n">idx3</span><span class="o">-</span><span class="n">ubyte</span><span class="p">.</span><span class="n">gz</span>
-<span class="n">Extracting</span> <span class="n">MNIST_data</span><span class="o">/</span><span class="n">train</span><span class="o">-</span><span class="n">labels</span><span class="o">-</span><span class="n">idx1</span><span class="o">-</span><span class="n">ubyte</span><span class="p">.</span><span class="n">gz</span>
-<span class="n">Extracting</span> <span class="n">MNIST_data</span><span class="o">/</span><span class="n">t10k</span><span class="o">-</span><span class="n">images</span><span class="o">-</span><span class="n">idx3</span><span class="o">-</span><span class="n">ubyte</span><span class="p">.</span><span class="n">gz</span>
-<span class="n">Extracting</span> <span class="n">MNIST_data</span><span class="o">/</span><span class="n">t10k</span><span class="o">-</span><span class="n">labels</span><span class="o">-</span><span class="n">idx1</span><span class="o">-</span><span class="n">ubyte</span><span class="p">.</span><span class="n">gz</span>
+<div class="highlight"><pre><span class="l-Scalar-Plain">Successfully downloaded train-images-idx3-ubyte.gz 9912422 bytes.</span>
+<span class="l-Scalar-Plain">Extracting MNIST_data/train-images-idx3-ubyte.gz</span>
+<span class="l-Scalar-Plain">Successfully downloaded train-labels-idx1-ubyte.gz 28881 bytes.</span>
+<span class="l-Scalar-Plain">Extracting MNIST_data/train-labels-idx1-ubyte.gz</span>
+<span class="l-Scalar-Plain">Successfully downloaded t10k-images-idx3-ubyte.gz 1648877 bytes.</span>
+<span class="l-Scalar-Plain">Extracting MNIST_data/t10k-images-idx3-ubyte.gz</span>
+<span class="l-Scalar-Plain">Successfully downloaded t10k-labels-idx1-ubyte.gz 4542 bytes.</span>
+<span class="l-Scalar-Plain">Extracting MNIST_data/t10k-labels-idx1-ubyte.gz</span>
 </pre></div>
 
 
@@ -142,61 +150,61 @@
 </pre></div>
 
 
-<div class="highlight"><pre><span class="k">[[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="err">...,</span> 
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]]</span>
-<span class="err">*</span> <span class="err">shape:</span> <span class="err">(55000,</span> <span class="err">784)</span>
-<span class="err">*</span> <span class="err">min:</span> <span class="err">0.0</span>
-<span class="err">*</span> <span class="err">max:</span> <span class="err">1.0</span>
-<span class="err">*</span> <span class="err">avg:</span> <span class="err">0.13070042431354523</span>
-<span class="err">*</span> <span class="err">std:</span> <span class="err">0.30815958976745605</span>
-<span class="err">*</span> <span class="err">unique:</span> <span class="err">[</span> <span class="err">0.</span>          <span class="err">0.00392157</span>  <span class="err">0.00784314</span>  <span class="err">0.01176471</span>  <span class="err">0.01568628</span>  <span class="err">0.01960784</span>
-  <span class="err">0.02352941</span>  <span class="err">0.02745098</span>  <span class="err">0.03137255</span>  <span class="err">0.03529412</span>  <span class="err">0.03921569</span>  <span class="err">0.04313726</span>
-  <span class="err">0.04705883</span>  <span class="err">0.0509804</span>   <span class="err">0.05490196</span>  <span class="err">0.05882353</span>  <span class="err">0.0627451</span>   <span class="err">0.06666667</span>
-  <span class="err">0.07058824</span>  <span class="err">0.07450981</span>  <span class="err">0.07843138</span>  <span class="err">0.08235294</span>  <span class="err">0.08627451</span>  <span class="err">0.09019608</span>
-  <span class="err">0.09411766</span>  <span class="err">0.09803922</span>  <span class="err">0.10196079</span>  <span class="err">0.10588236</span>  <span class="err">0.10980393</span>  <span class="err">0.1137255</span>
-  <span class="err">0.11764707</span>  <span class="err">0.12156864</span>  <span class="err">0.1254902</span>   <span class="err">0.12941177</span>  <span class="err">0.13333334</span>  <span class="err">0.13725491</span>
-  <span class="err">0.14117648</span>  <span class="err">0.14509805</span>  <span class="err">0.14901961</span>  <span class="err">0.15294118</span>  <span class="err">0.15686275</span>  <span class="err">0.16078432</span>
-  <span class="err">0.16470589</span>  <span class="err">0.16862746</span>  <span class="err">0.17254902</span>  <span class="err">0.17647059</span>  <span class="err">0.18039216</span>  <span class="err">0.18431373</span>
-  <span class="err">0.18823531</span>  <span class="err">0.19215688</span>  <span class="err">0.19607845</span>  <span class="err">0.20000002</span>  <span class="err">0.20392159</span>  <span class="err">0.20784315</span>
-  <span class="err">0.21176472</span>  <span class="err">0.21568629</span>  <span class="err">0.21960786</span>  <span class="err">0.22352943</span>  <span class="err">0.227451</span>    <span class="err">0.23137257</span>
-  <span class="err">0.23529413</span>  <span class="err">0.2392157</span>   <span class="err">0.24313727</span>  <span class="err">0.24705884</span>  <span class="err">0.25098041</span>  <span class="err">0.25490198</span>
-  <span class="err">0.25882354</span>  <span class="err">0.26274511</span>  <span class="err">0.26666668</span>  <span class="err">0.27058825</span>  <span class="err">0.27450982</span>  <span class="err">0.27843139</span>
-  <span class="err">0.28235295</span>  <span class="err">0.28627452</span>  <span class="err">0.29019609</span>  <span class="err">0.29411766</span>  <span class="err">0.29803923</span>  <span class="err">0.3019608</span>
-  <span class="err">0.30588236</span>  <span class="err">0.30980393</span>  <span class="err">0.3137255</span>   <span class="err">0.31764707</span>  <span class="err">0.32156864</span>  <span class="err">0.32549021</span>
-  <span class="err">0.32941177</span>  <span class="err">0.33333334</span>  <span class="err">0.33725491</span>  <span class="err">0.34117648</span>  <span class="err">0.34509805</span>  <span class="err">0.34901962</span>
-  <span class="err">0.35294119</span>  <span class="err">0.35686275</span>  <span class="err">0.36078432</span>  <span class="err">0.36470589</span>  <span class="err">0.36862746</span>  <span class="err">0.37254903</span>
-  <span class="err">0.37647063</span>  <span class="err">0.38039219</span>  <span class="err">0.38431376</span>  <span class="err">0.38823533</span>  <span class="err">0.3921569</span>   <span class="err">0.39607847</span>
-  <span class="err">0.40000004</span>  <span class="err">0.4039216</span>   <span class="err">0.40784317</span>  <span class="err">0.41176474</span>  <span class="err">0.41568631</span>  <span class="err">0.41960788</span>
-  <span class="err">0.42352945</span>  <span class="err">0.42745101</span>  <span class="err">0.43137258</span>  <span class="err">0.43529415</span>  <span class="err">0.43921572</span>  <span class="err">0.44313729</span>
-  <span class="err">0.44705886</span>  <span class="err">0.45098042</span>  <span class="err">0.45490199</span>  <span class="err">0.45882356</span>  <span class="err">0.46274513</span>  <span class="err">0.4666667</span>
-  <span class="err">0.47058827</span>  <span class="err">0.47450984</span>  <span class="err">0.4784314</span>   <span class="err">0.48235297</span>  <span class="err">0.48627454</span>  <span class="err">0.49019611</span>
-  <span class="err">0.49411768</span>  <span class="err">0.49803925</span>  <span class="err">0.50196081</span>  <span class="err">0.50588238</span>  <span class="err">0.50980395</span>  <span class="err">0.51372552</span>
-  <span class="err">0.51764709</span>  <span class="err">0.52156866</span>  <span class="err">0.52549022</span>  <span class="err">0.52941179</span>  <span class="err">0.53333336</span>  <span class="err">0.53725493</span>
-  <span class="err">0.5411765</span>   <span class="err">0.54509807</span>  <span class="err">0.54901963</span>  <span class="err">0.5529412</span>   <span class="err">0.55686277</span>  <span class="err">0.56078434</span>
-  <span class="err">0.56470591</span>  <span class="err">0.56862748</span>  <span class="err">0.57254905</span>  <span class="err">0.57647061</span>  <span class="err">0.58039218</span>  <span class="err">0.58431375</span>
-  <span class="err">0.58823532</span>  <span class="err">0.59215689</span>  <span class="err">0.59607846</span>  <span class="err">0.60000002</span>  <span class="err">0.60392159</span>  <span class="err">0.60784316</span>
-  <span class="err">0.61176473</span>  <span class="err">0.6156863</span>   <span class="err">0.61960787</span>  <span class="err">0.62352943</span>  <span class="err">0.627451</span>    <span class="err">0.63137257</span>
-  <span class="err">0.63529414</span>  <span class="err">0.63921571</span>  <span class="err">0.64313728</span>  <span class="err">0.64705884</span>  <span class="err">0.65098041</span>  <span class="err">0.65490198</span>
-  <span class="err">0.65882355</span>  <span class="err">0.66274512</span>  <span class="err">0.66666669</span>  <span class="err">0.67058825</span>  <span class="err">0.67450982</span>  <span class="err">0.67843139</span>
-  <span class="err">0.68235296</span>  <span class="err">0.68627453</span>  <span class="err">0.6901961</span>   <span class="err">0.69411767</span>  <span class="err">0.69803923</span>  <span class="err">0.7019608</span>
-  <span class="err">0.70588237</span>  <span class="err">0.70980394</span>  <span class="err">0.71372551</span>  <span class="err">0.71764708</span>  <span class="err">0.72156864</span>  <span class="err">0.72549021</span>
-  <span class="err">0.72941178</span>  <span class="err">0.73333335</span>  <span class="err">0.73725492</span>  <span class="err">0.74117649</span>  <span class="err">0.74509805</span>  <span class="err">0.74901962</span>
-  <span class="err">0.75294125</span>  <span class="err">0.75686282</span>  <span class="err">0.76078439</span>  <span class="err">0.76470596</span>  <span class="err">0.76862752</span>  <span class="err">0.77254909</span>
-  <span class="err">0.77647066</span>  <span class="err">0.78039223</span>  <span class="err">0.7843138</span>   <span class="err">0.78823537</span>  <span class="err">0.79215693</span>  <span class="err">0.7960785</span>
-  <span class="err">0.80000007</span>  <span class="err">0.80392164</span>  <span class="err">0.80784321</span>  <span class="err">0.81176478</span>  <span class="err">0.81568635</span>  <span class="err">0.81960791</span>
-  <span class="err">0.82352948</span>  <span class="err">0.82745105</span>  <span class="err">0.83137262</span>  <span class="err">0.83529419</span>  <span class="err">0.83921576</span>  <span class="err">0.84313732</span>
-  <span class="err">0.84705889</span>  <span class="err">0.85098046</span>  <span class="err">0.85490203</span>  <span class="err">0.8588236</span>   <span class="err">0.86274517</span>  <span class="err">0.86666673</span>
-  <span class="err">0.8705883</span>   <span class="err">0.87450987</span>  <span class="err">0.87843144</span>  <span class="err">0.88235301</span>  <span class="err">0.88627458</span>  <span class="err">0.89019614</span>
-  <span class="err">0.89411771</span>  <span class="err">0.89803928</span>  <span class="err">0.90196085</span>  <span class="err">0.90588242</span>  <span class="err">0.90980399</span>  <span class="err">0.91372555</span>
-  <span class="err">0.91764712</span>  <span class="err">0.92156869</span>  <span class="err">0.92549026</span>  <span class="err">0.92941183</span>  <span class="err">0.9333334</span>   <span class="err">0.93725497</span>
-  <span class="err">0.94117653</span>  <span class="err">0.9450981</span>   <span class="err">0.94901967</span>  <span class="err">0.95294124</span>  <span class="err">0.95686281</span>  <span class="err">0.96078438</span>
-  <span class="err">0.96470594</span>  <span class="err">0.96862751</span>  <span class="err">0.97254908</span>  <span class="err">0.97647065</span>  <span class="err">0.98039222</span>  <span class="err">0.98431379</span>
-  <span class="err">0.98823535</span>  <span class="err">0.99215692</span>  <span class="err">0.99607849</span>  <span class="err">1.</span>        <span class="err">]</span>
+<div class="highlight"><pre><span class="p-Indicator">[[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
+ <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
+ <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
+ <span class="nv">...</span>
+ <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
+ <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
+ <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]]</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">shape</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">(55000, 784)</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">min</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.0</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">max</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1.0</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">avg</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.13070042431354523</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">std</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.30815958976745605</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">unique</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">0.         0.00392157 0.00784314 0.01176471 0.01568628 0.01960784</span>
+ <span class="nv">0.02352941 0.02745098 0.03137255 0.03529412 0.03921569 0.04313726</span>
+ <span class="nv">0.04705883 0.0509804  0.05490196 0.05882353 0.0627451  0.06666667</span>
+ <span class="nv">0.07058824 0.07450981 0.07843138 0.08235294 0.08627451 0.09019608</span>
+ <span class="nv">0.09411766 0.09803922 0.10196079 0.10588236 0.10980393 0.1137255</span>
+ <span class="nv">0.11764707 0.12156864 0.1254902  0.12941177 0.13333334 0.13725491</span>
+ <span class="nv">0.14117648 0.14509805 0.14901961 0.15294118 0.15686275 0.16078432</span>
+ <span class="nv">0.16470589 0.16862746 0.17254902 0.1764706  0.18039216 0.18431373</span>
+ <span class="nv">0.18823531 0.19215688 0.19607845 0.20000002 0.20392159 0.20784315</span>
+ <span class="nv">0.21176472 0.21568629 0.21960786 0.22352943 0.227451   0.23137257</span>
+ <span class="nv">0.23529413 0.2392157  0.24313727 0.24705884 0.2509804  0.25490198</span>
+ <span class="nv">0.25882354 0.2627451  0.26666668 0.27058825 0.27450982 0.2784314</span>
+ <span class="nv">0.28235295 0.28627452 0.2901961  0.29411766 0.29803923 0.3019608</span>
+ <span class="nv">0.30588236 0.30980393 0.3137255  0.31764707 0.32156864 0.3254902</span>
+ <span class="nv">0.32941177 0.33333334 0.3372549  0.34117648 0.34509805 0.34901962</span>
+ <span class="nv">0.3529412  0.35686275 0.36078432 0.3647059  0.36862746 0.37254903</span>
+ <span class="nv">0.37647063 0.3803922  0.38431376 0.38823533 0.3921569  0.39607847</span>
+ <span class="nv">0.40000004 0.4039216  0.40784317 0.41176474 0.4156863  0.41960788</span>
+ <span class="nv">0.42352945 0.427451   0.43137258 0.43529415 0.43921572 0.4431373</span>
+ <span class="nv">0.44705886 0.45098042 0.454902   0.45882356 0.46274513 0.4666667</span>
+ <span class="nv">0.47058827 0.47450984 0.4784314  0.48235297 0.48627454 0.4901961</span>
+ <span class="nv">0.49411768 0.49803925 0.5019608  0.5058824  0.50980395 0.5137255</span>
+ <span class="nv">0.5176471  0.52156866 0.5254902  0.5294118  0.53333336 0.5372549</span>
+ <span class="nv">0.5411765  0.54509807 0.54901963 0.5529412  0.5568628  0.56078434</span>
+ <span class="nv">0.5647059  0.5686275  0.57254905 0.5764706  0.5803922  0.58431375</span>
+ <span class="nv">0.5882353  0.5921569  0.59607846 0.6        0.6039216  0.60784316</span>
+ <span class="nv">0.6117647  0.6156863  0.61960787 0.62352943 0.627451   0.6313726</span>
+ <span class="nv">0.63529414 0.6392157  0.6431373  0.64705884 0.6509804  0.654902</span>
+ <span class="nv">0.65882355 0.6627451  0.6666667  0.67058825 0.6745098  0.6784314</span>
+ <span class="nv">0.68235296 0.6862745  0.6901961  0.69411767 0.69803923 0.7019608</span>
+ <span class="nv">0.7058824  0.70980394 0.7137255  0.7176471  0.72156864 0.7254902</span>
+ <span class="nv">0.7294118  0.73333335 0.7372549  0.7411765  0.74509805 0.7490196</span>
+ <span class="nv">0.75294125 0.7568628  0.7607844  0.76470596 0.7686275  0.7725491</span>
+ <span class="nv">0.77647066 0.7803922  0.7843138  0.78823537 0.79215693 0.7960785</span>
+ <span class="nv">0.8000001  0.80392164 0.8078432  0.8117648  0.81568635 0.8196079</span>
+ <span class="nv">0.8235295  0.82745105 0.8313726  0.8352942  0.83921576 0.8431373</span>
+ <span class="nv">0.8470589  0.85098046 0.854902   0.8588236  0.86274517 0.86666673</span>
+ <span class="nv">0.8705883  0.8745099  0.87843144 0.882353   0.8862746  0.89019614</span>
+ <span class="nv">0.8941177  0.8980393  0.90196085 0.9058824  0.909804   0.91372555</span>
+ <span class="nv">0.9176471  0.9215687  0.92549026 0.9294118  0.9333334  0.93725497</span>
+ <span class="nv">0.94117653 0.9450981  0.9490197  0.95294124 0.9568628  0.9607844</span>
+ <span class="nv">0.96470594 0.9686275  0.9725491  0.97647065 0.9803922  0.9843138</span>
+ <span class="nv">0.98823535 0.9921569  0.9960785  1.</span>        <span class="p-Indicator">]</span>
 </pre></div>
 
 
@@ -220,19 +228,19 @@
 </pre></div>
 
 
-<div class="highlight"><pre><span class="k">[[ 0.  0.  0. ...,  1.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="err">...,</span> 
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  0.  0.]</span>
- <span class="k">[ 0.  0.  0. ...,  0.  1.  0.]]</span>
-<span class="err">*</span> <span class="err">shape:</span> <span class="err">(55000,</span> <span class="err">10)</span>
-<span class="err">*</span> <span class="err">min:</span> <span class="err">0.0</span>
-<span class="err">*</span> <span class="err">max:</span> <span class="err">1.0</span>
-<span class="err">*</span> <span class="err">avg:</span> <span class="err">0.1</span>
-<span class="err">*</span> <span class="err">std:</span> <span class="err">0.30000000000000004</span>
-<span class="err">*</span> <span class="err">unique:</span> <span class="k">[ 0.  1.]</span>
+<div class="highlight"><pre><span class="p-Indicator">[[</span><span class="nv">0. 0. 0. ... 1. 0. 0.</span><span class="p-Indicator">]</span>
+ <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
+ <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
+ <span class="nv">...</span>
+ <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
+ <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
+ <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 1. 0.</span><span class="p-Indicator">]]</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">shape</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">(55000, 10)</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">min</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.0</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">max</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1.0</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">avg</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.1</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">std</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.30000000000000004</span>
+<span class="err">*</span> <span class="l-Scalar-Plain">unique</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">0. 1.</span><span class="p-Indicator">]</span>
 </pre></div>
 
 
@@ -241,7 +249,7 @@
 </pre></div>
 
 
-<div class="highlight"><pre><span class="p">[</span> <span class="mf">1.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span>  <span class="mf">0.</span><span class="p">]</span>
+<div class="highlight"><pre><span class="p-Indicator">[</span><span class="nv">1. 0. 0. 0. 0. 0. 0. 0. 0. 0.</span><span class="p-Indicator">]</span>
 </pre></div>
 
 
@@ -256,11 +264,11 @@
 <span class="k">def</span> <span class="nf">softmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="c"># avoid exp function go to too large,</span>
     <span class="c"># pre-reduce before applying exp function</span>
-    <span class="n">max_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">max_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">max_score</span>
 
     <span class="n">exp_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">sum_exp_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exp_s</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sum_exp_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">exp_s</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">softmax</span> <span class="o">=</span> <span class="n">exp_s</span> <span class="o">/</span> <span class="n">sum_exp_s</span>
     <span class="k">return</span> <span class="n">softmax</span>
 
@@ -269,7 +277,7 @@
 </pre></div>
 
 
-<div class="highlight"><pre><span class="p">[</span> <span class="mf">0.8360188</span>   <span class="mf">0.11314284</span>  <span class="mf">0.05083836</span><span class="p">]</span>
+<div class="highlight"><pre><span class="p-Indicator">[</span><span class="nv">0.8360188  0.11314284 0.05083836</span><span class="p-Indicator">]</span>
 </pre></div>
 
 
@@ -280,7 +288,7 @@ Loss_{cross-entropy} = - \sum_i y_i ln(s_i)
 $$</div>
 <p>
 其中，<span class="math">\(y_i\)</span>為目標Label，<span class="math">\(s_i\)</span>為經過Softmax產生的預測值。</p>
-<p>至於如果你想要了解為何需要使用Cross-Entropy Loss？這我在機器學習基石的筆記中已經有提及過，請看<a href="http://www.ycc.idv.tw/ml-course-foundations_3.html">介紹Logistic Regression的部分</a>。</p>
+<p>至於如果你想要了解為何需要使用Cross-Entropy Loss？這我在機器學習基石的筆記中已經有提及過，請看<a href="http://www.ycc.idv.tw/YCNote/post/27">介紹Logistic Regression的部分</a>。</p>
 <h3>分離數據的重要性</h3>
 <p>在MNIST Dataset中，你會發現分為Training Dataset、Validation Dataset和Testing Dataset，這樣的作法在Machine Learning中是常見且必要的。</p>
 <p>流程是這樣的，我們會先使用Training Dataset來訓練Model，並且使用Validation Dataset來檢驗Model的好壞，我們會依據Validation Dataset的檢驗調整Model上的參數，試著盡可能的壓低Validation Dataset的Error，記住！在過程中所產生的所有Models都要保留下來，因為最後選擇的Model並不是Validation Dataset的Error最小的，而是要再由Testing Dataset來做最後的挑選，挑選出能使Testing Dataset的Error最小的Model。</p>
@@ -322,7 +330,7 @@ $$</div>
 
 <p>(2) 變數張量：</p>
 <p>與常數截然不同的就是變數，「變數張量」是指在訓練當中可以改變的值，一般「變數張量」會用作於Machine Learning需要被訓練的參數，如果你沒有特別設定，在最佳化的過程中，Tensorflow會自動調整「變數張量」的數值來最佳化。</p>
-<div class="highlight"><pre><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span> <span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span> <span class="p">)</span>
+<div class="highlight"><pre><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)))</span>
 </pre></div>
 
 
@@ -334,7 +342,7 @@ $$</div>
 
 <p>(3) 置放張量：</p>
 <p>另外有一些張量負責擔任輸入窗口的角色，稱為Placeholder。</p>
-<div class="highlight"><pre><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="mi">1000</span><span class="p">))</span>
+<div class="highlight"><pre><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
 </pre></div>
 
 
@@ -366,7 +374,7 @@ $$</div>
 </pre></div>
 
 
-<div class="highlight"><pre><span class="n">Tensor</span><span class="p">(</span><span class="s">&quot;Add:0&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+<div class="highlight"><pre><span class="l-Scalar-Plain">Tensor(&quot;Add:0&quot;, shape=(), dtype=int32)</span>
 </pre></div>
 
 
@@ -375,7 +383,7 @@ $$</div>
 </pre></div>
 
 
-<div class="highlight"><pre><span class="mi">2</span>
+<div class="highlight"><pre><span class="l-Scalar-Plain">2</span>
 </pre></div>
 
 
@@ -384,7 +392,7 @@ $$</div>
 </pre></div>
 
 
-<div class="highlight"><pre><span class="mi">2</span>
+<div class="highlight"><pre><span class="l-Scalar-Plain">2</span>
 </pre></div>
 
 
@@ -398,20 +406,20 @@ $$</div>
 <span class="n">s2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">g2</span><span class="p">)</span>
 
 <span class="c"># if x = 2 and y = 3</span>
-<span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="mi">3</span><span class="p">}))</span> 
+<span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">3</span><span class="p">}))</span> 
 </pre></div>
 
 
-<div class="highlight"><pre><span class="mi">5</span>
+<div class="highlight"><pre><span class="l-Scalar-Plain">5</span>
 </pre></div>
 
 
 <div class="highlight"><pre><span class="c"># if x = 5 and y = 7</span>
-<span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="mi">7</span><span class="p">}))</span> 
+<span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">7</span><span class="p">}))</span> 
 </pre></div>
 
 
-<div class="highlight"><pre><span class="mi">12</span>
+<div class="highlight"><pre><span class="l-Scalar-Plain">12</span>
 </pre></div>
 
 
@@ -423,152 +431,154 @@ $$</div>
 <p>在<code>SimpleLogisticClassification</code>裡頭，「建構」的動作在<code>__init__</code>中會進行，由<code>build</code>函式來建立Graph，其中我將Neurel Network的結構分離存於<code>structure</code>裡。「訓練」的動作在<code>fit</code>中進行，這裡採用傳統的Gradient Descent的方法，將所有Data全部考慮進去最佳化，未來會再介紹Batch Gradient Descent。最後，「推論」的部分在<code>predict</code>和<code>evaluate</code>中進行。</p>
 <p><code>SimpleLogisticClassification</code>將會建構一個只有一層的Neurel Network，也就是說沒有Hidden Layer，畫個圖。</p>
 <p><img alt="Simple Logistic Classification" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.002.jpeg"></p>
-<div class="highlight"><pre><span class="k">class</span> <span class="nc">SimpleLogisticClassification</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_features</span><span class="p">,</span><span class="n">n_labels</span><span class="p">,</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SimpleLogisticClassification</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">n_labels</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span> <span class="o">=</span> <span class="n">n_labels</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span>  <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="bp">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span> <span class="c"># initialize new graph</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span> <span class="c"># building graph</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span> <span class="c"># create session by the graph     </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>  <span class="c"># initialize new graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span>  <span class="c"># building graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span>  <span class="c"># create session by the graph</span>
 
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">learning_rate</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">):</span>
         <span class="c"># Building Graph</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
             <span class="c">### Input</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span>   <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span>  <span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
 
             <span class="c">### Optimalization</span>
             <span class="c"># build neurel network structure and get their predictions and loss</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">,</span>
-                                                        <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">,</span>
+                                                <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">)</span>
             <span class="c"># define training operation</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
 
             <span class="c">### Prediction</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span>   <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span>  <span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_y_</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">,</span>
-                                                       <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span><span class="p">,)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">,</span>
+                                                        <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span><span class="p">)</span>
 
             <span class="c">### Initialization</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">features</span><span class="p">,</span><span class="n">labels</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
         <span class="c"># build neurel network structure and return their predictions and loss</span>
         <span class="c">### Variable</span>
         <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">)</span> <span class="p">)),</span>
+                <span class="s">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))),</span>
             <span class="p">}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">biases</span>  <span class="o">=</span> <span class="p">{</span>
-                <span class="s">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">)</span> <span class="p">)),</span>
-            <span class="p">}</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))),</span>
+            <span class="p">}</span>
 
-        <span class="c">### Structure   </span>
+        <span class="c">### Structure</span>
         <span class="c"># one fully connected layer</span>
-        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDenseLayer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;fc1&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s">&#39;fc1&#39;</span><span class="p">])</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dense_layer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;fc1&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s">&#39;fc1&#39;</span><span class="p">])</span>
 
         <span class="c"># predictions</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
 
         <span class="c"># loss: softmax cross entropy</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
-                 <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="n">logits</span><span class="o">=</span><span class="n">logits</span><span class="p">))</span>
+                 <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">logits</span><span class="o">=</span><span class="n">logits</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">y_</span><span class="p">,</span><span class="n">loss</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getDenseLayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_layer</span><span class="p">,</span><span class="n">weight</span><span class="p">,</span><span class="n">bias</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_dense_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_layer</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="c"># fully connected layer</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">input_layer</span><span class="p">,</span><span class="n">weight</span><span class="p">),</span><span class="n">bias</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">input_layer</span><span class="p">,</span> <span class="n">weight</span><span class="p">),</span> <span class="n">bias</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">activation</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">activation</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span>
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">validation_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">test_data</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">test_data</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_op</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Epoch </span><span class="si">%2d</span><span class="s">/</span><span class="si">%2d</span><span class="s">: &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">epochs</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;Epoch </span><span class="si">%2d</span><span class="s">/</span><span class="si">%2d</span><span class="s">: &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="p">))</span>
 
             <span class="c"># fully gradient descent</span>
             <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">:</span> <span class="n">y</span><span class="p">}</span>
-            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="n">feed_dict</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="n">feed_dict</span><span class="p">)</span>
 
             <span class="c"># evaluate at the end of this epoch</span>
             <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-            <span class="n">train_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">train_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot; loss = </span><span class="si">%8.4f</span><span class="s">, acc = </span><span class="si">%3.2f%%</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_acc</span><span class="o">*</span><span class="mi">100</span> <span class="p">)</span>
+            <span class="n">train_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">train_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39; loss = </span><span class="si">%8.4f</span><span class="s">, acc = </span><span class="si">%3.2f%%</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">train_loss</span><span class="p">,</span> <span class="n">train_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">validation_data</span><span class="p">:</span>
-                <span class="n">val_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">val_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;, val_loss = </span><span class="si">%8.4f</span><span class="s">, val_acc = </span><span class="si">%3.2f%%</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">val_loss</span><span class="p">,</span> <span class="n">val_acc</span><span class="o">*</span><span class="mi">100</span> <span class="p">)</span>
+                <span class="n">val_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">validation_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">val_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">validation_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s">&#39;, val_loss = </span><span class="si">%8.4f</span><span class="s">, val_acc = </span><span class="si">%3.2f%%</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">val_loss</span><span class="p">,</span> <span class="n">val_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
 
             <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">test_data</span><span class="p">:</span>
-            <span class="n">test_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">test_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&quot;test_acc = </span><span class="si">%3.2f%%</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">test_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
+            <span class="n">test_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">test_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;test_acc = </span><span class="si">%3.2f%%</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">test_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="n">predictions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_y_</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">:</span> <span class="n">X</span><span class="p">})</span>
 
-    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span><span class="p">:</span> <span class="n">y</span><span class="p">})</span>
 
-    <span class="k">def</span> <span class="nf">_check_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_check_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">):</span>
         <span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ndarray</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ndarray</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ndarray</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">ndarray</span>
 </pre></div>
 
 
-<div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">SimpleLogisticClassification</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span>
-                                     <span class="n">n_labels</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                     <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">0.5</span><span class="p">,)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span>
-          <span class="n">y</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
-          <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-          <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">valid_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span><span class="n">valid_data</span><span class="o">.</span><span class="n">labels</span><span class="p">),</span>
-          <span class="n">test_data</span><span class="o">=</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span><span class="n">test_data</span><span class="o">.</span><span class="n">labels</span><span class="p">),</span> <span class="p">)</span>
+<div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">SimpleLogisticClassification</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span> <span class="n">n_labels</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">X</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">valid_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">valid_data</span><span class="o">.</span><span class="n">labels</span><span class="p">),</span>
+    <span class="n">test_data</span><span class="o">=</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">test_data</span><span class="o">.</span><span class="n">labels</span><span class="p">),</span>
+<span class="p">)</span>
 </pre></div>
 
 
-<div class="highlight"><pre><span class="n">Epoch</span>  <span class="mi">1</span><span class="o">/</span><span class="mi">10</span><span class="o">:</span> 
- <span class="n">loss</span> <span class="o">=</span>   <span class="mf">9.4080</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="mf">12.45</span><span class="o">%</span><span class="p">,</span> <span class="n">val_loss</span> <span class="o">=</span>   <span class="mf">9.3869</span><span class="p">,</span> <span class="n">val_acc</span> <span class="o">=</span> <span class="mf">12.78</span><span class="o">%</span>
-<span class="n">Epoch</span>  <span class="mi">2</span><span class="o">/</span><span class="mi">10</span><span class="o">:</span> 
- <span class="n">loss</span> <span class="o">=</span>   <span class="mf">8.2898</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="mf">14.57</span><span class="o">%</span><span class="p">,</span> <span class="n">val_loss</span> <span class="o">=</span>   <span class="mf">8.2863</span><span class="p">,</span> <span class="n">val_acc</span> <span class="o">=</span> <span class="mf">14.66</span><span class="o">%</span>
-<span class="n">Epoch</span>  <span class="mi">3</span><span class="o">/</span><span class="mi">10</span><span class="o">:</span> 
- <span class="n">loss</span> <span class="o">=</span>   <span class="mf">7.4517</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="mf">16.82</span><span class="o">%</span><span class="p">,</span> <span class="n">val_loss</span> <span class="o">=</span>   <span class="mf">7.4578</span><span class="p">,</span> <span class="n">val_acc</span> <span class="o">=</span> <span class="mf">16.74</span><span class="o">%</span>
-<span class="n">Epoch</span>  <span class="mi">4</span><span class="o">/</span><span class="mi">10</span><span class="o">:</span> 
- <span class="n">loss</span> <span class="o">=</span>   <span class="mf">6.8298</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="mf">19.23</span><span class="o">%</span><span class="p">,</span> <span class="n">val_loss</span> <span class="o">=</span>   <span class="mf">6.8352</span><span class="p">,</span> <span class="n">val_acc</span> <span class="o">=</span> <span class="mf">19.10</span><span class="o">%</span>
-<span class="n">Epoch</span>  <span class="mi">5</span><span class="o">/</span><span class="mi">10</span><span class="o">:</span> 
- <span class="n">loss</span> <span class="o">=</span>   <span class="mf">6.3458</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="mf">21.83</span><span class="o">%</span><span class="p">,</span> <span class="n">val_loss</span> <span class="o">=</span>   <span class="mf">6.3448</span><span class="p">,</span> <span class="n">val_acc</span> <span class="o">=</span> <span class="mf">21.12</span><span class="o">%</span>
-<span class="n">Epoch</span>  <span class="mi">6</span><span class="o">/</span><span class="mi">10</span><span class="o">:</span> 
- <span class="n">loss</span> <span class="o">=</span>   <span class="mf">5.9372</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="mf">24.16</span><span class="o">%</span><span class="p">,</span> <span class="n">val_loss</span> <span class="o">=</span>   <span class="mf">5.9287</span><span class="p">,</span> <span class="n">val_acc</span> <span class="o">=</span> <span class="mf">23.64</span><span class="o">%</span>
-<span class="n">Epoch</span>  <span class="mi">7</span><span class="o">/</span><span class="mi">10</span><span class="o">:</span> 
- <span class="n">loss</span> <span class="o">=</span>   <span class="mf">5.5760</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="mf">26.53</span><span class="o">%</span><span class="p">,</span> <span class="n">val_loss</span> <span class="o">=</span>   <span class="mf">5.5604</span><span class="p">,</span> <span class="n">val_acc</span> <span class="o">=</span> <span class="mf">25.98</span><span class="o">%</span>
-<span class="n">Epoch</span>  <span class="mi">8</span><span class="o">/</span><span class="mi">10</span><span class="o">:</span> 
- <span class="n">loss</span> <span class="o">=</span>   <span class="mf">5.2527</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="mf">28.88</span><span class="o">%</span><span class="p">,</span> <span class="n">val_loss</span> <span class="o">=</span>   <span class="mf">5.2306</span><span class="p">,</span> <span class="n">val_acc</span> <span class="o">=</span> <span class="mf">28.42</span><span class="o">%</span>
-<span class="n">Epoch</span>  <span class="mi">9</span><span class="o">/</span><span class="mi">10</span><span class="o">:</span> 
- <span class="n">loss</span> <span class="o">=</span>   <span class="mf">4.9624</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="mf">31.05</span><span class="o">%</span><span class="p">,</span> <span class="n">val_loss</span> <span class="o">=</span>   <span class="mf">4.9344</span><span class="p">,</span> <span class="n">val_acc</span> <span class="o">=</span> <span class="mf">30.54</span><span class="o">%</span>
-<span class="n">Epoch</span> <span class="mi">10</span><span class="o">/</span><span class="mi">10</span><span class="o">:</span> 
- <span class="n">loss</span> <span class="o">=</span>   <span class="mf">4.7012</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="mf">33.06</span><span class="o">%</span><span class="p">,</span> <span class="n">val_loss</span> <span class="o">=</span>   <span class="mf">4.6681</span><span class="p">,</span> <span class="n">val_acc</span> <span class="o">=</span> <span class="mf">32.52</span><span class="o">%</span>
-<span class="n">test_acc</span> <span class="o">=</span> <span class="mf">32.77</span><span class="o">%</span>
+<div class="highlight"><pre><span class="l-Scalar-Plain">Epoch  1/10</span><span class="p-Indicator">:</span> 
+ <span class="l-Scalar-Plain">loss =   9.2515, acc = 12.81%, val_loss =   9.4888, val_acc = 11.92%</span>
+<span class="l-Scalar-Plain">Epoch  2/10</span><span class="p-Indicator">:</span> 
+ <span class="l-Scalar-Plain">loss =   8.2946, acc = 13.89%, val_loss =   8.5156, val_acc = 13.10%</span>
+<span class="l-Scalar-Plain">Epoch  3/10</span><span class="p-Indicator">:</span> 
+ <span class="l-Scalar-Plain">loss =   7.5609, acc = 15.92%, val_loss =   7.7680, val_acc = 15.02%</span>
+<span class="l-Scalar-Plain">Epoch  4/10</span><span class="p-Indicator">:</span> 
+ <span class="l-Scalar-Plain">loss =   6.9563, acc = 18.31%, val_loss =   7.1521, val_acc = 17.44%</span>
+<span class="l-Scalar-Plain">Epoch  5/10</span><span class="p-Indicator">:</span> 
+ <span class="l-Scalar-Plain">loss =   6.4402, acc = 20.94%, val_loss =   6.6249, val_acc = 19.80%</span>
+<span class="l-Scalar-Plain">Epoch  6/10</span><span class="p-Indicator">:</span> 
+ <span class="l-Scalar-Plain">loss =   5.9915, acc = 23.35%, val_loss =   6.1650, val_acc = 22.38%</span>
+<span class="l-Scalar-Plain">Epoch  7/10</span><span class="p-Indicator">:</span> 
+ <span class="l-Scalar-Plain">loss =   5.5971, acc = 25.79%, val_loss =   5.7596, val_acc = 24.98%</span>
+<span class="l-Scalar-Plain">Epoch  8/10</span><span class="p-Indicator">:</span> 
+ <span class="l-Scalar-Plain">loss =   5.2479, acc = 28.18%, val_loss =   5.4001, val_acc = 27.30%</span>
+<span class="l-Scalar-Plain">Epoch  9/10</span><span class="p-Indicator">:</span> 
+ <span class="l-Scalar-Plain">loss =   4.9376, acc = 30.46%, val_loss =   5.0803, val_acc = 29.86%</span>
+<span class="l-Scalar-Plain">Epoch 10/10</span><span class="p-Indicator">:</span> 
+ <span class="l-Scalar-Plain">loss =   4.6608, acc = 32.71%, val_loss =   4.7947, val_acc = 32.20%</span>
+<span class="l-Scalar-Plain">test_acc = 33.58%</span>
 </pre></div>
 
 
