@@ -128,7 +128,7 @@ $$
 
 眼尖的你有沒有發現矛盾啊! 可以調控的變數很少，我們能確保$E_{in} \approx E_{out}​$，但是如果我想要找到更小的$E_{in}​$ 又必須有更多的調控變數，這個矛盾是機器學習上一個重要的課題，**解法是我們必須要能找到適當的調控變數數量，也就是適當大小的$d_{VC}$ **。
 
-![](http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.02.jpeg)
+![image](http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.02.jpeg)
 
 from: [https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf](https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf)
 
