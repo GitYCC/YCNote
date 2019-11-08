@@ -1,229 +1,628 @@
 <!DOCTYPE html>
-<html lang="zh">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)。">
-        <meta name="keywords" content="">
-        <link rel="icon" href="https://www.ycc.idv.tw/static/img/favicon.png">
+<html class="no-js" lang="en">
+<head>
 
-        <title>YC NOTE - page 3 - YC Note</title>
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>YC Note</title>
+    <meta name="description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)">
+    <meta name="author" content="YC">
 
-        <!-- Stylesheets -->
-        <link href="https://www.ycc.idv.tw/theme/css/all.min.css" rel="stylesheet">
-        <!-- /Stylesheets -->
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- RSS Feeds -->
-        <!-- /RSS Feeds -->
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/index_base.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/index_vendor.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/index_main.css">
+    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
 
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
+    <!-- script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/index_modernizr.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/index_pace.min.js"></script>
 
-        <script type="text/x-mathjax-config"> 
-            MathJax.Hub.Config({ 
-                "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-                SVG: { linebreaks: { automatic:true } } 
-                });
-        </script>
+    <!-- favicons
+    ================================================== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+
+    <!-- Google Analytics
+    ================================================== -->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-68393177-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+</head>
+
+<body id="top">
+
+    <div id="preloader">
+        <div id="loader"></div>
+    </div>
+
+    <!-- site header
+    ================================================== -->
+    <header class="s-header">
+
+        <div class="header-logo">
+            <a class="site-logo" href="https://www.ycc.idv.tw">
+                <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
+            </a>
+        </div>
+
+        <nav class="header-nav-wrap">
+            <ul class="header-main-nav">
+                <li class="current"><a class="smoothscroll" href="#intro" title="intro">Intro</a></li>
+                <li><a class="smoothscroll" href="#about" title="about">About</a></li>
+                <li><a class="smoothscroll" href="#blog" title="blog">Blog</a></li>
+                <li><a class="smoothscroll" href="#contact" title="contact us">Contact Me</a></li>
+            </ul>
+
+            <ul class="header-social">
+                <li><a href="https://github.com/GitYCC" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+                <li><a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></li>
+            </ul>
+        </nav>
+
+        <a class="header-menu-toggle" href="#"><span>Menu</span></a>
+
+    </header> <!-- end s-header -->
 
 
-        <!-- Google Analytics -->
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <!-- intro
+    ================================================== -->
+    <section id="intro" class="s-intro target-section" style="background-image:url('https://www.ycc.idv.tw/images/welcome_front_board.jpg'); background-position: center; background-size: cover;">
+        <div class="row intro-content">
 
-          ga('create', 'UA-68393177-2', 'auto');
-          ga('send', 'pageview');
-        </script>
-        <!-- /Google Analytics -->
+            <div class="column large-9 mob-full intro-text">
+                <h1>
+                    Welcome to YC Note
+                </h1>
+                <h3>一個資料煉金術師的修煉之路</h3>
+            </div>
+
+            <div class="intro-scroll">
+                <a href="#about" class="intro-scroll-link smoothscroll">
+                    Scroll For More
+                </a>
+            </div>
+
+        </div> <!-- end row -->
+
+    </section> <!-- end intro -->
 
 
-    </head>
+    <!-- about
+    ================================================== -->
+    <section id="about" class="s-about target-section">
 
-    <body>
+        <div class="about-me">
 
-        <!-- Header -->
-    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://www.ycc.idv.tw/images/welcome_front_board.jpg'); background-position: center; background-size: cover;">
+            <div class="row heading-block" data-aos="fade-up">
+                <div class="column large-full">
+                    <h2 class="section-heading">About Me</h2>
+                </div>
+            </div>
 
-            <!-- Static navbar -->
-            <div class="container">
-                <div class="header-nav">
-                    <div class="header-logo">
-                        <a class="pull-left" href="https://www.ycc.idv.tw/"><img class="logo" src="https://www.ycc.idv.tw/static/img/favicon.png" alt="logo">YC Note</a>
+            <div class="row about-me__content" data-aos="fade-up">
+                <div class="column large-full about-me__text">
+                    <p class="lead">
+                        大家好！我是YC，是一名資料科學家，熟悉機器學習和深度學習的各類技術，以及大數據分散式系統；
+                        同時，我也是一名街頭藝人和部落客。我總是嘗試各種生命的可能性，因為我深信：人生的意義在於體驗一切身為人的經驗。
+                    </p>
+                    <p>
+                        <ul>
+                            <li>Bridgewell, Data Scientist & Software Engineer (2018-Present)</li>
+                            <li>TSMC, Photo Lithography Software R&D Engineer (2015-2018)</li>
+                            <li>Ur Warm Pet Cafe, Resident Singer (2017-2018)</li>
+                            <li>National Taiwan University, Master of Physics (2012-2014)</li>
+                            <li>National Sun Yat-Sen University, Bachelor of Physics (2009-2012)</li>
+                        </ul>
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="row about-me__buttons">
+                <div class="column large-half tab-full" data-aos="fade-up">
+                    <a href="https://github.com/GitYCC" class="btn btn--stroke full-width" target="_blank">My Github</a>
+                </div>
+                <div class="column large-half tab-full" data-aos="fade-up">
+                    <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" class="btn btn--stroke full-width" target="_blank">My Linkedin</a>
+                </div>
+            </div>
+
+        </div> <!-- end about-me -->
+
+<!--
+        <div class="about-experience">
+
+            <div class="row heading-block" data-aos="fade-up">
+                <div class="column large-full">
+                    <h2 class="section-heading">Work & Education</h2>
+                </div>
+            </div>
+
+            <div class="row about-experience__timeline">
+
+                <div class="column large-half tab-full" data-aos="fade-up">
+                    <div class="timeline">
+
+                        <div class="timeline__icon-wrap">
+                            <span class="timeline__icon timeline__icon--work"></span>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">July 2018 - Present</p>
+                                <h3 class="item-title">Awesome Studio</h3>
+                                <h5>Lead Designer</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">July 2017 - June 2018</p>
+                                <h3 class="item-title">Super Cool Agency</h3>
+                                <h5>Frontend Developer</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">March 2016 - June 2017</p>
+                                <h3 class="item-title">Epic Design Studio</h3>
+                                <h5>Frontend Developer</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="nav pull-right">
-                                <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a>
-                                <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                                <a href="https://www.ycc.idv.tw/category/reading.html">Reading</a>
-                                <a href="https://www.ycc.idv.tw/category/recording.html">Recording</a>
-                                <a href="https://www.ycc.idv.tw/about-me.html">About Me</a>
+                </div>
+
+                <div class="column large-half tab-full" data-aos="fade-up">
+                    <div class="timeline">
+
+                        <div class="timeline__icon-wrap">
+                            <span class="timeline__icon timeline__icon--education"></span>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">July 2011 - June 2015</p>
+                                <h3 class="item-title">University of Life</h3>
+                                <h5>Master Degree</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">July 2009 - June 2011</p>
+                                <h3 class="item-title">State Design University</h3>
+                                <h5>Bachelor Degree</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">July 2005 - June 2009</p>
+                                <h3 class="item-title">School of Hard Knocks</h3>
+                                <h5>Bachelor Degree</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-            <!-- /Static navbar -->
 
-            <!-- Header -->
-    <div class="container header-wrapper">
+        </div>
+-->
+    </section> <!-- end s-about -->
+
+    <!-- works
+    ================================================== -->
+    <section id="blog" class="s-works target-section">
+
+        <div class="row heading-block heading-block--center" data-aos="fade-up">
+            <div class="column large-full">
+                <h2 class="section-heading section-heading--centerbottom">My Blog</h2>
+                <div class="column large-full">
+                    <a href="https://www.ycc.idv.tw/category/aiml.html" class="btn btn--stroke full-width" target="_blank">View All</a>
+                </div>
+            </div>
+        </div> <!-- end heading-block -->
+
+        <div class="masonry-wrap">
+
+            <div class="masonry">
+                <div class="grid-sizer"></div>
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/big-data-a-revolution.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/reading_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/big-data-a-revolution.html" target="_blank">大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                Reading
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>樣本=總體 / 允許不精確 / 「是什麼」比「為什麼」還重要 / 大數據時代的商業變革 / 全息社會</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="機器學習技法 學習筆記 (5)：Boost Aggregation Models" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/ml-course-techniques_5.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/ml-course-techniques_5.html" target="_blank">機器學習技法 學習筆記 (5)：Boost Aggregation Models</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                AI.ML
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/algorithm-complexity-theory.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/algorithm-complexity-theory.html" target="_blank">輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                Coding
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>Turing Machine / 時間複雜度 / P＝NP？ / NP-Complete 問題</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="機器學習技法 學習筆記 (4)：Basic Aggregation Models" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/ml-course-techniques_4.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/ml-course-techniques_4.html" target="_blank">機器學習技法 學習筆記 (4)：Basic Aggregation Models</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                AI.ML
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="讀書手札：大腦解密手冊 The Brain: The Story of You" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/the-brain-the-story-of-you.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/reading_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/the-brain-the-story-of-you.html" target="_blank">讀書手札：大腦解密手冊 The Brain: The Story of You</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                Reading
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>大腦的可塑性 / 意識與無意識 / 腦中的交戰網路 / 科技將如何改變大腦的未來</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="Python玩數據 (1)：安裝Python, IPython, Numpy, Pandas" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/python-play-with-data_1.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/python-play-with-data_1.html" target="_blank">Python玩數據 (1)：安裝Python, IPython, Numpy, Pandas</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                Coding
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>安裝Python, IPython, Numpy, Pandas</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="從《如何閱讀一本書》想像一種不同的知識呈現方法" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/how-to-read-books.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/reading_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/how-to-read-books.html" target="_blank">從《如何閱讀一本書》想像一種不同的知識呈現方法</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                Reading
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>書籍與網路的PK / 閱讀的層次 / 檢視閱讀 / 分析閱讀 / 主題閱讀 / 書籍與網路的第二回合PK</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="機器學習技法 學習筆記 (3)：Kernel Regression" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/ml-course-techniques_3.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/ml-course-techniques_3.html" target="_blank">機器學習技法 學習筆記 (3)：Kernel Regression</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                AI.ML
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>本篇內容涵蓋Probabilistic SVM、Kernel Logistic Regression、Kernel Ridge Regression、Support Vector Regression (SVR)</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/ml-course-techniques_2.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/ml-course-techniques_2.html" target="_blank">機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                AI.ML
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/ml-course-techniques_1.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/ml-course-techniques_1.html" target="_blank">機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                AI.ML
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>有什麼特徵可以使用？ / Embedding Numerous Features ：Kernel Models / Combining Predictive Features：Aggregation Models / Distilling Implicit Features：Extraction Models</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+
+            </div> <!-- end masonry -->
+
+        </div> <!-- end masonry-wrap -->
+
+    </section> <!-- end s-work -->
+
+    <!-- contact
+    ================================================== -->
+    <section id="contact" class="s-contact ss-dark target-section">
+
+        <div class="row heading-block" data-aos="fade-up">
+            <div class="column large-full">
+                <h2 class="section-heading">Get In Touch</h2>
+            </div>
+        </div>
+
+        <div class="row contact-main" data-aos="fade-up">
+            <div class="column large-full">
+                <p class="section-desc">
+                I'm happy to connect, listen and help.
+                <a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email Me</a>.
+                </p>
+            </div>
+        </div>
+
+        <div class="row contact-infos" data-aos="fade-up" data-aos-anchor=".contact-main">
+
+            <div class="column large-7 medium-full contact-social">
+                <h4>Social</h4>
+                <ul>
+                    <li><a href="https://github.com/GitYCC" title="Github" target="_blank">Github</a></li>
+                    <li><a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" title="Linkedin" target="_blank">Linkedin</a></li>
+                    <li><a href="mailto:ycc.tw.email@gmail.com" title="Email" target="_blank">Email</a></li>
+                </ul>
+            </div>
+
+        </div> <!-- end contact-infos -->
+
+    </section> <!-- end s-contact -->
+
+
+    <!-- footer
+    ================================================== -->
+    <footer>
         <div class="row">
-              <div class="col-lg-12">
-                  <div class="header-content">
-                      <h1 class="header-title">YC NOTE</h1>
-                      <div class="header-underline"></div>
-                      <p class="header-subtitle header-subtitle-homepage">一個資料科學家的修煉之路</p>
-                  </div>
-              </div>
-        </div>
-    </div>
-            <!-- /Header -->
+            <div class="column large-full ss-copyright">
+                <span>© Copyright YC Note 2019</span> 
+                <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
+            </div>
 
-        </div>
-        <!-- /Header -->
-
-
-        <!-- Content -->
-    
-    <div class="archive-container">
-        <div class="container content archive">
-            <h2><a href="https://www.ycc.idv.tw/index3.html">Last Posts <small>- page 3</small></a></h2>
-            <dl class="dl-horizontal">
-                <dt>2017 / 4月 07</dt>
-                <dd><a href="https://www.ycc.idv.tw/big-data-a-revolution.html">大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><img alt="cover" src="http://www.ycc.idv.tw/media/Reading/BigData_pic.jpg"></p>
-<p>最近，Big Data這個詞相當的紅，但是對於這個詞我們還是有很多的誤會，一個常見的疑問是，究竟多大才可以稱得上是大數據呢？事實上，我接下來要介紹的這本書告訴你，大數據多「大」不是重點，重點是你怎麼看待和處理數據。</p>
-<p>「<a href="http://www.books.com.tw/products/0010587258">大數據</a>」這本書分為三個部分，在第一個部分，作者為讀者介紹大數據的三大思維變革，包括：採用全體數據取代抽樣數據、容忍資料的混雜特性、「是什麼」比「為什麼」還重要，第二部分則在講述大數據如何改變了商業、市場和社會的本質。第三部分在探討大數據會對人類產生什麼不好的影響，而我們如何去避免。本篇我主要著墨於第一部分和第二部分。</p>
-<h5><u>樣本=總體</u></h5>
-<blockquote>
-<p>大數據是指不採用統計「隨機採樣」這樣的捷徑，而直接處理所有的數據。</p>
-</blockquote>
-<p>在資料分析中，如果要研究的對象（母群體）非常的龐大、資料量非常大，我們通常會採取「隨機採樣」來處理，這條捷徑在處理特定問題非常成功，也因此它成為現代社會、現代測量領域的主要路數，但這方式存在著一些缺陷。</p>
-<p>「隨機採樣」的缺陷之一是無法瞭解更深層次的細節。在宏觀領域起作用的方法在微觀領域失去了作用。隨機採樣就像印象派的畫作一樣 …</p></dd>
-                <dt>2017 / 4月 02</dt>
-                <dd><a href="https://www.ycc.idv.tw/ml-course-techniques_5.html">機器學習技法 學習筆記 (5)：Boost Aggregation Models</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
-<p>本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。</p>
-</blockquote>
-<h5><u>Boost的精髓</u></h5>
-<p>在上一回當中，我們介紹的Aggregation Models都屬於沒有Boost的，不管是Bagging或Decision Tree都沒有要試著在Training的過程中改善Model，<strong>而這篇將要提到的Boost方法，則是在產生每個<span class="math">\(g_{t}\)</span>時試圖讓Model整體更完善，更能發揮Aggregation Models中截長補短中的「補短」的效果，也就是說<span class="math">\(g_{t}\)</span>可以彼此互補不足之處</strong>。</p>
-<p>那實際上我們應該怎麼做才能實踐Boost呢？其實方法的道理早就透漏在上一回中的Bagging和Decision Tree裡頭了，不管是Bagging和Decision Tree都是使用變換Data來做到變異度，在這個方法下Model的架構可以本身是不變的，這帶來相當的便利性，而今天我們要講的Boost也同樣的利用「變換Data」來做到變異度，但不同的是Boost的過程中「變換Data」這件事是有目標性的。</p>
-<p><strong>Boost方法在「變換Data」時會試著去凸顯原先做錯的Data，而降低原本已經做對的Data，藉由這樣的方法訓練出來的<span class="math">\(g_ …</span></strong></p></dd>
-                <dt>2017 / 3月 30</dt>
-                <dd><a href="https://www.ycc.idv.tw/algorithm-complexity-theory.html">輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>在寫程式的時候，會聽到有人說這些問題是NP-Complete問題，或說這些是P問題，那這到底是什麼東西？其實這就是一套定義演算法複雜度的方法，今天我就想帶大家來聊聊這個艱澀但有趣的話題。</p>
-<h5><u>Turing Machine</u></h5>
-<p>我們先從 <a href="https://en.wikipedia.org/wiki/Turing_machine">Turing machine</a>（圖靈機）開始講起，Turing machine是現代電腦的基本雛型，是英國數學家圖靈（Alan Turing）於1936年提出的一種抽象計算模型，這個計算模型在猜想上可以「計算所有在演算法中可計算的問題」，也就是可以解決人類所有可解的問題，這個猜想稱之為 <a href="https://en.wikipedia.org/wiki/Church–Turing_thesis">Church–Turing thesis</a>（thesis代表假設或猜想），僅管目前還無法證明這個猜想，但是目前為止它幾乎完全被接受。</p>
-<p>簡單的談一下 Turing machine的基本架構，首先我們需要一個磁帶，這一條磁帶上面可以一格一格的填入一些 symbols，這可以是單純的 0/1 symbols 或者更多種類的 symbols，但這些 symbols 的數量必須是有限的，而這個symbols就可以當作我的輸入，接下來我需要一個讀寫頭，這個讀寫頭會在磁帶上讀取或寫入 symbol，或左右移動，另外這個讀寫頭存有一個 …</p></dd>
-                <dt>2017 / 3月 29</dt>
-                <dd><a href="https://www.ycc.idv.tw/ml-course-techniques_4.html">機器學習技法 學習筆記 (4)：Basic Aggregation Models</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
-<p>本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest。</p>
-</blockquote>
-<h5><u>綜觀Aggregation Models</u></h5>
-<p>如果今天我有很多支的Model，我有辦法融合他們得到更好的效果嗎？</p>
-<p>這就是Aggregation Models的精髓，Aggregation Models藉由類似於投票的方法綜合各個子Models的結果得到效果更好的Model。換個角度看，你可以把整個體系看成一個新的Model，而原本這些子Models當作轉換過後的新Features，<strong>所以Aggregation Model裡頭做了「特徵轉換」，這個特徵轉換產生出許多有預測答案能力的Features，稱為Predictive Features，然後再綜合它們得到最後的Model</strong>。</p>
-<p><img alt="Aggregation Models" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.007.jpeg"></p>
-<p>Aggregation Models可以分成兩大類，第一種的作法比較簡單，先Train出一個一個獨立的Predictive Features，然後在綜合它們，<strong>「集合」的動作是發生在得到Train好的Predictive Feature之後，這叫做「Blending Models」</strong>；第二種作法則是，<strong>「集合」的動作和Training同步進行，這叫做「Aggregation-Learning Models」</strong>，Aggregation-Learning Models有一個特殊的例子叫做Boost，翻開字典查Boost的意思是「促進」，在這邊的意義是<strong>假設在Training過程所產生的Predictive Feature朝著改善Model的方向前進就叫做Boost</strong>。</p>
-<p>從「集合 …</p></dd>
-                <dt>2017 / 3月 24</dt>
-                <dd><a href="https://www.ycc.idv.tw/the-brain-the-story-of-you.html">讀書手札：大腦解密手冊 The Brain: The Story of You</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><a href="http://www.books.com.tw/products/0010738920">⟪大腦解密手冊⟫</a>是一本非常易懂但又相當豐富的書，作者David Eagleman是一名美國的神經科學家，在這本書他嘗試拋開教科書的模式，改以輕鬆聊天的方式來聊神經科學，讓讀者可以很輕易的一探這神秘的大腦。</p>
-<h5><u>大腦的可塑性</u></h5>
-<p>人類在剛出生的一刻是非常脆弱的，不能走不能自己吃東西，完全需要依賴他人的照顧，相反的其他的哺乳類在出生的那刻就已經有謀生的能力了，斑馬寶寶出生不到45分鐘就可以奔跑，長頸鹿出生幾個小時就可以學會站立。表面看起來，這對人類生存似乎很不利，事實上卻提供人類大腦更多的彈性，<strong>人類大腦不像其他動物在出生的一開始就已經接好線路了，雖然長大成人的過程腦細胞數量並不會增加，但是突觸的連結卻會有天翻地覆的改變</strong>，人腦建造過程可以長達25年，過程中會有50%的突觸會被修掉，就算是一個成人突觸連結還是每天不斷的更新，這種彈性使得人類可以比其他動物更能應付環境的各種變化。</p>
-<p>能夠看東西不僅僅需要眼睛，而主要還是靠著眼睛後面的大腦，Mike May在3歲時失明了，過了40年因為幹細胞治療重見光明，不過這個恢復正常的眼睛並沒有讓他恢復視力，雖然能夠看見東西，卻很難說出那是什麼，而且也不清楚這個東西是遠是近，視覺系統不像是照相機，把鏡頭修好了就可以正常使用了，他的大腦長達40年沒有接受光線給的訊號，一時之間是無法辨識視覺給的訊號，也就造成眼睛恢復正常了但是視力並沒有恢復。</p>
-<p>只有感官的訊號是沒有用的，我們還需要大腦去統合和理解這些訊號，大腦幫我們做了很多事，一個有趣的例子，你知道嗎？人在閱讀的時候眼球是不斷的跳動的，一秒鐘會跳4次左右，這種快速的運動稱為「眼球迅速移動」(saccade)，儘管眼球不停的跳動但我們卻可以看到一個穩定的畫面 …</p></dd>
-                <dt>2017 / 3月 20</dt>
-                <dd><a href="https://www.ycc.idv.tw/python-play-with-data_1.html">Python玩數據 (1)：安裝Python, IPython, Numpy, Pandas</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><strong>相較於R，我比較喜歡在工作上使用python來作數據處理</strong>，主要原因有四個，<strong>第一點，python是一個簡潔的語言</strong>，讓我們可以在不寫註解的情況下還可以很容易的看出每一行code在做哪些事，這可以省去了不少時間在；<strong>第二點，python可以更容易的寫成物件導向編程</strong>，物件導向編程可以讓code看起來更為直覺，而且更易於修改、重構或套用，如果是大型軟體開發的話，需要多人協作，此時物件導向便是絕對必要的；<strong>第三點，python是一個通用語言</strong>，不僅僅只可以作資料處理而已，你可以用python寫一套視窗程式，或者當作網站的後台（這個網站就是建基在python上），如果要做一些平行運算也很容易，<strong>最後一點，也是相當重要的一點，目前常見的deep learning套件TensorFlow或Keras都是架構在python上面</strong>，所以如果你的數據處理結束要作deep learning的話，直接用python處理是相當理想的。講了python這麼多優點，其實它是有一項缺點是不如R的，R是一個專為資料科學設計的語言，所以背後有強大的社群，也就是說能直接取得資料分析方法的套件會比python來的多，不過這方面在這幾年已經漸漸的改善了。</p>
-<p>講了這麼多python的強大，不過在這個系列我並不會著墨太多在python上，這個部分我會在其他的文章中分享，這系列文章主要聚焦在python的資料處理這部份，我會從基礎講起，讓不懂python的人也可以聽懂。  </p>
-<p><br></p>
-<h5><u>最困難的第一步：安裝</u></h5>
-<p>不要以為我在開玩笑，安裝往往是最困難的一步，有些時候安裝一些套件的時候，你必須要先行安裝另外幾個相依套件，如果程式在安裝的過程無法自己補足這些相依套件的話，你就得自己安裝，一般來說如果是python的套件的話 …</p></dd>
-                <dt>2017 / 3月 18</dt>
-                <dd><a href="https://www.ycc.idv.tw/how-to-read-books.html">從《如何閱讀一本書》想像一種不同的知識呈現方法</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>⟪如何閱讀一本書⟫是美國哲學家Mortimer Jerome Adler在1940年所著的一本教你如何讀書的書，雖然是70年前的書，不過卻是歷久彌新，隨便google都有好幾十篇的文章在講這本書，其中的一篇就是現在你讀的這一篇。</p>
-<p>書中作者教你讀書的策略，像在練功一樣，必須循序漸進的，掌握了一階技巧在前進下一階，作者把閱讀分為四個階段，至於是哪四階段呢？在這邊賣個關子，我待會會好好的解釋。</p>
-<p>這裡先打個岔，我們先來談談書籍紀錄的知識呈現方式。</p>
-<h5><u>書籍與網路的PK</u></h5>
-<p>現今科技革命當中，對我們影響最深的就屬網際網路的發展了，它是人類歷史上資訊傳播方式的大變革，人類技術發展史你可以簡單看成是一部人類如何延長自己的手腳及大腦的故事，斧頭被發明來延長補足手的不足，眼鏡被發明來補足眼睛的不足，書籍被發明來延長溝通，同樣的，網際網路也一樣的是延長溝通的發明，使得資訊傳遞更有效率。</p>
-<p>雖然書籍和網際網路一樣是資訊傳播的方式，不過看起來更為便利的網路並沒有使書籍被淘汰，網路上的知識仍然走不進學校，撇開使用體驗不談，網路知識的缺點之一是過於零碎化，書籍是作者整合資訊和自己的認知而成的體系，有一個比較完整的結構，不是網路上零碎知識的總和所能取代的。</p>
-<p>不過網路上的確有許多整合得相當好的資訊，但如果仔細看這些知識的傳播方式不脫書籍的那一套，甚至有些有名的部落客將他們的部落格文章整理成書，通常在轉換上也不會遇到太大的困難，因為這些資訊的呈現方式和書籍的呈現方式並無太大差異，等於是把書搬到網路上而已。</p>
-<p>不過這樣感覺白白浪費電腦或網路不同於書籍的彈性，譬如說超連結或者是動態回饋，不過一定有人會想起來，維基百科不就是一個好例子嗎？它利用超連結把眾多知識給串起來，讓它更有結構性，不同於書籍的好處是 …</p></dd>
-                <dt>2017 / 3月 15</dt>
-                <dd><a href="https://www.ycc.idv.tw/ml-course-techniques_3.html">機器學習技法 學習筆記 (3)：Kernel Regression</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
-<p>本篇內容涵蓋Probabilistic SVM、Kernel Logistic Regression、Kernel Ridge Regression、Support Vector Regression (SVR)。</p>
-</blockquote>
-<p>在上一篇當中我們看到了Kernel Trick的強大，我們繼續運用這個數學工具在其他的Regression上看看。</p>
-<p><br/></p>
-<h5><u>Soft-Margin SVM其實很像L2 Regularized Logistic Regression</u></h5>
-<p>上一篇中提到的Soft-Margin SVM其實很像<a href="https://gitycc.github.io/YCNote/tag/ji-qi-xue-xi-ji-shi.html">《機器學習基石》</a>裡頭提到的L2 Regularized Logistic Regression，如果你還記得的話，Logistic Regression是為了因應雜訊而給予每筆資料的描述賦予「機率」的性質，讓Model在看Data的時候不那麼的非黑及白，那時候有提到這叫做Soft Classification，而這個概念就非常接近於Soft-Margin的概念。</p>
-<p>從數學式來看會更清楚，</p>
-<blockquote>
-<p>Soft-Margin SVM：<br/></p>
-<p><span class="math">\(min. (W^{T}W/2) + C×𝚺_{n} ξ_{n}\ \ \ s …</span></p></blockquote></dd>
-                <dt>2017 / 2月 20</dt>
-                <dd><a href="https://www.ycc.idv.tw/ml-course-techniques_2.html">機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><blockquote>
-<p>本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem。</p>
-</blockquote>
-<p>在<a href="http://www.ycc.idv.tw/ml-course-techniques_1.html">上一篇文章</a>當中，我們掃過了《機器學習技法》 將會包含的內容，今天我們正式來看SVM。</p>
-<p>如果我想要使用無窮次高次方的非線性轉換加入我的Model，可以做到嗎？上一篇，我告訴大家，只要使用Dual Transformation加上Kernel Function等數學技巧就可以做到，我們今天就來看一下這是怎麼一回事。</p>
-<p>本篇文章分為兩個部分，第一部分我盡量不牽扯太多數學計算，而將數學證明放在第二個部分，數學證明的部分非常複雜，但我並不打算把它們忽略掉，因為這些數學計算是相當重要的，它所帶來的方法和概念是可以重複使用的，也有助於你了解和創造其他演算法，所以有心想要成為專家的你請耐心的把後半段的數學看完。</p>
-<p><br/></p>
-<h5><u>Hard-Margin Support Vector Machine (SVM …</u></h5></dd>
-                <dt>2017 / 1月 12</dt>
-                <dd><a href="https://www.ycc.idv.tw/ml-course-techniques_1.html">機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>在之前四篇文章中，我總結了台大教授林軒田在Coursera上的《機器學習基石》16堂課程，我覺得這是機器學習初學很重要的基礎課程，接下來我要接續更進階的課程。</p>
-<p>林軒田教授的機器學習是兩學期的課，第一學期是《機器學習基石》，第二學期就是接下來這個系列要講的《機器學習技法》，這兩堂課程是有相當大的銜接關係的，所以如果想看這系列的文章，請先看<a href="http://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">這四篇《機器學習基石》的介紹</a>或者<a href="https://www.coursera.org/learn/ntumlone-mathematicalfoundations">直接到Coursera上學習</a>。</p>
-<p>《機器學習技法》課程影片可以到老師的Youtube [ <a href="https://www.youtube.com/playlist?list=PLXVfgk9fNX2IQOYPmqjqWsNUFl2kpk1U2">https://www.youtube.com/playlist?list=PLXVfgk9fNX2IQOYPmqjqWsNUFl2kpk1U2</a> ]上收看，投影片可以到老師的個人網站上下載 [ <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/</a> ]。</p>
-<p>以前，我曾經和實驗室的英國學長聊英國的教育方法，然後我驚人的發現，他的學校在大一就已經學過量子場論（物理上很難的學科XDD）了，我就很好奇量子場論不是需要很深厚的數學基礎嗎？大一是要怎麼教啊？他告訴我，他們大一就會完整走過物理的各大領域，不過是用非常概念的方式來學習 …</p></dd>
-            </dl>
-        </div>
-    </div>
-<!-- /Navigation -->
-<div class="container navigation">
-    	<a class="navigate pull-left" href="https://www.ycc.idv.tw/index2.html"><i class="fa fa-caret-left"></i> Previous</a>
-    	<a class="navigate pull-right" href="https://www.ycc.idv.tw/index4.html">Next <i class="fa fa-caret-right"></i></a>
-</div>              
-<!-- /Navigation --> 
-        <!-- /Content --> 
-
-        <!-- Footer -->
-        <div class="footer gradient-2">
-            <div class="container footer-container ">
-                <div class="row">
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Sitemap</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://www.ycc.idv.tw/archives.html">Archives</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tags.html">Tags</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Contact Me</div>
-                        <ul class="list-unstyled">
-                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
-                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
-                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                    </div> 
-                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                        <p class="pull-right text-right">
-                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
-                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
-                            <small>&copy; YC Note 2018</small>
-                        </p>
-                    </div>
-                </div>
+            <div class="ss-go-top">
+                <a class="smoothscroll" title="Back to Top" href="#top"></a>
             </div>
         </div>
-        <!-- /Footer -->
-    </body>
-</html>
+    </footer>
+
+
+    <!-- photoswipe background
+    ================================================== -->
+    <div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+
+        <div class="pswp__bg"></div>
+        <div class="pswp__scroll-wrap">
+
+            <div class="pswp__container">
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+            </div>
+
+            <div class="pswp__ui pswp__ui--hidden">
+                <div class="pswp__top-bar">
+                    <div class="pswp__counter"></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button> <button class="pswp__button pswp__button--share" title=
+                    "Share"></button> <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button> <button class="pswp__button pswp__button--zoom" title=
+                    "Zoom in/out"></button>
+                    <div class="pswp__preloader">
+                        <div class="pswp__preloader__icn">
+                            <div class="pswp__preloader__cut">
+                                <div class="pswp__preloader__donut"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                    <div class="pswp__share-tooltip"></div>
+                </div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button> <button class="pswp__button pswp__button--arrow--right" title=
+                "Next (arrow right)"></button>
+                <div class="pswp__caption">
+                    <div class="pswp__caption__center"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div><!-- end photoSwipe background -->
+
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/index_plugins.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/index_main.js"></script>
+
+</body>

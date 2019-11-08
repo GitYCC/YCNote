@@ -1,246 +1,628 @@
 <!DOCTYPE html>
-<html lang="zh">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)。">
-        <meta name="keywords" content="">
-        <link rel="icon" href="https://www.ycc.idv.tw/static/img/favicon.png">
+<html class="no-js" lang="en">
+<head>
 
-        <title>YC NOTE - YC Note</title>
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>YC Note</title>
+    <meta name="description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)">
+    <meta name="author" content="YC">
 
-        <!-- Stylesheets -->
-        <link href="https://www.ycc.idv.tw/theme/css/all.min.css" rel="stylesheet">
-        <!-- /Stylesheets -->
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- RSS Feeds -->
-        <!-- /RSS Feeds -->
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/index_base.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/index_vendor.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/index_main.css">
+    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
 
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
+    <!-- script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/index_modernizr.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/index_pace.min.js"></script>
 
-        <script type="text/x-mathjax-config"> 
-            MathJax.Hub.Config({ 
-                "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-                SVG: { linebreaks: { automatic:true } } 
-                });
-        </script>
+    <!-- favicons
+    ================================================== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+
+    <!-- Google Analytics
+    ================================================== -->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-68393177-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+</head>
+
+<body id="top">
+
+    <div id="preloader">
+        <div id="loader"></div>
+    </div>
+
+    <!-- site header
+    ================================================== -->
+    <header class="s-header">
+
+        <div class="header-logo">
+            <a class="site-logo" href="https://www.ycc.idv.tw">
+                <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
+            </a>
+        </div>
+
+        <nav class="header-nav-wrap">
+            <ul class="header-main-nav">
+                <li class="current"><a class="smoothscroll" href="#intro" title="intro">Intro</a></li>
+                <li><a class="smoothscroll" href="#about" title="about">About</a></li>
+                <li><a class="smoothscroll" href="#blog" title="blog">Blog</a></li>
+                <li><a class="smoothscroll" href="#contact" title="contact us">Contact Me</a></li>
+            </ul>
+
+            <ul class="header-social">
+                <li><a href="https://github.com/GitYCC" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+                <li><a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></li>
+            </ul>
+        </nav>
+
+        <a class="header-menu-toggle" href="#"><span>Menu</span></a>
+
+    </header> <!-- end s-header -->
 
 
-        <!-- Google Analytics -->
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <!-- intro
+    ================================================== -->
+    <section id="intro" class="s-intro target-section" style="background-image:url('https://www.ycc.idv.tw/images/welcome_front_board.jpg'); background-position: center; background-size: cover;">
+        <div class="row intro-content">
 
-          ga('create', 'UA-68393177-2', 'auto');
-          ga('send', 'pageview');
-        </script>
-        <!-- /Google Analytics -->
+            <div class="column large-9 mob-full intro-text">
+                <h1>
+                    Welcome to YC Note
+                </h1>
+                <h3>一個資料煉金術師的修煉之路</h3>
+            </div>
+
+            <div class="intro-scroll">
+                <a href="#about" class="intro-scroll-link smoothscroll">
+                    Scroll For More
+                </a>
+            </div>
+
+        </div> <!-- end row -->
+
+    </section> <!-- end intro -->
 
 
-    </head>
+    <!-- about
+    ================================================== -->
+    <section id="about" class="s-about target-section">
 
-    <body>
+        <div class="about-me">
 
-        <!-- Header -->
-    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://www.ycc.idv.tw/images/welcome_front_board.jpg'); background-position: center; background-size: cover;">
+            <div class="row heading-block" data-aos="fade-up">
+                <div class="column large-full">
+                    <h2 class="section-heading">About Me</h2>
+                </div>
+            </div>
 
-            <!-- Static navbar -->
-            <div class="container">
-                <div class="header-nav">
-                    <div class="header-logo">
-                        <a class="pull-left" href="https://www.ycc.idv.tw/"><img class="logo" src="https://www.ycc.idv.tw/static/img/favicon.png" alt="logo">YC Note</a>
+            <div class="row about-me__content" data-aos="fade-up">
+                <div class="column large-full about-me__text">
+                    <p class="lead">
+                        大家好！我是YC，是一名資料科學家，熟悉機器學習和深度學習的各類技術，以及大數據分散式系統；
+                        同時，我也是一名街頭藝人和部落客。我總是嘗試各種生命的可能性，因為我深信：人生的意義在於體驗一切身為人的經驗。
+                    </p>
+                    <p>
+                        <ul>
+                            <li>Bridgewell, Data Scientist & Software Engineer (2018-Present)</li>
+                            <li>TSMC, Photo Lithography Software R&D Engineer (2015-2018)</li>
+                            <li>Ur Warm Pet Cafe, Resident Singer (2017-2018)</li>
+                            <li>National Taiwan University, Master of Physics (2012-2014)</li>
+                            <li>National Sun Yat-Sen University, Bachelor of Physics (2009-2012)</li>
+                        </ul>
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="row about-me__buttons">
+                <div class="column large-half tab-full" data-aos="fade-up">
+                    <a href="https://github.com/GitYCC" class="btn btn--stroke full-width" target="_blank">My Github</a>
+                </div>
+                <div class="column large-half tab-full" data-aos="fade-up">
+                    <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" class="btn btn--stroke full-width" target="_blank">My Linkedin</a>
+                </div>
+            </div>
+
+        </div> <!-- end about-me -->
+
+<!--
+        <div class="about-experience">
+
+            <div class="row heading-block" data-aos="fade-up">
+                <div class="column large-full">
+                    <h2 class="section-heading">Work & Education</h2>
+                </div>
+            </div>
+
+            <div class="row about-experience__timeline">
+
+                <div class="column large-half tab-full" data-aos="fade-up">
+                    <div class="timeline">
+
+                        <div class="timeline__icon-wrap">
+                            <span class="timeline__icon timeline__icon--work"></span>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">July 2018 - Present</p>
+                                <h3 class="item-title">Awesome Studio</h3>
+                                <h5>Lead Designer</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">July 2017 - June 2018</p>
+                                <h3 class="item-title">Super Cool Agency</h3>
+                                <h5>Frontend Developer</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">March 2016 - June 2017</p>
+                                <h3 class="item-title">Epic Design Studio</h3>
+                                <h5>Frontend Developer</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="nav pull-right">
-                                <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a>
-                                <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                                <a href="https://www.ycc.idv.tw/category/reading.html">Reading</a>
-                                <a href="https://www.ycc.idv.tw/category/recording.html">Recording</a>
-                                <a href="https://www.ycc.idv.tw/about-me.html">About Me</a>
+                </div>
+
+                <div class="column large-half tab-full" data-aos="fade-up">
+                    <div class="timeline">
+
+                        <div class="timeline__icon-wrap">
+                            <span class="timeline__icon timeline__icon--education"></span>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">July 2011 - June 2015</p>
+                                <h3 class="item-title">University of Life</h3>
+                                <h5>Master Degree</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">July 2009 - June 2011</p>
+                                <h3 class="item-title">State Design University</h3>
+                                <h5>Bachelor Degree</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline__block">
+                            <div class="timeline__bullet"></div>
+                            <div class="timeline__header">
+                                <p class="timeline__timeframe">July 2005 - June 2009</p>
+                                <h3 class="item-title">School of Hard Knocks</h3>
+                                <h5>Bachelor Degree</h5>
+                            </div>
+                            <div class="timeline__desc">
+                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-            <!-- /Static navbar -->
 
-            <!-- Header -->
-    <div class="container header-wrapper">
+        </div>
+-->
+    </section> <!-- end s-about -->
+
+    <!-- works
+    ================================================== -->
+    <section id="blog" class="s-works target-section">
+
+        <div class="row heading-block heading-block--center" data-aos="fade-up">
+            <div class="column large-full">
+                <h2 class="section-heading section-heading--centerbottom">My Blog</h2>
+                <div class="column large-full">
+                    <a href="https://www.ycc.idv.tw/category/aiml.html" class="btn btn--stroke full-width" target="_blank">View All</a>
+                </div>
+            </div>
+        </div> <!-- end heading-block -->
+
+        <div class="masonry-wrap">
+
+            <div class="masonry">
+                <div class="grid-sizer"></div>
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="[Paper] Wide & Deep Learning for Recommender Systems" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/wide-and-deep-learning.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/wide-and-deep-learning.html" target="_blank">[Paper] Wide & Deep Learning for Recommender Systems</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                AI.ML
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>以往認為deep learning有辦法完全取代feature engineering，Google在2016年寫下的這篇paper，指出在數據相對稀疏（sparse）的情況下feature engineering仍然有其重要性</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="尾牙表演 - Sweet Child Oh Mine" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/sweet-child-oh-mine.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/living_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/sweet-child-oh-mine.html" target="_blank">尾牙表演 - Sweet Child Oh Mine</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                Living
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>尾牙吼起來</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_3.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_3.html" target="_blank">物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                Coding
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>物件導向怎麼用才能成就好的程式碼？ / UML類別圖 / 單一職責原則(Single Responsibility Principle, SRP) / 開閉原則(Open-Closed Principle, OCP) / 里氏替換原則(Liskov Subsititution Principle, LSP) / 迪米特法則(Law of Demeter, LoD) / 依賴倒置原則(Dependence Inversion Principle, DIP) / 接口分隔原則(Interface Segregation Principle, ISP)</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_2.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_2.html" target="_blank">物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                Coding
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>物件導向編程 / 類別(Class)與物件(Object) / 方法多載（Method Overloading） / 物件導向三大特性—封裝(Encapsulation) / 物件導向三大特性—繼承(Inheritance) / 抽象化：抽象類別(Abstract Class)、抽象方法(Abstract Method)和接口(Interface) / 物件導向三大特性—多型(Polymorphism) /</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_1.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_1.html" target="_blank">物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                Coding
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>物件導向為何重要？ / 程式的好壞？ / 低耦合、高內聚 / 程式碼精練之旅 / 形塑出物件導向</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="自私的基因：基因觀點下的天擇" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/the-selfish-gene.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/reading_front_board.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/the-selfish-gene.html" target="_blank">自私的基因：基因觀點下的天擇</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                Reading
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>物競天擇？ / 生命源自於複製 / 基因的代理人—神經網絡 / 再談利他行為 / 文化的複製者—迷因（Meme）</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/tensorflow-tutorial_6.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_6.html" target="_blank">實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                AI.ML
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>概論RNN / 梯度消失與梯度爆炸 / Long Short-Term Memory (LSTM) / 使用LSTM實作文章產生器</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="實作Tensorflow (5)：Word2Vec" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/tensorflow-tutorial_5.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_5.html" target="_blank">實作Tensorflow (5)：Word2Vec</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                AI.ML
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>Word2Vec觀念解析 / Word2Vec的架構 / Word2Vec的兩種常用方法：Skip-Gram和CBOW / 準備文本語料庫 / 實作Skip-Gram / 實作CBOW (Continuous Bag of Words)</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="實作Tensorflow (4)：Autoencoder" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/tensorflow-tutorial_4.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_4.html" target="_blank">實作Tensorflow (4)：Autoencoder</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                AI.ML
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>Autoencoder觀念解析 / Autoencoder程式碼 / 測試Autoencoder / 壓縮碼Code與視覺化 / 去雜訊(De-noise) Autoencoder</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+                <div class="masonry__brick" data-aos="fade-up">
+                    <div class="item-folio">
+                        <div class="item-folio__thumb">
+                            <a href="" class="thumb-link" title="實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)" data-size="1x1"></a>
+                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
+                        </div>
+
+                        <div class="item-folio__text">
+                            <a href="https://www.ycc.idv.tw/tensorflow-tutorial_3.html" target="_blank">
+                                <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg">
+                            </a>
+                            <h4 class="item-folio__title">
+                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_3.html" target="_blank">實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)</a>
+                            </h4>
+                            <p class="item-folio__cat">
+                                AI.ML
+                            </p>
+                        </div>
+
+                        <div class="item-folio__caption">
+                            <p>影像有什麼特性 / DNN用在影像上的侷限 / Convolutional Neurel Network (CNN) / Convolution Layer / Pooling Layer / 最簡單的CNN架構：LeNet5 / 圖像化</p>
+                        </div>
+                    </div>
+                </div> <!-- end masonry__brick -->
+
+
+            </div> <!-- end masonry -->
+
+        </div> <!-- end masonry-wrap -->
+
+    </section> <!-- end s-work -->
+
+    <!-- contact
+    ================================================== -->
+    <section id="contact" class="s-contact ss-dark target-section">
+
+        <div class="row heading-block" data-aos="fade-up">
+            <div class="column large-full">
+                <h2 class="section-heading">Get In Touch</h2>
+            </div>
+        </div>
+
+        <div class="row contact-main" data-aos="fade-up">
+            <div class="column large-full">
+                <p class="section-desc">
+                I'm happy to connect, listen and help.
+                <a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email Me</a>.
+                </p>
+            </div>
+        </div>
+
+        <div class="row contact-infos" data-aos="fade-up" data-aos-anchor=".contact-main">
+
+            <div class="column large-7 medium-full contact-social">
+                <h4>Social</h4>
+                <ul>
+                    <li><a href="https://github.com/GitYCC" title="Github" target="_blank">Github</a></li>
+                    <li><a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" title="Linkedin" target="_blank">Linkedin</a></li>
+                    <li><a href="mailto:ycc.tw.email@gmail.com" title="Email" target="_blank">Email</a></li>
+                </ul>
+            </div>
+
+        </div> <!-- end contact-infos -->
+
+    </section> <!-- end s-contact -->
+
+
+    <!-- footer
+    ================================================== -->
+    <footer>
         <div class="row">
-              <div class="col-lg-12">
-                  <div class="header-content">
-                      <h1 class="header-title">YC NOTE</h1>
-                      <div class="header-underline"></div>
-                      <p class="header-subtitle header-subtitle-homepage">一個資料科學家的修煉之路</p>
-                  </div>
-              </div>
-        </div>
-    </div>
-            <!-- /Header -->
+            <div class="column large-full ss-copyright">
+                <span>© Copyright YC Note 2019</span> 
+                <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
+            </div>
 
-        </div>
-        <!-- /Header -->
-
-
-        <!-- Content -->
-    
-    <div class="archive-container">
-        <div class="container content archive">
-            <h2><a href="https://www.ycc.idv.tw/index.html">Last Posts </a></h2>
-            <dl class="dl-horizontal">
-                <dt>2019 / 6月 01</dt>
-                <dd><a href="https://www.ycc.idv.tw/wide-and-deep-learning.html">[Paper] Wide & Deep Learning for Recommender Systems</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>結論寫在前面</u></h5>
-<p>以往認為deep learning有辦法完全取代feature engineering，Google在2016年寫下的這篇paper，指出在數據相對稀疏（sparse）的情況下feature engineering仍然有其重要性，此篇paper使用聯合訓練（jointly train）deep和wide結構的方法，得到比純粹deep或純粹wide的效果還好的成果，這裡的wide就是我們一般所說的feature engineering。</p>
-<h5><u>Memorization and Generalization</u></h5>
-<p>Memorization指的就是wide learning，此部分的產生需要較多的人為參與，也就是feature engineering，通常我們會依照人為的認知、或是統計數據、或是反覆實驗的結果，將一些有關聯性的變數進行cross-product以讓model得以「記住」這些相關性，通常這種基於memorization的結構會比較具有解釋性。</p>
-<p>Generalization指的就是deep Learning，此部份與wide learning相反，結構本身因為它的深度結構，等效於多次的non-linear transformation，也因此model自身在學習的過程就會將隱藏的feature組合給找出來，所以不用太多的人為參與，所以它會比較「一般化」。</p>
-<p>近年來deep learning大行其道，所以人們往往認為已經沒有必要再去做feature engineering了，只需要設定好深度結構，機器自動會去學出我們人類已知的feature組合，甚至學出隱藏的feature組合，但這篇paper指出這樣的想法是錯誤的 …</p></dd>
-                <dt>2019 / 3月 30</dt>
-                <dd><a href="https://www.ycc.idv.tw/sweet-child-oh-mine.html">尾牙表演 - Sweet Child Oh Mine</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><br/></p>
-<iframe width="100%" height="450" src="https://www.youtube.com/embed/XNJibRL6UYE"  frameborder="0" gesture="media" allowfullscreen></iframe></dd>
-                <dt>2018 / 4月 14</dt>
-                <dd><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_3.html">物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>物件導向怎麼用才能成就好的程式碼？</u></h5>
-<p>一個好的工具，也要配合對於工具的理解，才能發揮效用。<a href="http://www.ycc.idv.tw/introduction-object-oriented-programming_2.html">在上一回中</a>，我們完整介紹了Java和Python的物件導向實現方式，我們講到了「封裝」、「繼承」、「多型」等等物件導向的特色，也講了「抽象類別」、「接口」等抽象化的方法，不過我並沒有告訴大家該怎麼用這些工具？使用這些工具是不是有什麼樣的法則？</p>
-<p>在接下來的這一篇，我將會介紹物件導向的使用方式，我會提到物件導向著名的六大法則：</p>
-<ol>
-<li>單一職責原理</li>
-<li>開閉原理</li>
-<li>里氏替換原則</li>
-<li>迪米特法則</li>
-<li>依賴倒置原則</li>
-<li>接口分隔原則</li>
-</ol>
-<p>在這之前我們先來介紹描述類別關係的UML類別圖。</p>
-<h5><u>UML類別圖</u></h5>
-<p>開始介紹各種原則之前，先來介紹UML類別圖，UML全名稱為Unified Modeling Language，是一種使用圖形來描繪軟體工程架構的方法，這邊準備介紹的是它的類別圖，這個工具有助於我們快速的了解物件與物件之間的關係。</p>
-<ul>
-<li>類別(Class): -代表<code>private</code>，+代表<code>public</code>，#代表<code>protected</code></li>
-</ul>
-<p><img alt="Class" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Class.png"></p>
-<ul>
-<li>抽象類別(Abstract Class)</li>
-</ul>
-<p><img alt="AbstractClass" src="https://www.ycc.idv.tw/media/SOLID_Introduction/AbstractClass.png"></p>
-<ul>
-<li>接口(Interface)</li>
-</ul>
-<p><img alt="Interface" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Interface.png"></p>
-<ul>
-<li>繼承關係 …</li></ul></dd>
-                <dt>2018 / 4月 10</dt>
-                <dd><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_2.html">物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>物件導向編程</u></h5>
-<p><a href="http://www.ycc.idv.tw/introduction-object-oriented-programming_1.html">在上一章當中</a>，我們藉由好的程式碼的特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，自然而然引出物件導向的概念。在這一章當中YC會接續介紹完整的物件導向要如何實現，包括物件導向三大特性：封裝、繼承和多型。</p>
-<p>在本章我會採用兩種語言交叉作說明，一種是靜態型別的語言Java，另一種是動態型別的語言Python，這兩種語言都是可以實現物件導向的語言，而所謂型別的動態與靜態可以用一個簡單的方法來區分：型別檢查(Type Checking)發生在什麼時候？像Java這類的靜態型別語言，它的型別檢查是在編譯時期(Compile Time)完成的，而像是Python這類的動態型別語言，它的型別檢查則是在執行時期(Runtime)才去做，所以Python可以不事先宣告變數型別，這點使得Python在開發上方便許多。</p>
-<p>雖然Python和Java都是支援物件導向的語言，但在使用上有很大的差異，首先，因為Python的動態型別，所以有些物件導向的性質對它來說就不是那麼重要，另外，因為Python追求簡潔，簡化了相當多的東西，所以很多的使用方法不同於傳統的物件導向，需要認識到這些差異才可以讓你使用Python的物件導向不會顯得很彆扭。Java是一套對物件導向支援非常完整的語言，而Python是一套易於快速開發的語言，使用兩種語言說明物件導向是為了讓讀者更能了解物件導向的本質，而非語言本身。</p>
-<p>本篇採用『<a href="https://www.tenlong.com.tw/products/9789866761799">大話設計模式</a>』書中的物件導向篇範例 …</p></dd>
-                <dt>2018 / 4月 05</dt>
-                <dd><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_1.html">物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>物件導向為何重要？</u></h5>
-<p>我相信很多朋友一定像YC我一樣，想要學某個程式語言，就去買那個程式語言的簡介書籍，然後一章一章的唸下去，這種書通常會先教變數怎麼設定？然後再教if、while、for、function等程式邏輯。</p>
-<p>那如果你學的是「物件導向」的語言，譬如：Java、C++、Python，接下來的章節就會開始介紹「類別」、「物件」等等難懂的東西，然後就會陷入一種霧煞煞的狀態，然後心中就會出現一種聲音：為什麼寫個程式你跟我扯什麼「物件」？我原本用前面所學的方法就可以完成所有事情啦！為何要把事情弄的這麼複雜？這東西到底有什麼好處啊？</p>
-<p>YC一開始也是充滿著疑惑，然後一知半解的就把這些定義記在心中，然後天真的認為「物件導向」只是讓程式比較整齊的方法罷了！直到後來學了資料結構與演算法，然後又學了一點設計模式，然後又有過幾個大型軟體開發的經驗，一路走過才漸漸的了解「物件導向」是怎麼一回事？</p>
-<p>所以我打算把這些收穫用三篇文章來說明，好讓讀者們可以少走一點冤枉路，在第一篇中，也就是本篇，我會帶大家認識好的程式是長什麼樣子的，它擁有什麼樣的特點，有了正確的認知，除了可以讓我們避免寫出糟糕的程式之外，我們也才能漸漸的認識到「物件導向」為何重要 …</p></dd>
-                <dt>2018 / 2月 03</dt>
-                <dd><a href="https://www.ycc.idv.tw/the-selfish-gene.html">自私的基因：基因觀點下的天擇</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>物競天擇？</u></h5>
-<p>『自私的基因』是當代相當重要的一本書，它在生物學上的地位等同於在物理學上的『時間簡史』。作者理察·道金斯（Richard Dawkins）是一個跨領域的通才，曾獲得動物學學士學位、文學碩士、哲學博士以及科學博士，我認為也是因為這樣的跨領域學習，才能讓他完成這樣一本創作俱佳的好書。</p>
-<p>達爾文的天擇說提出後，生物學開始有了一個思考的脈絡來描述生物的演化，天擇說告訴我們「物競天擇，適者生存、不適者淘汰」，地球上目前存在的物種是多年來環境盲目篩選後的結果，但我們會發現如果以物種為單位來說明天擇會有一些說不清的地方。</p>
-<p>舉個例子，物種的利他行為，例如許多小型鳥類遇到老鷹時會發出警訊給同伴，通知同伴趕快逃跑，這毫無疑問的是一種利他行為，發出警訊將會使自己暴露在危險之中，而換取到的是其他同伴的安全，針對這樣的利他行為，「群體選擇」理論會說生物會因演化而做出對種族有利的事，作者認為這是一種謬誤，生物間應該無法輕易的區分種族，就算可以，那我們又如何去劃分層次，要從界、門、綱、目、科、屬、種哪個層面下手去有意識的幫助自己的種族呢？以物種為單位的天擇說僅能說明生物本身的自利行為，但是解釋不清楚利他行為如何形成。</p>
-<p>作者道金斯受到魏斯曼（A. Weismann）的學說 …</p></dd>
-                <dt>2017 / 11月 25</dt>
-                <dd><a href="https://www.ycc.idv.tw/tensorflow-tutorial_6.html">實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>如果我們想要處理的問題是具有時序性的，該怎麼辦呢？本章將會介紹有時序性的Neurel Network。</p>
-<p>本單元程式碼LSTM部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/06_LSTM.py">Github</a>下載。</p>
-<h5><u>概論RNN</u></h5>
-<p>當我們想使得Neurel Network具有時序性，我們的Neurel Network就必須有記憶的功能，然後在我不斷的輸入新資訊時，也能同時保有歷史資訊的影響，最簡單的作法就是將Output的結果保留，等到新資訊進來時，將新的資訊和舊的Output一起考量來訓練Neurel Network。</p>
-<p><img alt="unrolling" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.010.jpeg"></p>
-<p>這種將舊有資訊保留的Neurel Network統稱為Recurrent Neural Networks (RNN)，這種不斷回饋的網路可以攤開來處理，如上圖，如果我有5筆數據，拿訓練一個RNN 5個回合並做了5次更新，其實就等效於攤開來一次處理5筆數據並做1次更新，這樣的手法叫做Unrolling，我們實作上會使用Unrolling的手法來增加計算效率。</p>
-<p><img alt="RNN" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.011.jpeg"></p>
-<p>接下來來看RNN內部怎麼實現的，上圖是最簡單的RNN形式，我們將上一回產生的Output和這一回的Input一起評估出這一回的Output，詳細式子如下：</p>
-<div class="math">$$
-o_{new}=tanh(i \times W_i + o \times W_o + B)
-$$</div>
-<p>如此一來RNN就具有時序性了，舊的歷史資料將可以被「記憶」起來，你可以把RNN的 …</p></dd>
-                <dt>2017 / 11月 19</dt>
-                <dd><a href="https://www.ycc.idv.tw/tensorflow-tutorial_5.html">實作Tensorflow (5)：Word2Vec</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>機器有辦法自行從文本中觀察出詞彙間的相似度嗎？是可以的，word2vec是"word to vector"的縮寫，代表的正是將每個字轉換成向量，而一旦兩個字的向量越是靠近，就代表它的相似度越高，我們究竟要如何得到這些向量呢？方法簡單但出奇有效，文章的最後會向大家呈現它的精彩的結果。</p>
-<p>本單元程式碼Skip-Gram Word2Vec部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_1_word2vec_SkipGram.py">Github</a>下載，CBOW Word2Vec部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_2_word2vec_CBOW.py">Github</a>下載。</p>
-<h5><u>Word2Vec觀念解析</u></h5>
-<p>Word2Vec的形式和Autoencoder有點像，一樣是從高維度的空間轉換到低維度的空間，再轉換回去原本的維度，只是這一次轉回去的東西不再是原本一模一樣的東西了。</p>
-<p>Word2Vec的Input和Output這次變成是上下文的文字組合，舉個例子，"by the way"這個用法如果多次被機器看過的話，機器是有辦法去學習到這樣的規律的，此時"by"與"the"和"way"便會產生一個上下文的關聯性，為了將這樣的關聯性建立起來，我們希望當我輸入"by"時，機器有辦法預測並輸出"the"或"way"，這代表在機器內部它已經學習到了上下文的關聯性。</p>
-<p>那如果今天這個機器也同時看到很多次的 …</p></dd>
-                <dt>2017 / 11月 18</dt>
-                <dd><a href="https://www.ycc.idv.tw/tensorflow-tutorial_4.html">實作Tensorflow (4)：Autoencoder</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>Autoencoder是一個Neurel Network重要的工具，我個人認為它還漂亮的呈現Neurel Network的強大。</p>
-<p>本單元程式碼Autoencoder部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/04_1_Autoencoder_on_MNIST.py">Github</a>下載，De-noise Autoencoder部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/04_2_DenoiseAutoencoder_on_MNIST.py">Github</a>下載。</p>
-<h5><u>Autoencoder觀念解析</u></h5>
-<p>在「機器學習技法」的系列文章，我也<a href="http://www.ycc.idv.tw/YCNote/post/35">曾經介紹過Autoencoder</a>，可以搭配這篇服用。</p>
-<p>Autoencoder概念很簡單，就是做資訊的壓縮，概念是這樣的，當我在一層當中使用神經元愈多，可以儲存的資訊量也就愈多，相反的神經元越少，可以儲存的資訊量越少，如果我要使用Neurel Network作資料壓縮的話，我希望的是可以使用比原本更少的資訊量來儲存，如果原本是一張MNIST的圖，有28x28=784個Pixels，所以可以想知，如果我要作壓縮就要使得壓縮後的神經元可以比784個更少。</p>
-<p>但是什麼都不做我們就可以平白無故的做到壓縮？當然不行，我們還得從資料中找到一些規律，套用這些規律把多餘的東西去除，留下精髓，我們才可以把資料作壓縮，所以在實作上我們會建立一個神經元由大到小的Neurel Network，逐步的轉換，逐步的壓縮資訊。</p>
-<p>那麼壓縮的目的是為了什麼？當然是有辦法還原回去原本狀態，這樣的壓縮才是有意義的，例如：將文檔打包成RAR，檔案大小會變小，但如果實際要再使用這個檔案 …</p></dd>
-                <dt>2017 / 11月 12</dt>
-                <dd><a href="https://www.ycc.idv.tw/tensorflow-tutorial_3.html">實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)</a></dd>
-                <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:60vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>這一章我們終於要討論到影像辨識的重頭戲啦！通常，處理影像類別我們會用Convolutional Neurel Network，聽起來很難很厲害，不過只要了解背後概念你就知道為什麼要這麼做了，讓我們看下去。</p>
-<p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/03_CNN_classification_on_MNIST.py">Github</a>下載。</p>
-<h5><u>影像有什麼特性</u></h5>
-<p>來想一下，影像具備了什麼特性？</p>
-<p>(1) 局域性：通常物件只在一個局域的範圍裡有效，而與太遠的距離無關，譬如我要找一張圖的鳥嘴，鳥嘴的呈現在一張圖當中只會出現在一個小範圍內，所以其實只需要評估這小範圍就可以判斷這是不是鳥嘴了。</p>
-<p>(2) 平移性：通常一張圖任意平移並不影響它的意義，一隻鳥不管是放在圖片的左上角還是右下角，牠都是一隻鳥。</p>
-<p>(3) 縮放性：通常一張圖我把它等比例的放大縮小是不影響它的意義的。</p>
-<p><img alt="影像特性" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.004.jpeg"></p>
-<h5><u>DNN用在影像上的侷限</u></h5>
-<p>我們剛剛看過了影像具有的三種特性：「局域性」、「平移性」和「縮放性」，那我們就拿這三種特性來檢驗上一回的DNN Classification。</p>
-<p>DNN有「局域性」嗎？沒有，因為我們把圖片攤平處理，原本應該是相鄰的關係就被打壞了，事實上DNN的結構會造成每個Input都會同時影響下一層的「每個」神經元，所以相不相鄰根本沒關係，因為每個Pixels的影響是全域的。</p>
-<p>DNN有「平移性 …</p></dd>
-            </dl>
-        </div>
-    </div>
-<!-- /Navigation -->
-<div class="container navigation">
-    	<a class="navigate pull-right" href="https://www.ycc.idv.tw/index2.html">Next <i class="fa fa-caret-right"></i></a>
-</div>              
-<!-- /Navigation --> 
-        <!-- /Content --> 
-
-        <!-- Footer -->
-        <div class="footer gradient-2">
-            <div class="container footer-container ">
-                <div class="row">
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Sitemap</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://www.ycc.idv.tw/archives.html">Archives</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tags.html">Tags</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Contact Me</div>
-                        <ul class="list-unstyled">
-                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
-                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
-                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                    </div> 
-                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                        <p class="pull-right text-right">
-                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
-                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
-                            <small>&copy; YC Note 2018</small>
-                        </p>
-                    </div>
-                </div>
+            <div class="ss-go-top">
+                <a class="smoothscroll" title="Back to Top" href="#top"></a>
             </div>
         </div>
-        <!-- /Footer -->
-    </body>
-</html>
+    </footer>
+
+
+    <!-- photoswipe background
+    ================================================== -->
+    <div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+
+        <div class="pswp__bg"></div>
+        <div class="pswp__scroll-wrap">
+
+            <div class="pswp__container">
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+            </div>
+
+            <div class="pswp__ui pswp__ui--hidden">
+                <div class="pswp__top-bar">
+                    <div class="pswp__counter"></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button> <button class="pswp__button pswp__button--share" title=
+                    "Share"></button> <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button> <button class="pswp__button pswp__button--zoom" title=
+                    "Zoom in/out"></button>
+                    <div class="pswp__preloader">
+                        <div class="pswp__preloader__icn">
+                            <div class="pswp__preloader__cut">
+                                <div class="pswp__preloader__donut"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                    <div class="pswp__share-tooltip"></div>
+                </div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button> <button class="pswp__button pswp__button--arrow--right" title=
+                "Next (arrow right)"></button>
+                <div class="pswp__caption">
+                    <div class="pswp__caption__center"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div><!-- end photoSwipe background -->
+
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/index_plugins.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/index_main.js"></script>
+
+</body>

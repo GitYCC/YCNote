@@ -1,227 +1,347 @@
 <!DOCTYPE html>
-<html lang="zh">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Coding">
-        <meta name="keywords" content="">
-        <link rel="icon" href="https://www.ycc.idv.tw/static/img/favicon.png">
+<html class="no-js" lang="en">
+<head>
 
-        <title>Coding - YC Note</title>
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>Coding - YC Note</title>
+    <meta name="description" content="">
+    <meta name="author" content="YC">
 
-        <!-- Stylesheets -->
-        <link href="https://www.ycc.idv.tw/theme/css/all.min.css" rel="stylesheet">
-        <!-- /Stylesheets -->
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- RSS Feeds -->
-        <!-- /RSS Feeds -->
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
+    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
 
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
+    <!-- script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
 
-        <script type="text/x-mathjax-config"> 
-            MathJax.Hub.Config({ 
-                "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-                SVG: { linebreaks: { automatic:true } } 
-                });
-        </script>
+    <!-- favicons
+    ================================================== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
 
+    <!-- Google Analytics
+    ================================================== -->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-        <!-- Google Analytics -->
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-68393177-2', 'auto');
+        ga('send', 'pageview');
+    </script>
 
-          ga('create', 'UA-68393177-2', 'auto');
-          ga('send', 'pageview');
-        </script>
-        <!-- /Google Analytics -->
+</head>
 
+<body>
 
-    </head>
-
-    <body>
-
-        <!-- Header -->
-    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://www.ycc.idv.tw/images/welcome_front_board.jpg'); background-position: center; background-size: cover;">
-
-            <!-- Static navbar -->
-            <div class="container">
-                <div class="header-nav">
-                    <div class="header-logo">
-                        <a class="pull-left" href="https://www.ycc.idv.tw/"><img class="logo" src="https://www.ycc.idv.tw/static/img/favicon.png" alt="logo">YC Note</a>
-                    </div>
-                    <div class="nav pull-right">
-                                <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a>
-                                <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                                <a href="https://www.ycc.idv.tw/category/reading.html">Reading</a>
-                                <a href="https://www.ycc.idv.tw/category/recording.html">Recording</a>
-                                <a href="https://www.ycc.idv.tw/about-me.html">About Me</a>
-                    </div>
-                </div>
-            </div>
-            <!-- /Static navbar -->
-
-            <!-- Header -->
-    <div class="container header-wrapper">
-        <div class="row">
-              <div class="col-lg-12">
-                  <div class="header-content">
-                      <h1 class="header-title text-uppercase">Coding</h1>
-                      <div class="header-underline"></div>
-                      <p class="header-subtitle header-subtitle-homepage">www.ycc.idv.tw</p>
-                  </div>
-              </div>
+    <!-- preloader
+    ================================================== -->
+    <div id="preloader">
+        <div id="loader" class="dots-fade">
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
     </div>
-            <!-- /Header -->
 
-        </div>
-        <!-- /Header -->
+    <div id="top" class="s-wrap site-wrapper">
 
+        <!-- site header
+        ================================================== -->
+        <header class="s-header">
 
-        <!-- Content -->
-    <div class="archive-container">
-        <div class="container content archive">
-            <h2><a href="https://www.ycc.idv.tw/category/coding.html">Coding : All Articles</u> </a></h2>
-            <dl class="dl-horizontal">
-            	<dt>2018 / 4月 14</dt>
-            	<dd><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_3.html">物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>物件導向怎麼用才能成就好的程式碼？</u></h5>
-<p>一個好的工具，也要配合對於工具的理解，才能發揮效用。<a href="http://www.ycc.idv.tw/introduction-object-oriented-programming_2.html">在上一回中</a>，我們完整介紹了Java和Python的物件導向實現方式，我們講到了「封裝」、「繼承」、「多型」等等物件導向的特色，也講了「抽象類別」、「接口」等抽象化的方法，不過我並沒有告訴大家該怎麼用這些工具？使用這些工具是不是有什麼樣的法則？</p>
-<p>在接下來的這一篇，我將會介紹物件導向的使用方式，我會提到物件導向著名的六大法則：</p>
-<ol>
-<li>單一職責原理</li>
-<li>開閉原理</li>
-<li>里氏替換原則</li>
-<li>迪米特法則</li>
-<li>依賴倒置原則</li>
-<li>接口分隔原則</li>
-</ol>
-<p>在這之前我們先來介紹描述類別關係的UML類別圖。</p>
-<h5><u>UML類別圖</u></h5>
-<p>開始介紹各種原則之前，先來介紹UML類別圖，UML全名稱為Unified Modeling Language，是一種使用圖形來描繪軟體工程架構的方法，這邊準備介紹的是它的類別圖，這個工具有助於我們快速的了解物件與物件之間的關係。</p>
-<ul>
-<li>類別(Class): -代表<code>private</code>，+代表<code>public</code>，#代表<code>protected</code></li>
-</ul>
-<p><img alt="Class" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Class.png"></p>
-<ul>
-<li>抽象類別(Abstract Class)</li>
-</ul>
-<p><img alt="AbstractClass" src="https://www.ycc.idv.tw/media/SOLID_Introduction/AbstractClass.png"></p>
-<ul>
-<li>接口(Interface)</li>
-</ul>
-<p><img alt="Interface" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Interface.png"></p>
-<ul>
-<li>繼承關係 …</li></ul></dd>
-              
-            	<dt>2018 / 4月 10</dt>
-            	<dd><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_2.html">物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>物件導向編程</u></h5>
-<p><a href="http://www.ycc.idv.tw/introduction-object-oriented-programming_1.html">在上一章當中</a>，我們藉由好的程式碼的特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，自然而然引出物件導向的概念。在這一章當中YC會接續介紹完整的物件導向要如何實現，包括物件導向三大特性：封裝、繼承和多型。</p>
-<p>在本章我會採用兩種語言交叉作說明，一種是靜態型別的語言Java，另一種是動態型別的語言Python，這兩種語言都是可以實現物件導向的語言，而所謂型別的動態與靜態可以用一個簡單的方法來區分：型別檢查(Type Checking)發生在什麼時候？像Java這類的靜態型別語言，它的型別檢查是在編譯時期(Compile Time)完成的，而像是Python這類的動態型別語言，它的型別檢查則是在執行時期(Runtime)才去做，所以Python可以不事先宣告變數型別，這點使得Python在開發上方便許多。</p>
-<p>雖然Python和Java都是支援物件導向的語言，但在使用上有很大的差異，首先，因為Python的動態型別，所以有些物件導向的性質對它來說就不是那麼重要，另外，因為Python追求簡潔，簡化了相當多的東西，所以很多的使用方法不同於傳統的物件導向，需要認識到這些差異才可以讓你使用Python的物件導向不會顯得很彆扭。Java是一套對物件導向支援非常完整的語言，而Python是一套易於快速開發的語言，使用兩種語言說明物件導向是為了讓讀者更能了解物件導向的本質，而非語言本身。</p>
-<p>本篇採用『<a href="https://www.tenlong.com.tw/products/9789866761799">大話設計模式</a>』書中的物件導向篇範例 …</p></dd>
-              
-            	<dt>2018 / 4月 05</dt>
-            	<dd><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_1.html">物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>物件導向為何重要？</u></h5>
-<p>我相信很多朋友一定像YC我一樣，想要學某個程式語言，就去買那個程式語言的簡介書籍，然後一章一章的唸下去，這種書通常會先教變數怎麼設定？然後再教if、while、for、function等程式邏輯。</p>
-<p>那如果你學的是「物件導向」的語言，譬如：Java、C++、Python，接下來的章節就會開始介紹「類別」、「物件」等等難懂的東西，然後就會陷入一種霧煞煞的狀態，然後心中就會出現一種聲音：為什麼寫個程式你跟我扯什麼「物件」？我原本用前面所學的方法就可以完成所有事情啦！為何要把事情弄的這麼複雜？這東西到底有什麼好處啊？</p>
-<p>YC一開始也是充滿著疑惑，然後一知半解的就把這些定義記在心中，然後天真的認為「物件導向」只是讓程式比較整齊的方法罷了！直到後來學了資料結構與演算法，然後又學了一點設計模式，然後又有過幾個大型軟體開發的經驗，一路走過才漸漸的了解「物件導向」是怎麼一回事？</p>
-<p>所以我打算把這些收穫用三篇文章來說明，好讓讀者們可以少走一點冤枉路，在第一篇中，也就是本篇，我會帶大家認識好的程式是長什麼樣子的，它擁有什麼樣的特點，有了正確的認知，除了可以讓我們避免寫出糟糕的程式之外，我們也才能漸漸的認識到「物件導向」為何重要 …</p></dd>
-              
-            	<dt>2017 / 5月 06</dt>
-            	<dd><a href="https://www.ycc.idv.tw/python-play-with-data_3.html">Python玩數據 (3)：Numpy [2/2]</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>在上一章節的討論，我們已經有了Numpy的基礎概念，在這一篇當中，我們會更深入的了解Numpy還有什麼進階的功能，包括：產生ndarray的多種方法、broadcast的概念以及ndarray的進階操作手法。</p>
-<h5><u>產生ndarray的其他方法</u></h5>
-<p>在上一章，ndarray的產生方法是由list產生的。</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float64&#39;</span><span class="p">)</span>
-</pre></div>
-
-
-<p>Numpy還提供產生ndarray的其他方式，幫助我們更容易的產生ndarray，譬如，產生一個數列。</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">E</span>
-<span class="n">array</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">3</span><span class="p">,</span>  <span class="mi">4</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">6</span><span class="p">,</span>  <span class="mi">7</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span>  <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">])</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">F</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
-<span class="n">array</span><span class="p">([</span> <span class="mi">1 …</span></pre></div></dd>
-              
-            	<dt>2017 / 4月 17</dt>
-            	<dd><a href="https://www.ycc.idv.tw/python-play-with-data_2.html">Python玩數據 (2)：Numpy [1/2]</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>在上一次我們已經成功了安裝了IPython，這將會是我們這系列教學的主要舞台，而今天我要教大家在這個舞台上利用Numpy來做一些簡單的科學計算。</p>
-<h5><u>IPython</u></h5>
-<p>像上次一樣，打開IPython，緊接著把numpy和pandas載入，載入numpy之後我們習慣用<code>as</code>將它縮寫為<code>np</code>，pandas則縮寫為<code>pd</code>。</p>
-<p><img alt="ipython" src="http://www.ycc.idv.tw/media/PlayDataWithPython/ipython.jpeg"></p>
-<p>IPython是一個具有互動式介面的python執行介面，你可以一邊寫一邊理解目前的狀況，舉個例子</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">12</span> <span class="c"># integer(整數)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>     <span class="c"># check variable a</span>
-<span class="mi">12</span>
-</pre></div>
-
-
-<p>在第一行中，我令變數a為12，而第二行只要把變數a直接key出來，我們就可以立刻查看變數裡頭有什麼內容，注意喔！在一般的python語言中，直接把變數key出來這件事是沒有意義的，這只有在IPython上才有的方便功能，<strong>有了這樣一個互動式的介面，讓我們在處理數據的時候可以隨時查看，目前數據的狀況</strong>。</p>
-<h5><u>Python常見的資料型別</u></h5>
-<p>Python常見的資料型別有整數(integer)、浮點數(floating-point number)、字串(string)、串列(list)、序對(tuple)、字典(dictionary …</p></dd>
-              
-            	<dt>2017 / 3月 30</dt>
-            	<dd><a href="https://www.ycc.idv.tw/algorithm-complexity-theory.html">輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>在寫程式的時候，會聽到有人說這些問題是NP-Complete問題，或說這些是P問題，那這到底是什麼東西？其實這就是一套定義演算法複雜度的方法，今天我就想帶大家來聊聊這個艱澀但有趣的話題。</p>
-<h5><u>Turing Machine</u></h5>
-<p>我們先從 <a href="https://en.wikipedia.org/wiki/Turing_machine">Turing machine</a>（圖靈機）開始講起，Turing machine是現代電腦的基本雛型，是英國數學家圖靈（Alan Turing）於1936年提出的一種抽象計算模型，這個計算模型在猜想上可以「計算所有在演算法中可計算的問題」，也就是可以解決人類所有可解的問題，這個猜想稱之為 <a href="https://en.wikipedia.org/wiki/Church–Turing_thesis">Church–Turing thesis</a>（thesis代表假設或猜想），僅管目前還無法證明這個猜想，但是目前為止它幾乎完全被接受。</p>
-<p>簡單的談一下 Turing machine的基本架構，首先我們需要一個磁帶，這一條磁帶上面可以一格一格的填入一些 symbols，這可以是單純的 0/1 symbols 或者更多種類的 symbols，但這些 symbols 的數量必須是有限的，而這個symbols就可以當作我的輸入，接下來我需要一個讀寫頭，這個讀寫頭會在磁帶上讀取或寫入 symbol，或左右移動，另外這個讀寫頭存有一個 …</p></dd>
-              
-            	<dt>2017 / 3月 20</dt>
-            	<dd><a href="https://www.ycc.idv.tw/python-play-with-data_1.html">Python玩數據 (1)：安裝Python, IPython, Numpy, Pandas</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><strong>相較於R，我比較喜歡在工作上使用python來作數據處理</strong>，主要原因有四個，<strong>第一點，python是一個簡潔的語言</strong>，讓我們可以在不寫註解的情況下還可以很容易的看出每一行code在做哪些事，這可以省去了不少時間在；<strong>第二點，python可以更容易的寫成物件導向編程</strong>，物件導向編程可以讓code看起來更為直覺，而且更易於修改、重構或套用，如果是大型軟體開發的話，需要多人協作，此時物件導向便是絕對必要的；<strong>第三點，python是一個通用語言</strong>，不僅僅只可以作資料處理而已，你可以用python寫一套視窗程式，或者當作網站的後台（這個網站就是建基在python上），如果要做一些平行運算也很容易，<strong>最後一點，也是相當重要的一點，目前常見的deep learning套件TensorFlow或Keras都是架構在python上面</strong>，所以如果你的數據處理結束要作deep learning的話，直接用python處理是相當理想的。講了python這麼多優點，其實它是有一項缺點是不如R的，R是一個專為資料科學設計的語言，所以背後有強大的社群，也就是說能直接取得資料分析方法的套件會比python來的多，不過這方面在這幾年已經漸漸的改善了。</p>
-<p>講了這麼多python的強大，不過在這個系列我並不會著墨太多在python上，這個部分我會在其他的文章中分享，這系列文章主要聚焦在python的資料處理這部份，我會從基礎講起，讓不懂python的人也可以聽懂。  </p>
-<p><br></p>
-<h5><u>最困難的第一步：安裝</u></h5>
-<p>不要以為我在開玩笑，安裝往往是最困難的一步，有些時候安裝一些套件的時候，你必須要先行安裝另外幾個相依套件，如果程式在安裝的過程無法自己補足這些相依套件的話，你就得自己安裝，一般來說如果是python的套件的話 …</p></dd>
-              
-            </dl>
-        </div>
-    </div>
-        <!-- /Content --> 
-
-        <!-- Footer -->
-        <div class="footer gradient-2">
-            <div class="container footer-container ">
-                <div class="row">
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Sitemap</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://www.ycc.idv.tw/archives.html">Archives</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tags.html">Tags</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Contact Me</div>
-                        <ul class="list-unstyled">
-                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
-                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
-                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                    </div> 
-                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                        <p class="pull-right text-right">
-                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
-                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
-                            <small>&copy; YC Note 2018</small>
-                        </p>
-                    </div>
+            <div class="header__top">
+                <div class="header__logo">
+                    <a class="site-logo" href="https://www.ycc.idv.tw/">
+                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
+                    </a>
                 </div>
+
+                <!-- toggles -->
+                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
             </div>
-        </div>
-        <!-- /Footer -->
-    </body>
-</html>
+
+            
+            <nav class="header__nav-wrap">
+
+                <ul class="header__nav">
+                    <li><a href="https://www.ycc.idv.tw/category/aiml.html" title="">AI.ML</a></li>
+                    <li><a href="https://www.ycc.idv.tw/category/coding.html" title="">Coding</a></li>
+                    <li><a href="https://www.ycc.idv.tw/category/living.html" title="">Living</a></li>
+                    <li><a href="https://www.ycc.idv.tw/category/reading.html" title="">Reading</a></li>
+                    <br/>
+                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
+                </ul> <!-- end header__nav -->
+
+                <ul class="header__social">
+                    <li class="ss-github">
+                        <a href="https://github.com/GitYCC" target="_blank">
+                            <span class="screen-reader-text">Github</span>
+                        </a>
+                    </li>
+                    <li class="ss-linkedin">
+                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+                            <span class="screen-reader-text">Linkedin</span>
+                        </a>
+                    </li>
+                    <li class="ss-email">
+                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
+                            <span class="screen-reader-text">Email</span>
+                        </a>
+                    </li>
+                </ul>
+
+            </nav> <!-- end header__nav-wrap -->
+
+
+        </header> <!-- end s-header -->
+
+        <div class="s-content">
+
+            <header class="listing-header">
+                <h1 class="h2"><i class="fa fa-archive"></i> Coding</h1>
+            </header>
+
+            <div class="masonry-wrap">
+
+                <div class="masonry">
+
+                    <div class="grid-sizer"></div>
+
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_3.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_3.html">物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                        <a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a>
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2018 / 4月 14
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>物件導向怎麼用才能成就好的程式碼？ / UML類別圖 / 單一職責原則(Single Responsibility Principle, SRP) / 開閉原則(Open-Closed Principle, OCP) / 里氏替換原則(Liskov Subsititution Principle, LSP) / 迪米特法則(Law of Demeter, LoD) / 依賴倒置原則(Dependence Inversion Principle, DIP) / 接口分隔原則(Interface Segregation Principle, ISP)</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_2.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_2.html">物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                        <a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a>
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2018 / 4月 10
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>物件導向編程 / 類別(Class)與物件(Object) / 方法多載（Method Overloading） / 物件導向三大特性—封裝(Encapsulation) / 物件導向三大特性—繼承(Inheritance) / 抽象化：抽象類別(Abstract Class)、抽象方法(Abstract Method)和接口(Interface) / 物件導向三大特性—多型(Polymorphism) /</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_1.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_1.html">物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                        <a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a>
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2018 / 4月 05
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>物件導向為何重要？ / 程式的好壞？ / 低耦合、高內聚 / 程式碼精練之旅 / 形塑出物件導向</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/python-play-with-data_3.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/python-play-with-data_3.html">Python玩數據 (3)：Numpy [2/2]</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                        <a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a>
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2017 / 5月 06
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>產生ndarray的其他方法 / Broadcasting / Slice and Fancy Indexing /</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/python-play-with-data_2.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/python-play-with-data_2.html">Python玩數據 (2)：Numpy [1/2]</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                        <a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a>
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2017 / 4月 17
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>Python常見的資料型別 / Numpy的數學運算 / Numpy基礎元素：ndarray / Numpy的矩陣運算</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/algorithm-complexity-theory.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/algorithm-complexity-theory.html">輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2017 / 3月 30
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>Turing Machine / 時間複雜度 / P＝NP？ / NP-Complete 問題</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/python-play-with-data_1.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/python-play-with-data_1.html">Python玩數據 (1)：安裝Python, IPython, Numpy, Pandas</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                        <a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a>
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2017 / 3月 20
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>安裝Python, IPython, Numpy, Pandas</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+
+                </div> <!-- end masonry -->
+
+            </div> <!-- end masonry-wrap -->
+
+        </div> <!-- end s-content -->
+
+    </div> <!-- end s-wrap -->
+
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
+
+</body>

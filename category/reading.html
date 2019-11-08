@@ -1,181 +1,283 @@
 <!DOCTYPE html>
-<html lang="zh">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Reading">
-        <meta name="keywords" content="">
-        <link rel="icon" href="https://www.ycc.idv.tw/static/img/favicon.png">
+<html class="no-js" lang="en">
+<head>
 
-        <title>Reading - YC Note</title>
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>Reading - YC Note</title>
+    <meta name="description" content="">
+    <meta name="author" content="YC">
 
-        <!-- Stylesheets -->
-        <link href="https://www.ycc.idv.tw/theme/css/all.min.css" rel="stylesheet">
-        <!-- /Stylesheets -->
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- RSS Feeds -->
-        <!-- /RSS Feeds -->
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
+    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
 
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
+    <!-- script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
 
-        <script type="text/x-mathjax-config"> 
-            MathJax.Hub.Config({ 
-                "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-                SVG: { linebreaks: { automatic:true } } 
-                });
-        </script>
+    <!-- favicons
+    ================================================== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
 
+    <!-- Google Analytics
+    ================================================== -->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-        <!-- Google Analytics -->
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-68393177-2', 'auto');
+        ga('send', 'pageview');
+    </script>
 
-          ga('create', 'UA-68393177-2', 'auto');
-          ga('send', 'pageview');
-        </script>
-        <!-- /Google Analytics -->
+</head>
 
+<body>
 
-    </head>
-
-    <body>
-
-        <!-- Header -->
-    <div class="header-container" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://www.ycc.idv.tw/images/welcome_front_board.jpg'); background-position: center; background-size: cover;">
-
-            <!-- Static navbar -->
-            <div class="container">
-                <div class="header-nav">
-                    <div class="header-logo">
-                        <a class="pull-left" href="https://www.ycc.idv.tw/"><img class="logo" src="https://www.ycc.idv.tw/static/img/favicon.png" alt="logo">YC Note</a>
-                    </div>
-                    <div class="nav pull-right">
-                                <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a>
-                                <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                                <a href="https://www.ycc.idv.tw/category/reading.html">Reading</a>
-                                <a href="https://www.ycc.idv.tw/category/recording.html">Recording</a>
-                                <a href="https://www.ycc.idv.tw/about-me.html">About Me</a>
-                    </div>
-                </div>
-            </div>
-            <!-- /Static navbar -->
-
-            <!-- Header -->
-    <div class="container header-wrapper">
-        <div class="row">
-              <div class="col-lg-12">
-                  <div class="header-content">
-                      <h1 class="header-title text-uppercase">Reading</h1>
-                      <div class="header-underline"></div>
-                      <p class="header-subtitle header-subtitle-homepage">www.ycc.idv.tw</p>
-                  </div>
-              </div>
+    <!-- preloader
+    ================================================== -->
+    <div id="preloader">
+        <div id="loader" class="dots-fade">
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
     </div>
-            <!-- /Header -->
 
-        </div>
-        <!-- /Header -->
+    <div id="top" class="s-wrap site-wrapper">
 
+        <!-- site header
+        ================================================== -->
+        <header class="s-header">
 
-        <!-- Content -->
-    <div class="archive-container">
-        <div class="container content archive">
-            <h2><a href="https://www.ycc.idv.tw/category/reading.html">Reading : All Articles</u> </a></h2>
-            <dl class="dl-horizontal">
-            	<dt>2018 / 2月 03</dt>
-            	<dd><a href="https://www.ycc.idv.tw/the-selfish-gene.html">自私的基因：基因觀點下的天擇</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><h5><u>物競天擇？</u></h5>
-<p>『自私的基因』是當代相當重要的一本書，它在生物學上的地位等同於在物理學上的『時間簡史』。作者理察·道金斯（Richard Dawkins）是一個跨領域的通才，曾獲得動物學學士學位、文學碩士、哲學博士以及科學博士，我認為也是因為這樣的跨領域學習，才能讓他完成這樣一本創作俱佳的好書。</p>
-<p>達爾文的天擇說提出後，生物學開始有了一個思考的脈絡來描述生物的演化，天擇說告訴我們「物競天擇，適者生存、不適者淘汰」，地球上目前存在的物種是多年來環境盲目篩選後的結果，但我們會發現如果以物種為單位來說明天擇會有一些說不清的地方。</p>
-<p>舉個例子，物種的利他行為，例如許多小型鳥類遇到老鷹時會發出警訊給同伴，通知同伴趕快逃跑，這毫無疑問的是一種利他行為，發出警訊將會使自己暴露在危險之中，而換取到的是其他同伴的安全，針對這樣的利他行為，「群體選擇」理論會說生物會因演化而做出對種族有利的事，作者認為這是一種謬誤，生物間應該無法輕易的區分種族，就算可以，那我們又如何去劃分層次，要從界、門、綱、目、科、屬、種哪個層面下手去有意識的幫助自己的種族呢？以物種為單位的天擇說僅能說明生物本身的自利行為，但是解釋不清楚利他行為如何形成。</p>
-<p>作者道金斯受到魏斯曼（A. Weismann）的學說 …</p></dd>
-              
-            	<dt>2017 / 9月 05</dt>
-            	<dd><a href="https://www.ycc.idv.tw/stock-sell-point.html">股票策略：移動停損法</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>最近在研究股票，在網路上看到這篇文章</p>
-<p><a href="https://m.mobile01.com/topicdetail.php?f=291&amp;t=3065829&amp;p=1">https://m.mobile01.com/topicdetail.php?f=291&amp;t=3065829&amp;p=1</a></p>
-<p>覺得相當實用，在這邊跟大家分享，並且當作給自己參考的筆記。</p>
-<p>一般我們常常說玩股票要做好風險管理，最廣為人知的就是設停損點，假設今天我以20元買入一張股票，假如停損比率設10%好了，那我的停損點就是18元，股票一到這個價位就忍痛賣出，以做到風險管理，避免自己大賠。</p>
-<p>停損點的另外一個相反就是停利點，也就是當賺到某一個比例的金額時就獲利了結，假設一樣20元買入一張股票，設20%停利，也就是24元的時候賣出，設停利原本的目的是為了讓自己賣在高點，不過卻是有可能造成反效果。</p>
-<p>如果今天你幸運的買到一張飆股，一連兩天漲了兩根來到了24元，到了你設下的停利點，你不會真的就把它給賣了吧！正常人應該會等它漲到夠了，等它開始反轉時再考慮賣出。那究竟應該在反轉後跌多少才應該賣？這就變成了新的問題，總不能還是以停損點當作賣點吧！那你應該永遠賺不到錢～</p>
-<p>所以這篇的作者提供了一個方法，把停損點和停利點結合成為一點，而這一點會隨著股價上漲而移動上漲，所以下面的網友就稱這個叫做移動停損法。聽起來很神奇，其實概念很簡單 …</p></dd>
-              
-            	<dt>2017 / 4月 07</dt>
-            	<dd><a href="https://www.ycc.idv.tw/big-data-a-revolution.html">大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><img alt="cover" src="http://www.ycc.idv.tw/media/Reading/BigData_pic.jpg"></p>
-<p>最近，Big Data這個詞相當的紅，但是對於這個詞我們還是有很多的誤會，一個常見的疑問是，究竟多大才可以稱得上是大數據呢？事實上，我接下來要介紹的這本書告訴你，大數據多「大」不是重點，重點是你怎麼看待和處理數據。</p>
-<p>「<a href="http://www.books.com.tw/products/0010587258">大數據</a>」這本書分為三個部分，在第一個部分，作者為讀者介紹大數據的三大思維變革，包括：採用全體數據取代抽樣數據、容忍資料的混雜特性、「是什麼」比「為什麼」還重要，第二部分則在講述大數據如何改變了商業、市場和社會的本質。第三部分在探討大數據會對人類產生什麼不好的影響，而我們如何去避免。本篇我主要著墨於第一部分和第二部分。</p>
-<h5><u>樣本=總體</u></h5>
-<blockquote>
-<p>大數據是指不採用統計「隨機採樣」這樣的捷徑，而直接處理所有的數據。</p>
-</blockquote>
-<p>在資料分析中，如果要研究的對象（母群體）非常的龐大、資料量非常大，我們通常會採取「隨機採樣」來處理，這條捷徑在處理特定問題非常成功，也因此它成為現代社會、現代測量領域的主要路數，但這方式存在著一些缺陷。</p>
-<p>「隨機採樣」的缺陷之一是無法瞭解更深層次的細節。在宏觀領域起作用的方法在微觀領域失去了作用。隨機採樣就像印象派的畫作一樣 …</p></dd>
-              
-            	<dt>2017 / 3月 24</dt>
-            	<dd><a href="https://www.ycc.idv.tw/the-brain-the-story-of-you.html">讀書手札：大腦解密手冊 The Brain: The Story of You</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p><a href="http://www.books.com.tw/products/0010738920">⟪大腦解密手冊⟫</a>是一本非常易懂但又相當豐富的書，作者David Eagleman是一名美國的神經科學家，在這本書他嘗試拋開教科書的模式，改以輕鬆聊天的方式來聊神經科學，讓讀者可以很輕易的一探這神秘的大腦。</p>
-<h5><u>大腦的可塑性</u></h5>
-<p>人類在剛出生的一刻是非常脆弱的，不能走不能自己吃東西，完全需要依賴他人的照顧，相反的其他的哺乳類在出生的那刻就已經有謀生的能力了，斑馬寶寶出生不到45分鐘就可以奔跑，長頸鹿出生幾個小時就可以學會站立。表面看起來，這對人類生存似乎很不利，事實上卻提供人類大腦更多的彈性，<strong>人類大腦不像其他動物在出生的一開始就已經接好線路了，雖然長大成人的過程腦細胞數量並不會增加，但是突觸的連結卻會有天翻地覆的改變</strong>，人腦建造過程可以長達25年，過程中會有50%的突觸會被修掉，就算是一個成人突觸連結還是每天不斷的更新，這種彈性使得人類可以比其他動物更能應付環境的各種變化。</p>
-<p>能夠看東西不僅僅需要眼睛，而主要還是靠著眼睛後面的大腦，Mike May在3歲時失明了，過了40年因為幹細胞治療重見光明，不過這個恢復正常的眼睛並沒有讓他恢復視力，雖然能夠看見東西，卻很難說出那是什麼，而且也不清楚這個東西是遠是近，視覺系統不像是照相機，把鏡頭修好了就可以正常使用了，他的大腦長達40年沒有接受光線給的訊號，一時之間是無法辨識視覺給的訊號，也就造成眼睛恢復正常了但是視力並沒有恢復。</p>
-<p>只有感官的訊號是沒有用的，我們還需要大腦去統合和理解這些訊號，大腦幫我們做了很多事，一個有趣的例子，你知道嗎？人在閱讀的時候眼球是不斷的跳動的，一秒鐘會跳4次左右，這種快速的運動稱為「眼球迅速移動」(saccade)，儘管眼球不停的跳動但我們卻可以看到一個穩定的畫面 …</p></dd>
-              
-            	<dt>2017 / 3月 18</dt>
-            	<dd><a href="https://www.ycc.idv.tw/how-to-read-books.html">從《如何閱讀一本書》想像一種不同的知識呈現方法</a></dd>
-              <dd style="border:0.5px solid rgb(200,200,200);padding:15px;margin-top:10px;margin-bottom:50px;max-height:30vh;overflow:hidden;pointer-events:none;background-color:rgb(250,250,250);"><p>⟪如何閱讀一本書⟫是美國哲學家Mortimer Jerome Adler在1940年所著的一本教你如何讀書的書，雖然是70年前的書，不過卻是歷久彌新，隨便google都有好幾十篇的文章在講這本書，其中的一篇就是現在你讀的這一篇。</p>
-<p>書中作者教你讀書的策略，像在練功一樣，必須循序漸進的，掌握了一階技巧在前進下一階，作者把閱讀分為四個階段，至於是哪四階段呢？在這邊賣個關子，我待會會好好的解釋。</p>
-<p>這裡先打個岔，我們先來談談書籍紀錄的知識呈現方式。</p>
-<h5><u>書籍與網路的PK</u></h5>
-<p>現今科技革命當中，對我們影響最深的就屬網際網路的發展了，它是人類歷史上資訊傳播方式的大變革，人類技術發展史你可以簡單看成是一部人類如何延長自己的手腳及大腦的故事，斧頭被發明來延長補足手的不足，眼鏡被發明來補足眼睛的不足，書籍被發明來延長溝通，同樣的，網際網路也一樣的是延長溝通的發明，使得資訊傳遞更有效率。</p>
-<p>雖然書籍和網際網路一樣是資訊傳播的方式，不過看起來更為便利的網路並沒有使書籍被淘汰，網路上的知識仍然走不進學校，撇開使用體驗不談，網路知識的缺點之一是過於零碎化，書籍是作者整合資訊和自己的認知而成的體系，有一個比較完整的結構，不是網路上零碎知識的總和所能取代的。</p>
-<p>不過網路上的確有許多整合得相當好的資訊，但如果仔細看這些知識的傳播方式不脫書籍的那一套，甚至有些有名的部落客將他們的部落格文章整理成書，通常在轉換上也不會遇到太大的困難，因為這些資訊的呈現方式和書籍的呈現方式並無太大差異，等於是把書搬到網路上而已。</p>
-<p>不過這樣感覺白白浪費電腦或網路不同於書籍的彈性，譬如說超連結或者是動態回饋，不過一定有人會想起來，維基百科不就是一個好例子嗎？它利用超連結把眾多知識給串起來，讓它更有結構性，不同於書籍的好處是 …</p></dd>
-              
-            </dl>
-        </div>
-    </div>
-        <!-- /Content --> 
-
-        <!-- Footer -->
-        <div class="footer gradient-2">
-            <div class="container footer-container ">
-                <div class="row">
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Sitemap</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://www.ycc.idv.tw/archives.html">Archives</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tags.html">Tags</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Contact Me</div>
-                        <ul class="list-unstyled">
-                            <li><a href="./about-me.html" target="_blank">About Me</a></li>
-                            <li><a href="https://github.com/GitYCC" target="_blank">Github</a></li>
-                            <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank">Email</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                    </div> 
-                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                        <p class="pull-right text-right">
-                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
-                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
-                            <small>&copy; YC Note 2018</small>
-                        </p>
-                    </div>
+            <div class="header__top">
+                <div class="header__logo">
+                    <a class="site-logo" href="https://www.ycc.idv.tw/">
+                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
+                    </a>
                 </div>
+
+                <!-- toggles -->
+                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
             </div>
-        </div>
-        <!-- /Footer -->
-    </body>
-</html>
+
+            
+            <nav class="header__nav-wrap">
+
+                <ul class="header__nav">
+                    <li><a href="https://www.ycc.idv.tw/category/aiml.html" title="">AI.ML</a></li>
+                    <li><a href="https://www.ycc.idv.tw/category/coding.html" title="">Coding</a></li>
+                    <li><a href="https://www.ycc.idv.tw/category/living.html" title="">Living</a></li>
+                    <li><a href="https://www.ycc.idv.tw/category/reading.html" title="">Reading</a></li>
+                    <br/>
+                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
+                </ul> <!-- end header__nav -->
+
+                <ul class="header__social">
+                    <li class="ss-github">
+                        <a href="https://github.com/GitYCC" target="_blank">
+                            <span class="screen-reader-text">Github</span>
+                        </a>
+                    </li>
+                    <li class="ss-linkedin">
+                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+                            <span class="screen-reader-text">Linkedin</span>
+                        </a>
+                    </li>
+                    <li class="ss-email">
+                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
+                            <span class="screen-reader-text">Email</span>
+                        </a>
+                    </li>
+                </ul>
+
+            </nav> <!-- end header__nav-wrap -->
+
+
+        </header> <!-- end s-header -->
+
+        <div class="s-content">
+
+            <header class="listing-header">
+                <h1 class="h2"><i class="fa fa-archive"></i> Reading</h1>
+            </header>
+
+            <div class="masonry-wrap">
+
+                <div class="masonry">
+
+                    <div class="grid-sizer"></div>
+
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/the-selfish-gene.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/reading_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/the-selfish-gene.html">自私的基因：基因觀點下的天擇</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2018 / 2月 03
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>物競天擇？ / 生命源自於複製 / 基因的代理人—神經網絡 / 再談利他行為 / 文化的複製者—迷因（Meme）</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/stock-sell-point.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/reading_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/stock-sell-point.html">股票策略：移動停損法</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2017 / 9月 05
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>簡言之就是「從買入當天開始算起，以過程的每天當中最高股價當作基準點，向下去設停損點，或是停利點，低於這點就當天賣，或隔天賣」</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/big-data-a-revolution.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/reading_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/big-data-a-revolution.html">大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2017 / 4月 07
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>樣本=總體 / 允許不精確 / 「是什麼」比「為什麼」還重要 / 大數據時代的商業變革 / 全息社會</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/the-brain-the-story-of-you.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/reading_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/the-brain-the-story-of-you.html">讀書手札：大腦解密手冊 The Brain: The Story of You</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2017 / 3月 24
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>大腦的可塑性 / 意識與無意識 / 腦中的交戰網路 / 科技將如何改變大腦的未來</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+                    <article class="masonry__brick entry format-standard animate-this">
+
+                        <div class="entry__thumb">
+                            <a href="https://www.ycc.idv.tw/how-to-read-books.html" class="entry__thumb-link">
+                                <img src="https://www.ycc.idv.tw/images/reading_front_board.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <div class="entry__text">
+                            <div class="entry__header">
+
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/how-to-read-books.html">從《如何閱讀一本書》想像一種不同的知識呈現方法</a></h2>
+                                <div class="entry__meta">
+                                    <span class="entry__meta-cat">
+                                    </span>
+                                    <span class="entry__meta-date">
+                                        2017 / 3月 18
+                                    </span>
+                                </div>
+
+                            </div>
+                            <div class="entry__excerpt">
+                                <p>
+                                    <p>書籍與網路的PK / 閱讀的層次 / 檢視閱讀 / 分析閱讀 / 主題閱讀 / 書籍與網路的第二回合PK</p>
+                                </p>
+                            </div>
+                        </div>
+
+                    </article> <!-- end article -->
+
+                </div> <!-- end masonry -->
+
+            </div> <!-- end masonry-wrap -->
+
+        </div> <!-- end s-content -->
+
+    </div> <!-- end s-wrap -->
+
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
+
+</body>
