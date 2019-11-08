@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>{{ article.title }} - YC Note</title>
+    <meta name="description" content="{{ article.content|striptags|truncate(200)|escape }}">
+    <meta name="author" content="{{ article.author }}">
+
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="{{ SITEURL }}/theme/css/base.css">
+    <link rel="stylesheet" href="{{ SITEURL }}/theme/css/vendor.css">
+    <link rel="stylesheet" href="{{ SITEURL }}/theme/css/main.css">
+    <!-- <link rel="stylesheet" href="{{ SITEURL }}/theme/css/all.min.css"> -->
+    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
+
+    <!-- script
+    ================================================== -->
+    <script src="{{ SITEURL }}/theme/js/modernizr.js"></script>
+
+    <!-- favicons
+    ================================================== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ SITEURL }}/theme/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ SITEURL }}/theme/images/favicon.png">
+
+    <!-- Google Analytics
+    ================================================== -->
+    {% if GOOGLE_ANALYTICS %}
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', '{{ GOOGLE_ANALYTICS }}', 'auto');
+        ga('send', 'pageview');
+    </script>
+    {% endif %}
+
+    <script type="text/x-mathjax-config"> 
+        MathJax.Hub.Config({ 
+            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
+            SVG: { linebreaks: { automatic:true } } 
+            });
+    </script>
+
+</head>
+
+<body class="ss-bg-white">
+
+    <!-- preloader
+    ================================================== -->
+    <div id="preloader">
+        <div id="loader" class="dots-fade">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div id="top" class="s-wrap site-wrapper">
+
+        <!-- site header
+        ================================================== -->
+        <header class="s-header header">
+
+            <div class="header__top">
+                <div class="header__logo">
+                    <a class="site-logo" href="{{ SITEURL }}/">
+                        <img src="{{ SITEURL }}/theme/images/favicon.png" alt="Homepage">
+                    </a>
+                </div>
+
+                <!-- toggles -->
+                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
+
+            </div>
+
+            <nav class="header__nav-wrap">
+
+                <ul class="header__nav">
+                    {% for category, articles in categories %}
+                    <li><a href="{{ SITEURL }}/{{ category.url }}" title="">{{ category }}</a></li>
+                    {% endfor %}
+                    <br/>
+                    <li><a href="{{ SITEURL }}/#about" title="">About</a></li>
+                </ul> <!-- end header__nav -->
+
+                <ul class="header__social">
+                    <li class="ss-github">
+                        <a href="https://github.com/GitYCC" target="_blank">
+                            <span class="screen-reader-text">Github</span>
+                        </a>
+                    </li>
+                    <li class="ss-linkedin">
+                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+                            <span class="screen-reader-text">Linkedin</span>
+                        </a>
+                    </li>
+                    <li class="ss-email">
+                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
+                            <span class="screen-reader-text">Email</span>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </nav> <!-- end header__nav-wrap -->
+
+        </header> <!-- end s-header -->
+
+
+        <!-- site content
+        ================================================== -->
+        <div class="s-content content">
+            <main class="row content__page">
+
+                <article class="column large-full entry format-standard">
+
+                    <div class="media-wrap entry__media">
+                        <div class="entry__post-thumb">
+                            <img src="{{ SITEURL }}/images/{{ article.illustration }}" 
+                                 srcset="{{ SITEURL }}/images/{{ article.illustration }} 2000w, 
+                                 {{ SITEURL }}/images/{{ article.illustration }} 1000w, 
+                                 {{ SITEURL }}/images/{{ article.illustration }} 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                        </div>
+                    </div>
+
+                    <div class="content__page-header entry__header">
+                        <h1 class="display-1 entry__title">
+                        {{ article.title }}
+                        </h1>
+                        <ul class="entry__header-meta">
+                            <li class="author"><i class="fa fa-user"></i> {{ article.author }}</a></li>
+                            <li class="date"><i class="fa fa-calendar"></i> {{ article.locale_date }}</li>
+                            <li class="cat-links">
+                                <i class="fa fa-archive"></i> <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
+                            </li>
+                            <li>
+                                <i class="fa fa-tags"></i> {% for tag in article.tags|sort %}<a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+                                </span>
+                            </li>
+                        </ul>
+                    </div> <!-- end entry__header -->
+
+                    <div class="entry__content">
+                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
+                            {{ article.summary|replace('<p>','')|replace('</p>','') }}
+                        </div>
+                        {{ article.content }}
+
+                    </div> <!-- end entry content -->
+
+                    <div class="entry__pagenav">
+                        <div class="entry__nav">
+                            <div class="entry__prev">
+                                {% set previous = article|prev_article(articles) %}
+                                {% if previous %}
+                                <a href="{{ SITEURL }}/{{ previous.url }}" rel="prev">
+                                    <span>Previous Post</span>
+                                    {{ previous.title }}
+                                </a>
+                                {% endif %}
+                            </div>
+                            <div class="entry__next">
+                                {% set next = article|next_article(articles) %}
+                                {% if next %}
+                                <a href="{{ SITEURL }}/{{ next.url }}" rel="next">
+                                    <span>Next Post</span>
+                                    {{ next.title }}
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div> <!-- end entry__pagenav -->
+
+                    <div class="entry__related">
+                        {% if article.related_posts %}
+                        <h3 class="h2">Related Articles</h3>
+                        <ul class="related">
+                            {% for related_post in article.related_posts %}
+                            <li class="related__item">
+                                <a href="{{ SITEURL }}/{{ related_post.url }}" class="related__link">
+                                    <img src="{{ SITEURL }}/images/{{ related_post.illustration }}" alt="">
+                                    <h5 class="related__post-title">{{ related_post.title }}</h5>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div> <!-- end entry related -->
+
+                    <div>
+                        {% include "disqus_script.html" %}
+                    </div>
+                </article> <!-- end column large-full entry-->
+            </main>
+
+        </div> <!-- end s-content -->
+
+    </div> <!-- end s-wrap -->
+
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="{{ SITEURL }}/theme/js/jquery-3.2.1.min.js"></script>
+    <script src="{{ SITEURL }}/theme/js/plugins.js"></script>
+    <script src="{{ SITEURL }}/theme/js/main.js"></script>
+
+</body>
