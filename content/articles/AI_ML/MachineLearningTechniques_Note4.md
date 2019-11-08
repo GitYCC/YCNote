@@ -7,9 +7,7 @@ Author: YC Chen
 Illustration: ai_front_board.jpg
 Alias: /YCNote/post/33.html
 related_posts: ml-course-techniques_2,ml-course-techniques_3,ml-course-techniques_5,ml-course-techniques_6
-
-
-> 本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest。
+Summary: 本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest
 
 
 

@@ -7,7 +7,7 @@ Author: YC Chen
 Illustration: coding_front_board.jpg
 Alias: /YCNote/post/47.html
 related_posts: introduction-object-oriented-programming_2,introduction-object-oriented-programming_3
-
+Summary: 物件導向為何重要？ / 程式的好壞？ / 低耦合、高內聚 / 程式碼精練之旅 / 形塑出物件導向
 
 
 ### 物件導向為何重要？

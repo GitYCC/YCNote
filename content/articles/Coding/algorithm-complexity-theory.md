@@ -6,7 +6,7 @@ Slug: algorithm-complexity-theory
 Author: YC Chen
 Illustration: coding_front_board.jpg
 Alias: /YCNote/post/19.html
-
+Summary: Turing Machine / 時間複雜度 / P＝NP？ / NP-Complete 問題
 
 
 在寫程式的時候，會聽到有人說這些問題是NP-Complete問題，或說這些是P問題，那這到底是什麼東西？其實這就是一套定義演算法複雜度的方法，今天我就想帶大家來聊聊這個艱澀但有趣的話題。

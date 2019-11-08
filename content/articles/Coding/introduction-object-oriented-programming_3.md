@@ -7,6 +7,7 @@ Author: YC Chen
 Illustration: coding_front_board.jpg
 Alias: /YCNote/post/49.html
 related_posts: introduction-object-oriented-programming_1,introduction-object-oriented-programming_2
+Summary: 物件導向怎麼用才能成就好的程式碼？ / UML類別圖 / 單一職責原則(Single Responsibility Principle, SRP) / 開閉原則(Open-Closed Principle, OCP) / 里氏替換原則(Liskov Subsititution Principle, LSP) / 迪米特法則(Law of Demeter, LoD) / 依賴倒置原則(Dependence Inversion Principle, DIP) / 接口分隔原則(Interface Segregation Principle, ISP)
 
 ### 物件導向怎麼用才能成就好的程式碼？
 

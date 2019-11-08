@@ -7,9 +7,7 @@ Author: YC Chen
 Illustration: ai_front_board.jpg
 Alias: /YCNote/post/34.html
 related_posts: ml-course-techniques_3,ml-course-techniques_4,ml-course-techniques_6,ml-course-techniques_7
-
-
-> 本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。
+Summary: 本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。
 
 
 

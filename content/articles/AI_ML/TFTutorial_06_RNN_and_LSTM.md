@@ -7,7 +7,7 @@ Author: YC Chen
 Illustration: tensorflow-logo.jpg
 Alias: /YCNote/post/45.html
 related_posts: ml-course-techniques_6,tensorflow-tutorial_2,tensorflow-tutorial_3,tensorflow-tutorial_4,tensorflow-tutorial_5
-
+Summary: 概論RNN / 梯度消失與梯度爆炸 / Long Short-Term Memory (LSTM) / 使用LSTM實作文章產生器
 
 
 如果我們想要處理的問題是具有時序性的，該怎麼辦呢？本章將會介紹有時序性的Neurel Network。

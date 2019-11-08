@@ -7,9 +7,8 @@ Author: YC Chen
 Illustration: ai_front_board.jpg
 Alias: /YCNote/post/30.html
 related_posts: ml-course-foundations_4,ml-course-techniques_1,ml-course-techniques_3,ml-course-techniques_4
+Summary: 本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem
 
-
-> 本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem。
 
 在[上一篇文章](http://www.ycc.idv.tw/ml-course-techniques_1.html)當中，我們掃過了《機器學習技法》 將會包含的內容，今天我們正式來看SVM。
 

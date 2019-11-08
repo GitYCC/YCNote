@@ -6,7 +6,7 @@ Slug: the-selfish-gene
 Author: YC Chen
 Illustration: reading_front_board.jpg
 Alias: /YCNote/post/46.html
-
+Summary: 物競天擇？ / 生命源自於複製 / 基因的代理人—神經網絡 / 再談利他行為 / 文化的複製者—迷因（Meme）
 
 
 ### 物競天擇？

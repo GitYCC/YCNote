@@ -7,6 +7,7 @@ Author: YC Chen
 Illustration: coding_front_board.jpg
 Alias: /YCNote/post/48.html
 related_posts: introduction-object-oriented-programming_1,introduction-object-oriented-programming_3
+Summary: 物件導向編程 / 類別(Class)與物件(Object) / 方法多載（Method Overloading） / 物件導向三大特性—封裝(Encapsulation) / 物件導向三大特性—繼承(Inheritance) / 抽象化：抽象類別(Abstract Class)、抽象方法(Abstract Method)和接口(Interface) / 物件導向三大特性—多型(Polymorphism) / 
 
 
 ### 物件導向編程

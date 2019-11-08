@@ -7,7 +7,7 @@ Author: YC Chen
 Illustration: ai_front_board.jpg
 Alias: /YCNote/post/26.html
 related_posts: ml-course-foundations_1,ml-course-foundations_3,ml-course-foundations_4
-
+Summary: 機器可以學習嗎? / $E_{in}$和$E_{out}$的差異 / VC Generalization Bound / 機器要能學習的三要素 / 學習架構
 
 
 ### 前言
