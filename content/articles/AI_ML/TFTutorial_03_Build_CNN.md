@@ -7,6 +7,8 @@ Author: YC Chen
 Illustration: tensorflow-logo.jpg
 Alias: /YCNote/post/41.html
 related_posts: ml-course-techniques_6,tensorflow-tutorial_1,tensorflow-tutorial_2,tensorflow-tutorial_4,tensorflow-tutorial_5
+Summary: 影像有什麼特性 / DNN用在影像上的侷限 / Convolutional Neurel Network (CNN) / Convolution Layer / Pooling Layer / 最簡單的CNN架構：LeNet5 / 圖像化
+
 
 這一章我們終於要討論到影像辨識的重頭戲啦！通常，處理影像類別我們會用Convolutional Neurel Network，聽起來很難很厲害，不過只要了解背後概念你就知道為什麼要這麼做了，讓我們看下去。
 

@@ -6,10 +6,8 @@ Slug: confusion-matrix
 Author: YC Chen
 Illustration: ai_front_board.jpg
 Alias: ./YCNote/post/23.html
+Summary: 本篇介紹包含Confusion Matrix, True Positive, False Negative, False Positive, True Negative, Type I Error, Type II Error, Prevalence, Accuracy, Precision, Recall, F1 Measure, F Measure, Sensitivity, Specificity, ROC Curve, AUC, TPR, FNR, FPR, TNR, FDR, FOR, PPV, NPV, 算數平均, 幾何平均, 調和平均
 
-
-
-> ​	本篇介紹包含Confusion Matrix, True Positive, False Negative, False Positive, True Negative, Type I Error, Type II Error, Prevalence, Accuracy, Precision, Recall, F1 Measure, F Measure, Sensitivity, Specificity, ROC Curve, AUC, TPR, FNR, FPR, TNR, FDR, FOR, PPV, NPV, 算數平均, 幾何平均, 調和平均
 
 有時要鑑別一個模型的好或壞，並不能簡單的看出來，所以我們需要用一些指標去判定它的好壞，也作為我們挑選模型的依據。如果你稍微查一下有哪些指標，你就會發現指標多到讓人家眼花撩亂，一堆名詞就攤在那邊，讓人無從下手。有一種常用的指標稱之為Confusion Matrix，這個命名很有趣，這個表格的確是很讓人感到很困惑啊！至少在看完這篇之前。Confusion Matrix是用於分類問題的一種常用的指標，它衍生很多不同的指標，下面這張圖我將Confusion Matrix畫出來，並把一些比較重要的衍生指標給標出來。
 

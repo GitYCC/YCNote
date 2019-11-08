@@ -7,7 +7,7 @@ Author: YC Chen
 Illustration: tensorflow-logo.jpg
 Alias: /YCNote/post/38.html
 related_posts: ml-course-techniques_6,tensorflow-tutorial_2,tensorflow-tutorial_3,tensorflow-tutorial_4,tensorflow-tutorial_5
-
+Summary: MNIST Dataset / Softmax / Cross-Entropy Loss / 分離數據的重要性 / Tensorflow工作流程 / Tensorflow的基本「張量」元素 / Session的操作 / 第一個Tensorflow Model
 
 
 初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。

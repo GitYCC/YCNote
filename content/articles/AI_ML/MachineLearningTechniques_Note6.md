@@ -7,11 +7,7 @@ Author: YC Chen
 Illustration: ai_front_board.jpg
 Alias: /YCNote/post/35.html
 related_posts: ml-course-techniques_3,ml-course-techniques_4,ml-course-techniques_5,ml-course-techniques_7,tensorflow-tutorial_1,tensorflow-tutorial_2,tensorflow-tutorial_3
-
-
-> 本篇內容涵蓋神經網路(Neural Network, NN)、深度學習(Deep Learning, DL)、反向傳播算法(Backpropagation, BP)、Weight-elimination Regularizer、Early Stop、Autoencoder、Principal Component Analysis (PCA)。
-
-<br/>
+Summary: 本篇內容涵蓋神經網路(Neural Network, NN)、深度學習(Deep Learning, DL)、反向傳播算法(Backpropagation, BP)、Weight-elimination Regularizer、Early Stop、Autoencoder、Principal Component Analysis (PCA)
 
 ### 神經網路(Neural Network)
 

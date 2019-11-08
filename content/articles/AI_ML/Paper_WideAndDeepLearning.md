@@ -6,7 +6,7 @@ Slug: wide-and-deep-learning
 Author: YC Chen
 Illustration: ai_front_board.jpg
 related_posts: 
-
+Summary: 以往認為deep learning有辦法完全取代feature engineering，Google在2016年寫下的這篇paper，指出在數據相對稀疏（sparse）的情況下feature engineering仍然有其重要性
 
 
 ### 結論寫在前面

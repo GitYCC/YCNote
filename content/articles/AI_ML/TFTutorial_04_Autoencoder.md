@@ -7,7 +7,7 @@ Author: YC Chen
 Illustration: tensorflow-logo.jpg
 Alias: /YCNote/post/43.html
 related_posts: ml-course-techniques_6,tensorflow-tutorial_2,tensorflow-tutorial_3,tensorflow-tutorial_5,tensorflow-tutorial_6
-
+Summary: Autoencoder觀念解析 / Autoencoder程式碼 / 測試Autoencoder / 壓縮碼Code與視覺化 / 去雜訊(De-noise) Autoencoder
 
 
 Autoencoder是一個Neurel Network重要的工具，我個人認為它還漂亮的呈現Neurel Network的強大。

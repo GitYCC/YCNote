@@ -7,6 +7,7 @@ Author: YC Chen
 Illustration: coding_front_board.jpg
 Alias: /YCNote/post/18.html
 related_posts: python-play-with-data_2,python-play-with-data_3
+Summary: 安裝Python, IPython, Numpy, Pandas
 
 **相較於R，我比較喜歡在工作上使用python來作數據處理**，主要原因有四個，**第一點，python是一個簡潔的語言**，讓我們可以在不寫註解的情況下還可以很容易的看出每一行code在做哪些事，這可以省去了不少時間在；**第二點，python可以更容易的寫成物件導向編程**，物件導向編程可以讓code看起來更為直覺，而且更易於修改、重構或套用，如果是大型軟體開發的話，需要多人協作，此時物件導向便是絕對必要的；**第三點，python是一個通用語言**，不僅僅只可以作資料處理而已，你可以用python寫一套視窗程式，或者當作網站的後台（這個網站就是建基在python上），如果要做一些平行運算也很容易，**最後一點，也是相當重要的一點，目前常見的deep learning套件TensorFlow或Keras都是架構在python上面**，所以如果你的數據處理結束要作deep learning的話，直接用python處理是相當理想的。講了python這麼多優點，其實它是有一項缺點是不如R的，R是一個專為資料科學設計的語言，所以背後有強大的社群，也就是說能直接取得資料分析方法的套件會比python來的多，不過這方面在這幾年已經漸漸的改善了。
 
@@ -14,7 +15,7 @@ related_posts: python-play-with-data_2,python-play-with-data_3
 
 <br>
 
-## 最困難的第一步：安裝
+### 最困難的第一步：安裝
 
 不要以為我在開玩笑，安裝往往是最困難的一步，有些時候安裝一些套件的時候，你必須要先行安裝另外幾個相依套件，如果程式在安裝的過程無法自己補足這些相依套件的話，你就得自己安裝，一般來說如果是python的套件的話，你可以先用待會要介紹的`pip install`來安裝，如果不幸在上面找不到的話，就只好上網Google了，另外有些時候安裝還會遇到bug，這個時候Google也同樣是你的好朋友，或者到[Stack Overflow](https://stackoverflow.com) 上找答案（一個好的coder要培養自己上網找答案的能力），不過大家先不用擔心，以下我會帶大家一步一步的安裝。
 
@@ -22,9 +23,9 @@ related_posts: python-play-with-data_2,python-play-with-data_3
 
 <br>
 
-## Python2.7
+### Python2.7
 
-### Mac
+* Mac
 
 python2.7已經是內建的程式了！打開「終端機」，直接輸入
 
@@ -136,7 +137,7 @@ $ which python2.7
 
 <br>
 
-### Ubuntu
+* Ubuntu
 
 請參考[這篇](https://tecadmin.net/install-python-2-7-on-ubuntu-and-linuxmint/) 。
 
@@ -172,7 +173,7 @@ $ sudo make altinstall
 
 <br>
 
-### Windows
+* Windows
 
 **Step 1:** 在這個[網站](https://www.python.org/downloads/release/python-2713/)依照你的CPU架構下載安裝檔，並安裝。
 
@@ -186,9 +187,9 @@ $ sudo make altinstall
 
 <br>
 
-## IPython, Numpy, Pandas
+### IPython, Numpy, Pandas
 
-### Mac ＆Ubuntu
+* Mac ＆Ubuntu
 
 **Step 1:** 安裝pip
 
@@ -207,7 +208,7 @@ $ pip2.7 install pandas
 
 <br>
 
-### Windows
+* Windows
 
 雖然不建議在windows下開發程式，不過我還是提供一個方法，讓你在接下的文章可以正常作操作。有一個好用的軟體—Anaconda，這個軟體不只可以在windows上使用，在linux和mac都有辦法使用。
 
@@ -222,7 +223,7 @@ $ conda install pandas
 
 <br>
 
-## 開啟IPython
+### 開啟IPython
 
 IPython將會是未來我們這系列會用的一個介面，只要能夠開啟它，我們今天就大功告成了。
 

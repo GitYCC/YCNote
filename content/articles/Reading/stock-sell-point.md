@@ -6,7 +6,7 @@ Slug: stock-sell-point
 Author: YC Chen
 Illustration: reading_front_board.jpg
 Alias: /YCNote/post/24.html
-
+Summary: 簡言之就是「從買入當天開始算起，以過程的每天當中最高股價當作基準點，向下去設停損點，或是停利點，低於這點就當天賣，或隔天賣」
 
 
 最近在研究股票，在網路上看到這篇文章

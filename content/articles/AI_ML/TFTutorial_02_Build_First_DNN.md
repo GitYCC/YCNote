@@ -7,6 +7,7 @@ Author: YC Chen
 Illustration: tensorflow-logo.jpg
 Alias: /YCNote/post/39.html
 related_posts: ml-course-techniques_6,tensorflow-tutorial_1,tensorflow-tutorial_3,tensorflow-tutorial_4,tensorflow-tutorial_5
+Summary: 增加Hidden Layer / Activation Function的選擇 / Mini-Batch Gradient Descent / Regularization / Weight Regularization / Dropout / Optimizer的選擇 / 來看看程式怎麼寫
 
 接續著[上一回](http://www.ycc.idv.tw/YCNote/post/38)，我們已經有一個單層的Neurel Network，緊接著我們來試著一步一步改造它，讓它成為我們常使用的Deep Neurel Network的形式。
 

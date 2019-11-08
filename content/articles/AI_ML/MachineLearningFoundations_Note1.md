@@ -7,7 +7,7 @@ Author: YC Chen
 Illustration: ai_front_board.jpg
 Alias: /YCNote/post/25.html
 related_posts: ml-course-foundations_2,ml-course-foundations_3,ml-course-foundations_4
-
+Summary: 什麼是Machine Learning / ML的使用時機 / 二元分類問題 / 多元學習
 
 ### 前言
 

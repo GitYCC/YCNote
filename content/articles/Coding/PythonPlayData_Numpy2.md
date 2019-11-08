@@ -7,11 +7,12 @@ Author: YC Chen
 Illustration: coding_front_board.jpg
 Alias: /YCNote/post/22.html
 related_posts: python-play-with-data_1,python-play-with-data_2
+Summary: 產生ndarray的其他方法 / Broadcasting / Slice and Fancy Indexing / 
 
 
 在上一章節的討論，我們已經有了Numpy的基礎概念，在這一篇當中，我們會更深入的了解Numpy還有什麼進階的功能，包括：產生ndarray的多種方法、broadcast的概念以及ndarray的進階操作手法。
 
-## 產生ndarray的其他方法
+### 產生ndarray的其他方法
 
 在上一章，ndarray的產生方法是由list產生的。
 
@@ -117,7 +118,7 @@ def something(i,j):
 
 上面這兩個函式是等價的，差異只在於，第一個函式是沒有名稱的，稱為匿名函數，第二種就是一般的函式，具有名稱。
 
-## Broadcasting
+### Broadcasting
 
 在上一章，我有提到一般的矩陣運算，在Numpy中是採用element-wise operation，也就是每個相應元素做運算，然後產生新的ndarray，這個前題是兩組要運算的ndarray他們的shape是相同的，那如果遇到shape不一致，Numpy會怎麼處理呢？實際上，Numpy會幫你把陣列給延伸展開，就像廣播(broadcasting)一樣的傳遞出去，這遵照所謂的broadcasting rules。
 
@@ -294,7 +295,7 @@ array([ 17.49285568,  21.58703314,  73.79024326,  56.04462508])
 0 	# ANS is (102.0, 203.0)
 ```
 
-## Slice and Fancy Indexing
+### Slice and Fancy Indexing
 
 最後，來看一下我們可以怎麼去切ndarray。在python內建語言中，常見的slice是這個樣子
 
@@ -368,7 +369,7 @@ array([[1, 4],
 
 上面我將取出來的值加倍，這樣的手法來取值改值會直接影響到原陣列，這是一個很重要的手法。
 
-## 子彈總結
+### 子彈總結
 
 * 產生ndarray的其他方法：np.arange, np.linspace, np.zeros, np.ones, np.eye, np.random.random 和 np.fromfunction
 * Broadcasting的前題：所有矩陣的shape由axis＝-1開始對齊去比較彼此間的rank，所有矩陣的在每個axis下的rank必須符合以下兩種規則其中之一：

@@ -7,11 +7,11 @@ Author: YC Chen
 Illustration: coding_front_board.jpg
 Alias: /YCNote/post/21.html
 related_posts: python-play-with-data_1,python-play-with-data_3
-
+Summary: Python常見的資料型別 / Numpy的數學運算 / Numpy基礎元素：ndarray / Numpy的矩陣運算
 
 在上一次我們已經成功了安裝了IPython，這將會是我們這系列教學的主要舞台，而今天我要教大家在這個舞台上利用Numpy來做一些簡單的科學計算。
 
-## IPython
+### IPython
 
 像上次一樣，打開IPython，緊接著把numpy和pandas載入，載入numpy之後我們習慣用`as`將它縮寫為`np`，pandas則縮寫為`pd`。
 
@@ -27,7 +27,7 @@ IPython是一個具有互動式介面的python執行介面，你可以一邊寫�
 
 在第一行中，我令變數a為12，而第二行只要把變數a直接key出來，我們就可以立刻查看變數裡頭有什麼內容，注意喔！在一般的python語言中，直接把變數key出來這件事是沒有意義的，這只有在IPython上才有的方便功能，**有了這樣一個互動式的介面，讓我們在處理數據的時候可以隨時查看，目前數據的狀況**。
 
-## Python常見的資料型別
+### Python常見的資料型別
 
 Python常見的資料型別有整數(integer)、浮點數(floating-point number)、字串(string)、串列(list)、序對(tuple)、字典(dictionary)，可以使用`type()`來查詢資料型別。
 
@@ -116,7 +116,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'
 [4, 1, 2, 3]
 ```
 
-## Numpy的數學運算
+### Numpy的數學運算
 
 在上一段我簡單介紹了python內建的運算，在大多數情況，內建的運算就已經足夠應付了，不過如果遇到複雜的運算，例如：三角函數、取最大最小值、exp、log、開根號、矩陣運算，我們就需要用到 Numpy	。
 
@@ -139,7 +139,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'
 1.0
 ```
 
-## Numpy基礎元素：ndarray
+### Numpy基礎元素：ndarray
 
 Numpy最重要的元素就是ndarray，它是N-Dimensional Array的縮寫，在Numpy裡，dimesions被稱為axes，而axes的數量被稱為rank，axes是一個重要的概念，了解這個概念基本上就把Numpy搞懂一半以上了。
 
@@ -285,7 +285,7 @@ array([ 1.,  2.,  3.])
 dtype('float64')
 ```
 
-## Numpy的矩陣運算
+### Numpy的矩陣運算
 
 有了ndarray就可以作矩陣的運算了，矩陣運算有兩種系統，一種是element-wise(元素方面) operation，一種是matrix operation。
 
@@ -397,7 +397,7 @@ array([[ 1.,  2.,  5.,  0.],
         [ 0.]])]
 ```
 
-## 子彈總結
+### 子彈總結
 
 * Python常見的資料型別：整數(integer)、浮點數(floating-point number)、字串(string)、串列(list)、序對(tuple)、字典(dictionary)
 * ndarray的axes概念很重要，這會決定函數操作的方式，例如：np.sum

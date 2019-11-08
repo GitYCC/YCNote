@@ -7,7 +7,7 @@ Author: YC Chen
 Illustration: ai_front_board.jpg
 Alias: /YCNote/post/27.html
 related_posts: ml-course-foundations_1,ml-course-foundations_2,ml-course-foundations_4
-
+Summary: Gradient Descent / Linear Regression / Logistic Regression / 使用迴歸法做二元分類問題
 
 
 ### 前言

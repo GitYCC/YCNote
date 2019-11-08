@@ -7,7 +7,7 @@ Author: YC Chen
 Illustration: ai_front_board.jpg
 Alias: /YCNote/post/28.html
 related_posts: ml-course-foundations_1,ml-course-foundations_2,ml-course-foundations_3,ml-course-techniques_1
-
+Summary: 特徵轉換 / Overfitting / Regularization / Validation
 
 
 ### 前言

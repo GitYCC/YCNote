@@ -7,9 +7,8 @@ Author: YC Chen
 Illustration: ai_front_board.jpg
 Alias: /YCNote/post/32.html
 related_posts: ml-course-techniques_1,ml-course-techniques_2,ml-course-techniques_4,ml-course-techniques_5
+Summary: 本篇內容涵蓋Probabilistic SVM、Kernel Logistic Regression、Kernel Ridge Regression、Support Vector Regression (SVR)
 
-
-> 本篇內容涵蓋Probabilistic SVM、Kernel Logistic Regression、Kernel Ridge Regression、Support Vector Regression (SVR)。
 
 在上一篇當中我們看到了Kernel Trick的強大，我們繼續運用這個數學工具在其他的Regression上看看。
 

@@ -7,6 +7,7 @@ Author: YC Chen
 Illustration: tensorflow-logo.jpg
 Alias: /YCNote/post/44.html
 related_posts: ml-course-techniques_6,tensorflow-tutorial_2,tensorflow-tutorial_3,tensorflow-tutorial_4,tensorflow-tutorial_6
+Summary: Word2Vec觀念解析 / Word2Vec的架構 / Word2Vec的兩種常用方法：Skip-Gram和CBOW / 準備文本語料庫 / 實作Skip-Gram / 實作CBOW (Continuous Bag of Words)
 
 
 機器有辦法自行從文本中觀察出詞彙間的相似度嗎？是可以的，word2vec是"word to vector"的縮寫，代表的正是將每個字轉換成向量，而一旦兩個字的向量越是靠近，就代表它的相似度越高，我們究竟要如何得到這些向量呢？方法簡單但出奇有效，文章的最後會向大家呈現它的精彩的結果。
