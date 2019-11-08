@@ -10,7 +10,7 @@ PATH = 'content'
 
 TIMEZONE = 'Asia/Taipei'
 
-DEFAULT_LANG = u'zh'
+DEFAULT_LANG = u'en'
 
 
 
@@ -64,7 +64,7 @@ RELATED_POSTS_MAX = 10
 ### Nest ###
 
 # NEST Template
-THEME = 'theme/nest'
+THEME = 'theme/typerite'
 SITESUBTITLE = u'機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)。'
 # Minified CSS
 NEST_CSS_MINIFY = True
@@ -150,3 +150,24 @@ EXTRA_PATH_METADATA = {
     'extra/favicon.ico': {'path': 'favicon.ico'},
     'extra/logo.svg': {'path': 'logo.svg'},
     'extra/CNAME': {'path': 'CNAME'},}
+
+
+def prev_article(current, articles):
+    articles = sorted(articles, key=lambda x: x.locale_date)
+    i = articles.index(current) - 1
+    if i >= 0:
+        return articles[i]
+    else:
+        return None
+
+
+def next_article(current, articles):
+    articles = sorted(articles, key=lambda x: x.locale_date)
+    i = articles.index(current) + 1
+    if i < len(articles):
+        return articles[i]
+    else:
+        return None
+
+
+JINJA_FILTERS = {'prev_article': prev_article, 'next_article': next_article}
