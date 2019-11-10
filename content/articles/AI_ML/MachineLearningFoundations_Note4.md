@@ -4,7 +4,7 @@ Category: AI.ML
 Tags: 機器學習基石
 Slug: ml-course-foundations_4
 Author: YC Chen
-Illustration: ai_front_board.jpg
+Illustration: ml-course-foundations.jpeg
 Alias: /YCNote/post/28.html
 related_posts: ml-course-foundations_1,ml-course-foundations_2,ml-course-foundations_3,ml-course-techniques_1
 Summary: 特徵轉換 / Overfitting / Regularization / Validation

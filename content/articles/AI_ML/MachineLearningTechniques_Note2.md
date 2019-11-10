@@ -4,7 +4,7 @@ Category: AI.ML
 Tags: 機器學習技法
 Slug: ml-course-techniques_2
 Author: YC Chen
-Illustration: ai_front_board.jpg
+Illustration: ml-course-techniques.jpeg
 Alias: /YCNote/post/30.html
 related_posts: ml-course-foundations_4,ml-course-techniques_1,ml-course-techniques_3,ml-course-techniques_4
 Summary: 本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem
@@ -56,7 +56,7 @@ $y_n$的正負剛好和$(W^T X_n+b)$相抵消，**這些落在空白區邊界的
 $$
 y_n\times (W^T X_n+b) ≥ 1\ (All\ Data)
 $$
-**綜合上述，Hard-Margin SVM的目標就是，在符合$y_n\times (W^T X_n+b) ≥ 1 ,\ n=1~N​$的條件下，求$Margin (1 / |W|)​$最大的情形，也可以等價於求$(W^T W/2)​$ 最小的情形，這個問題有辦法使用QP Solver來求解，詳見[這裡](https://en.wikipedia.org/wiki/Quadratic_programming)，我就不多加介紹這個數學工具。**
+**綜合上述，Hard-Margin SVM的目標就是，在符合$y_n\times (W^T X_n+b) ≥ 1 ,\ n=1~N$的條件下，求$Margin (1 / |W|)$最大的情形，也可以等價於求$(W^T W/2)$ 最小的情形，這個問題有辦法使用QP Solver來求解，詳見[這裡](https://en.wikipedia.org/wiki/Quadratic_programming)，我就不多加介紹這個數學工具。**
 
 <br/>
 
@@ -308,6 +308,6 @@ $f(x)+μh(x)=α$在圖中的平面上是一條直線，而$f(x)+μh(x)$的值也
    - 綜合上述[式2-5]、[式2-6]、[式2-9]、[式2-10]並改寫成Kernel的形式得，$min. [(1/2)𝚺_{n}𝚺_{m} α_{n}α_{m}y_{n}y_{m}K(X_{n},X_{m})-𝚺_{n} α_{n}],\ s.t. 0 ≤ α_{n} ≤ C;\  𝚺_{n} α_{n}y_{n} = 0$，使用QP Solver可以求出 $α_{n}$。
 5. 可以用$α_{n}$來求$W$和$b$
    - $α_{n}$涵義：觀察[式2-3]和[式2-4]可得 (1) $α_{n} = 0$ 為Non-Support Vector； (2) $0 < α_{n} < C$ 代表$y_{n}×(W^{T}Z_{n}+b)=1$，為Free Support Vector；(3) $α_{n} = C$ 代表$y_{n}×(W^{T}Z_{n}+b)=1-ξ_{n}$，為Bounded Support Vector。
-   - 由[式2-8]得，$W = 𝚺_{n} α_{n}y_{n}Z_{n}​$，從式子中你會發現對W有貢獻的只有Support Vector ($α_{n}>0​$)。
+   - 由[式2-8]得，$W = 𝚺_{n} α_{n}y_{n}Z_{n}$，從式子中你會發現對W有貢獻的只有Support Vector ($α_{n}>0$)。
    - 假設在某個Support Vector($α_{n}>0$且$β_{n}>0$)上，由[式2-3]和[式2-4]可推得，$b=y_{sv}-𝚺_{n} α_{n}y_{n}K(X_{n},X_{sv})$  (at Support Vector)。
 

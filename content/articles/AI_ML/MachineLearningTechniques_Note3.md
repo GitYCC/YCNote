@@ -4,7 +4,7 @@ Category: AI.ML
 Tags: 機器學習技法
 Slug: ml-course-techniques_3
 Author: YC Chen
-Illustration: ai_front_board.jpg
+Illustration: ml-course-techniques.jpeg
 Alias: /YCNote/post/32.html
 related_posts: ml-course-techniques_1,ml-course-techniques_2,ml-course-techniques_4,ml-course-techniques_5
 Summary: 本篇內容涵蓋Probabilistic SVM、Kernel Logistic Regression、Kernel Ridge Regression、Support Vector Regression (SVR)

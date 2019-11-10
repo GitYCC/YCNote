@@ -4,7 +4,7 @@ Category: AI.ML
 Tags: 機器學習基石
 Slug: ml-course-foundations_3
 Author: YC Chen
-Illustration: ai_front_board.jpg
+Illustration: ml-course-foundations.jpeg
 Alias: /YCNote/post/27.html
 related_posts: ml-course-foundations_1,ml-course-foundations_2,ml-course-foundations_4
 Summary: Gradient Descent / Linear Regression / Logistic Regression / 使用迴歸法做二元分類問題
@@ -83,7 +83,7 @@ where: W = [w_0, w_1, w_2, w_3], x = [x_0=1, x_1, x_2, x_3]
 $$
 在線性模型中，這個 s 就正好是我們Model預測的值，通常我們會把預測得來的 $y$ 記作$\widehat{y}$ (y hat)，如果今天這個 y 和 ŷ 是實數的話，那這就是一個標準的Linear Regression問題，那如何去衡量預測的好或不好呢？**我們可以使用Squared Error來衡量，$err(\widehat{y},y)=(\widehat{y}-y)^2$**，所以 $\widehat{y}$ 和 $y$ 越靠近Error就越小。
 
-Squared Error的$E_{in}$平面比較簡單，就是一個單純的開口向上的拋物線，所以它的最低點其實是有解析解的，我們可以靠著數學上的**Pseudo-Inverse方法**在評估完全部的Data之後把最佳參數給算出來，這麼簡單的$E_{in}$平面是很難見到的，我們之前介紹的Gradient Descent則是靠著逐步更新的方式去尋找近似解，這個方法是不管$E_{in}$平面有多麼複雜都可以處理，但是需要特別注意可能會卡在Local Minimum和Saddle Point。
+Squared Error的$E_{in}$平面是一個單純的開口向上的拋物線，所以它的最低點其實是有解析解的，我們可以靠著數學上的**Pseudo-Inverse方法**把最佳參數給算出來，但是Pseudo-Inverse計算非常龐大，當數據量很大時這個方法是不可行的，而剛剛介紹的Gradient Descent計算複雜度只有$O(N)$。
 
 <br/>
 
@@ -91,10 +91,9 @@ Squared Error的$E_{in}$平面比較簡單，就是一個單純的開口向上�
 
 ![ML](http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.011.jpeg)
 
-在上一回討論二元分類問題時，我們考慮的狀況是「沒有雜訊」的情形，不過在實際情況下，「雜訊」是一定需要考慮的。在「沒有雜訊」的情形下，一筆Data只會有一個確定的答案，**如果考慮「雜訊」，一筆Data出現的答案可能呈現機率分布**，假設雜訊不大，接近正確答案的機率也許會高一點。
+在上一回討論二元分類問題時，我們的評估模型都是非黑即白的
 
-如果在二元分類問題中，答案因為雜訊出現了機率分布，可能會產生像下面一樣的情況，
-
+在上一回討論二元分類問題時，我們考慮的狀況是「沒有雜訊」的情形，不過在實際情況下，「雜訊」是一定需要考慮的。在「沒有雜訊」的情形下，一筆Data只會有一個確定的答案要嘛是 $- 1$ 不然就是 $+ 1$，**如果考慮「雜訊」，一筆Data出現的答案可能呈現機率分布**，介於 $- 1$ 和 $+ 1$ 之間，舉例可能會產生像下面一樣的情況，
 $$
 \mathbb{P}(◯|X^{(1)}) = 0.9,\  \mathbb{P}(✕|X^{(1)}) = 0.1
 $$
@@ -106,33 +105,53 @@ $$
 所以我們就可以來建立一個有機率概念的模型，這個Model的預測值是一個機率，一樣的先給予輸入變數$x$和權重$W$求出Score $s$，再把 $s$ 放到Logistic Function當中，我們就可以映射出在一個機率空間，我們藉由調整$W$來改變Model來擬合我們的Data，有了這個新的Model，我們就可以用機率的方式來描述二元分類，
 
 $$
-\mathbb{P}(◯|X^{(1)}) = Θ(s) ;   \mathbb{P}(✕|X^{(1)}) = 1 - Θ(s) = Θ(-s)
+\mathbb{P}(◯|X^{(1)}) = Θ(s)
 $$
 
-OK! 決定好Model，我們就可以來定義它的Error Measurement的方式了，這個時候如果使用Squared Error來作為Error Measurement你會發現這種評估方式有一點失焦了，如果採用Squared Error，我們做的事是將機率的值給擬合精準，但我們知道這個機率的產生是來自於雜訊，預測雜訊是沒有意義的，要做的事應該是要在考慮雜訊之下盡可能的去描述數據背後真正的機制。
+$$
+\mathbb{P}(✕|X^{(1)}) = 1 - Θ(s) = Θ(-s)
+$$
 
-因此從機率觀點來看是比較合理的，在考慮採樣數據過程因為雜訊造成的機率分布的前提下，我們去看會採樣到這組Data的可能性，我們應該合理的認為採樣出來的這組Data應該具有最大的「可能性」，這個「可能性」可以表示成
+$$
+where:\ Θ(s)=1/[1+e^{-s}]
+$$
 
-Assume $◯ \equiv  (y=+1)$ and $✕ \equiv  (y=-1)$
+OK! 決定好Model，我們就可以來定義它的Error Measurement的方式了，這個時候如果使用Squared Error來作為Error Measurement你會發現這種評估方式有一點失焦了，如果採用Squared Error，我們做的事是將機率的值給擬合精準，但我們知道這個機率的產生是來自於雜訊，預測雜訊是沒有意義的，要做的事應該是要在考慮雜訊之下盡可能提升模型會產生取樣資料的可能機率。
 
-$\mathbb{P}(likelihood\ of\ ◯) = \mathbb{P}(x^{(1)})Θ(y^{(1)} s^{(1)}) \times \mathbb{P}(x^{(2)})Θ(y^{(2)} s^{(2)}) \times … \times \mathbb{P}(x^{(N)})Θ(y^{(N)} s^{(N)})$
+這就是Max Likelihood的概念，
 
-**所以我們需要設計一組Error Measurement，使得Error降低的同時可以使得$\mathbb{P}(likelihood\ of\ ◯)$可以增大，這個Error Measurement就是Cross-Entropy，$E_{ce}=ln[1+exp(-ys)]$。**
+$$
+\mathbb{P}(likelihood) = \mathbb{P}(x^{(1)})\mathbb{P}(◯|x^{(1)},H) \times \mathbb{P}(x^{(2)})\mathbb{P}(✕|x^{(2)},H) \times … \times \mathbb{P}(x^{(N)})\mathbb{P}(◯|x^{(N)},H)
+$$
 
-來推導一下Cross-Entropy怎麼來的，
+我們的任務就是找一個function set $H$使得我可以最大化likelihood，
+$$
+argmax_{({H})} \mathbb{P}(likelihood)
+$$
 
-$\mathbb{P}(likelihood\ of\ ◯)$
+$$
+=argmax_{({H})} \sum_{y^{(n)}\ is\ ◯} \{ln[\mathbb{P}(x^{(n)})]+ln[\mathbb{P}(◯|x^{(n)},H)] \}+ \sum_{y^{(n)}\ is\ ✕} \{ln[\mathbb{P}(x^{(n)})]+ln[\mathbb{P}(✕|x^{(n)},H)]\}
+$$
 
-$= Max. Θ(y^{(1)} s^{(1)}) \times Θ(y^{(2)} s^{(2)}) \times … \times Θ(y^{(N)} s^{(N)})$
+$$
+=argmax_{({H})} \sum_{y^{(n)}\ is\ ◯} ln[\mathbb{P}(◯|x^{(n)},H)] + \sum_{x^{(n)}\ is\ ✕} ln[\mathbb{P}(✕|y^{(n)},H)]
+$$
 
-$= Max. \sum_{n} ln[Θ(y^{(n)} s^{(n)})]$
+$$
+=argmin_{({H})} \sum_{y^{(n)}\ is\ ◯} -ln[\mathbb{P}(◯|x^{(n)},H)] + \sum_{y^{(n)}\ is\ ✕} -ln[\mathbb{P}(✕|x^{(n)},H)]
+$$
 
-$= Min. \sum_{n} -ln[Θ(y^{(n)} s^{(n)})]$
+假設 $◯ \equiv  (y=+1)$ and $✕ \equiv  (y=0)$，則上式可以化簡，得
+$$
+=argmin_{({H})} \sum_{n} -y^{(n)}ln\mathbb{P}(◯|x^{(n)},H) -(1-y^{(n)})ln[1-\mathbb{P}(◯|x^{(n)},H)]
+$$
 
-$= Min. \sum_n ln[1+exp(-y^{(n)} s^{(n)})]$
+其中$E_{ce}=-yln\mathbb{P}(◯|x,H)-(1-y)ln[1-\mathbb{P}(◯|x,H)]$ 就是Cross-Entropy Error。
 
-$= Min. \sum_n E_{ce, n}$
-
+而對於logistic regression model而言，$\mathbb{P}(◯|x,H)=Θ(s)$，代入Cross-Entropy Error得
+$$
+E_{ce,logistic}=-ylnΘ(s)-(1-y)ln(1-Θ(s))=-ylnΘ(s)-(1-y)lnΘ(-s)
+$$
 **我們可以使用Gradient Descent來降低Cross-Entropy，這又稱為Logistic Regression，在這個問題中就沒有簡單的解析解可以直接算，只能使用Gradient Descent來求取近似解。**
 
 <br/>
@@ -149,7 +168,7 @@ $= Min. \sum_n E_{ce, n}$
 
 那如果我們用Linear Regression來做這件事呢？我們把Squared Error畫在上圖右側小圖的紅線，你會發現它的低點會落在$y\times s=1$的地方，這應該不是我們要的結果，雖然它一樣可以把錯誤的判斷修正回正確，但是面對過度確定的正確答案，它反而會去修正它往錯誤的方向，很顯然這不是我們想要的。
 
-最好的方式就是Logistic Regression了，我們將$s$做Logistic Function的轉換，轉換成機率，並在評估最大化Likelihood的條件下定義出Cross-Entropy來當作Error Measurement，在上圖右側的小圖，我們稍微調整Cross-Entropy，使得它的Error Function可以在$y\times s=0$的地方和Squared Error相切，**這張圖告訴我們的是隨著Grandient Descent每次的更新，Logistic Regression會把分類做的越來越好，把$◯$和$✕$拉的更遠**。
+最好的方式就是Logistic Regression了，我們將$s$做Logistic Function的轉換，轉換成機率，並在評估最大化Likelihood的條件下定義出Cross-Entropy來當作Error Measurement，在上圖右側的小圖，我們稍微調整Cross-Entropy，使得它的Error Function可以在$y\times s=0$的地方和Squared Error相切，**這張圖告訴我們的是隨著Grandient Descent每次的更新，Logistic Regression會把分類做的越來越好**。
 
 <br />
 

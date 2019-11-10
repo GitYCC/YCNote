@@ -4,7 +4,7 @@ Category: AI.ML
 Tags: 機器學習技法
 Slug: ml-course-techniques_5
 Author: YC Chen
-Illustration: ai_front_board.jpg
+Illustration: ml-course-techniques.jpeg
 Alias: /YCNote/post/34.html
 related_posts: ml-course-techniques_3,ml-course-techniques_4,ml-course-techniques_6,ml-course-techniques_7
 Summary: 本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。
@@ -49,7 +49,7 @@ Summary: 本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoost
 
 ⇒  $β_{t}^{2} = [𝚺_{n} u_{n}^{(t)} ⟦y_{n}=g_{t}(x_{n})⟧ /  𝚺_{n} u_{n}^{(t)}]/ [𝚺_{n} u_{n}^{(t)}  ⟦y_{n}≠g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t)} ]$
 
-⇒  **$β_{t}^{2} = 1-ε_{t} / ε_{t}​$**
+⇒  **$β_{t}^{2} = 1-ε_{t} / ε_{t}$**
 
 所以我們就可以利用這個$β_{t}$來更新我的Data權重，並且在多次迭代後，得到很多個$g_{t}$。而將來我們會把所有的$g_{t}$做線性組合，而我們希望**「錯誤率」越低的$g_{t}$可以有更高的貢獻度$α_{t}$**，所以使用$β_{t}$緊接著計算「$g_{t}$的權重」$α_{t}$，定義為
 

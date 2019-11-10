@@ -4,7 +4,7 @@ Category: AI.ML
 Tags: 機器學習技法
 Slug: ml-course-techniques_4
 Author: YC Chen
-Illustration: ai_front_board.jpg
+Illustration: ml-course-techniques.jpeg
 Alias: /YCNote/post/33.html
 related_posts: ml-course-techniques_2,ml-course-techniques_3,ml-course-techniques_5,ml-course-techniques_6
 Summary: 本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest
