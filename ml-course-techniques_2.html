@@ -125,10 +125,10 @@
 
                     <div class="media-wrap entry__media">
                         <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/ai_front_board.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                            <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" 
+                                 srcset="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 2000w, 
+                                 https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 1000w, 
+                                 https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
                         </div>
                     </div>
 
@@ -199,7 +199,7 @@ $$</div>
 y_n\times (W^T X_n+b) ≥ 1\ (All\ Data)
 $$</div>
 <p>
-<strong>綜合上述，Hard-Margin SVM的目標就是，在符合<span class="math">\(y_n\times (W^T X_n+b) ≥ 1 ,\ n=1~N​\)</span>的條件下，求<span class="math">\(Margin (1 / |W|)​\)</span>最大的情形，也可以等價於求<span class="math">\((W^T W/2)​\)</span> 最小的情形，這個問題有辦法使用QP Solver來求解，詳見<a href="https://en.wikipedia.org/wiki/Quadratic_programming">這裡</a>，我就不多加介紹這個數學工具。</strong></p>
+<strong>綜合上述，Hard-Margin SVM的目標就是，在符合<span class="math">\(y_n\times (W^T X_n+b) ≥ 1 ,\ n=1~N\)</span>的條件下，求<span class="math">\(Margin (1 / |W|)\)</span>最大的情形，也可以等價於求<span class="math">\((W^T W/2)\)</span> 最小的情形，這個問題有辦法使用QP Solver來求解，詳見<a href="https://en.wikipedia.org/wiki/Quadratic_programming">這裡</a>，我就不多加介紹這個數學工具。</strong></p>
 <p><br/></p>
 <h3>Kernel Function</h3>
 <p>Kernel Function是最終可以讓我們有無限多次方特徵的數學工具，但這個工具非常容易理解。</p>
@@ -378,7 +378,7 @@ $$</div>
 <li>綜合上述[式2-5]、[式2-6]、[式2-9]、[式2-10]並改寫成Kernel的形式得，<span class="math">\(min. [(1/2)𝚺_{n}𝚺_{m} α_{n}α_{m}y_{n}y_{m}K(X_{n},X_{m})-𝚺_{n} α_{n}],\ s.t. 0 ≤ α_{n} ≤ C;\  𝚺_{n} α_{n}y_{n} = 0\)</span>，使用QP Solver可以求出 <span class="math">\(α_{n}\)</span>。</li>
 <li>可以用<span class="math">\(α_{n}\)</span>來求<span class="math">\(W\)</span>和<span class="math">\(b\)</span></li>
 <li><span class="math">\(α_{n}\)</span>涵義：觀察[式2-3]和[式2-4]可得 (1) <span class="math">\(α_{n} = 0\)</span> 為Non-Support Vector； (2) <span class="math">\(0 &lt; α_{n} &lt; C\)</span> 代表<span class="math">\(y_{n}×(W^{T}Z_{n}+b)=1\)</span>，為Free Support Vector；(3) <span class="math">\(α_{n} = C\)</span> 代表<span class="math">\(y_{n}×(W^{T}Z_{n}+b)=1-ξ_{n}\)</span>，為Bounded Support Vector。</li>
-<li>由[式2-8]得，<span class="math">\(W = 𝚺_{n} α_{n}y_{n}Z_{n}​\)</span>，從式子中你會發現對W有貢獻的只有Support Vector (<span class="math">\(α_{n}&gt;0​\)</span>)。</li>
+<li>由[式2-8]得，<span class="math">\(W = 𝚺_{n} α_{n}y_{n}Z_{n}\)</span>，從式子中你會發現對W有貢獻的只有Support Vector (<span class="math">\(α_{n}&gt;0\)</span>)。</li>
 <li>假設在某個Support Vector(<span class="math">\(α_{n}&gt;0\)</span>且<span class="math">\(β_{n}&gt;0\)</span>)上，由[式2-3]和[式2-4]可推得，<span class="math">\(b=y_{sv}-𝚺_{n} α_{n}y_{n}K(X_{n},X_{sv})\)</span>  (at Support Vector)。</li>
 </ol>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
@@ -461,25 +461,25 @@ $$</div>
                         <ul class="related">
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-foundations_4.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</h5>
                                 </a>
                             </li>
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-techniques_1.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹</h5>
                                 </a>
                             </li>
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-techniques_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習技法 學習筆記 (3)：Kernel Regression</h5>
                                 </a>
                             </li>
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-techniques_4.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習技法 學習筆記 (4)：Basic Aggregation Models</h5>
                                 </a>
                             </li>

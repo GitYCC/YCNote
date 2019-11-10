@@ -125,10 +125,10 @@
 
                     <div class="media-wrap entry__media">
                         <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/ai_front_board.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                            <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" 
+                                 srcset="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 2000w, 
+                                 https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 1000w, 
+                                 https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
                         </div>
                     </div>
 
@@ -204,12 +204,13 @@ where: W = [w_0, w_1, w_2, w_3], x = [x_0=1, x_1, x_2, x_3]
 $$</div>
 <p>
 在線性模型中，這個 s 就正好是我們Model預測的值，通常我們會把預測得來的 <span class="math">\(y\)</span> 記作<span class="math">\(\widehat{y}\)</span> (y hat)，如果今天這個 y 和 ŷ 是實數的話，那這就是一個標準的Linear Regression問題，那如何去衡量預測的好或不好呢？<strong>我們可以使用Squared Error來衡量，<span class="math">\(err(\widehat{y},y)=(\widehat{y}-y)^2\)</span></strong>，所以 <span class="math">\(\widehat{y}\)</span> 和 <span class="math">\(y\)</span> 越靠近Error就越小。</p>
-<p>Squared Error的<span class="math">\(E_{in}\)</span>平面比較簡單，就是一個單純的開口向上的拋物線，所以它的最低點其實是有解析解的，我們可以靠著數學上的<strong>Pseudo-Inverse方法</strong>在評估完全部的Data之後把最佳參數給算出來，這麼簡單的<span class="math">\(E_{in}\)</span>平面是很難見到的，我們之前介紹的Gradient Descent則是靠著逐步更新的方式去尋找近似解，這個方法是不管<span class="math">\(E_{in}\)</span>平面有多麼複雜都可以處理，但是需要特別注意可能會卡在Local Minimum和Saddle Point。</p>
+<p>Squared Error的<span class="math">\(E_{in}\)</span>平面是一個單純的開口向上的拋物線，所以它的最低點其實是有解析解的，我們可以靠著數學上的<strong>Pseudo-Inverse方法</strong>把最佳參數給算出來，但是Pseudo-Inverse計算非常龐大，當數據量很大時這個方法是不可行的，而剛剛介紹的Gradient Descent計算複雜度只有<span class="math">\(O(N)\)</span>。</p>
 <p><br/></p>
 <h3>Logistic Regression</h3>
 <p><img alt="ML" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.011.jpeg"></p>
-<p>在上一回討論二元分類問題時，我們考慮的狀況是「沒有雜訊」的情形，不過在實際情況下，「雜訊」是一定需要考慮的。在「沒有雜訊」的情形下，一筆Data只會有一個確定的答案，<strong>如果考慮「雜訊」，一筆Data出現的答案可能呈現機率分布</strong>，假設雜訊不大，接近正確答案的機率也許會高一點。</p>
-<p>如果在二元分類問題中，答案因為雜訊出現了機率分布，可能會產生像下面一樣的情況，</p>
+<p>在上一回討論二元分類問題時，我們的評估模型都是非黑即白的</p>
+<p>在上一回討論二元分類問題時，我們考慮的狀況是「沒有雜訊」的情形，不過在實際情況下，「雜訊」是一定需要考慮的。在「沒有雜訊」的情形下，一筆Data只會有一個確定的答案要嘛是 <span class="math">\(- 1\)</span> 不然就是 <span class="math">\(+ 1\)</span>，<strong>如果考慮「雜訊」，一筆Data出現的答案可能呈現機率分布</strong>，介於 <span class="math">\(- 1\)</span> 和 <span class="math">\(+ 1\)</span> 之間，舉例可能會產生像下面一樣的情況，
+</p>
 <div class="math">$$
 \mathbb{P}(◯|X^{(1)}) = 0.9,\  \mathbb{P}(✕|X^{(1)}) = 0.1
 $$</div>
@@ -217,21 +218,46 @@ $$</div>
 <p><strong>Soft Classification看待每個答案不是非黑及白的，而是去評估每個答案出現的機會有多大，以此作為分類</strong>，我們打算使用Regression的連續特性來產生Soft Classification，我們需要引入一個重要的函數—Logistic Function，這個函數可以將所有實數映射到0到1之間，如上圖下方中間的圖示所示，<strong>Logistic Function會將極大的值映射成1，而將極小值映射成0，這個0到1的值剛剛好可以拿來當作機率的大小</strong>。</p>
 <p>所以我們就可以來建立一個有機率概念的模型，這個Model的預測值是一個機率，一樣的先給予輸入變數<span class="math">\(x\)</span>和權重<span class="math">\(W\)</span>求出Score <span class="math">\(s\)</span>，再把 <span class="math">\(s\)</span> 放到Logistic Function當中，我們就可以映射出在一個機率空間，我們藉由調整<span class="math">\(W\)</span>來改變Model來擬合我們的Data，有了這個新的Model，我們就可以用機率的方式來描述二元分類，</p>
 <div class="math">$$
-\mathbb{P}(◯|X^{(1)}) = Θ(s) ;   \mathbb{P}(✕|X^{(1)}) = 1 - Θ(s) = Θ(-s)
+\mathbb{P}(◯|X^{(1)}) = Θ(s)
 $$</div>
-<p>OK! 決定好Model，我們就可以來定義它的Error Measurement的方式了，這個時候如果使用Squared Error來作為Error Measurement你會發現這種評估方式有一點失焦了，如果採用Squared Error，我們做的事是將機率的值給擬合精準，但我們知道這個機率的產生是來自於雜訊，預測雜訊是沒有意義的，要做的事應該是要在考慮雜訊之下盡可能的去描述數據背後真正的機制。</p>
-<p>因此從機率觀點來看是比較合理的，在考慮採樣數據過程因為雜訊造成的機率分布的前提下，我們去看會採樣到這組Data的可能性，我們應該合理的認為採樣出來的這組Data應該具有最大的「可能性」，這個「可能性」可以表示成</p>
-<p>Assume <span class="math">\(◯ \equiv  (y=+1)\)</span> and <span class="math">\(✕ \equiv  (y=-1)\)</span></p>
-<p><span class="math">\(\mathbb{P}(likelihood\ of\ ◯) = \mathbb{P}(x^{(1)})Θ(y^{(1)} s^{(1)}) \times \mathbb{P}(x^{(2)})Θ(y^{(2)} s^{(2)}) \times … \times \mathbb{P}(x^{(N)})Θ(y^{(N)} s^{(N)})\)</span></p>
-<p><strong>所以我們需要設計一組Error Measurement，使得Error降低的同時可以使得<span class="math">\(\mathbb{P}(likelihood\ of\ ◯)\)</span>可以增大，這個Error Measurement就是Cross-Entropy，<span class="math">\(E_{ce}=ln[1+exp(-ys)]\)</span>。</strong></p>
-<p>來推導一下Cross-Entropy怎麼來的，</p>
-<p><span class="math">\(\mathbb{P}(likelihood\ of\ ◯)\)</span></p>
-<p><span class="math">\(= Max. Θ(y^{(1)} s^{(1)}) \times Θ(y^{(2)} s^{(2)}) \times … \times Θ(y^{(N)} s^{(N)})\)</span></p>
-<p><span class="math">\(= Max. \sum_{n} ln[Θ(y^{(n)} s^{(n)})]\)</span></p>
-<p><span class="math">\(= Min. \sum_{n} -ln[Θ(y^{(n)} s^{(n)})]\)</span></p>
-<p><span class="math">\(= Min. \sum_n ln[1+exp(-y^{(n)} s^{(n)})]\)</span></p>
-<p><span class="math">\(= Min. \sum_n E_{ce, n}\)</span></p>
-<p><strong>我們可以使用Gradient Descent來降低Cross-Entropy，這又稱為Logistic Regression，在這個問題中就沒有簡單的解析解可以直接算，只能使用Gradient Descent來求取近似解。</strong></p>
+<div class="math">$$
+\mathbb{P}(✕|X^{(1)}) = 1 - Θ(s) = Θ(-s)
+$$</div>
+<div class="math">$$
+where:\ Θ(s)=1/[1+e^{-s}]
+$$</div>
+<p>OK! 決定好Model，我們就可以來定義它的Error Measurement的方式了，這個時候如果使用Squared Error來作為Error Measurement你會發現這種評估方式有一點失焦了，如果採用Squared Error，我們做的事是將機率的值給擬合精準，但我們知道這個機率的產生是來自於雜訊，預測雜訊是沒有意義的，要做的事應該是要在考慮雜訊之下盡可能提升模型會產生取樣資料的可能機率。</p>
+<p>這就是Max Likelihood的概念，</p>
+<div class="math">$$
+\mathbb{P}(likelihood) = \mathbb{P}(x^{(1)})\mathbb{P}(◯|x^{(1)},H) \times \mathbb{P}(x^{(2)})\mathbb{P}(✕|x^{(2)},H) \times … \times \mathbb{P}(x^{(N)})\mathbb{P}(◯|x^{(N)},H)
+$$</div>
+<p>我們的任務就是找一個function set <span class="math">\(H\)</span>使得我可以最大化likelihood，
+</p>
+<div class="math">$$
+argmax_{({H})} \mathbb{P}(likelihood)
+$$</div>
+<div class="math">$$
+=argmax_{({H})} \sum_{y^{(n)}\ is\ ◯} \{ln[\mathbb{P}(x^{(n)})]+ln[\mathbb{P}(◯|x^{(n)},H)] \}+ \sum_{y^{(n)}\ is\ ✕} \{ln[\mathbb{P}(x^{(n)})]+ln[\mathbb{P}(✕|x^{(n)},H)]\}
+$$</div>
+<div class="math">$$
+=argmax_{({H})} \sum_{y^{(n)}\ is\ ◯} ln[\mathbb{P}(◯|x^{(n)},H)] + \sum_{x^{(n)}\ is\ ✕} ln[\mathbb{P}(✕|y^{(n)},H)]
+$$</div>
+<div class="math">$$
+=argmin_{({H})} \sum_{y^{(n)}\ is\ ◯} -ln[\mathbb{P}(◯|x^{(n)},H)] + \sum_{y^{(n)}\ is\ ✕} -ln[\mathbb{P}(✕|x^{(n)},H)]
+$$</div>
+<p>假設 <span class="math">\(◯ \equiv  (y=+1)\)</span> and <span class="math">\(✕ \equiv  (y=0)\)</span>，則上式可以化簡，得
+</p>
+<div class="math">$$
+=argmin_{({H})} \sum_{n} -y^{(n)}ln\mathbb{P}(◯|x^{(n)},H) -(1-y^{(n)})ln[1-\mathbb{P}(◯|x^{(n)},H)]
+$$</div>
+<p>其中<span class="math">\(E_{ce}=-yln\mathbb{P}(◯|x,H)-(1-y)ln[1-\mathbb{P}(◯|x,H)]\)</span> 就是Cross-Entropy Error。</p>
+<p>而對於logistic regression model而言，<span class="math">\(\mathbb{P}(◯|x,H)=Θ(s)\)</span>，代入Cross-Entropy Error得
+</p>
+<div class="math">$$
+E_{ce,logistic}=-ylnΘ(s)-(1-y)ln(1-Θ(s))=-ylnΘ(s)-(1-y)lnΘ(-s)
+$$</div>
+<p>
+<strong>我們可以使用Gradient Descent來降低Cross-Entropy，這又稱為Logistic Regression，在這個問題中就沒有簡單的解析解可以直接算，只能使用Gradient Descent來求取近似解。</strong></p>
 <p><br/></p>
 <h3>使用迴歸法做二元分類問題</h3>
 <p><img alt="ML" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.012.jpeg"></p>
@@ -239,7 +265,7 @@ $$</div>
 <p>線性模型的標準方法，我們會將變數<span class="math">\(x\)</span>做線性組合得到Linear Scoring Function — <span class="math">\(s\)</span>，線性組合的係數和Threshold稱為權重<span class="math">\(W\)</span>，我們可以調整權重<span class="math">\(W\)</span>來改變Model，那針對看待<span class="math">\(s\)</span>的不同方式就衍生出不同的方法。那為了可以將Regression問題轉換成二元分類問題，所以通常我們會假設<span class="math">\((y=+1)\)</span>為<span class="math">\(◯\)</span>，<span class="math">\((y=-1)\)</span>為<span class="math">\(✕\)</span>。</p>
 <p>先回顧一下之前<a href="http://www.ycc.idv.tw/ml-course-foundations_1.html">PLA的作法</a>，我們把 <span class="math">\(s&gt;0\)</span> 的狀況視為<span class="math">\(◯\)</span>，也就是<span class="math">\((y=+1)\)</span>；然後把<span class="math">\(s&lt;0\)</span> 的狀況視為<span class="math">\(✕\)</span>，也就是<span class="math">\((y=-1)\)</span>，把這個概念畫成上圖右側的圖，圖中藍色的階梯函數就是PLA的Error Measurement，正是因為它是一個階梯函數，所以我們不能使用Gradient Descent等Regression方法來處理，<strong>因為在階梯的每一點<span class="math">\(\nabla E_{in}\)</span>都是0（除了原點外），也就是如此PLA在更新的過程才無法確保趨近於最佳解，而需要使用Pocket PLA來解決這個問題</strong>。</p>
 <p>那如果我們用Linear Regression來做這件事呢？我們把Squared Error畫在上圖右側小圖的紅線，你會發現它的低點會落在<span class="math">\(y\times s=1\)</span>的地方，這應該不是我們要的結果，雖然它一樣可以把錯誤的判斷修正回正確，但是面對過度確定的正確答案，它反而會去修正它往錯誤的方向，很顯然這不是我們想要的。</p>
-<p>最好的方式就是Logistic Regression了，我們將<span class="math">\(s\)</span>做Logistic Function的轉換，轉換成機率，並在評估最大化Likelihood的條件下定義出Cross-Entropy來當作Error Measurement，在上圖右側的小圖，我們稍微調整Cross-Entropy，使得它的Error Function可以在<span class="math">\(y\times s=0\)</span>的地方和Squared Error相切，<strong>這張圖告訴我們的是隨著Grandient Descent每次的更新，Logistic Regression會把分類做的越來越好，把<span class="math">\(◯\)</span>和<span class="math">\(✕\)</span>拉的更遠</strong>。</p>
+<p>最好的方式就是Logistic Regression了，我們將<span class="math">\(s\)</span>做Logistic Function的轉換，轉換成機率，並在評估最大化Likelihood的條件下定義出Cross-Entropy來當作Error Measurement，在上圖右側的小圖，我們稍微調整Cross-Entropy，使得它的Error Function可以在<span class="math">\(y\times s=0\)</span>的地方和Squared Error相切，<strong>這張圖告訴我們的是隨著Grandient Descent每次的更新，Logistic Regression會把分類做的越來越好</strong>。</p>
 <p><br /></p>
 <h3>後話</h3>
 <p>在這一篇當中，我們介紹了Grandient Descent這一個相當重要的演算法，並且運用在兩種Regression上：Linear Regression和Logistic Regression，Linear Regression是最簡單的Regression方法，甚至它還可以使用Pseudo-Inverse的方法直接算出最佳解，Logistic Regression考慮了有雜訊的Data產生的機率分布，我們可以用Logistic Regression做Soft Binary Classification，而且我們也說明了Logistic Regression為何適合拿來用在二元分類上。本篇我們對於ML的實際作法有了基本認識，在下一篇，我們繼續討論還有沒有什麼方式可以讓ML做的更好。</p>
@@ -323,19 +349,19 @@ $$</div>
                         <ul class="related">
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-foundations_1.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習基石 學習筆記 (1)：何時可以使用機器學習?</h5>
                                 </a>
                             </li>
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-foundations_2.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習基石 學習筆記 (2)：為什麼機器可以學習?</h5>
                                 </a>
                             </li>
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-foundations_4.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</h5>
                                 </a>
                             </li>

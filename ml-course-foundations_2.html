@@ -125,10 +125,10 @@
 
                     <div class="media-wrap entry__media">
                         <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/ai_front_board.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                            <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" 
+                                 srcset="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 2000w, 
+                                 https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 1000w, 
+                                 https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
                         </div>
                     </div>
 
@@ -219,7 +219,7 @@
 <p>回想一下二元分類問題，在上一篇當中我們使用PLA來挑選Hypothesis Set，還記得我們做了什麼事來確保我們可以得到最佳解嗎? 那就是Pocket的方法，Pocket的目的就是去留住一組能預測最好的Hypothesis，也就是能保留一組最佳參數使得<span class="math">\(E_{in}\)</span>最小。</p>
 <p>但如果<span class="math">\(E_{in}\)</span>真的已經可以壓到0了，我們就可以說機器學習已經完成了嗎？</p>
 <p>並不是這樣的，回到目的，我們真正希望的是機器有辦法預測新的問題，所以真正的目標是能將「沒有看過的Data」也可以預測好，而不是單單將取樣的Data預測好就夠了。</p>
-<p>我們會稱<strong>未被取樣的Data為Out-sample Data</strong>，並且稱<strong>Hypothesis預測Out-sample Data的誤差為Out-sample Error，記作<span class="math">\(E_{out}\)</span>，我們最終目的就是把<span class="math">\(E_{out}\)</span>壓下來，也就代表可以預測新的問題</strong>。</p>
+<p>我們會稱<strong>未被取樣的Data為Out-of-sample Data</strong>，並且稱<strong>Hypothesis預測Out-of-sample Data的誤差為Out-of-sample Error，記作<span class="math">\(E_{out}\)</span>，我們最終目的就是把<span class="math">\(E_{out}\)</span>壓下來，也就代表可以預測新的問題</strong>。</p>
 <p>但遺憾的是我們不會真正知道<span class="math">\(E_{out}\)</span>，除非我們知道Target Function，所以我們只能評估<span class="math">\(E_{in}\)</span>來選取Model參數，因此重要的是需要<span class="math">\(E_{in} \approx E_{out}\)</span>這個條件要成立，否則一切的學習都是無效的。</p>
 <p><strong>總結一下機器學習的條件，我們必須建立一個 Learning Model可以確保<span class="math">\(E_{in}\approx E_{out}\)</span>，所以在Learning Algorithm選出最小<span class="math">\(E_{in}\)</span>的Hypothesis，同時這組Hypothesis也可以很好的預測Out-sample，我們就可以說機器已經會學習了。</strong></p>
 <h3><span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異</h3>
@@ -244,13 +244,13 @@ $$</div>
 ν =  ε_{x \sim P} ⟦h(x)\neq f(x)⟧ = E_{out}(h)
 $$</div>
 <p>
-如果有部分Data，<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>差異非常大，我們會稱為Bad Data(不好的數據)，這就代表<span class="math">\(E_{in}\approx E_{out}\)</span>這個條件漸漸被侵蝕了，但還好！Hoeffding不等式告訴我們，<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>差異大於 <span class="math">\(ε\)</span> 的機率會被限制在一個範圍內，如下：
+套入剛剛的不等式，得
 </p>
 <div class="math">$$
 \mathbb{P}[|E_{in}(h)-E_{out}(h)|&gt;ε] \leq 2 exp(-2ε^2N)
 $$</div>
 <p>
-因此上述式子保證的是，出現Bad Data的機率將被一個定值給限制住，所以只要出現Bad Data的機率不是太大，基本上我們還是可以說<span class="math">\(E_{in} \approx E_{out}\)</span>。</p>
+上面這個式子告訴我們<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>差距超過<span class="math">\(ε\)</span>的可能性是被限制住的，只要抽樣的數量<span class="math">\(N\)</span>夠多，基本上<span class="math">\(E_{in}\approx E_{out}\)</span>就成立，我們這邊定義那些超出<span class="math">\(ε\)</span>的Data為Bad Data(不好的數據)，Bad Data出現的可能是被Bound住的，所以機器學習是有可能的。</p>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.006.jpeg"></p>
 <p>而事實上，我們的hypothesis不會只有一個，所以接下來來考慮如果有M個Hypotheses的情況下我們的<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異會怎麼被參數影響。</p>
 <p>如果我們考慮M組Hypotheses，就會發現每種Hypothesis出現Bad Data的地方可能不一樣，因此大大的減少能使用的Data，如上圖左側所示。</p>
@@ -265,9 +265,10 @@ $$</div>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.007.jpeg"></p>
 <p>問題出在這裡，我們在Multi-Bin Hoeffding’s Inequality中採用了一個假設，就是假設每組Hypotheses的Bad Data彼此間都沒有重疊，所以在<span class="math">\(M→∞\)</span>的情況下，當然會有一個無限大的上限值，但如果考慮了Bad Data重疊的情形，縱使<span class="math">\(M→∞\)</span>的情況下還是有機會把Bad Data的出現機率壓在一個有限的定值之下。</p>
 <p>我們回到二元分類問題，看一下上圖中左側的圖例，如果今天在二維平面上做二元分類，當數據量只有1個<span class="math">\(n=1\)</span>時，就算你的切法有無窮多種，但對於一組Data來說就只有兩類Hypotheses而已，再來看<span class="math">\(n=2\)</span>的情況，一樣的無限多組的切法但Hypotheses也只能歸類成4類。</p>
-<p>因此Hypotheses的彼此之間是有重疊的，聰明的你一定想到，如果今天<span class="math">\(n\)</span>的數量不斷的增加，則Hypotheses被分類的數量就會增加，Hypotheses彼此之間的重疊就會漸漸減少，我們還是無法限制住Bad Data的數量。</p>
+<p>所以Hypotheses用來描述數據的情況是彼此有所重疊的，也就是Bad Data出現的情形在許多Hypotheses是相同的。</p>
+<p>但是聰明的你一定想到，如果今天<span class="math">\(n\)</span>的數量不斷的增加，則Hypotheses被分類的數量就會成指數 <span class="math">\(2^n\)</span> 增加，Hypotheses彼此之間Bad Data的重疊情況就會漸漸減少，因此仍然無法限制住Bad Data的數量。</p>
 <p>先別緊張，我們繼續看下去，當<span class="math">\(n=3\)</span>，沒有意外的Hypotheses會被分類為8類，那接下來<span class="math">\(n=4\)</span>時，你就會發現一個有趣的現象，開始有一些分類情況是不會出現的，因為它無法被一分為二，因此我們擔心因為Data數量增加而造成Hypotheses的種類暴增的情形被排除了，有一些狀況是不會出現的，Hypotheses是有重疊的。</p>
-<p>剛剛所提到的分類方式的數量稱為Dichotomy。在<span class="math">\(n=1\)</span>、<span class="math">\(n=2\)</span>到<span class="math">\(n=3\)</span>的情形，所有列得出來的方式都可被完整分類開來，我們稱這情形為Shatter，但是到了<span class="math">\(n=4\)</span>的時候，有些不可能被分類的情形出現了，稱為不可被Shatter，另外我們又稱此情形開始發生的那點為Break Point，這邊注意一下喔! 會不會存有Break Point取決於你的Hypothesis Set長怎麼樣，現在是因為線性二元分類的Hypothesis Set，所以Break Point才會在<span class="math">\(n=4\)</span>，其他的Hypothesis Set就不一定了。</p>
+<p>剛剛所提到的分類方式的數量稱為Dichotomy。在<span class="math">\(n=1\)</span>、<span class="math">\(n=2\)</span>到<span class="math">\(n=3\)</span>的情形，所有列得出來的方式都可被完整分類開來，我們稱這情形為Shatter，但是到了<span class="math">\(n=4\)</span>的時候，有些不可能被分類的情形出現了，稱為不可被Shatter，另外我們又稱此情形開始發生的那點為Break Point，這邊注意一下喔! 會不會存有Break Point取決於你的Hypothesis Set長怎麼樣，現在這個例子的Break Point在<span class="math">\(n=4\)</span>，其他的Hypothesis Set就不一定了。</p>
 <p>Break Point的出現非常重要，他所代表的是Bad Data的出現機率不會無所限制的大下去，因此把這概念帶入Multi-Bin Hoeffding’s Inequality，經過繁複的計算，就可以得到以下公式：
 </p>
 <div class="math">$$
@@ -292,7 +293,7 @@ $$</div>
 <li><strong>Good Data: 數據量越大越好，可以壓低VC Generalization Bound</strong></li>
 <li><strong>Good Learning Algorithm: 以上兩點可以確定的是<span class="math">\(E_{in} \approx E_{out}\)</span>，接下來好的Learning Algorithm要有能力找到<span class="math">\(E_{in}\)</span> 最小的參數。很直觀的，當我們可以調控的變數越多，我們的選擇就越多，也就是我們可以找到更小<span class="math">\(E_{in}\)</span> 的機會變多了，所以可以調控的變數不可以太少。</strong></li>
 </ol>
-<p>眼尖的你有沒有發現矛盾啊! 可以調控的變數很少，我們能確保<span class="math">\(E_{in} \approx E_{out}​\)</span>，但是如果我想要找到更小的<span class="math">\(E_{in}​\)</span> 又必須有更多的調控變數，這個矛盾是機器學習上一個重要的課題，<strong>解法是我們必須要能找到適當的調控變數數量，也就是適當大小的<span class="math">\(d_{VC}\)</span> </strong>。</p>
+<p>眼尖的你有沒有發現矛盾啊! 可以調控的變數很少，我們能確保<span class="math">\(E_{in} \approx E_{out}\)</span>，但是如果我想要找到更小的<span class="math">\(E_{in}\)</span> 又必須有更多的調控變數，這個矛盾是機器學習上一個重要的課題，<strong>解法是我們必須要能找到適當的調控變數數量，也就是適當大小的<span class="math">\(d_{VC}\)</span> </strong>。</p>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.02.jpeg"></p>
 <p>from: <a href="https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf">https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf</a></p>
 <p>上圖中，我們把VC Generalization Bound公式帶入Growth Function和<span class="math">\(d_{VC}\)</span>的關係式，並且設<span class="math">\(δ\)</span> 為最大可以容忍的Bad Data出現機率，把它帶入取代掉<span class="math">\(ε\)</span>，整理一下，就可以推出上圖的公式，<span class="math">\(\Omega (N,\mathbb{H},δ)\)</span>稱為Model Complexity，這一項代表的是Hypothesis Set的大小造成的模型複雜度，它隨著<span class="math">\(d_{VC}\)</span>增加而增加。Model Complexity越大代表Bad Data更容易出現，所以<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>開始被帶開了。</p>
@@ -303,7 +304,7 @@ $$</div>
 <ol>
 <li>每筆Data出現的機會不一定，同樣的採樣結果也是會受機率的影響，所以上圖中標示為<span class="math">\(\mathbb{P} (x)\)</span>，這個修改並不會影響機器學習的流程和結果。</li>
 <li>Data可能會受到Noise的影響，所以給定<span class="math">\(X_n\)</span>並不一定會百分之一百得到<span class="math">\(y_n\)</span>，他存在著可能會出錯，上圖標示為<span class="math">\(\mathbb{P}(y|x)\)</span>，我們可以增大我們採樣的數量<span class="math">\(N\)</span>來減少Noise的影響。</li>
-<li>我們是採用<span class="math">\(E_{in}\)</span>來當作選擇Model參數的指標，因此我們需要訂出Error的評估方式，常見的有<span class="math">\(E_{squared} = (y_n - y_{prediction})^2\)</span>。</li>
+<li>我們是採用<span class="math">\(E_{in}\)</span>來當作選擇Model參數的指標，因此我們需要訂出Error的評估方式，常見的有Squared Error <span class="math">\(E_{squared} = (y_n - y_{prediction})^2\)</span>。</li>
 </ol>
 <p>跟著架構我們就有一套機器學習的<strong>標準流程</strong>，</p>
 <ol>
@@ -393,19 +394,19 @@ $$</div>
                         <ul class="related">
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-foundations_1.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習基石 學習筆記 (1)：何時可以使用機器學習?</h5>
                                 </a>
                             </li>
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-foundations_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?</h5>
                                 </a>
                             </li>
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-foundations_4.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</h5>
                                 </a>
                             </li>

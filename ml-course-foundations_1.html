@@ -125,10 +125,10 @@
 
                     <div class="media-wrap entry__media">
                         <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/ai_front_board.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                            <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" 
+                                 srcset="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 2000w, 
+                                 https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 1000w, 
+                                 https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
                         </div>
                     </div>
 
@@ -197,7 +197,7 @@
 <p>上圖中的 <span class="math">\(s = w_0+w_1\times x_1+w_2\times x_2+...\)</span> 就像一個分數(score)一樣，高分 <span class="math">\(s&gt;0\)</span> 的我就核發(<span class="math">\(+1\)</span>)，低分 <span class="math">\(s &lt; 0\)</span> 的我就不核發(<span class="math">\(-1\)</span>)，其中權重 <span class="math">\(w_0, w_1, w_2, ...\)</span> 都可以由機器學習去調整，這些不同的weight就構成了Hypothesis Set，也就是Model，那接下來我們還需要Learning Algorithm來取出最佳參數，也就是決定一組最佳weight來選出最吻合數據的Hypothesis。</p>
 <p><img alt="MachineLearningFoundations.003" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.003.jpeg"></p>
 <p>如上圖所示，<strong>Perceptron Learning Algorithm(PLA)</strong>是用於處理Perceptron Hypothesis Set的一種演算法。</p>
-<p>它的作法簡單來講是，藉由一筆一筆的數據去逐步的更新它的weight使得Model可以描述這筆數據，直到不需要再更新為止，此時所有的Data都可以用這個Model表示，更新的方法是先判斷進來的這筆數據是否符合目前的Model預測，如果不符合，則朝變數向量<span class="math">\(X_n\)</span>的方向，跨出或後退大小為Learning Rate的一步來更新weight，前進還是後退端看你的Data是<span class="math">\(y=-1\)</span>或<span class="math">\(+1\)</span>，<span class="math">\(y=+1\)</span>就往前跨，<span class="math">\(y=-1\)</span>就往後退。</p>
+<p>它的作法簡單來講是，藉由一筆一筆的數據去逐步的更新它的weight使得Model可以描述這筆數據，直到不需要再更新為止，此時所有的Data都可以用這個Model表示，更新的方法是先判斷進來的這筆數據是否符合目前的Model預測，如果不符合，此時<span class="math">\(\left[...\right]\)</span>為<span class="math">\(+ 1\)</span>，則必須朝變數向量<span class="math">\(X_n\)</span>的方向，前進或後退大小為Learning Rate的一步來更新weight，前進還是後退端看你的Data是<span class="math">\(y=-1\)</span>或<span class="math">\(+1\)</span>，<span class="math">\(y=+1\)</span>就往前進，<span class="math">\(y=-1\)</span>就往後退。</p>
 <p>因此，這個跨步更新的動作必須可以使Model接近正確答案，這麼神奇，真的假的？不太直覺，先從score來想起，假設有一筆資料為<span class="math">\((X_n,y_n)\)</span>，則Score：<span class="math">\(s = W_t・X_n\)</span>，在<span class="math">\(W_t\)</span>和<span class="math">\(X_n\)</span>向量彼此有同向分量的情況下，<span class="math">\(s &gt; 0\)</span>，如果這個時候<span class="math">\(y_n\)</span>剛好為<span class="math">\(+1\)</span>，則<span class="math">\(sign(s)=y_n\)</span>，這個時候<span class="math">\(W_t\)</span>描述這個數據就很好啊，我們就不需要去更新它；如果相反<span class="math">\(y_n=-1\)</span>，這個<span class="math">\(W_t\)</span>描述這個數據就不正確，也就是說<span class="math">\(W_t\)</span> 和 <span class="math">\(X_n\)</span>不應該同向，所以我們讓<span class="math">\(W_t\)</span>加上<span class="math">\(-X_n\)</span>(<span class="math">\(=y_n\times X_n\)</span>)，把<span class="math">\(W_t\)</span>從原本與<span class="math">\(X_n\)</span>同向的狀態反向拉離開來。那如果在<span class="math">\(W_t\)</span>和<span class="math">\(X_n\)</span>向量彼此不同向的情況下，<span class="math">\(s &lt; 0\)</span>，這個時候如果<span class="math">\(y_n\)</span>剛好為<span class="math">\(-1\)</span>，則<span class="math">\(sign(s)=y_n\)</span>，很好我們不去更新它；如果相反<span class="math">\(y_n=+1\)</span>，這個<span class="math">\(W_t\)</span>描述這個數據不正確，也就是說<span class="math">\(W_t\)</span> 和 <span class="math">\(X_n\)</span>不應該反向，所以我們讓<span class="math">\(W_t\)</span>加上<span class="math">\(X_n\)</span>(<span class="math">\(=y_n\times X_n\)</span>)，把<span class="math">\(W_t\)</span>拉到和<span class="math">\(X_n\)</span>同向一點。這就是PLA找到更好<span class="math">\(W_t\)</span>的機制。</p>
 <p><img alt="MachineLearningFoundations.004" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.004.jpeg"></p>
 <p>Seeing is believing，上面這張圖帶我們來看PLA如何運作，</p>
@@ -304,19 +304,19 @@
                         <ul class="related">
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-foundations_2.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習基石 學習筆記 (2)：為什麼機器可以學習?</h5>
                                 </a>
                             </li>
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-foundations_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?</h5>
                                 </a>
                             </li>
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/ml-course-foundations_4.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
+                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
                                     <h5 class="related__post-title">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</h5>
                                 </a>
                             </li>
