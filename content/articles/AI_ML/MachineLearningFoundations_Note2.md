@@ -4,7 +4,7 @@ Category: AI.ML
 Tags: 機器學習基石
 Slug: ml-course-foundations_2
 Author: YC Chen
-Illustration: ai_front_board.jpg
+Illustration: ml-course-foundations.jpeg
 Alias: /YCNote/post/26.html
 related_posts: ml-course-foundations_1,ml-course-foundations_3,ml-course-foundations_4
 Summary: 機器可以學習嗎? / $E_{in}$和$E_{out}$的差異 / VC Generalization Bound / 機器要能學習的三要素 / 學習架構
@@ -36,7 +36,7 @@ Summary: 機器可以學習嗎? / $E_{in}$和$E_{out}$的差異 / VC Generalizat
 
 並不是這樣的，回到目的，我們真正希望的是機器有辦法預測新的問題，所以真正的目標是能將「沒有看過的Data」也可以預測好，而不是單單將取樣的Data預測好就夠了。
 
-我們會稱**未被取樣的Data為Out-sample Data**，並且稱**Hypothesis預測Out-sample Data的誤差為Out-sample Error，記作$E_{out}$，我們最終目的就是把$E_{out}$壓下來，也就代表可以預測新的問題**。
+我們會稱**未被取樣的Data為Out-of-sample Data**，並且稱**Hypothesis預測Out-of-sample Data的誤差為Out-of-sample Error，記作$E_{out}$，我們最終目的就是把$E_{out}$壓下來，也就代表可以預測新的問題**。
 
 但遺憾的是我們不會真正知道$E_{out}$，除非我們知道Target Function，所以我們只能評估$E_{in}$來選取Model參數，因此重要的是需要$E_{in} \approx E_{out}$這個條件要成立，否則一切的學習都是無效的。
 
@@ -64,11 +64,13 @@ $$
 $$
 ν =  ε_{x \sim P} ⟦h(x)\neq f(x)⟧ = E_{out}(h)
 $$
-如果有部分Data，$E_{in}$和$E_{out}$差異非常大，我們會稱為Bad Data(不好的數據)，這就代表$E_{in}\approx E_{out}$這個條件漸漸被侵蝕了，但還好！Hoeffding不等式告訴我們，$E_{in}$和$E_{out}$差異大於 $ε$ 的機率會被限制在一個範圍內，如下：
+套入剛剛的不等式，得
 $$
 \mathbb{P}[|E_{in}(h)-E_{out}(h)|>ε] \leq 2 exp(-2ε^2N)
 $$
-因此上述式子保證的是，出現Bad Data的機率將被一個定值給限制住，所以只要出現Bad Data的機率不是太大，基本上我們還是可以說$E_{in} \approx E_{out}$。
+上面這個式子告訴我們$E_{in}$和$E_{out}$差距超過$ε$的可能性是被限制住的，只要抽樣的數量$N$夠多，基本上$E_{in}\approx E_{out}$就成立，我們這邊定義那些超出$ε$的Data為Bad Data(不好的數據)，Bad Data出現的可能是被Bound住的，所以機器學習是有可能的。
+
+
 
 ![image](http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.006.jpeg)
 
@@ -92,11 +94,13 @@ $$
 
 我們回到二元分類問題，看一下上圖中左側的圖例，如果今天在二維平面上做二元分類，當數據量只有1個$n=1$時，就算你的切法有無窮多種，但對於一組Data來說就只有兩類Hypotheses而已，再來看$n=2$的情況，一樣的無限多組的切法但Hypotheses也只能歸類成4類。
 
-因此Hypotheses的彼此之間是有重疊的，聰明的你一定想到，如果今天$n$的數量不斷的增加，則Hypotheses被分類的數量就會增加，Hypotheses彼此之間的重疊就會漸漸減少，我們還是無法限制住Bad Data的數量。
+所以Hypotheses用來描述數據的情況是彼此有所重疊的，也就是Bad Data出現的情形在許多Hypotheses是相同的。
+
+但是聰明的你一定想到，如果今天$n$的數量不斷的增加，則Hypotheses被分類的數量就會成指數 $2^n$ 增加，Hypotheses彼此之間Bad Data的重疊情況就會漸漸減少，因此仍然無法限制住Bad Data的數量。
 
 先別緊張，我們繼續看下去，當$n=3$，沒有意外的Hypotheses會被分類為8類，那接下來$n=4$時，你就會發現一個有趣的現象，開始有一些分類情況是不會出現的，因為它無法被一分為二，因此我們擔心因為Data數量增加而造成Hypotheses的種類暴增的情形被排除了，有一些狀況是不會出現的，Hypotheses是有重疊的。
 
-剛剛所提到的分類方式的數量稱為Dichotomy。在$n=1$、$n=2$到$n=3$的情形，所有列得出來的方式都可被完整分類開來，我們稱這情形為Shatter，但是到了$n=4$的時候，有些不可能被分類的情形出現了，稱為不可被Shatter，另外我們又稱此情形開始發生的那點為Break Point，這邊注意一下喔! 會不會存有Break Point取決於你的Hypothesis Set長怎麼樣，現在是因為線性二元分類的Hypothesis Set，所以Break Point才會在$n=4$，其他的Hypothesis Set就不一定了。
+剛剛所提到的分類方式的數量稱為Dichotomy。在$n=1$、$n=2$到$n=3$的情形，所有列得出來的方式都可被完整分類開來，我們稱這情形為Shatter，但是到了$n=4$的時候，有些不可能被分類的情形出現了，稱為不可被Shatter，另外我們又稱此情形開始發生的那點為Break Point，這邊注意一下喔! 會不會存有Break Point取決於你的Hypothesis Set長怎麼樣，現在這個例子的Break Point在$n=4$，其他的Hypothesis Set就不一定了。
 
 Break Point的出現非常重要，他所代表的是Bad Data的出現機率不會無所限制的大下去，因此把這概念帶入Multi-Bin Hoeffding’s Inequality，經過繁複的計算，就可以得到以下公式：
 $$
@@ -126,7 +130,7 @@ $$
 2. **Good Data: 數據量越大越好，可以壓低VC Generalization Bound**
 3. **Good Learning Algorithm: 以上兩點可以確定的是$E_{in} \approx E_{out}$，接下來好的Learning Algorithm要有能力找到$E_{in}$ 最小的參數。很直觀的，當我們可以調控的變數越多，我們的選擇就越多，也就是我們可以找到更小$E_{in}$ 的機會變多了，所以可以調控的變數不可以太少。**
 
-眼尖的你有沒有發現矛盾啊! 可以調控的變數很少，我們能確保$E_{in} \approx E_{out}​$，但是如果我想要找到更小的$E_{in}​$ 又必須有更多的調控變數，這個矛盾是機器學習上一個重要的課題，**解法是我們必須要能找到適當的調控變數數量，也就是適當大小的$d_{VC}$ **。
+眼尖的你有沒有發現矛盾啊! 可以調控的變數很少，我們能確保$E_{in} \approx E_{out}$，但是如果我想要找到更小的$E_{in}$ 又必須有更多的調控變數，這個矛盾是機器學習上一個重要的課題，**解法是我們必須要能找到適當的調控變數數量，也就是適當大小的$d_{VC}$ **。
 
 ![image](http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.02.jpeg)
 
@@ -146,7 +150,7 @@ from: [https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout
 
 1. 每筆Data出現的機會不一定，同樣的採樣結果也是會受機率的影響，所以上圖中標示為$\mathbb{P} (x)$，這個修改並不會影響機器學習的流程和結果。
 2. Data可能會受到Noise的影響，所以給定$X_n$並不一定會百分之一百得到$y_n$，他存在著可能會出錯，上圖標示為$\mathbb{P}(y|x)$，我們可以增大我們採樣的數量$N$來減少Noise的影響。
-3. 我們是採用$E_{in}$來當作選擇Model參數的指標，因此我們需要訂出Error的評估方式，常見的有$E_{squared} = (y_n - y_{prediction})^2$。
+3. 我們是採用$E_{in}$來當作選擇Model參數的指標，因此我們需要訂出Error的評估方式，常見的有Squared Error $E_{squared} = (y_n - y_{prediction})^2$。
 
 跟著架構我們就有一套機器學習的**標準流程**，
 

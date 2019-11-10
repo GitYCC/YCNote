@@ -4,7 +4,7 @@ Category: AI.ML
 Tags: 機器學習技法
 Slug: ml-course-techniques_1
 Author: YC Chen
-Illustration: ai_front_board.jpg
+Illustration: ml-course-techniques.jpeg
 Alias: /YCNote/post/29.html
 related_posts: ml-course-foundations_3,ml-course-foundations_4,ml-course-techniques_2,ml-course-techniques_3
 Summary: 有什麼特徵可以使用？ / Embedding Numerous Features ：Kernel Models / Combining Predictive Features：Aggregation Models / Distilling Implicit Features：Extraction Models

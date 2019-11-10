@@ -4,7 +4,7 @@ Category: AI.ML
 Tags: 機器學習基石
 Slug: ml-course-foundations_1
 Author: YC Chen
-Illustration: ai_front_board.jpg
+Illustration: ml-course-foundations.jpeg
 Alias: /YCNote/post/25.html
 related_posts: ml-course-foundations_2,ml-course-foundations_3,ml-course-foundations_4
 Summary: 什麼是Machine Learning / ML的使用時機 / 二元分類問題 / 多元學習
@@ -101,7 +101,7 @@ $x_1$ = 用戶年齡; $x_2$ = 用戶性別; $x_3$ = 用戶年薪，
 
 如上圖所示，**Perceptron Learning Algorithm(PLA)**是用於處理Perceptron Hypothesis Set的一種演算法。
 
-它的作法簡單來講是，藉由一筆一筆的數據去逐步的更新它的weight使得Model可以描述這筆數據，直到不需要再更新為止，此時所有的Data都可以用這個Model表示，更新的方法是先判斷進來的這筆數據是否符合目前的Model預測，如果不符合，則朝變數向量$X_n$的方向，跨出或後退大小為Learning Rate的一步來更新weight，前進還是後退端看你的Data是$y=-1$或$+1$，$y=+1$就往前跨，$y=-1$就往後退。
+它的作法簡單來講是，藉由一筆一筆的數據去逐步的更新它的weight使得Model可以描述這筆數據，直到不需要再更新為止，此時所有的Data都可以用這個Model表示，更新的方法是先判斷進來的這筆數據是否符合目前的Model預測，如果不符合，此時$\left[...\right]$為$+ 1$，則必須朝變數向量$X_n$的方向，前進或後退大小為Learning Rate的一步來更新weight，前進還是後退端看你的Data是$y=-1$或$+1$，$y=+1$就往前進，$y=-1$就往後退。
 
 因此，這個跨步更新的動作必須可以使Model接近正確答案，這麼神奇，真的假的？不太直覺，先從score來想起，假設有一筆資料為$(X_n,y_n)$，則Score：$s = W_t・X_n$，在$W_t$和$X_n$向量彼此有同向分量的情況下，$s > 0$，如果這個時候$y_n$剛好為$+1$，則$sign(s)=y_n$，這個時候$W_t$描述這個數據就很好啊，我們就不需要去更新它；如果相反$y_n=-1$，這個$W_t$描述這個數據就不正確，也就是說$W_t$ 和 $X_n$不應該同向，所以我們讓$W_t$加上$-X_n$($=y_n\times X_n$)，把$W_t$從原本與$X_n$同向的狀態反向拉離開來。那如果在$W_t$和$X_n$向量彼此不同向的情況下，$s < 0$，這個時候如果$y_n$剛好為$-1$，則$sign(s)=y_n$，很好我們不去更新它；如果相反$y_n=+1$，這個$W_t$描述這個數據不正確，也就是說$W_t$ 和 $X_n$不應該反向，所以我們讓$W_t$加上$X_n$($=y_n\times X_n$)，把$W_t$拉到和$X_n$同向一點。這就是PLA找到更好$W_t$的機制。
 

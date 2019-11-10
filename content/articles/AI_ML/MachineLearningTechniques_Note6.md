@@ -4,7 +4,7 @@ Category: AI.ML
 Tags: 機器學習技法
 Slug: ml-course-techniques_6
 Author: YC Chen
-Illustration: ai_front_board.jpg
+Illustration: ml-course-techniques.jpeg
 Alias: /YCNote/post/35.html
 related_posts: ml-course-techniques_3,ml-course-techniques_4,ml-course-techniques_5,ml-course-techniques_7,tensorflow-tutorial_1,tensorflow-tutorial_2,tensorflow-tutorial_3
 Summary: 本篇內容涵蓋神經網路(Neural Network, NN)、深度學習(Deep Learning, DL)、反向傳播算法(Backpropagation, BP)、Weight-elimination Regularizer、Early Stop、Autoencoder、Principal Component Analysis (PCA)
