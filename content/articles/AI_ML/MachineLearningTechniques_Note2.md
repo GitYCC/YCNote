@@ -199,7 +199,7 @@ Regularization將W的長度限制在一個範圍，表示成
 $$
 |W|^{2} ≤ C
 $$
-在這個條件下我們要找E_{in}的極小值，使用加強版的Lagrange Multiplier：
+在這個條件下我們要找$E_{in}$的極小值，使用加強版的Lagrange Multiplier：
 
 1. 問題：在限制  $|W|^{2} - C ≤ 0$ 之下，求 $E_{in}$ 的極小值
 2. 假設Lagrange Function：   $L = E_{in} + μ × ( |W|^{2} - C)$
