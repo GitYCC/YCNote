@@ -6,7 +6,7 @@ Slug: ml-course-techniques_6
 Author: YC Chen
 Illustration: ml-course-techniques.jpeg
 Alias: /YCNote/post/35.html
-related_posts: ml-course-techniques_3,ml-course-techniques_4,ml-course-techniques_5,ml-course-techniques_7,tensorflow-tutorial_1,tensorflow-tutorial_2,tensorflow-tutorial_3
+related_posts: ml-course-techniques_4,ml-course-techniques_5,ml-course-techniques_7,tensorflow-tutorial_1,tensorflow-tutorial_2,tensorflow-tutorial_3
 Summary: 本篇內容涵蓋神經網路(Neural Network, NN)、深度學習(Deep Learning, DL)、反向傳播算法(Backpropagation, BP)、Weight-elimination Regularizer、Early Stop、Autoencoder、Principal Component Analysis (PCA)
 
 ### 神經網路(Neural Network)
@@ -19,7 +19,7 @@ Extraction Models的基本款就是廣為人知的「神經網路」(Neural Netw
 
 上圖左側就是具有一層神經元的Neural Network，首先我們有一組特徵$X$，通常我們會加入一個維度$X_{0}=1$，這是為了可以讓結構變得更好看，未來可以與$W_{0}$相乘產生常數項。使用$W$來給予特徵$X$權重，最後總和的結果稱之為Score，$s = W_{0}X_{0}+𝚺_{i=1}W_{i}X_{i} = 𝚺_{i=0}W_{i}X_{i}$。
 
-這個Score會被輸入到一個Activation Function裡頭，**Activation Function的用意就是開關**，當Score大於某個閥值，就打通線路讓這條路的貢獻可以繼續向後傳遞；當Score小於某個閥值，就關閉線路，所以Activation Function可以是Binary Function，但在實際操作之下不會使用像Binary Function這類不可以微分的Activation Function，所以我們會找具有相似特性但又可以微分的函數，例如tanh或者是ReLU這類比較接近開關效果的函數，經過Activation Function轉換後的輸出表示成$g_{t} = σ(𝚺_{i}W_{i}X_{i})$，這個$g_{t}$就稱為神經元、$σ$為Activation Function、$𝚺_{i} W_{i}X_{i}$是Score。
+這個Score會被輸入到一個Activation Function裡頭，**Activation Function的用意就是開關**，當Score大於某個閥值，就打通線路讓這條路的貢獻可以繼續向後傳遞；當Score小於某個閥值，就關閉線路，所以Activation Function可以是Binary Function，但在實際操作之下不會使用像Binary Function這類不可以微分的Activation Function，所以我們會找具有相似特性但又可以微分的函數，例如$tanh$或者是$ReLU$這類比較接近開關效果的函數，經過Activation Function轉換後的輸出表示成$g_{t} = σ(𝚺_{i}W_{i}X_{i})$，這個$g_{t}$就稱為神經元、$σ$為Activation Function、$𝚺_{i} W_{i}X_{i}$是Score。
 
 如果我們有多組權重$W$就能產生多組神經元$g_{t}$，然後最後把$g_{t}$做線性組合並使用Output Function $h(x)$來衡量出最後的答案，Output Function可以是Linear Classification的Binary Function $h(x)=sign(x)$，不過一樣的問題，它不可以微分，通常不會被使用，常見的是使用Linear Regression $h(x)=x$，或者Logistic Regression $h(x)=Θ(x)$來當作Output Function，最後的結果可以表示成 $y=h(𝚺_{t}α_{t}g_{t})$，看到這個式子有沒有覺得很熟悉，它就像我們上一回講的Aggregation，將特徵X使用特徵轉換轉成使用$g_{t}$表示，再來組合這些$g_{t}$成為最後的Model，所以單層的Neural Network就使用到了Aggregation，它繼承了Aggregation的優點。
 
@@ -31,17 +31,17 @@ Extraction Models的基本款就是廣為人知的「神經網路」(Neural Netw
 
 剛剛我們介紹了最基本款的Neural Network，那如果這個Neural Network有好幾層，我還會稱它為Deep Learning，所以基本上Deep Neural Network和Deep Learning是指同一件事，那為什麼會有兩個名字呢？其實是有歷史典故的。
 
-Neural Network的歷史相當悠久，早在1958年就有人提出以Perceptron當作Activation Function的單層Neural Network，大家也知道一層的Neural Network是不Powerful的，所以在1969年，就有人寫了論文叫做「perceptron has limitation」，從那時Neural Network的方法就很少人研究了。
+Neural Network的歷史相當悠久，早在1958年就有人提出以Perceptron當作Activation Function的單層Neural Network，大家也知道一層的Neural Network是不Powerful的，所以在1969年，就有人寫了論文叫做「perceptron has limitation」，從那時起Neural Network的方法就很少人研究了。
 
 直到1980年代，有人開始使用多層的Neural Network，並在1989年，Yann LeCun博士等人就已經將反向傳播演算法(Backpropagation, BP)應用於Neural Network，當時Neural Network的架構已經和現在的Deep Learning很接近了，不過礙於當時的硬體設備計算力不足，Neural Network無法發揮功效，並且緊接的**有人在1989年證明了只要使用一層Neural Network就可以代表任意函數，那為何還要Deep呢？**所以Deep Neural Network這方法就徹底黑掉了。
 
 一直到了最近，**G. E. Hinton博士為了讓Deep Neural Network起死回生，重新給了它一個新名字「Deep Learning」**，再加上他在2006年提出的RBM初始化方法，這是一個非常複雜的方法，所以在學術界就造成了一股流行，雖然後來被證明RBM是沒有用的，不過卻因為很多人參與研究Deep Learning的關係，也找出了解決Deep Learning痛處的方法，**2009年開始有人發現使用GPU可以大大的加速Deep Learning**，從這一刻起，Deep Learning就開始流行起來，直到去年的2016年3月，圍棋程式Alpha GO運用Deep Learning技術以4:1擊敗世界頂尖棋手李世乭，Deep Learning正式掀起了AI的狂潮。
 
-聽完這個故事我們知道改名字的重要性XDD，不過大家是否還有看到什麼關鍵，「使用一層Neural Network就可以代表任意函數，那為何還要Deep呢？」這句話，這不就否定了我們今天做的事情了嗎？的確，使用一層的Neural Network就可以形成任意函數，但這一層的神經元也同樣需要無窮多個才做的到。**Deep Learning的學習方法和人有點類似，我們在學習一個艱深的理論時，會先單元式的針對幾個簡單的概念學習，然後在整合這些概念去理解更高層次的問題**，Deep Learning透過多層結構學習，雖然第一層的神經元沒有很多，能學到的也只是簡單的概念而已，不過第二層再重組這些簡單概念，第三層再用更高層次的方法看問題，所以同樣的問題使用一層Neural Network可能需要很多神經元才有辦法描述，但是Deep Learning卻可以使用更少的神經元做到一樣的效果。
+聽完這個故事我們知道改名字的重要性XDD，不過大家是否還有看到什麼關鍵，「使用一層Neural Network就可以代表任意函數，那為何還要Deep呢？」這句話，這不就否定了我們今天做的事情了嗎？的確，使用一層的Neural Network就可以形成任意函數，而且完全可以用一層的神經元來表示任何多層的神經元，數學上是行得通的，但重點是參數量。Deep Learning的學習方法和人有點類似，我們在學習一個艱深的理論時，會先單元式的針對幾個簡單的概念學習，然後在整合這些概念去理解更高層次的問題，Deep Learning透過多層結構學習，雖然第一層的神經元沒有很多，能學到的也只是簡單的概念而已，不過第二層再重組這些簡單概念，第三層再用更高層次的方法看問題，所以同樣的問題使用一層Neural Network可能需要很多神經元才有辦法描述，但是Deep Learning卻可以使用更少的神經元做到一樣的效果，
 
-另外，Deep Learning還有一個很大好處，就是比較不容易Overfitting，你可以想像一下如果我們使用100個神經元來造一個單層Neural Network，跟使用100個神經元來造一個五層的Neural Network，哪一個比容易Overfitting，當然是單層的Neural Network，多層Neural Network是使用一個從簡單到複雜的抽取特徵方法，所以它比較不易受到雜訊的影響，**Deep Learning在建立多層「模組化」的過程可以抑制對於雜訊的過度反應，這等於是一種Regularization**。
+> 同樣表示的數學轉換過程，雖然單層和多層都是做得到相同轉換的，但是多層所用的參數量是比單層來得少的，依照VC Generalization Bound理論 (請參考：[機器學習基石 學習筆記 (2)：為什麼機器可以學習?](https://www.ycc.idv.tw/ml-course-foundations_2.html)) 告訴我們可調控的參數量代表模型的複雜度，所以多層的NN比單層的有個優勢是在做到同樣的數學轉換的情況下更不容易Overfitting。
 
-**因此，Deep Learning中每一層當中做了Aggregation，在增加模型複雜度的同時，也因為平均的效果而做到截長補短，這具有Regularization的效果，並且在採用多層且瘦的結構也同時因為「模組化」而做到Regularization，這就不難想像Deep Learning為何如此強大。**
+**因此，Deep Learning中每一層當中做了Aggregation，在增加模型複雜度的同時，也因為平均的效果而做到截長補短，這具有Regularization的效果，並且在採用多層且瘦的結構也同時因為「模組化」而做到降低參數使用量，來減少模型複雜度，這就不難想像Deep Learning為何如此強大。**
 
 <br/>
 
@@ -73,7 +73,7 @@ $W_{ij}^{(ℓ)} ←  W_{ij}^{(ℓ)}-η×∂L/∂W_{ij}^{(ℓ)}$
 
 $∂L/∂W_{ij}^{(L)}$
 
-$= {∂L/∂s_{j}^{(L)}}×{∂s_{j}^{(L)}/∂W_{ij}^{(L)}}$  (連鎖率)
+$= \frac{∂L}{∂s_{j}^{(L)}} \frac{∂s_{j}^{(L)}}{{∂W_{ij}^{(L)}}}$  (連鎖率)
 
 $= {δ_{j}^{(L)}}×{X_{i}^{(L-1)}}$
 
@@ -101,7 +101,7 @@ $W_{ij}^{(L)} ←  W_{ij}^{(L)}-η×δ_{j}^{(L)}×X_{i}^{(L-1)}$
 
 $∂L/∂W_{ij}^{(ℓ)}$
 
-$= {∂L/∂s_{j}^{(ℓ)}}×{∂s_{j}^{(ℓ)}/∂W_{ij}^{(ℓ)}}$ (連鎖率)
+$= \frac{∂L}{∂s_{j}^{(ℓ)}}\frac{∂s_{j}^{(ℓ)}}{∂W_{ij}^{(ℓ)}}$ (連鎖率)
 
 $= δ_{j}^{(ℓ)}×X_{i}^{(ℓ-1)}$
 
@@ -111,7 +111,7 @@ $δ_{j}^{(ℓ)}$
 
 $= ∂L/∂s_{j}^{(ℓ)}$
 
-$= 𝚺_{k} {∂L/∂s_{k}^{(ℓ+1)}}×{∂s_{k}^{(ℓ+1)}/∂X_{jk}^{(ℓ)}}×{∂X_{jk}^{(ℓ)}/∂s_{j}^{(ℓ)}}$ (連鎖率)
+$= 𝚺_{k} \frac{∂L}{∂s_{k}^{(ℓ+1)}}\frac{∂s_{k}^{(ℓ+1)}}{∂X_{jk}^{(ℓ)}}\frac{∂X_{jk}^{(ℓ)}}{∂s_{j}^{(ℓ)}}$ (連鎖率)
 
 $= 𝚺_{k} {δ_{k}^{(ℓ+1)}}×{W_{jk}^{(ℓ)}}×{σ'(s_{j}^{(ℓ)})}$
 
@@ -133,15 +133,15 @@ $W_{jk}^{(ℓ)}$和$σ'(s_{j}^{(ℓ)})$都是Forward之後就會得到的資訊�
 
 ### Regularization in Deep Learning
 
-那麼像是Deep Learning這麼複雜的Model，我們要怎麼避免Overfitting呢？有五個方法。
+那麼使用Deep Learning的時候，我們要怎麼避免Overfitting呢？有五個方法。
 
 第一個方法，就是我們剛剛提過的**「設計Deep Neural Network的結構」**，藉由限縮一層當中的神經元來達到一種限制，做到Regularization。
 
-第二個方法是**「限制W的大小」**，和標準Regularization作一樣的事情，我們將$W$的大小加進去Cost裡頭做Fitting，例如使用L2 Regularizer $Ω(W)=𝚺(W_{jk}^{(ℓ)})^{2}$，但這樣使用有一個問題就是$W$並不是Sparse的，L2 Regularizer在抑制$W$的方法是，如果W的分量大的話就抑制多一點，如果分量小就抑制少一點（因為$W^{2}$微分為一次），所以最後會留下很多很小的分量，造成計算量大大增加，尤其像是Deep Learing這麼龐大的Model，這樣的Regularization顯然不夠好，L1 Regularizer顯然可以解決這個問題（因為在大部分位置微分為常數），但不幸的是它無法微分，所以就有了L2 Regularizer的衍生版本，
+第二個方法是**「限制W的大小」**，和標準Regularization作一樣的事情，我們將$W$的大小加進去Cost裡頭做Fitting，例如使用L2 Regularizer $Ω(W)=𝚺(W_{jk}^{(ℓ)})^{2}$，但這樣使用有一個問題就是$W$並不是Sparse的，L2 Regularizer在抑制$W$的方法是，如果W的分量大的話就抑制多一點，如果分量小就抑制少一點（因為$W^{2}$微分為1次），所以最後會留下很多很小的分量，造成計算量大大增加，尤其像是Deep Learing這麼龐大的Model，這樣的Regularization顯然不夠好，L1 Regularizer顯然可以解決這個問題（因為在大部分位置微分為常數），但不幸的是它無法微分，所以就有了L2 Regularizer的衍生版本，
 
-Weight-elimination L2 regularizer: $𝚺[(W_{jk}^{(ℓ)})^{2}]/[1+(W_{jk}^{(ℓ)})^{2}]$
+Weight-elimination L2 regularizer: $𝚺\frac{(W_{jk}^{(ℓ)})^{2}}{1+(W_{jk}^{(ℓ)})^{2}}$
 
-這麼一來不管$W$大或小，它受到抑制的值大小接近的 (Weight-elimination L2 regularizer微分為 $-1$次方)，因此就可以使得部分$W$可以為$0$，大大便利於我們做計算。
+這麼一來不管$W$大或小，它受到抑制的值大小是接近的 (因為Weight-elimination L2 regularizer微分為 $-1$次方)，因此就可以使得部分$W$可以為$0$，大大便利於我們做計算。
 
 第三種方法是最常使用的**「Early Stopping」**，所謂的Early Stopping就是，在做Backpropagation的過程去觀察Validation Data的Error有沒有脫離Training Data的Error太多，如果開始出現差異，我們就立刻停止計算，這樣就可以確保Model裡的參數沒有使得Model產生Overfitting，是一個很直接的作法。
 
