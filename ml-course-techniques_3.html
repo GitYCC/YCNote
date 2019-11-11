@@ -253,7 +253,7 @@
 <p>因此接下來我們打算<strong>讓Regression具有Support Vector的性質，稱之為Support Vector Regression (SVR)</strong>。</p>
 <p><img alt="SVR" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.006.jpeg"></p>
 <p>見上圖說明，Support Vector Regression簡稱SVR，以往的Linear Regression是求一條擬合直線能使所有數據點到直線的Error最小，而現在我們賦予它Soft-Margin的能力，<strong>SVR將擬合直線向外擴張距離ε，在這個擴張的區域裡頭的數據點不去計算它的Error，只有在超出距離ε外的才去計算Error</strong>，此時這個擬合直線有點像一條水管，水管外我們才計算Error，所以又稱之為Tube Regression。</p>
-<p>這個概念和Soft-Margin SVM有點像，都是在邊界給予犯錯的機會，不同的是Soft-Margin SVM因為是分類問題，所以不允許錯誤的數據超過界，所以評估Error的方向是向內的，而SVR是向外評估Error，超出水管之上的Error我們記作<span class="math">\(ξ_{n}^{⋀}\)</span>，低於水管之下的Error我們記作<span class="math">\(ξ_{n}^{⋁}\)</span>，<strong>所以SVR的目的就是在Regularization之下使得<span class="math">\(ξ_{n}^{⋀}+ξ_{n}^{⋁}\)</span>最小，並且調整距離ε和C來決定對Error的容忍程度</strong>。</p>
+<p>這個概念和Soft-Margin SVM有點像，都是在邊界給予犯錯的機會，不同的是Soft-Margin SVM因為是分類問題，所以不允許錯誤的數據超過界，所以評估Error的方向是向內的，而SVR是向外評估Error，在水管外部上方的Error我們記作<span class="math">\(ξ_{n}^{⋀}\)</span>，在水管外部下方的Error我們記作<span class="math">\(ξ_{n}^{⋁}\)</span>，<strong>所以SVR的目的就是在Regularization之下使得<span class="math">\(ξ_{n}^{⋀}+ξ_{n}^{⋁}\)</span>最小，並且調整距離ε和C來決定對Error的容忍程度</strong>。</p>
 <p>這個問題同樣的可以化作Dual問題，問題變成只需要最佳化<span class="math">\(α_{n}^{⋀}\)</span>和<span class="math">\(α_{n}^{⋁}\)</span>，再使用最佳化後的<span class="math">\(α_{n}^{⋀}\)</span>和<span class="math">\(α_{n}^{⋁}\)</span>就可以得到<span class="math">\(W\)</span>和<span class="math">\(b\)</span>。其中<span class="math">\(W=𝚺_{n} (α_{n}^{⋀}-α_{n}^{⋁}) Z_{n}\)</span>這式子裡頭隱含著Representer Theorem，每筆數據的貢獻程度<span class="math">\(β_{n}=(α_{n}^{⋀}-α_{n}^{⋁})\)</span>，<strong>因此在管子內的<span class="math">\(α_{n}^{⋀}=0\)</span>且<span class="math">\(α_{n}^{⋁}=0\)</span>，不會有所貢獻，這使得SVR具有Sparse的性質，可以大大的減少計算</strong>。</p>
 <p><br/></p>
 <h3>結語</h3>

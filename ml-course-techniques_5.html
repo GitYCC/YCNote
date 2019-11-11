@@ -169,11 +169,12 @@
 <p><span class="math">\(𝚺_{n} u_{n}^{(t+1)} ⟦y_{n}≠g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t+1)}=1/2\)</span> (預測能力像隨機分布)</p>
 <p>⇒  <span class="math">\(𝚺_{n} u_{n}^{(t+1)} ⟦y_{n}≠g_{t}(x_{n})⟧ = 𝚺_{n} u_{n}^{(t+1)} ⟦y_{n}=g_{t}(x_{n})⟧\)</span></p>
 <p>⇒  <span class="math">\(𝚺_{n} (u_{n}^{(t)}×β_{t})  ⟦y_{n}≠g_{t}(x_{n})⟧ = 𝚺_{n} (u_{n}^{(t)}/β_{t}) ⟦y_{n}=g_{t}(x_{n})⟧\)</span></p>
-<p>⇒  <span class="math">\(β_{t}^{2} = 𝚺_{n} u_{n}^{(t)} ⟦y_{n}=g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t)}  ⟦y_{n}≠g_{t}(x_{n})⟧\)</span></p>
-<p>⇒  <span class="math">\(β_{t}^{2} = [𝚺_{n} u_{n}^{(t)} ⟦y_{n}=g_{t}(x_{n})⟧ /  𝚺_{n} u_{n}^{(t)}]/ [𝚺_{n} u_{n}^{(t)}  ⟦y_{n}≠g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t)} ]\)</span></p>
-<p>⇒  <strong><span class="math">\(β_{t}^{2} = 1-ε_{t} / ε_{t}\)</span></strong></p>
+<p>⇒  <span class="math">\(β_{t}^{2} = \frac{𝚺_{n} u_{n}^{(t)} ⟦y_{n}=g_{t}(x_{n})⟧ }{𝚺_{n} u_{n}^{(t)}  ⟦y_{n}≠g_{t}(x_{n})⟧}\)</span></p>
+<p>⇒  <span class="math">\(β_{t}^{2} = \frac{𝚺_{n} u_{n}^{(t)} ⟦y_{n}=g_{t}(x_{n})⟧ /  𝚺_{n} u_{n}^{(t)}}{ 𝚺_{n} u_{n}^{(t)}  ⟦y_{n}≠g_{t}(x_{n})⟧ / 𝚺_{n} u_{n}^{(t)}}\)</span></p>
+<p>⇒  <span class="math">\(β_{t}^{2} = \frac{1-ε_{t}}{ε_{t}}\)</span></p>
+<p>⇒  <strong><span class="math">\(β_{t} = \sqrt{\frac{1-ε_{t}}{ε_{t}}}\)</span></strong></p>
 <p>所以我們就可以利用這個<span class="math">\(β_{t}\)</span>來更新我的Data權重，並且在多次迭代後，得到很多個<span class="math">\(g_{t}\)</span>。而將來我們會把所有的<span class="math">\(g_{t}\)</span>做線性組合，而我們希望<strong>「錯誤率」越低的<span class="math">\(g_{t}\)</span>可以有更高的貢獻度<span class="math">\(α_{t}\)</span></strong>，所以使用<span class="math">\(β_{t}\)</span>緊接著計算「<span class="math">\(g_{t}\)</span>的權重」<span class="math">\(α_{t}\)</span>，定義為</p>
-<p><strong><span class="math">\(α_{t} = ln(βt)\)</span></strong></p>
+<p><strong><span class="math">\(α_{t} = ln(β_t)\)</span></strong></p>
 <p>所以當一個百分之一百可以完全預測的<span class="math">\(g_{t}\)</span>出現時，它的<span class="math">\(ε_{t}=0\)</span>，此時它的<span class="math">\(β_{t} →∞\)</span>，同時<span class="math">\(α_{t} →∞\)</span>，所以這樣的<span class="math">\(g_{t}\)</span>會有完全的貢獻。</p>
 <p>如果一個預測效果很差的<span class="math">\(g_{t}\)</span>出現，它的<span class="math">\(ε_{t}=1/2\)</span>，此時它的<span class="math">\(β_{t}=1\)</span>，同時<span class="math">\(α_{t}=0\)</span>，所以這樣的<span class="math">\(g_{t}\)</span>並沒有任何參考價值。</p>
 <p>那如果出現一個<span class="math">\(g_{t}\)</span>它的<span class="math">\(ε_{t} &gt; 1/2\)</span>，那這樣的<span class="math">\(g_{t}\)</span>並不能說它沒有用處，反而是一個很好的反指標，我們只需要反著看就好了，當<span class="math">\(ε_{t} &gt; 1/2\)</span>時，<span class="math">\(β_{t} &lt; 1\)</span>，所以<span class="math">\(α_{t} &lt; 0\)</span>，這樣的<span class="math">\(g_{t}\)</span>具有逆向的貢獻。</p>
@@ -183,9 +184,9 @@
 <p>剛剛我們講了AdaBoost，是個很神奇的方法，當我們做錯了，沒關係！從哪裡跌倒就從哪裡站起來，利用這種精神我們就可以做到Boost的效果，但美中不足的是上面的方法只能用在「分類問題」上，那如果我也想在「Regression問題」也做到Boost呢？這就是接下來要講的GradientBoost的方法。</p>
 <p>在課程中林軒田教授是從AdaBoost出發經過推導後，得到一個很像是Gradient Decent的式子，接下來將式子一般化成為可以使用任意Error Measure的形式，我稍微列一下：</p>
 <blockquote>
-<p>GradientBoost: <span class="math">\(min_{η}\ min_{h}\ (1/N) 𝚺_{n} err[𝚺_{τ=1~t-1} α_{τ} g_{τ}(x_{n}) + η h(x_{n}), y_{n}]\)</span></p>
+<p>GradientBoost: <span class="math">\(min_{η}\ min_{h}\ (1/N) 𝚺_{n} Error[𝚺_{τ=1}^{τ=t-1} α_{τ} g_{τ}(x_{n}) + η h(x_{n}), y_{n}]\)</span></p>
 </blockquote>
-<p>我們這邊會考慮err為平方誤差<span class="math">\((s-y)^{2}\)</span>的結果，詳細的推導這邊就不多加討論，可以到影片中學習，這裡我想要從我觀察出來的觀點，概念性的來看這個GradientBoost的方法。</p>
+<p>我們這邊會考慮Error為平方誤差<span class="math">\((s-y)^{2}\)</span>的結果，詳細的推導這邊就不多加討論，可以到影片中學習，這裡我想要從我觀察出來的觀點，概念性的來看這個GradientBoost的方法。</p>
 <p>「從哪裡跌倒就從哪裡站起來」就是Boost的精神，所以今天你有一個Regression問題沒做好，<strong>留下了餘數Residual，怎麼辦？那我就把這個餘數當作另外一個Regression問題來做它</strong>，再把這個結果附到先前的那個就好啦！如果第一次Regression後的Model是<span class="math">\(g_{1}(x)\)</span>，那剩下的沒做好的餘數就應該是<span class="math">\(y(x)-g_{1}(x)\)</span>，我們拿這個餘數下去在做一次Regression得到另外一個Model <span class="math">\(g_{2}(x)\)</span>，此時合併這兩個結果的餘數就變成了<span class="math">\(y(x)-g_{1}(x)-g_{2}(x)\)</span>，就可以使用這個餘數繼續做下去，最後組合所有的<span class="math">\(g_{t}(x)\)</span>就會得到一個更好的Model。</p>
 <p><img alt="Gradient Boost" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.013.jpeg"></p>
 <p>依循這樣的概念我們來看GradientBoost作法，如上圖，一開始我們先初始化每一筆Data的預測值<span class="math">\(s_{n}\)</span>為0，再接下來開始產生<span class="math">\(g_{t}\)</span>，我們先把Data的 <span class="math">\(y_{n}\)</span> 減去每一筆Data當前的預測值<span class="math">\(s_{n}\)</span>，就會產生餘數<span class="math">\((y_{n}-s_{n})\)</span>，當然，在一開始<span class="math">\(s_{n}=0\)</span>，所以<span class="math">\(y_{n}-s_{n}=y_{n}\)</span>，等於是對原問題求解。</p>

@@ -183,12 +183,12 @@
 <li>這群數據<span class="math">\(Ɗ\)</span>的Feature <span class="math">\(X_{n}\)</span>都完全相同。</li>
 </ol>
 <p><strong>當無法再繼續分支下去時，會回傳一個<span class="math">\(g_{t}(x)=constant\)</span>，這個常數是一個可以使得這個群體內<span class="math">\(E_{in}\)</span>最小的數值，在分類問題中這個常數是<span class="math">\(\{y_{n}\}\)</span>中佔多數的類別，在Regression問題中這個常數是<span class="math">\(\{y_{n}\}\)</span>的平均值。</strong></p>
-<p>大家應該會有點驚訝，Decision Tree也有辦法做Regression？其實是可以的，在分類問題中我們可以利用類別來做分類，在Regression問題我們可以利用一個切分數值來區分成兩群或多群，例如：以50當切分數值，大於50的一類，小於等於50的另外一類，當我們切的夠細夠多層的時候就是在做一個Regression問題了。</p>
+<p>大家應該會有點驚訝，Decision Tree也有辦法做Regression？其實是可以的，我們只要讓群裡頭的數字作平均當代表，這們一來要處理實數問題也是可以做到的，不過我們會預期處理Regression問題時會切的比Classification問題來的細和多層。</p>
 <p>那接下來來看假如還可以繼續分支下去應該要怎麼做，這邊假設我們只切一刀分為兩個區塊<span class="math">\(C=2\)</span>，我們該根據怎樣的條件來切呢？我們剛剛其實有稍微提到，那就是Impurity，我們<strong>可以根據Impurity Function來衡量「一群資料的不相似程度」</strong>。</p>
 <p>分類問題的Impurity Function有以下兩種：</p>
 <ul>
 <li><span class="math">\(Impurity(Ɗ) = (1/N) 𝚺_{n} ⟦y_{n}≠y^*⟧\)</span>，其中<span class="math">\(y^*\)</span>是<span class="math">\(Ɗ\)</span>中佔多數的類別，這個衡量方法就直接的去數出錯誤答案的比例。</li>
-<li><strong>Gini Index: <span class="math">\(Impurity(Ɗ) = 1 - 𝚺_{k} [ 𝚺_{n}⟦y_{n}=k⟧  / N ]^{2}\)</span></strong>，Gini Index是最為流行的作法，它不同於上一個作法，它是在評估所有的類別後才去計算Impurity。</li>
+<li><strong>Gini Index: <span class="math">\(Impurity(Ɗ) = 1 - 𝚺_{k} [ 𝚺_{n}⟦y_{n}=k⟧  / N ]^{2}\)</span></strong>，Gini Index是最為流行的作法，它不同於上一個作法，它是在評估所有的類別後才去計算Impurity，其中 <span class="math">\(k\)</span> 代表類別。</li>
 </ul>
 <p>而Regression問題有以下方法：</p>
 <ul>
