@@ -55,6 +55,127 @@
  *
  * =================================================================== */
 
+ /* ------------------------------------------------------------------- 
+ * ## go to top
+ * ------------------------------------------------------------------- */
+.ss-go-top {
+  position: absolute;
+  top: -1px;
+  right: 6rem;
+  z-index: 10;
+}
+
+.ss-go-top a {
+  display: block;
+  background: rgba(255, 255, 255, 0.05);
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
+  border: 0 none;
+  height: 60px;
+  width: 60px;
+  line-height: 60px;
+  text-align: center;
+  color: white;
+  text-transform: uppercase;
+  transition: all .3s;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url(../images/icons/icon-arrow-up.svg);
+  background-size: 10px 16px;
+  position: relative;
+}
+
+.ss-go-top a:hover,
+.ss-go-top a:focus {
+  background-color: #cf1767;
+  color: #ffffff;
+}
+
+.ss-go-top::before {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 100px;
+  background-color: rgba(255, 255, 255, 0.05);
+  position: absolute;
+  top: -115px;
+  left: 50%;
+}
+
+.ss-go-top::after {
+  content: "back to top";
+  display: block;
+  float: left;
+  width: 120px;
+  font-size: 1.2rem;
+  line-height: 30px;
+  text-transform: uppercase;
+  letter-spacing: .2rem;
+  color: rgba(255, 255, 255, 0.15);
+  transition: all 0.5s;
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+  -webkit-transform-origin: left bottom;
+  -ms-transform-origin: left bottom;
+  transform-origin: left bottom;
+  position: absolute;
+  left: calc(30px + 15px);
+  top: -165px;
+}
+
+/* ------------------------------------------------------------------- 
+ * responsive:
+ * footer
+ * ------------------------------------------------------------------- */
+@media screen and (max-width:1200px) {
+  .ss-go-top {
+    right: 3rem;
+  }
+
+}
+
+@media screen and (max-width:900px) {
+  .ss-go-top {
+    right: 0;
+  }
+
+  .ss-go-top::before,
+  .ss-go-top::after {
+    display: none;
+  }
+
+}
+
+@media screen and (max-width:600px) {
+  .ss-copyright {
+    margin-top: 9rem;
+    padding: 0;
+    text-align: center;
+  }
+
+  .ss-copyright span {
+    display: block;
+  }
+
+  .ss-copyright span::after {
+    display: none;
+  }
+
+  .ss-go-top {
+    right: 50%;
+    margin-right: -30px;
+  }
+
+}
+
+@media screen and (max-width:400px) {
+  .ss-copyright span {
+    font-size: 13px;
+  }
+
+}
+
 
 /* ===================================================================
  * # base style overrides
