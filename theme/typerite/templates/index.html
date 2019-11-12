@@ -273,7 +273,7 @@
             <div class="masonry">
                 <div class="grid-sizer"></div>
 
-                {% for article in articles_page.object_list %}
+                {% for article in articles_page.object_list[:10] %}
                 <div class="masonry__brick" data-aos="fade-up">
                     <div class="item-folio">
                         <div class="item-folio__thumb">
