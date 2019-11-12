@@ -77,10 +77,24 @@
             <nav class="header__nav-wrap">
 
                 <ul class="header__nav">
-                    {% for category, articles in categories %}
-                    <li><a href="{{ SITEURL }}/{{ category.url }}" title="">{{ category }}</a></li>
-                    {% endfor %}
-                    <br/>
+                    <li><a href="{{ SITEURL }}/" title="">Home</a></li>
+                    <li class="has-children">
+                        <a href="#0" title="">Categories</a>
+                        <ul class="sub-menu">
+                            {% for category, articles in categories %}
+                            <li><a href="{{ SITEURL }}/{{ category.url }}">{{ category }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="has-children">
+                        <a href="#0" title="">Tags</a>
+                        <ul class="sub-menu">
+                            {% for tag, articles in tags|sort %}
+                            <li><a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li></li>
                     <li><a href="{{ SITEURL }}/#about" title="">About</a></li>
                 </ul> <!-- end header__nav -->
 
@@ -159,6 +173,23 @@
             </div> <!-- end masonry-wrap -->
 
         </div> <!-- end s-content -->
+
+        <!-- footer
+        ================================================== -->
+        <footer class="s-footer footer">
+            <div class="row">
+                <div class="column large-full footer__content">
+                    <div class="footer__copyright">
+                        <span>© Copyright YC Note 2019</span> 
+                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="go-top">
+                <a class="smoothscroll" title="Back to Top" href="#top"></a>
+            </div>
+        </footer>
 
     </div> <!-- end s-wrap -->
 
