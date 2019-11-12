@@ -77,10 +77,24 @@
             <nav class="header__nav-wrap">
 
                 <ul class="header__nav">
-                    {% for category, articles in categories %}
-                    <li><a href="{{ SITEURL }}/{{ category.url }}" title="">{{ category }}</a></li>
-                    {% endfor %}
-                    <br/>
+                    <li><a href="{{ SITEURL }}/" title="">Home</a></li>
+                    <li class="has-children">
+                        <a href="#0" title="">Categories</a>
+                        <ul class="sub-menu">
+                            {% for category, articles in categories %}
+                            <li><a href="{{ SITEURL }}/{{ category.url }}">{{ category }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="has-children">
+                        <a href="#0" title="">Tags</a>
+                        <ul class="sub-menu">
+                            {% for tag, articles in tags|sort %}
+                            <li><a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li></li>
                     <li><a href="{{ SITEURL }}/#about" title="">About</a></li>
                 </ul> <!-- end header__nav -->
 
