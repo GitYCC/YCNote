@@ -143,10 +143,12 @@
                             <li class="cat-links">
                                 <i class="fa fa-archive"></i> <a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
                             </li>
+                            {% if article.tags %}
                             <li>
-                                <i class="fa fa-tags"></i> {% for tag in article.tags|sort %}<a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
-                                </span>
+                                <i class="fa fa-tags"></i> 
+                                {% for tag in article.tags|sort %}<a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
                             </li>
+                            {% endif %}
                         </ul>
                     </div> <!-- end entry__header -->
 
