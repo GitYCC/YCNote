@@ -48,16 +48,14 @@ THEME = 'theme/typerite'
 SITESUBTITLE = u'YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)'
 
 # Static files
-READERS = {'html': None}
+# READERS = {'html': None}
 STATIC_PATHS = ['images', 'media', 'extra/robots.txt', 'extra/favicon.ico', 
-                'extra/logo.svg', 'extra/CNAME',
-                'extra/google4e3e442ecd5db0b2.html']
+                'extra/logo.svg', 'extra/CNAME']
 EXTRA_PATH_METADATA = {
     'extra/robots.txt': {'path': 'robots.txt'},
     'extra/favicon.ico': {'path': 'favicon.ico'},
     'extra/logo.svg': {'path': 'logo.svg'},
     'extra/CNAME': {'path': 'CNAME'},
-    'extra/google4e3e442ecd5db0b2.html': {'path': 'google4e3e442ecd5db0b2.html'},
 }
 
 
