@@ -6,8 +6,53 @@
     ================================================== -->
     <meta charset="utf-8">
     <title>機器學習基石 學習筆記 (3)：機器可以怎麼樣學習? - YC Note</title>
-    <meta name="description" content="前言 在上一回中，我們已經了解了機器學習在理論上有怎樣的條件才可以達成，所以接下來我們就可以正式的來看有哪一些機器學習的方法。 在這一篇中，我會帶大家初探：機器可以怎麼樣學習? 內容包括：Gradient Descent、Linear Regression、Logistic Regression、使用迴歸法做二元分類問題等等。 Gradient Descent（梯度下降） ...">
-    <meta name="author" content="YC">
+    <meta name="description" content="Gradient Descent / Linear Regression / Logistic Regression / 使用迴歸法做二元分類問題">
+    <meta name="author" content="YC Chen">
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="機器學習基石 學習筆記 (3)：機器可以怎麼樣學習? - YC Note" />
+    <meta property="og:description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)" />
+    <meta property="og:image" content="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/" />
+    <meta property="og:site_name" content="YC Note" />
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "AI.ML",
+            "item": "https://www.ycc.idv.tw/category/aiml.html"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?",
+            "item": "https://www.ycc.idv.tw/ml-course-foundations_3.html"
+          }]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "Article",
+          "name" : "機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?",
+          "author" : {
+            "@type" : "Person",
+            "name" : "YC Chen"
+          },
+          "datePublished" : "2016-08-07",
+          "image" : "https://www.ycc.idv.tw/images/ml-course-foundations.jpeg",
+          "articleSection" : "AI.ML",
+          "articleBody" : "Gradient Descent / Linear Regression / Logistic Regression / 使用迴歸法做二元分類問題",
+          "url" : "https://www.ycc.idv.tw/ml-course-foundations_3.html",
+          "publisher" : {
+            "@type" : "Organization",
+            "name" : "YC Note"
+          }
+        }
+    </script>
 
     <!-- mobile specific metas
     ================================================== -->
@@ -156,7 +201,7 @@
                         </h1>
                         <ul class="entry__header-meta">
                             <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2016 / August 07</li>
+                            <li class="date"><i class="fa fa-calendar"></i> 2016-08-07</li>
                             <li class="cat-links">
                                 <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
                             </li>

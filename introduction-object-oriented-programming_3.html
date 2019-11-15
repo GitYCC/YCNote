@@ -6,8 +6,53 @@
     ================================================== -->
     <meta charset="utf-8">
     <title>物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID - YC Note</title>
-    <meta name="description" content="物件導向怎麼用才能成就好的程式碼？ 一個好的工具，也要配合對於工具的理解，才能發揮效用。在上一回中，我們完整介紹了Java和Python的物件導向實現方式，我們講到了「封裝」、「繼承」、「多型」等等物件導向的特色，也講了「抽象類別」、「接口」等抽象化的方法，不過我並沒有告訴大家該怎麼用這些工具？使用這些工具是不是有什麼樣的法則？ ...">
-    <meta name="author" content="YC">
+    <meta name="description" content="物件導向怎麼用才能成就好的程式碼？ / UML類別圖 / 單一職責原則(Single Responsibility Principle, SRP) / 開閉原則(Open-Closed Principle, OCP) / 里氏替換原則(Liskov Subsititution Principle, LSP) / 迪米特法則(Law of Demeter, LoD) / 依賴倒置原則(Dependence Inversion Principle, DIP) / 接口分隔原則(Interface Segregation Principle, ISP)">
+    <meta name="author" content="YC Chen">
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID - YC Note" />
+    <meta property="og:description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)" />
+    <meta property="og:image" content="https://www.ycc.idv.tw/images/coding_front_board.jpg" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/" />
+    <meta property="og:site_name" content="YC Note" />
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Coding",
+            "item": "https://www.ycc.idv.tw/category/coding.html"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID",
+            "item": "https://www.ycc.idv.tw/introduction-object-oriented-programming_3.html"
+          }]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "Article",
+          "name" : "物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID",
+          "author" : {
+            "@type" : "Person",
+            "name" : "YC Chen"
+          },
+          "datePublished" : "2018-04-14",
+          "image" : "https://www.ycc.idv.tw/images/coding_front_board.jpg",
+          "articleSection" : "Coding",
+          "articleBody" : "物件導向怎麼用才能成就好的程式碼？ / UML類別圖 / 單一職責原則(Single Responsibility Principle, SRP) / 開閉原則(Open-Closed Principle, OCP) / 里氏替換原則(Liskov Subsititution Principle, LSP) / 迪米特法則(Law of Demeter, LoD) / 依賴倒置原則(Dependence Inversion Principle, DIP) / 接口分隔原則(Interface Segregation Principle, ISP)",
+          "url" : "https://www.ycc.idv.tw/introduction-object-oriented-programming_3.html",
+          "publisher" : {
+            "@type" : "Organization",
+            "name" : "YC Note"
+          }
+        }
+    </script>
 
     <!-- mobile specific metas
     ================================================== -->
@@ -156,7 +201,7 @@
                         </h1>
                         <ul class="entry__header-meta">
                             <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2018 / April 14</li>
+                            <li class="date"><i class="fa fa-calendar"></i> 2018-04-14</li>
                             <li class="cat-links">
                                 <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a>
                             </li>

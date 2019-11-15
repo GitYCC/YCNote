@@ -6,8 +6,53 @@
     ================================================== -->
     <meta charset="utf-8">
     <title>實作Tensorflow (2)：Build First Deep Neurel Network (DNN) - YC Note</title>
-    <meta name="description" content="接續著上一回，我們已經有一個單層的Neurel Network，緊接著我們來試著一步一步改造它，讓它成為我們常使用的Deep Neurel Network的形式。 本單元程式碼可於Github下載。 import random import numpy as np import tensorflow as tf import matplotlib.pyplot as plt ...">
-    <meta name="author" content="YC">
+    <meta name="description" content="增加Hidden Layer / Activation Function的選擇 / Mini-Batch Gradient Descent / Regularization / Weight Regularization / Dropout / Optimizer的選擇 / 來看看程式怎麼寫">
+    <meta name="author" content="YC Chen">
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="實作Tensorflow (2)：Build First Deep Neurel Network (DNN) - YC Note" />
+    <meta property="og:description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)" />
+    <meta property="og:image" content="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/" />
+    <meta property="og:site_name" content="YC Note" />
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "AI.ML",
+            "item": "https://www.ycc.idv.tw/category/aiml.html"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "實作Tensorflow (2)：Build First Deep Neurel Network (DNN)",
+            "item": "https://www.ycc.idv.tw/tensorflow-tutorial_2.html"
+          }]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "Article",
+          "name" : "實作Tensorflow (2)：Build First Deep Neurel Network (DNN)",
+          "author" : {
+            "@type" : "Person",
+            "name" : "YC Chen"
+          },
+          "datePublished" : "2017-11-07",
+          "image" : "https://www.ycc.idv.tw/images/tensorflow-logo.jpg",
+          "articleSection" : "AI.ML",
+          "articleBody" : "增加Hidden Layer / Activation Function的選擇 / Mini-Batch Gradient Descent / Regularization / Weight Regularization / Dropout / Optimizer的選擇 / 來看看程式怎麼寫",
+          "url" : "https://www.ycc.idv.tw/tensorflow-tutorial_2.html",
+          "publisher" : {
+            "@type" : "Organization",
+            "name" : "YC Note"
+          }
+        }
+    </script>
 
     <!-- mobile specific metas
     ================================================== -->
@@ -156,7 +201,7 @@
                         </h1>
                         <ul class="entry__header-meta">
                             <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2017 / November 07</li>
+                            <li class="date"><i class="fa fa-calendar"></i> 2017-11-07</li>
                             <li class="cat-links">
                                 <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
                             </li>

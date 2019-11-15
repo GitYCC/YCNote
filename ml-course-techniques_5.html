@@ -6,8 +6,53 @@
     ================================================== -->
     <meta charset="utf-8">
     <title>機器學習技法 學習筆記 (5)：Boost Aggregation Models - YC Note</title>
-    <meta name="description" content="Boost的精髓 在上一回當中，我們介紹的Aggregation Models都屬於沒有Boost的，不管是Bagging或Decision Tree都沒有要試著在Training的過程中改善Model，而這篇將要提到的Boost方法，則是在產生每個\(g_{t}\)時試圖讓Model整體更完善，更能發揮Aggregation ...">
-    <meta name="author" content="YC">
+    <meta name="description" content="本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。">
+    <meta name="author" content="YC Chen">
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="機器學習技法 學習筆記 (5)：Boost Aggregation Models - YC Note" />
+    <meta property="og:description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)" />
+    <meta property="og:image" content="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/" />
+    <meta property="og:site_name" content="YC Note" />
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "AI.ML",
+            "item": "https://www.ycc.idv.tw/category/aiml.html"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "機器學習技法 學習筆記 (5)：Boost Aggregation Models",
+            "item": "https://www.ycc.idv.tw/ml-course-techniques_5.html"
+          }]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "Article",
+          "name" : "機器學習技法 學習筆記 (5)：Boost Aggregation Models",
+          "author" : {
+            "@type" : "Person",
+            "name" : "YC Chen"
+          },
+          "datePublished" : "2017-04-02",
+          "image" : "https://www.ycc.idv.tw/images/ml-course-techniques.jpeg",
+          "articleSection" : "AI.ML",
+          "articleBody" : "本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。",
+          "url" : "https://www.ycc.idv.tw/ml-course-techniques_5.html",
+          "publisher" : {
+            "@type" : "Organization",
+            "name" : "YC Note"
+          }
+        }
+    </script>
 
     <!-- mobile specific metas
     ================================================== -->
@@ -156,7 +201,7 @@
                         </h1>
                         <ul class="entry__header-meta">
                             <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2017 / April 02</li>
+                            <li class="date"><i class="fa fa-calendar"></i> 2017-04-02</li>
                             <li class="cat-links">
                                 <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
                             </li>
