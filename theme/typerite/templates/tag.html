@@ -6,8 +6,15 @@
     ================================================== -->
     <meta charset="utf-8">
     <title>Tag:{{ tag }} - YC Note</title>
-    <meta name="description" content="{{ tag.content|striptags|truncate(200)|escape }}">
-    <meta name="author" content="YC">
+    <meta name="description" content="{{ SITESUBTITLE }}">
+    <meta name="author" content="YC Chen">
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Tag:{{ tag }} - YC Note" />
+    <meta property="og:description" content="{{ SITESUBTITLE }}" />
+    <meta property="og:image" content="{{ SITEURL }}/theme/images/favicon.png" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/" />
+    <meta property="og:site_name" content="YC Note" />
 
     <!-- mobile specific metas
     ================================================== -->

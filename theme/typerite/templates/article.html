@@ -6,8 +6,53 @@
     ================================================== -->
     <meta charset="utf-8">
     <title>{{ article.title }} - YC Note</title>
-    <meta name="description" content="{{ article.content|striptags|truncate(200)|escape }}">
-    <meta name="author" content="YC">
+    <meta name="description" content="{{ article.summary|replace('<p>','')|replace('</p>','') }}">
+    <meta name="author" content="{{ article.author }}">
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ article.title }} - YC Note" />
+    <meta property="og:description" content="{{ SITESUBTITLE }}" />
+    <meta property="og:image" content="{{ SITEURL }}/images/{{ article.illustration }}" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/" />
+    <meta property="og:site_name" content="YC Note" />
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "{{ article.category }}",
+            "item": "{{ SITEURL }}/{{ article.category.url }}"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{ article.title }}",
+            "item": "{{ SITEURL }}/{{ article.url }}"
+          }]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "Article",
+          "name" : "{{ article.title }}",
+          "author" : {
+            "@type" : "Person",
+            "name" : "{{ article.author }}"
+          },
+          "datePublished" : "{{ article.locale_date }}",
+          "image" : "{{ SITEURL }}/images/{{ article.illustration }}",
+          "articleSection" : "{{ article.category }}",
+          "articleBody" : "{{ article.summary|replace('<p>','')|replace('</p>','') }}",
+          "url" : "{{ SITEURL }}/{{ article.url }}",
+          "publisher" : {
+            "@type" : "Organization",
+            "name" : "YC Note"
+          }
+        }
+    </script>
 
     <!-- mobile specific metas
     ================================================== -->

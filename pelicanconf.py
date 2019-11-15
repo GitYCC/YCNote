@@ -40,7 +40,7 @@ ATH_JAX = {'align': 'center'}
 DISQUS_SITENAME = 'ycnote-1'
 
 
-DEFAULT_DATE_FORMAT = '%Y / %B %d'
+DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 
 RELATED_POSTS_MAX = 10
 
