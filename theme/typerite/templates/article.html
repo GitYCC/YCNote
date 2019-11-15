@@ -37,7 +37,7 @@
         {
           "@context" : "http://schema.org",
           "@type" : "Article",
-          "name" : "{{ article.title }}",
+          "name" : "{{ article.title }} - YC Note",
           "author" : {
             "@type" : "Person",
             "name" : "{{ article.author }}"
@@ -49,8 +49,13 @@
           "url" : "{{ SITEURL }}/{{ article.url }}",
           "publisher" : {
             "@type" : "Organization",
-            "name" : "YC Note"
-          }
+            "name" : "YC Note",
+            "logo" : {
+                "@type" : "ImageObject",
+                "url": "{{ SITEURL }}/theme/images/favicon.png"
+            }
+          },
+          "headline" : "{{ article.title }}"
         }
     </script>
 
