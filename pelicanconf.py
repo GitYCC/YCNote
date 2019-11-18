@@ -80,3 +80,5 @@ def next_article(current, articles):
 JINJA_FILTERS = {'prev_article': prev_article, 'next_article': next_article}
 AUTHOR_SAVE_AS = False
 AUTHORS_SAVE_AS = False
+CATEGORIES_SAVE_AS = False
+ARCHIVES_SAVE_AS = False
