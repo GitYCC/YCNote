@@ -1,6 +1,6 @@
 Title: 尾牙表演 - Sweet Child Oh Mine
 Date: 2019-03-30 12:00
-Category: Living
+Category: Life
 Tags: 吉他
 Slug: sweet-child-oh-mine
 Author: YC Chen

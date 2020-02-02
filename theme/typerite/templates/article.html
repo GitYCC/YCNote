@@ -6,7 +6,7 @@
     ================================================== -->
     <meta charset="utf-8">
     <title>{{ article.title }} - YC Note</title>
-    <meta name="description" content="{{ article.summary|replace('<p>','')|replace('</p>','') }}">
+    <meta name="description" content="{{ article.summary | striptags | escape }}">
     <meta name="author" content="{{ article.author }}">
 
     <meta property="og:type" content="website" />
@@ -45,7 +45,7 @@
           "datePublished" : "{{ article.locale_date }}",
           "image" : "{{ SITEURL }}/images/{{ article.illustration }}",
           "articleSection" : "{{ article.category }}",
-          "articleBody" : "{{ article.summary|replace('<p>','')|replace('</p>','') }}",
+          "articleBody" : "{{ article.summary | striptags | escape }}",
           "url" : "{{ SITEURL }}/{{ article.url }}",
           "publisher" : {
             "@type" : "Organization",
@@ -218,7 +218,7 @@
 
                     <div class="entry__content">
                         <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            {{ article.summary|replace('<p>','')|replace('</p>','') }}
+                            {{ article.summary | replace('<p>','') | replace('</p>','') }}
                         </div>
                         {{ article.content }}
 
