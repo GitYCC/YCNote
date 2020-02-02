@@ -1,6 +1,6 @@
 Title: [吉他] 光良-傷心地鐵
 Date: 2017-11-08 12:00
-Category: Living
+Category: Life
 Tags: 吉他
 Slug: uwarn-performance_2
 Author: YC Chen

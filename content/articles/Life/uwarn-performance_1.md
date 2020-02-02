@@ -1,6 +1,6 @@
 Title: [吉他] 方大同-三人遊
 Date: 2017-11-09 12:00
-Category: Living
+Category: Life
 Tags: 吉他
 Slug: uwarn-performance_1
 Author: YC Chen
