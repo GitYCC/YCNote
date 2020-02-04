@@ -217,9 +217,12 @@
                     </div> <!-- end entry__header -->
 
                     <div class="entry__content">
+                        {% if article.summary %}
                         <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
                             {{ article.summary | replace('<p>','') | replace('</p>','') }}
                         </div>
+                        {% endif %}
+
                         {{ article.content }}
 
                     </div> <!-- end entry content -->
