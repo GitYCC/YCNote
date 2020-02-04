@@ -127,3 +127,5 @@ dmypy.json
 
 # pelican files
 output
+
+raw_markdown/content/
