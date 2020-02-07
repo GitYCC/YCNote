@@ -5,16 +5,23 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://www.ycc.idv.tw/</loc>
-<lastmod>2020-02-04T11:11:13-00:00</lastmod>
+<lastmod>2020-02-07T07:25:46-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://www.ycc.idv.tw/tags.html</loc>
-<lastmod>2020-02-04T11:11:13-00:00</lastmod>
+<lastmod>2020-02-07T07:25:46-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://www.ycc.idv.tw/egypt-travel_1.html</loc>
+<lastmod>2020-02-04T12:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
 </url>
 
 <url>
@@ -271,7 +278,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://www.ycc.idv.tw/category/life.html</loc>
-<lastmod>2019-03-30T12:00:00+08:00</lastmod>
+<lastmod>2020-02-04T12:00:00+08:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -293,6 +300,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html</loc>
 <lastmod>2017-05-06T12:00:00+08:00</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://www.ycc.idv.tw/tag/you-ji.html</loc>
+<lastmod>2020-02-04T12:00:00+08:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
