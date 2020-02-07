@@ -32,7 +32,8 @@ def main(name):
 
     convert_asset_folder = CONVERT_ROOT / 'media' / name
 
-    shutil.rmtree(str(convert_asset_folder))
+    if convert_asset_folder.exists():
+        shutil.rmtree(str(convert_asset_folder))
     shutil.copytree(str(raw_asset), str(convert_asset_folder))
 
     for raw_md in raw_md_list:
