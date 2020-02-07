@@ -3079,8 +3079,11 @@ body.search-is-visible {
 }
 
 .content__page img {
-  margin-top: 3.2rem;
-  margin-bottom: 3.2rem;
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 .content__page-header {
