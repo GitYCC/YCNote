@@ -4,7 +4,7 @@ Category: Life
 Tags: 遊記,埃及
 Slug: egypt-travel_3
 Author: YC Chen
-Illustration: egypt_travel.png
+Illustration: egypt_travel.jpg
 Summary: 
 
 ![map](http://www.ycc.idv.tw/media/EgyptTravel/egypt_map_d4.png)
@@ -305,7 +305,7 @@ cite from: 埃及 / 墨刻編輯部
 康孟波神殿被摧殘的很嚴重，但是和它同時也在托勒密王朝興建的艾得夫神殿卻是保存良好，原因是因為康孟波神殿地勢較低，遭受尼羅河氾濫的破壞也比較嚴重，而艾得夫神殿地勢比較高，也因此保存比較良好。
 
 埃及神廟有個基本的標準，外面有城牆，城牆上有一個大門，大門進去是前庭，前庭進去就會是多柱廳，加上大門往內共七層的隔間才到神龕的位置，而且依循著門越往內越小、地板越往內越高、屋頂越往內越低的原則。
- 
+
 ![](http://www.ycc.idv.tw/media/EgyptTravel/temple_of_kom_ombo_map.jpeg)
 <center><small>
 cite from: 埃及 / 墨刻編輯部

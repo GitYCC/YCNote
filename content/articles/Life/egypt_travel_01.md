@@ -4,7 +4,7 @@ Category: Life
 Tags: 遊記,埃及
 Slug: egypt-travel_1
 Author: YC Chen
-Illustration: egypt_travel.png
+Illustration: egypt_travel.jpg
 Summary: 
 
 ![map](http://www.ycc.idv.tw/media/EgyptTravel/egypt_map_d2.png)
