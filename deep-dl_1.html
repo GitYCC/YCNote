@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>深入深度學習 (1)：為什麼Normal Distribution這麼好用？ - YC Note</title>
+    <meta name="description" content="如果你已經學了好一陣子的機器學習或深度學習，應該對於Normal Distribution不陌生，但是你真的懂Normal Distribution嗎？本講會詳細的探討Normal Distribution，並且引入中央極限定理（Central Limit Theorm）來解釋為何自然界的隨機誤差大都呈現Normal Distribution，再來介紹Entropy，並且利用Entropy揭示Normal Distribution具有最少先驗知識（Prior Knowledge）的特性。">
+    <meta name="author" content="YC Chen">
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="深入深度學習 (1)：為什麼Normal Distribution這麼好用？ - YC Note" />
+    <meta property="og:description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)" />
+    <meta property="og:image" content="https://www.ycc.idv.tw/images/ai_front_board.jpg" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/" />
+    <meta property="og:site_name" content="YC Note" />
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "AI.ML",
+            "item": "https://www.ycc.idv.tw/category/aiml.html"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "深入深度學習 (1)：為什麼Normal Distribution這麼好用？",
+            "item": "https://www.ycc.idv.tw/deep-dl_1.html"
+          }]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "Article",
+          "name" : "深入深度學習 (1)：為什麼Normal Distribution這麼好用？ - YC Note",
+          "author" : {
+            "@type" : "Person",
+            "name" : "YC Chen"
+          },
+          "datePublished" : "2020-02-18",
+          "image" : "https://www.ycc.idv.tw/images/ai_front_board.jpg",
+          "articleSection" : "AI.ML",
+          "articleBody" : "如果你已經學了好一陣子的機器學習或深度學習，應該對於Normal Distribution不陌生，但是你真的懂Normal Distribution嗎？本講會詳細的探討Normal Distribution，並且引入中央極限定理（Central Limit Theorm）來解釋為何自然界的隨機誤差大都呈現Normal Distribution，再來介紹Entropy，並且利用Entropy揭示Normal Distribution具有最少先驗知識（Prior Knowledge）的特性。",
+          "url" : "https://www.ycc.idv.tw/deep-dl_1.html",
+          "publisher" : {
+            "@type" : "Organization",
+            "name" : "YC Note",
+            "logo" : {
+                "@type" : "ImageObject",
+                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
+            }
+          },
+          "headline" : "深入深度學習 (1)：為什麼Normal Distribution這麼好用？"
+        }
+    </script>
+
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
+    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
+    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
+
+    <!-- script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
+
+    <!-- favicons
+    ================================================== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+
+    <!-- Google Analytics
+    ================================================== -->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-68393177-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+    <script type="text/x-mathjax-config"> 
+        MathJax.Hub.Config({ 
+            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
+            SVG: { linebreaks: { automatic:true } } 
+            });
+    </script>
+
+</head>
+
+<body class="ss-bg-white">
+
+    <!-- preloader
+    ================================================== -->
+    <div id="preloader">
+        <div id="loader" class="dots-fade">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div id="top" class="s-wrap site-wrapper">
+
+        <!-- site header
+        ================================================== -->
+        <header class="s-header header">
+
+            <div class="header__top">
+                <div class="header__logo">
+                    <a class="site-logo" href="https://www.ycc.idv.tw/">
+                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
+                    </a>
+                </div>
+
+                <!-- toggles -->
+                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
+
+            </div>
+
+            <nav class="header__nav-wrap">
+
+                <ul class="header__nav">
+                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
+                    <li class="has-children">
+                        <a href="#0" title="">Categories</a>
+                        <ul class="sub-menu">
+                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-children">
+                        <a href="#0" title="">Tags</a>
+                        <ul class="sub-menu">
+                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/shen-ru-shen-du-xue-xi.html">深入深度學習</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
+                        </ul>
+                    </li>
+                    <li></li>
+                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
+                </ul> <!-- end header__nav -->
+
+                <ul class="header__social">
+                    <li class="ss-github">
+                        <a href="https://github.com/GitYCC" target="_blank">
+                            <span class="screen-reader-text">Github</span>
+                        </a>
+                    </li>
+                    <li class="ss-linkedin">
+                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+                            <span class="screen-reader-text">Linkedin</span>
+                        </a>
+                    </li>
+                    <li class="ss-email">
+                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
+                            <span class="screen-reader-text">Email</span>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </nav> <!-- end header__nav-wrap -->
+
+        </header> <!-- end s-header -->
+
+
+        <!-- site content
+        ================================================== -->
+        <div class="s-content content">
+            <main class="row content__page">
+
+                <article class="column large-full entry format-standard">
+
+                    <div class="media-wrap entry__media">
+                        <div class="entry__post-thumb">
+                            <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" 
+                                 srcset="https://www.ycc.idv.tw/images/ai_front_board.jpg 2000w, 
+                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 1000w, 
+                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                        </div>
+                    </div>
+
+                    <div class="content__page-header entry__header">
+                        <h1 class="display-1 entry__title">
+                        深入深度學習 (1)：為什麼Normal Distribution這麼好用？
+                        </h1>
+                        <ul class="entry__header-meta">
+                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
+                            <li class="date"><i class="fa fa-calendar"></i> 2020-02-18</li>
+                            <li class="cat-links">
+                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
+                            </li>
+                            <li>
+                                <i class="fa fa-tags"></i> 
+<a href="https://www.ycc.idv.tw/tag/shen-ru-shen-du-xue-xi.html">深入深度學習</a>                            </li>
+                        </ul>
+                    </div> <!-- end entry__header -->
+
+                    <div class="entry__content">
+                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
+                            如果你已經學了好一陣子的機器學習或深度學習，應該對於Normal Distribution不陌生，但是你真的懂Normal Distribution嗎？本講會詳細的探討Normal Distribution，並且引入中央極限定理（Central Limit Theorm）來解釋為何自然界的隨機誤差大都呈現Normal Distribution，再來介紹Entropy，並且利用Entropy揭示Normal Distribution具有最少先驗知識（Prior Knowledge）的特性。
+                        </div>
+
+                        <blockquote>
+<p>深度學習發展至今已經有相當多好用的套件，使得進入的門檻大大的降低，因此如果想要快速的實作一些深度學習或機器學習，通常是幾行程式碼可以解決的事。但是，如果想要將深度學習或機器學習當作一份工作，或者當作研究主題，只使用套件是遠遠不足的，還必須深入了解它背後的原理，了解其背後支撐的數學，才有可能因地制宜的使用這些套件，YC準備在這一系列當中帶大家深入了解深度學習。</p>
+</blockquote>
+<p>首先第一講，我們來聊一個最常見的分布—正態分布（Normal Distribution），也稱為高斯分布（Gaussian Distribution）。</p>
+<p>如果你已經學了好一陣子的機器學習或深度學習，應該對於Normal Distribution不陌生，但是你真的懂Normal Distribution嗎？</p>
+<ul>
+<li>
+<p>為什麼Normal Distribution通常作為雜訊的分布？</p>
+</li>
+<li>
+<p>為何在DL（deep learning），參數的初始化要用Normal Distribution？</p>
+</li>
+<li>
+<p>為何在Bayesian公式裡常常會使用Normal Distribution當作Prior Probability？</p>
+</li>
+<li>
+<p>在使用GAN（generative adversarial network）時，為什麼給予的輸入要假設Normal Distribution？</p>
+</li>
+</ul>
+<p>如果你不知道為什麼使用Normal Distribution，你用起來不會怕嗎？這一講我想要回答的是：為什麼Normal Distribution這麼好用？甚至已經到了無腦用的程度，我會從統計學和資訊理論來回答這個問題。</p>
+<h3>認識Normal Distribution</h3>
+<p>首先來看看Normal Distribution的數學表示式
+</p>
+<div class="math">$$
+p_{normal}(x)=\frac{1}{\sqrt{2\pi}\sigma}exp\{{-\frac{1}{2\sigma^2}(x-\mu)^2}\}  \ \ ↪︎【1】
+$$</div>
+<p>
+其中：<span class="math">\(\mu\)</span> 剛好是Normal Distribution的 Mean（平均值），<span class="math">\(\sigma^2\)</span> 剛好是Normal Distribution的 Variance（方差），來證明一下吧！</p>
+<hr>
+<p>證明之前，先來了解什麼是「期望值」，期望值指的是在相同場景下隨機試驗多次，所有那些可能狀態的平均結果。期望值 <span class="math">\(E[g(x)]\)</span> 跟兩件事有關：試驗的物理量 <span class="math">\(g(x)\)</span> 和試驗的出現機率 <span class="math">\(p(x)\)</span> 。</p>
+<p>連續形式寫成：</p>
+<div class="math">$$
+E[g(x)]\equiv\int^{\infty}_{-\infty}g(x)\cdot p(x)dx  \ \ ↪︎【2】
+$$</div>
+<p>
+另外期望值也有離散的形式：
+</p>
+<div class="math">$$
+E[g(x)]\equiv \sum_{x}g(x)\cdot p(x)  \ \ ↪︎【3】
+$$</div>
+<p>上面兩個式子有個前提是已知機率分布 <span class="math">\(p(x)\)</span> 的情況下才能使用，如果今天我們不知道機率分布 <span class="math">\(p(x)\)</span> ，只能使用實驗的方法求近似的期望值，則使用以下公式計算：
+</p>
+<div class="math">$$
+E[g(x)]= \frac{1}{N}\sum_{i=1}^{N}g(x_i)  \ \ ↪︎【4】
+$$</div>
+<p>
+請大家牢記上面三個式子，在機器學習中會反覆使用到。</p>
+<hr>
+<p>有了期望值的概念，我們開始來看Mean和Variance的定義</p>
+<p>Mean的定義為
+</p>
+<div class="math">$$
+E[x]\equiv\int^{\infty}_{-\infty}x\cdot p(x)dx  \ \ ↪︎【5】
+$$</div>
+<p>
+也就是求物理量 <span class="math">\(x\)</span> 的期望值。</p>
+<p>Variance的定義為
+</p>
+<div class="math">$$
+Var[x]\equiv E[(x-E[x])^2]  \ \ ↪︎【6】
+$$</div>
+<p>
+將上式化約可得
+</p>
+<div class="math">$$
+Var[x]=E[x^2]-E[x]^2  \ \ ↪︎【7】
+$$</div>
+<p>
+其中：<span class="math">\(E[x^2]\equiv\int^{\infty}_{-\infty}x^2p(x)dx\)</span>。</p>
+<p>接下來只要把式【1】的Normal Distribution代入就可以得到它的Mean和Variance。</p>
+<p>在這之前，我們先來看一個重要的積分式：
+</p>
+<div class="math">$$
+\int^{\infty}_{-\infty}exp\{-a(x+b)^2\}dx=\sqrt{\frac{\pi}{a}}  \ \ ↪︎【8】
+$$</div>
+<p>上述式子證明稍嫌複雜，有興趣的詳見<a href="https://zh.wikipedia.org/wiki/高斯积分">維基百科的證明</a>。</p>
+<hr>
+<p>先看看Normal Distribution是不是機率總和為1</p>
+<p>將式【1】做積分
+</p>
+<div class="math">$$
+\int^{\infty}_{-\infty}p_{normal}(x)dx=\frac{1}{\sqrt{2\pi}\sigma}\int^{\infty}_{-\infty}exp\{{-\frac{1}{2\sigma^2}(x-\mu)^2}\}dx
+$$</div>
+<p>
+接下來令<span class="math">\(a=\frac{1}{2\sigma^2}\)</span>、<span class="math">\(b=-\mu\)</span>，此時可以套用式【8】，得
+</p>
+<div class="math">$$
+\int^{\infty}_{-\infty}p_{normal}(x)dx=\frac{1}{\sqrt{2\pi}\sigma}\sqrt{\frac{\pi}{\frac{1}{2\sigma^2}}}=1  \ \ ↪︎【9】
+$$</div>
+<hr>
+<p>再來求其Mean
+</p>
+<div class="math">$$
+E[x]|_{normal}=\int^{\infty}_{-\infty}x\cdot p_{normal}(x)dx=\frac{1}{\sqrt{2\pi}\sigma}\int^{\infty}_{-\infty}x\cdot exp\{{-\frac{1}{2\sigma^2}(x-\mu)^2}\}dx
+$$</div>
+<p>
+令<span class="math">\(s=x-\mu\)</span> 代入上式，得
+</p>
+<div class="math">$$
+=\frac{1}{\sqrt{2\pi}\sigma}\int^{\infty}_{-\infty}(s+\mu)\cdot exp\{{-\frac{1}{2\sigma^2}s^2}\}ds
+$$</div>
+<div class="math">$$
+=\frac{1}{\sqrt{2\pi}\sigma}[\int^{\infty}_{-\infty}s\cdot exp\{{-\frac{1}{2\sigma^2}s^2}\}ds+\int^{\infty}_{-\infty}\mu\cdot exp\{{-\frac{1}{2\sigma^2}s^2}\}ds]
+$$</div>
+<p>上式的第一項必為0，因為<span class="math">\(s\)</span>對原點為奇對稱，而<span class="math">\(exp\{{-\frac{1}{2\sigma^2}s^2}\}\)</span>對原點為偶對稱，所以<span class="math">\(s\cdot exp\{{-\frac{1}{2\sigma^2}s^2}\}\)</span>為奇對稱，積分後會相互抵銷為0。接下來把第二項的<span class="math">\(s\)</span>還原回去，得</p>
+<div class="math">$$
+=\mu\int^{\infty}_{-\infty} \frac{1}{\sqrt{2\pi}\sigma}exp\{{-\frac{1}{2\sigma^2}(x-\mu)^2}\}dx=\mu \int^{\infty}_{-\infty}p_{normal}(x)dx
+$$</div>
+<p>將式【9】代入，最後得到
+</p>
+<div class="math">$$
+E[x]|_{normal}=\mu  \ \ ↪︎【10】
+$$</div>
+<hr>
+<p>最後來算一下Variance
+</p>
+<div class="math">$$
+Var[x]|_{normal}=E[x^2]|_{normal}-E[x]^2|_{normal}  \ \ ↪︎【11】
+$$</div>
+<p>
+第一項
+</p>
+<div class="math">$$
+E[x^2]|_{normal}=\int^{\infty}_{-\infty}x^2p_{normal}(x)dx=\frac{1}{\sqrt{2\pi}\sigma}\int^{\infty}_{-\infty}x^2\cdot exp\{{-\frac{1}{2\sigma^2}(x-\mu)^2}\}dx
+$$</div>
+<p>
+令<span class="math">\(a=\frac{1}{2\sigma^2}\)</span>、<span class="math">\(s=x -\mu\)</span>
+</p>
+<div class="math">$$
+=\sqrt{\frac{a}{\pi}}\int^{\infty}_{-\infty}(s+\mu)^2\cdot exp\{{-a \cdot s^2}\}ds
+$$</div>
+<p>
+展開
+</p>
+<div class="math">$$
+=\sqrt{\frac{a}{\pi}}[\int^{\infty}_{-\infty}s^2\cdot exp\{{-a \cdot s^2}\}ds+\int^{\infty}_{-\infty}2s\mu\cdot exp\{{-a \cdot s^2}\}ds+\int^{\infty}_{-\infty}\mu^2\cdot exp\{{-a \cdot s^2}\}ds]
+$$</div>
+<p>
+第二項的積分裡面是奇函數，所以第二項積分完的結果是0。第三項把<span class="math">\(\mu^2\)</span>提出去，積分的部分其實就是式【9】。得
+</p>
+<div class="math">$$
+E[x^2]|_{normal}=\sqrt{\frac{a}{\pi}}\int^{\infty}_{-\infty}s^2\cdot exp\{{-a \cdot s^2}\}ds+\mu^2
+$$</div>
+<p>
+接下來有點tricky，上式的第一項可看成一個微分形式
+</p>
+<div class="math">$$
+=\sqrt{\frac{a}{\pi}}\frac{-\partial}{\partial a}(\int^{\infty}_{-\infty} exp\{{-a \cdot s^2}\}ds)+\mu^2=\sqrt{\frac{a}{\pi}}\frac{-\partial}{\partial a}(\sqrt{\frac{\pi}{a}})+\mu^2=\frac{1}{2a}+\mu^2
+$$</div>
+<p>
+所以
+</p>
+<div class="math">$$
+E[x^2]|_{normal}=\sigma^2+\mu^2  \ \ ↪︎【12】
+$$</div>
+<p>
+將【12】和【10】代入【11】，可得
+</p>
+<div class="math">$$
+Var[x]|_{normal}=\sigma^2+\mu^2-(\mu)^2=\sigma^2  \ \ ↪︎【13】
+$$</div>
+<hr>
+<p>所以未來當你看到Normal Distribution的公式時，應該能夠馬上看出他的Mean和Variance。</p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/IMG_gaussian_distribution.png"></p>
+<h3>隨機誤差大都呈現Normal Distribution</h3>
+<p>雖然說並非所有的隨機分布都是Normal Distribution。例如有：適用於二元系統的Bernoulli Distribution；適用於計數系統的Poisson Distribution；適用於時間間隔的Gamma Distribution；...等等。</p>
+<p>但是大多數情況下，沒有特別的理由，隨機誤差會遵循Normal Distribution。</p>
+<p>接下來我要試著用中央極限定理來解釋這個現象。</p>
+<hr>
+<p>先從中央極限定理（Central Limit Theorm）開始講起</p>
+<blockquote>
+<p>Central Limit Theorm:</p>
+<p>Let <span class="math">\(\{x_1,x_2,...,x_n\}\)</span> be a random sample of size <span class="math">\(n\)</span> — that is, a sequence of independent and identically distributed (i.i.d.) random variables drawn from a distribution of expected value <span class="math">\(E[x_i]=\mu\)</span> and variance <span class="math">\(Var[x_i]=\sigma^2&lt;\infty\)</span>. Suppose we are interested in the sample average: <span class="math">\(S_n=(x_1+x_2+...+x_n)/n\)</span> , Then as <span class="math">\(n\rightarrow \infty\)</span> , <span class="math">\(S_n\)</span> follows normal distribution <span class="math">\(p_{normal}(\mu,(\frac{\sigma}{\sqrt{n}})^2)\)</span>.</p>
+</blockquote>
+<p>也就是說，今天我們從一個任意分布 <span class="math">\(p(x)\)</span> 當中採樣 <span class="math">\(n\)</span> 筆，這<span class="math">\(n\)</span>筆採樣的過程符合不互相影響彼此（independent）且都從同一分布而來（identically distributed），即 i.i.d.。</p>
+<p>而如果我們已知這個任意分布 <span class="math">\(p(x)\)</span> 的Mean <span class="math">\(E[x]|_{p(x)}=\mu\)</span> 和 Variance <span class="math">\(Var[x]|_{p(x)}=\sigma^2&lt;\infty\)</span>，注意：<span class="math">\(p(x)\)</span> 不一定需要是Normal Distribution才能算Mean和Variance。</p>
+<p>我們關注這<span class="math">\(n\)</span>筆採樣的平均值，計作<span class="math">\(S_n\)</span>，統計學告訴我們：
+</p>
+<div class="math">$$
+E[S_n]=\mu  \ \ ↪︎【14】
+$$</div>
+<div class="math">$$
+Var[S_n]=\frac{\sigma^2}{n}  \ \ ↪︎【15】
+$$</div>
+<p>當<span class="math">\(n=1\)</span>時，<span class="math">\(S_n\)</span>的分布其實就是 <span class="math">\(p(x)\)</span> 的分布，當然Mean和Variance會和原分布 <span class="math">\(p(x)\)</span> 一模一樣。</p>
+<p>中央極限定理告訴我們如果今天採樣數量 <span class="math">\(n\)</span> 增加到一定的量，<span class="math">\(S_n\)</span>的分布會趨近於Normal Distribution，也就是說隨著 <span class="math">\(n\)</span> 的增加，<span class="math">\(S_n\)</span> 的分布會從 <span class="math">\(p(x)\)</span> 變成接近 <span class="math">\(p_{normal}(\mu,(\frac{\sigma}{\sqrt{n}})^2)\)</span> 分布。</p>
+<p>眼見為憑，接下來我要透過<a href="https://seeing-theory.brown.edu/probability-distributions/index.html">Seeing-Theory</a>這個網站來Demo一下中央極限定理，</p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/clt_demo.gif"></p>
+<p>給定一個採樣分布（黃色），每次採樣 <span class="math">\(n=15\)</span> 作平均並打點記下來，經過多次的操作就可以得到累積分布圖（紅色），而因為 <span class="math">\(n\)</span> 夠大，所以這個累積分布圖會逼近於Normal Distribution。</p>
+<p>再來看看採樣平均的累積分布怎麼隨著 <span class="math">\(n\)</span> 增加而改變</p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/clt_demo_2.gif"></p>
+<p>觀察上面的動圖，會發現 <span class="math">\(n\)</span> 越大，Variance越來越小，而且分布狀況也越接近Normal Distribution。</p>
+<hr>
+<p>好！講了這麼多，那這跟隨機誤差有什麼關係呢？</p>
+<p>中央極限定理告訴我們只要從一個固定的採樣分布當中作夠多的樣本平均，其分布會接近Normal Distribution。</p>
+<p><strong>而自然界的巨觀現象往往是源自於微觀現象的累積，我們量測的物理量常常來自於多個微小貢獻疊加而成，而不管這些微小貢獻本身的分布狀況如何，其巨觀的物理量因為中央極限定理而成為Normal Distribution，這也是為什麼「隨機誤差大都呈現Normal Distribution」的原因。</strong></p>
+<p>舉例，電壓就是反應電荷疊加的物理量，用普通方法我們是很難量到單一電荷的，所以我們能量到的已經是疊加過後的結果，也因此電壓的隨機分布才呈現Normal Distribution。</p>
+<p>所以，如果今天你沒有特別的理由，假設Normal Distribution往往是最接近真實的，這是第一個理由能讓你無腦使用Normal Distribution，還有第二個理由我們接下去討論。</p>
+<h3>Normal Distribution是所有機率分布當中假設最少的</h3>
+<p>首先來看一段從<a href="https://www.deeplearningbook.org">Goodfellow的書</a>中的一段話，這段話清楚的告訴我們選擇用Normal Distribution的理由</p>
+<blockquote>
+<p>First, many distributions we wish to model are truly close to being normal distributions. The central limit theorem shows that the sum of many independent random variables is approximately normally distributed. This means that in practice, many complicated systems can be modeled successfully as normally distributed noise, even if the system can be decomposed into parts with more structured behavior.</p>
+<p>Second, out of all possible probability distributions with the same variance, the normal distribution encodes the maximum amount of uncertainty over the real numbers. We can thus think of the normal distribution as being the one that inserts the least amount of prior knowledge into a model. </p>
+<p>-- from: Deep Learning 3.9.3</p>
+</blockquote>
+<p>上述的第一段就是剛剛我們討論的那些，而我們接下去要討論的就是第二段的內容。</p>
+<p>總結一下Goodfellow在第二段說的內容：</p>
+<p>在所有有相同Variance的分布當中，</p>
+<ul>
+<li>Normal Distribution是隨機性最大的分布</li>
+<li>Normal Distribution是最少先驗知識（Prior Knowledge）假設的</li>
+</ul>
+<hr>
+<p>要討論這個問題，我們必須先了解一些資訊理論。</p>
+<p>在資訊理論當中，我們常常使用Entropy（熵）來衡量隨機性，Entropy的定義為
+</p>
+<div class="math">$$
+Q\equiv E[-ln\ p(x)]  \ \ ↪︎【16】
+$$</div>
+<p>
+因為篇幅的緣故，Entropy的完整介紹會在接下來的文章中介紹，請大家先把這個定義背起來。</p>
+<p>透過式【2】可以將Entropy寫成連續形式：
+</p>
+<div class="math">$$
+Q|_{p}=E[-ln\ p(x)]=- \int^{\infty}_{-\infty}ln\ p(x)\cdot p(x)dx  \ \ ↪︎【17】
+$$</div>
+<hr>
+<p>接下來將Normal Distribution 【1】式代入【17】
+</p>
+<div class="math">$$
+Q|_{normal}=- \int^{\infty}_{-\infty}p_{normal}(x)\cdot ln\ p_{normal}(x) dx
+$$</div>
+<div class="math">$$
+=- \int^{\infty}_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}exp\{{-\frac{1}{2\sigma^2}(x-\mu)^2}\} \cdot [ln(\frac{1}{\sqrt{2\pi}\sigma})-\frac{1}{2\sigma^2}(x-\mu)^2]dx
+$$</div>
+<div class="math">$$
+=ln(\sqrt{2\pi}\sigma)+ \frac{1}{2\sigma^2} \int^{\infty}_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}exp\{{-\frac{1}{2\sigma^2}(x-\mu)^2}\} \cdot (x-\mu)^2dx
+$$</div>
+<div class="math">$$
+=ln(\sqrt{2\pi}\sigma)+ \frac{1}{2\sigma^2} E[(x-\mu)^2]|_{normal}
+$$</div>
+<div class="math">$$
+=ln(\sqrt{2\pi}\sigma)+ \frac{1}{2\sigma^2} Var[x]|_{normal}
+$$</div>
+<div class="math">$$
+Q|_{normal}=ln(\sqrt{2\pi}\sigma)+\frac{1}{2}=\frac{1}{2}ln(2\pi e\sigma^2)  \ \ ↪︎【18】
+$$</div>
+<p>我們因此得到了Normal Distribution 的Entropy，而這個Entropy是所有有相同Variance的分布當中最大的。緊接著來證明這件事。</p>
+<hr>
+<p>回到式【17】，我們可以列出一個有限制條件的優化問題：</p>
+<p>在給定：</p>
+<ul>
+<li><span class="math">\(\int p(x)dx=1  \ \ ↪︎【19】\)</span></li>
+<li><span class="math">\(E[x]=\mu  \ \ ↪︎【20】\)</span></li>
+<li><span class="math">\(Var[x]=\sigma^2  \ \ ↪︎【21】\)</span></li>
+</ul>
+<p>的情況下試圖找到一個 <span class="math">\(p(x)\)</span> 可以使 Entropy <span class="math">\(Q\)</span> 最大：
+</p>
+<div class="math">$$
+p^*(x) = argmax_{p(x)}\ Q|_{p}=argmin_{p(x)}\int^{\infty}_{-\infty}ln\ p(x)\cdot p(x)dx  \ \ ↪︎【22】
+$$</div>
+<p>
+引入<a href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Lagrange Multiplier</a>結合【19】,【20】,【21】,【22】：
+</p>
+<div class="math">$$
+L=\int^{\infty}_{-\infty}ln\ p(x)\cdot p(x)dx+\lambda_1 (\int^{\infty}_{-\infty}p(x)dx-1)+\lambda_2(\int^{\infty}_{-\infty}x\cdot p(x)dx-\mu)+\lambda_3(\int^{\infty}_{-\infty}(x-\mu)^2\cdot p(x)dx-\sigma^2)
+$$</div>
+<div class="math">$$
+=\int^{\infty}_{-\infty}[\lambda_1 p(x)+\lambda_2 p(x)x+\lambda_3 p(x)(x-\mu)^2-p(x)ln(p(x))]dx-\lambda_1 -\mu\lambda_2-\sigma^2\lambda_3  \ \ ↪︎【23】
+$$</div>
+<p>接下來對【23】微分求極值
+</p>
+<div class="math">$$
+0=\frac{\partial L}{\partial p(x)}=\int^{\infty}_{-\infty}[\lambda_1+\lambda_2 x+\lambda_3 (x-\mu)^2-ln(p(x))-1]dx  \ \ ↪︎【24】
+$$</div>
+<p>
+所以
+</p>
+<div class="math">$$
+p^*(x)=exp\{\lambda_1+\lambda_2 x+\lambda_3 (x-\mu)^2-1\}  \ \ ↪︎【25】
+$$</div>
+<p>上面還有三個未知變數 <span class="math">\(\lambda_1\)</span>, <span class="math">\(\lambda_2\)</span>, <span class="math">\(\lambda_3\)</span> ，這些變數必須滿足Constraints，所以將【25】代入 【19】,【20】,【21】得三個方程求解三個變數，可得：
+</p>
+<div class="math">$$
+\lambda_1=1-ln(\sqrt{2\pi}\sigma);\ \lambda_2=0;\ \lambda_3=-\frac{1}{2\sigma^2}  \ \ ↪︎【26】
+$$</div>
+<p>
+最後將【26】回代【25】就會得到剛剛好是Normal Distribution，🥳</p>
+<p>因此這邊我們證明了：<strong>在給定Mean和Variance下，Normal Distribution為所有分布當中Entropy最大的。這也同時意味著，Normal Distribution是隨機性最大的，Normal Distribution是額外假設最少的。</strong></p>
+<h3>Back to the Question</h3>
+<p>這一講也走到尾聲了，接下來我們已經有能力回答一開始問的問題，在回答問題之前我們複習一下剛剛學到了什麼。</p>
+<ul>
+<li>中央極限定理告訴我們：如果今天採樣數量 <span class="math">\(n\)</span> 增加到一定的量，<span class="math">\(S_n\)</span>的分布會趨近於Normal Distribution</li>
+<li>自然界的巨觀現象往往是源自於微觀現象的累積，我們量測的物理量常常來自於多個微小貢獻疊加而成，而不管這些微小貢獻本身的分布狀況如何，其巨觀的物理量因為中央極限定理而成為Normal Distribution，這也是為什麼「隨機誤差大都呈現Normal Distribution」的原因</li>
+<li>Entropy是衡量隨機性的指標，定義為：<span class="math">\(Q\equiv E[-ln\ p(x)]\)</span></li>
+<li>在給定Mean和Variance下，Normal Distribution為所有分布當中Entropy最大的。這也同時意味著，Normal Distribution是隨機性最大的，Normal Distribution是額外假設最少的</li>
+</ul>
+<p>因此我們有兩個原因去使用Normal Distribution</p>
+<ul>
+<li>如果沒有特別理由，請假設隨機誤差為Normal Distribution，因為自然界的隨機誤差大都呈現Normal Distribution</li>
+<li>如果想要人為假設一個分布，請優先選擇Normal Distribution，因為它是包含最少先驗知識（Prior Knowledge）的分布</li>
+</ul>
+<p>最後來逐一回答剛開始的問題</p>
+<ul>
+<li>Q：為什麼Normal Distribution通常作為雜訊的分布？</li>
+<li>A：因為自然界的隨機誤差大都呈現Normal Distribution</li>
+<li>Q：為何在DL（deep learning），參數的初始化要用Normal Distribution？</li>
+<li>A：因為它是包含最少先驗知識（Prior Knowledge）的分布</li>
+<li>Q：為何在Bayesian公式裡常常會使用Normal Distribution當作Prior Probability？</li>
+<li>A：因為它是包含最少先驗知識（Prior Knowledge）的分布</li>
+<li>Q：在使用GAN（generative adversarial network）時，為什麼給予的輸入要假設Normal Distribution？</li>
+<li>A：因為它是包含最少先驗知識（Prior Knowledge）的分布</li>
+</ul>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+
+                    </div> <!-- end entry content -->
+
+                    <div class="entry__pagenav">
+                        <div class="entry__nav">
+                            <div class="entry__prev">
+                                <a href="https://www.ycc.idv.tw/egypt-travel_8.html" rel="prev">
+                                    <span>Previous Post</span>
+                                    [入埃及記] Day9-10: 開羅【埃及博物館、哈利利市集】
+                                </a>
+                            </div>
+                            <div class="entry__next">
+                            </div>
+                        </div>
+                    </div> <!-- end entry__pagenav -->
+
+                    <div class="entry__related">
+                    </div> <!-- end entry related -->
+
+                    <div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+/* <![CDATA[ */
+
+    var disqus_shortname = 'ycnote-1';
+    var disqus_identifier = "deep-dl_1.html";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+/* ]]> */
+</script>
+<noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+                    </div>
+                </article> <!-- end column large-full entry-->
+            </main>
+
+        </div> <!-- end s-content -->
+
+        <!-- footer
+        ================================================== -->
+        <footer class="s-footer footer">
+            <div class="row">
+                <div class="column large-full footer__content">
+                    <div class="footer__copyright">
+                        <span>© Copyright YC Note 2019</span> 
+                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="go-top">
+                <a class="smoothscroll" title="Back to Top" href="#top"></a>
+            </div>
+        </footer>
+
+    </div> <!-- end s-wrap -->
+
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
+    <script>
+        var elements = document.getElementsByTagName("h3");
+        for(i = 0; i < elements.length; i++)
+        {
+            elements[i].setAttribute("id", "anchor"+i);
+        }
+    </script>
+
+</body>
