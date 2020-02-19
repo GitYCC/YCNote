@@ -5,15 +5,15 @@
     <!--- basic page needs
     ================================================== -->
     <meta charset="utf-8">
-    <title>[吉他] 方大同-三人遊 - YC Note</title>
-    <meta name="description" content="有窩表演">
+    <title>剖析深度學習 (2)：Sigmoid, Softmax這些是怎麼來的？談廣義線性模型 - YC Note</title>
+    <meta name="description" content="">
     <meta name="author" content="YC Chen">
 
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="[吉他] 方大同-三人遊" />
-    <meta property="og:description" content="有窩表演" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/living_front_board.jpg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/uwarn-performance_1.html" />
+    <meta property="og:title" content="剖析深度學習 (2)：Sigmoid, Softmax這些是怎麼來的？談廣義線性模型" />
+    <meta property="og:description" content="" />
+    <meta property="og:image" content="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/deep-dl_2.html" />
     <meta property="og:site_name" content="YC Note" />
 
     <script type="application/ld+json">
@@ -23,13 +23,13 @@
           "itemListElement": [{
             "@type": "ListItem",
             "position": 1,
-            "name": "Life",
-            "item": "https://www.ycc.idv.tw/category/life.html"
+            "name": "AI.ML",
+            "item": "https://www.ycc.idv.tw/category/aiml.html"
           },{
             "@type": "ListItem",
             "position": 2,
-            "name": "[吉他] 方大同-三人遊",
-            "item": "https://www.ycc.idv.tw/uwarn-performance_1.html"
+            "name": "剖析深度學習 (2)：Sigmoid, Softmax這些是怎麼來的？談廣義線性模型",
+            "item": "https://www.ycc.idv.tw/deep-dl_2.html"
           }]
         }
     </script>
@@ -37,16 +37,16 @@
         {
           "@context" : "http://schema.org",
           "@type" : "Article",
-          "name" : "[吉他] 方大同-三人遊 - YC Note",
+          "name" : "剖析深度學習 (2)：Sigmoid, Softmax這些是怎麼來的？談廣義線性模型 - YC Note",
           "author" : {
             "@type" : "Person",
             "name" : "YC Chen"
           },
-          "datePublished" : "2017-11-09",
-          "image" : "https://www.ycc.idv.tw/images/living_front_board.jpg",
-          "articleSection" : "Life",
-          "articleBody" : "有窩表演",
-          "url" : "https://www.ycc.idv.tw/uwarn-performance_1.html",
+          "datePublished" : "2020-02-20",
+          "image" : "https://www.ycc.idv.tw/images/deep_dl_cover.jpg",
+          "articleSection" : "AI.ML",
+          "articleBody" : "",
+          "url" : "https://www.ycc.idv.tw/deep-dl_2.html",
           "publisher" : {
             "@type" : "Organization",
             "name" : "YC Note",
@@ -55,7 +55,7 @@
                 "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
             }
           },
-          "headline" : "[吉他] 方大同-三人遊"
+          "headline" : "剖析深度學習 (2)：Sigmoid, Softmax這些是怎麼來的？談廣義線性模型"
         }
     </script>
 
@@ -196,56 +196,62 @@
 
                     <div class="media-wrap entry__media">
                         <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/living_front_board.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/living_front_board.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/living_front_board.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/living_front_board.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                            <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" 
+                                 srcset="https://www.ycc.idv.tw/images/deep_dl_cover.jpg 2000w, 
+                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 1000w, 
+                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
                         </div>
                     </div>
 
                     <div class="content__page-header entry__header">
                         <h1 class="display-1 entry__title">
-                        [吉他] 方大同-三人遊
+                        剖析深度學習 (2)：Sigmoid, Softmax這些是怎麼來的？談廣義線性模型
                         </h1>
                         <ul class="entry__header-meta">
                             <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2017-11-09</li>
+                            <li class="date"><i class="fa fa-calendar"></i> 2020-02-20</li>
                             <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/life.html">Life</a>
+                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
                             </li>
                             <li>
                                 <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a>                            </li>
+<a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>                            </li>
                         </ul>
                     </div> <!-- end entry__header -->
 
                     <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            有窩表演
-                        </div>
 
-                        <p><br/></p>
-<div class="video-container">
-    <iframe src="https://www.youtube.com/embed/8lwc81a9mAo" width="640" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
-</div>
-
-<p><br/></p>
+                        <blockquote>
+<p>深度學習發展至今已經有相當多好用的套件，使得進入的門檻大大的降低，因此如果想要快速的實作一些深度學習或機器學習，通常是幾行程式碼可以解決的事。但是，如果想要將深度學習或機器學習當作一份工作，深入了解它背後的原理和數學是必要的，才有可能因地制宜的靈活運用，YC準備在這一系列當中帶大家深入剖析深度學習。</p>
+</blockquote>
+<p>首先第一講，我們來聊一個最常見的分布—正態分布（Normal Distribution），也稱為高斯分布（Gaussian Distribution）。</p>
+<p>如果你已經學了好一陣子的機器學習或深度學習，應該對於Normal Distribution不陌生，但是你真的懂Normal Distribution嗎？</p>
+<ul>
+<li>為什麼Normal Distribution通常作為雜訊的分布？</li>
+<li>為何在DL（deep learning），參數的初始化要用Normal Distribution？</li>
+<li>為何在Bayesian公式裡常常會使用Normal Distribution當作Prior Probability？</li>
+<li>在使用GAN（generative adversarial network）時，為什麼給予的輸入要假設Normal Distribution？</li>
+</ul>
+<p>如果你不知道為什麼使用Normal Distribution，你用起來不會怕嗎？這一講我想要回答的是：為什麼Normal Distribution這麼好用？甚至已經到了無腦用的程度，我會從統計學和資訊理論來回答這個問題。</p>
+<h3>Reference</h3>
+<ul>
+<li><a href="https://seeing-theory.brown.edu/probability-distributions/index.html">Seeing Theory</a></li>
+<li><a href="https://www.deeplearningbook.org">Ian Goodfellow and Yoshua Bengio and Aaron Courville. Deep Learning. 2016.</a></li>
+<li>Christopher Bishop. Pattern Recognition and Machine Learning. 2006.</li>
+</ul>
+<p><em>[此文章為原創文章，轉載前請註明文章來源]</em></p>
 
                     </div> <!-- end entry content -->
 
                     <div class="entry__pagenav">
                         <div class="entry__nav">
                             <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/uwarn-performance_2.html" rel="prev">
+                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" rel="prev">
                                     <span>Previous Post</span>
-                                    [吉他] 光良-傷心地鐵
+                                    剖析深度學習 (1)：為什麼Normal Distribution這麼好用？
                                 </a>
                             </div>
                             <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_3.html" rel="next">
-                                    <span>Next Post</span>
-                                    實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)
-                                </a>
                             </div>
                         </div>
                     </div> <!-- end entry__pagenav -->
@@ -254,15 +260,9 @@
                         <h3 class="h2">Related Articles</h3>
                         <ul class="related">
                             <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/sweet-child-oh-mine.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/living_front_board.jpg" alt="">
-                                    <h5 class="related__post-title">尾牙表演 - Sweet Child Oh Mine</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/uwarn-performance_2.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/living_front_board.jpg" alt="">
-                                    <h5 class="related__post-title">[吉他] 光良-傷心地鐵</h5>
+                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" class="related__link">
+                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
+                                    <h5 class="related__post-title">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</h5>
                                 </a>
                             </li>
                         </ul>
@@ -275,7 +275,7 @@
 /* <![CDATA[ */
 
     var disqus_shortname = 'ycnote-1';
-    var disqus_identifier = "uwarn-performance_1.html";
+    var disqus_identifier = "deep-dl_2.html";
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {
