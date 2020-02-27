@@ -371,7 +371,7 @@ $$</div>
 H(p,q)=-y\cdot \operatorname{ln}(q)-(1-y)\cdot \operatorname{ln}(1-q)
 $$</div>
 <p>
-就跟【14】式一模一樣了，<strong>這裡注意一點，在推導的過程當中我都不需要去假設模型的長相，我不需要假設模型為Sigmoid，推出Cross Entropy的過程是和模型的選擇無關的，所以千萬不要認為選擇使用Cross Entropy是因為Sigmoid的緣故</strong>。</p>
+就跟【14】式一模一樣了，<strong>這裡注意一點，在推導的過程當中我都不需要去假設模型的長相，我不需要假設模型為Sigmoid，推出Cross Entropy的過程是和模型的選擇無關的，所以千萬不要認為選擇使用Cross Entropy是因為Sigmoid的緣故。進一步說Cross Entropy其實可以用在各種分布，包括：Regression問題，我們會在接下來的文章裡讓大家真正了解這一點。</strong></p>
 <h3>KL Divergence (Kullback-Leibler Divergence)</h3>
 <p>KL Divergence對碰過深度學習一段時間的大家應該是一個既熟悉又陌生的東西吧！我們就在這邊把它搞懂吧！</p>
 <p>如果有兩個獨立的機率分布<span class="math">\(p(x)\)</span>和<span class="math">\(q(x)\)</span>同時對應到同一個隨機變數<span class="math">\(x\)</span>，也就是它們所在的空間是一樣的，則可以使用KL Divergence來測量這兩個分布的差異程度：
