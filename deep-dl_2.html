@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論 - YC Note</title>
+    <meta name="description" content="在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence是什麼東東。">
+    <meta name="author" content="YC Chen">
+
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論" />
+    <meta property="og:description" content="在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence是什麼東東。" />
+    <meta property="og:image" content="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/deep-dl_2.html" />
+    <meta property="og:site_name" content="YC Note" />
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "AI.ML",
+            "item": "https://www.ycc.idv.tw/category/aiml.html"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論",
+            "item": "https://www.ycc.idv.tw/deep-dl_2.html"
+          }]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "Article",
+          "name" : "剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論 - YC Note",
+          "author" : {
+            "@type" : "Person",
+            "name" : "YC Chen"
+          },
+          "datePublished" : "2020-02-25",
+          "image" : "https://www.ycc.idv.tw/images/deep_dl_cover.jpg",
+          "articleSection" : "AI.ML",
+          "articleBody" : "在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence是什麼東東。",
+          "url" : "https://www.ycc.idv.tw/deep-dl_2.html",
+          "publisher" : {
+            "@type" : "Organization",
+            "name" : "YC Note",
+            "logo" : {
+                "@type" : "ImageObject",
+                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
+            }
+          },
+          "headline" : "剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論"
+        }
+    </script>
+
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
+    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
+    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
+
+    <!-- script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
+
+    <!-- favicons
+    ================================================== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+
+    <!-- Google Analytics
+    ================================================== -->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-68393177-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+    <script type="text/x-mathjax-config"> 
+        MathJax.Hub.Config({ 
+            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
+            SVG: { linebreaks: { automatic:true } } 
+            });
+    </script>
+
+</head>
+
+<body class="ss-bg-white">
+
+    <!-- preloader
+    ================================================== -->
+    <div id="preloader">
+        <div id="loader" class="dots-fade">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div id="top" class="s-wrap site-wrapper">
+
+        <!-- site header
+        ================================================== -->
+        <header class="s-header header">
+
+            <div class="header__top">
+                <div class="header__logo">
+                    <a class="site-logo" href="https://www.ycc.idv.tw/">
+                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
+                    </a>
+                </div>
+
+                <!-- toggles -->
+                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
+
+            </div>
+
+            <nav class="header__nav-wrap">
+
+                <ul class="header__nav">
+                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
+                    <li class="has-children">
+                        <a href="#0" title="">Categories</a>
+                        <ul class="sub-menu">
+                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-children">
+                        <a href="#0" title="">Tags</a>
+                        <ul class="sub-menu">
+                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
+                        </ul>
+                    </li>
+                    <li></li>
+                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
+                </ul> <!-- end header__nav -->
+
+                <ul class="header__social">
+                    <li class="ss-facebook">
+                        <a href="https://www.facebook.com/pg/yc.note" target="_blank">
+                            <span class="screen-reader-text">Facebook</span>
+                        </a>
+                    </li>
+                    <li class="ss-github">
+                        <a href="https://github.com/GitYCC" target="_blank">
+                            <span class="screen-reader-text">Github</span>
+                        </a>
+                    </li>
+                    <li class="ss-linkedin">
+                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+                            <span class="screen-reader-text">Linkedin</span>
+                        </a>
+                    </li>
+                    <li class="ss-email">
+                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
+                            <span class="screen-reader-text">Email</span>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </nav> <!-- end header__nav-wrap -->
+
+        </header> <!-- end s-header -->
+
+
+        <!-- site content
+        ================================================== -->
+        <div class="s-content content">
+            <main class="row content__page">
+
+                <article class="column large-full entry format-standard">
+
+                    <div class="media-wrap entry__media">
+                        <div class="entry__post-thumb">
+                            <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" 
+                                 srcset="https://www.ycc.idv.tw/images/deep_dl_cover.jpg 2000w, 
+                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 1000w, 
+                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                        </div>
+                    </div>
+
+                    <div class="content__page-header entry__header">
+                        <h1 class="display-1 entry__title">
+                        剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論
+                        </h1>
+                        <ul class="entry__header-meta">
+                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
+                            <li class="date"><i class="fa fa-calendar"></i> 2020-02-25</li>
+                            <li class="cat-links">
+                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
+                            </li>
+                            <li>
+                                <i class="fa fa-tags"></i> 
+<a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>                            </li>
+                        </ul>
+                    </div> <!-- end entry__header -->
+
+                    <div class="entry__content">
+                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
+                            在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence是什麼東東。
+                        </div>
+
+                        <blockquote>
+<p>深度學習發展至今已經有相當多好用的套件，使得進入的門檻大大的降低，因此如果想要快速的實作一些深度學習或機器學習，通常是幾行程式碼可以解決的事。但是，如果想要將深度學習或機器學習當作一份工作，深入了解它背後的原理和數學是必要的，才有可能因地制宜的靈活運用，YC準備在這一系列當中帶大家深入剖析深度學習。</p>
+</blockquote>
+<p><a href="https://www.ycc.idv.tw/deep-dl_1.html">在上一講當中</a>，我鉅細靡遺的介紹了Normal Distribution。其中我有稍微的提到Entropy的概念，並且說在未來會有一講專門來談機器學習裡面會用到的資訊理論，而那個未來就是現在！</p>
+<p>在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence是什麼東東。</p>
+<p>這一切都要先從Entropy開始講起。</p>
+<h3>資訊熵（Information Entropy）</h3>
+<p>資訊理論是應用數學的一個分支，主要是對訊號中存在的資訊多寡做量化。最初研究目的是為了數據傳輸的編碼，探討要怎麼編碼資料傳輸才有效率。</p>
+<p>資訊理論背後的直覺是，越是不容易發生的事件帶給我們的資訊量越大，資訊量的大小可以看作是事件給我們的驚訝程度。舉個例子，「今天早上太陽升起」這樣幾乎永遠都是對的事件，能帶給我們的資訊量可以說是零（你不用告訴我，我也知道）；相反的「今天早上有日蝕」的事件則含有相對多的資訊量。</p>
+<blockquote>
+<p><span class="math">\(事件的資訊量 \propto 事件的不確定程度\)</span></p>
+</blockquote>
+<p>有了這樣的洞見，我們怎麼把它化成數學呢？我們可以定義事件的Self-Information為：
+</p>
+<div class="math">$$
+I(x)=-log_2p(x)  \ \ ↪︎【1】
+$$</div>
+<p>
+其中<span class="math">\(log_2\)</span>以2為底，則代表所採用的單位為 bits (比特)；<span class="math">\(p(x)\)</span>代表的是事件的出現機率，此式子符合以下四個特性</p>
+<ol>
+<li>當<span class="math">\(0&lt;p(x)\leq 1\)</span>時，則<span class="math">\(I(x)&gt;0\)</span>，這意味著資訊量必為正，如果遇到雜訊干擾才有可能扣掉一些資訊量</li>
+<li>當事件永遠是對的時，則<span class="math">\(p(x)=1\)</span>，相應的 <span class="math">\(I(x)=0\)</span>，代表資訊量為零</li>
+<li>當<span class="math">\(p(x)\)</span>越小，則<span class="math">\(I(x)\)</span>越大，意味著事件出現的機率越小，它所攜帶的資訊量越大</li>
+<li>若<span class="math">\(p(x)=p_1(x)\times p_2(x)\)</span>則代表兩個獨立事件發生的機率是相乘的關係，此時資訊量應該是相加的關係，關係式<span class="math">\(I(x)=I_1(x)+I_2(x)\)</span>正表示這樣的關係</li>
+</ol>
+<p>Self-Information只處理單一結果，我們更想要關注整個系統，Shannon Entropy可以量化整個機率分布中不確定性的程度：
+</p>
+<div class="math">$$
+H(x)=E_{x\sim p}[I(x)]=-E_{x\sim p}[log_2p(x)]  \ \ ↪︎【2】
+$$</div>
+<p>
+上式所傳達的意思是：Shannon Entropy即是評估Self-Information的期望值。</p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/Entropy_flip_2_coins.jpg"></p>
+<p>為了進一步的了解Shannon Entropy的內涵，我們來舉個例子。假設你的系統是離散的，可以進一步表示成為
+</p>
+<div class="math">$$
+H(x)=-E_{x\sim p}[log_2p(x)]=-\sum_i p_ilog_2 p_i  \ \ ↪︎【3】
+$$</div>
+<p>
+假設你要描述的事件有三個獨立事件A、B和C，A事件出現機率為<span class="math">\(1/2\)</span>，B事件出現機率為<span class="math">\(1/4\)</span>，C事件出現機率為<span class="math">\(1/4\)</span>，代入式【3】求系統的Shannon Entropy：
+</p>
+<div class="math">$$
+H=-\frac{1}{2}log_2(\frac{1}{2})-\frac{1}{4}log_2(\frac{1}{4})-\frac{1}{4}log_2(\frac{1}{4})=0.5+0.5+0.5=1.5  \ \ ↪︎【4】
+$$</div>
+<p>
+這代表什麼意義呢？這代表今天如果你設計一個系統得當的話，你只需要用到平均1.5個bits來傳輸。怎麼說呢？我們逐步拆解式【4】帶給我們的觀念：</p>
+<ul>
+<li>A事件的<span class="math">\(I=1\)</span>，代表用1個bit去傳輸A事件，即<span class="math">\(bits_A=1\)</span>，可能編碼為<code>0</code></li>
+<li>B事件的<span class="math">\(I=2\)</span>，代表用2個bits去傳輸B事件，即<span class="math">\(bits_B=2\)</span>，可能編碼為<code>10</code></li>
+<li>C事件的<span class="math">\(I=2\)</span>，代表用2個bits去傳輸C事件，即<span class="math">\(bits_C=2\)</span>，可能編碼為<code>11</code></li>
+</ul>
+<p>你會發現經常出現的事件A就用較少的bits來傳輸，而較不常發生的事件B就用比較多的bits來傳輸，如此一來傳輸會更有效率。假設有200個事件要傳輸，依照機率分布，其中應該有100件屬於A事件，有50件屬於B事件，有50件屬於C事件，依照上述的編碼方式，我們傳輸這200個事件所需要的預期平均bits數就是1.5。
+</p>
+<div class="math">$$
+\frac{n_A\times bits_A+n_B\times bits_B+n_C\times bits_C}{n_A+n_B+n_C}=\frac{100\times 1+50\times 2+50\times 2}{200}=1.5  \ \ ↪︎【5】
+$$</div>
+<p>
+而理論告訴我們這 <span class="math">\(1.5\)</span> 其實就是最小的預期位元，你無法找到比這個更小的，也就是說：你無法找到比這個更有效率的編碼系統。理論如下：</p>
+<blockquote>
+<p>The Noiseless Coding Theorm (Shannon, 1948):</p>
+<p>The entropy is a lower bound on the number of bits needed to transmit the state of a random variable.</p>
+</blockquote>
+<p>來做個小結論，仔細回想剛剛的過程你會更能了解公式隱藏的意義。如果你仔細的去理解剛剛我舉的例子，你會發現： <strong><span class="math">\(I(x)\)</span>，或者Entropy中的<span class="math">\(-log\)</span> ，所扮演的角色是「編碼」，決定需要用幾個bits來傳輸事件，而Entropy的意義就是這套「編碼」運用到系統的bits期望值，並且Shannon的理論告訴我們<span class="math">\(-log\ p(x)\)</span>已經是最有效率的「編碼」，它可以得到最小的bits期望值，所以Entropy是bits期望值的下界</strong>。</p>
+<hr>
+<p>在物理上或是機器學習上，我們常使用自然對數<span class="math">\(e\)</span>當作底，所以Entropy為：
+</p>
+<div class="math">$$
+H(p)=E_{x\sim p}[-\operatorname{ln}p(x)]  \ \ ↪︎【6】
+$$</div>
+<p>
+其實就只是把度量的單位從比特(bits)換成奈特(nats)，只是「編碼」的單位改變而已，其意義都跟上述的一樣。只是如果使用nats當單位在計算上會方便許多，因為許多的分布都可以表示成以<span class="math">\(e\)</span>為底的指數，例如：Normal Distribution。</p>
+<p>還記得<a href="https://www.ycc.idv.tw/deep-dl_1.html">上一講中</a>我請大家記住的【2】到【4】式嗎？現在套用到這裡的【6】，可得：</p>
+<ul>
+<li>連續情境下， <span class="math">\(H=\int -p(x)\operatorname{ln}p(x)dx  \ \ ↪︎【7】\)</span></li>
+<li>離散情境下， <span class="math">\(H=\sum_i -p_i\operatorname{ln}p_i  \ \ ↪︎【8】\)</span></li>
+<li>實驗情境下，<span class="math">\(H=\sum_k -(\frac{n_k}{N})\operatorname{ln}(\frac{n_k}{N})  \ \ ↪︎【9】\)</span></li>
+</ul>
+<hr>
+<p>最後，來看看什麼分布的Entropy最大，在給定 <span class="math">\(\int p(x)dx=1\)</span> 的情況下試圖找到一個 <span class="math">\(p(x)\)</span> 可以使 Entropy <span class="math">\(H\)</span> 最大，引入<a href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Lagrange Multiplier</a>：
+</p>
+<div class="math">$$
+L=\int^{\infty}_{-\infty}\operatorname{ln}p(x)\cdot p(x)dx+\lambda (\int^{\infty}_{-\infty}p(x)dx-1)
+$$</div>
+<div class="math">$$
+=\int^{\infty}_{-\infty}[\lambda p(x)-p(x)\operatorname{ln}(p(x))]dx-\lambda  \ \ ↪︎【11】
+$$</div>
+<p>接下來對【11】微分求極值
+</p>
+<div class="math">$$
+0=\frac{\partial L}{\partial p(x)}|_{p^*(x)}=\int^{\infty}_{-\infty}[\lambda-\operatorname{ln}(p^*(x))-1]dx  \ \ ↪︎【12】
+$$</div>
+<p>
+所以
+</p>
+<div class="math">$$
+p^*(x)=exp\{\lambda-1\}  \ \ ↪︎【13】
+$$</div>
+<p>此時的分布是一個與 <span class="math">\(x\)</span> 無關的常數，所以 <span class="math">\(p^*(x)\)</span> 是一個Uniform Distribution。所以<strong>平均分配會使得系統得到最大的Entropy，也就是Uniform Distribution是隨機性最大的分布，也是資訊量最大的分布</strong> ，這與我們剛剛的討論是自恰的。（注意：<a href="https://www.ycc.idv.tw/deep-dl_1.html#anchor2">在有限Variance的情況下是Normal Distribution有最大Entropy</a>）</p>
+<h3>Cross Entropy</h3>
+<p>接下來聊聊學過機器學習和深度學習都知道的Cross Entropy，在分類問題當中Cross Entropy被定義成：
+</p>
+<div class="math">$$
+Cross\ Entropy=-y\ \operatorname{ln}(q)-(1-y)\operatorname{ln}(1-q)  \ \ ↪︎【14】
+$$</div>
+<p>
+其中：<span class="math">\(y_i=0,1\)</span>為data的labels，<span class="math">\(q_i\)</span>為模型預測的輸出值。</p>
+<p>但它其實有更一般的定義：
+</p>
+<div class="math">$$
+Cross\ Entropy:\ H(p, q)=E_{x\sim p}[-\operatorname{ln}q(x)]  \ \ ↪︎【15】
+$$</div>
+<p>一般<span class="math">\(p(x)\)</span>代表的是目標分布，也就是想要學習的未知分布；而<span class="math">\(q(x)\)</span>則代表是模型的輸出分布。</p>
+<p>我們剛剛說過Entropy是bits或nats期望值的下界，所以：
+</p>
+<div class="math">$$
+H(p,q)=E_{x\sim p}[-\operatorname{ln}q(x)]\geq E_{x\sim p}[-\operatorname{ln}p(x)]=H(p,p)=H(p)  \ \ ↪︎【16】
+$$</div>
+<p>
+所以當我們試圖減少Cross Entropy時，其實就是試圖調整<span class="math">\(q(x)\)</span>使其接近<span class="math">\(p(x)\)</span>，因為當<span class="math">\(q(x)=p(x)\)</span>時，<span class="math">\(H(p,q)=H(p)\)</span>有最小的Cross Entropy。</p>
+<p>延續剛剛「編碼」的概念套用在Cross Entropy，今天我雖然知道 <span class="math">\(-\operatorname{ln}p(x)\)</span>是最好的「編碼」，但是我不知道 <span class="math">\(p(x)\)</span> 長什麼樣子，所以退一步我們使用模型的 <span class="math">\(q(x)\)</span> 來做「編碼」，<strong>Cross Entropy的意義就是利用 <span class="math">\(-\operatorname{ln}q(x)\)</span> 這套「編碼」去算系統的nats期望值，並且想辦法改善編碼方法來降低Cross Entropy</strong>。</p>
+<hr>
+<p>接下來我想要帶大家從式【15】到【14】導一遍式子。</p>
+<p>因為我們知道目標分布是Binary的離散系統，所以可以把【15】寫成：
+</p>
+<div class="math">$$
+H(p,q)=-p_{positive}\cdot \operatorname{ln}(q_{positive})-p_{negative}\cdot \operatorname{ln}(q_{negative})  \ \ ↪︎【17】
+$$</div>
+<p>
+因為是Binary Classification的問題，只有兩種states其機率相合為1，因此：
+</p>
+<div class="math">$$
+H(p,q)=-p_{positive}\cdot \operatorname{ln}(q_{positive})-(1-p_{positive})\cdot \operatorname{ln}(1-q_{positive})  \ \ ↪︎【18】
+$$</div>
+<p>
+接下來，<span class="math">\(p\)</span> 是目標分布，當label為positive (<span class="math">\(y=1\)</span>) 則<span class="math">\(p_{positive}=1\)</span>，當label為 (<span class="math">\(y=0\)</span>) negative則<span class="math">\(p_{positive}=0\)</span>；<span class="math">\(q\)</span> 是模型預測，其目標是預測positive的可能機率，所以最後寫成：
+</p>
+<div class="math">$$
+H(p,q)=-y\cdot \operatorname{ln}(q)-(1-y)\cdot \operatorname{ln}(1-q)
+$$</div>
+<p>
+就跟【14】式一模一樣了，<strong>這裡注意一點，在推導的過程當中我都不需要去假設模型的長相，我不需要假設模型為Sigmoid，推出Cross Entropy的過程是和模型的選擇無關的，所以千萬不要認為選擇使用Cross Entropy是因為Sigmoid的緣故</strong>。</p>
+<h3>KL Divergence (Kullback-Leibler Divergence)</h3>
+<p>KL Divergence對碰過深度學習一段時間的大家應該是一個既熟悉又陌生的東西吧！我們就在這邊把它搞懂吧！</p>
+<p>如果有兩個獨立的機率分布<span class="math">\(p(x)\)</span>和<span class="math">\(q(x)\)</span>同時對應到同一個隨機變數<span class="math">\(x\)</span>，也就是它們所在的空間是一樣的，則可以使用KL Divergence來測量這兩個分布的差異程度：
+</p>
+<div class="math">$$
+D_{KL}(p||q)=-E_{x\sim p}[\operatorname{ln}q(x)-\operatorname{ln}p(x)]=-E_{x\sim p}[\operatorname{ln}\frac{q(x)}{p(x)}]  \ \ ↪︎【19】
+$$</div>
+<p>這個式子不好懂，沒關係！我們稍微代換一下式子：
+</p>
+<div class="math">$$
+D_{KL}(p||q)=E_{x\sim p}[-\operatorname{ln}q(x)]-E_{x\sim p}[-\operatorname{ln}p(x)]=H(p,q)-H(p)  \ \ ↪︎【20】
+$$</div>
+<p>
+有看出來了嗎？<strong>KL Divergence其實就是Cross Entropy扣掉目標分布的Entropy，更深層的說，KL Divergence表示的是目前的編碼方法最多還可以下降多少nats期望值</strong>。</p>
+<p>雖然你可以將KL Divergence視作距離，但是嚴格來說它不是，因為KL Divergence不具有對稱性：
+</p>
+<div class="math">$$
+D_{KL}(p||q)\neq D_{KL}(q||p)  \ \ ↪︎【21】
+$$</div>
+<p>
+其中：
+</p>
+<div class="math">$$
+D_{KL}(q||p)＝-E_{x\sim q}[\operatorname{ln}p(x)-\operatorname{ln}q(x)]＝H(q,p)-H(q)  \ \ ↪︎【22】
+$$</div>
+<p>
+【21】式意味著從<span class="math">\(p(x)\)</span>到<span class="math">\(q(x)\)</span>所降低的nats期望值與從<span class="math">\(q(x)\)</span>到<span class="math">\(p(x)\)</span>所降低的nats期望值不相等。</p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/KL-Gauss-Example.png"></p>
+<h3>f-Divergence</h3>
+<p>Divergence其實有多個形式，定義如下：
+當有兩個獨立的機率分布<span class="math">\(p(x)\)</span>和<span class="math">\(q(x)\)</span>同時對應到同一個隨機變數<span class="math">\(x\)</span>，
+</p>
+<div class="math">$$
+f-divergence:\ D_f(p\|q)=E_{x\sim q}[f(\frac{p(x)}{q(x)})]=\int q(x)f(\frac{p(x)}{q(x)})dx
+$$</div>
+<p>
+其中：<span class="math">\(f(.)\)</span> 只需要遵守兩條規則就可以：<span class="math">\(f(.)\)</span> 是Convex的且<span class="math">\(f(1)=0\)</span>。</p>
+<ul>
+<li>當<span class="math">\(f(u)=x\cdot \operatorname{ln}u\)</span>，則 
+  <div class="math">$$
+  D_f(p\|q)=\int q(x)(\frac{p(x)}{q(x)})\operatorname{ln}(\frac{p(x)}{q(x)})dx=\int p(x)\operatorname{ln}(\frac{p(x)}{q(x)})dx=D_{KL}(p\|q)
+  $$</div>
+  ，為KL Divergence</li>
+<li>當<span class="math">\(f(u)=-\operatorname{ln}u\)</span>，則 
+  <div class="math">$$
+  D_f(p\|q)=-\int q(x)\operatorname{ln}(\frac{p(x)}{q(x)})dx=\int q(x)\operatorname{ln}(\frac{q(x)}{p(x)})dx=D_{KL}(q\|p)
+  $$</div>
+  ，為Reverse KL Divergence</li>
+<li>當<span class="math">\(f(u)=(u-1)^2\)</span>，則 
+  <div class="math">$$
+  D_f(p\|q)=-\int q(x)(\frac{p(x)}{q(x)}-1)^2dx=\int \frac{(p(x)-q(x))^2}{q(x)}dx
+  $$</div>
+  ，為Chi Square Divergence</li>
+<li>當<span class="math">\(f(u)=-(u+1)\operatorname{ln}\frac{u+1}{2}+u\operatorname{ln}u\)</span>，則 
+  <div class="math">$$
+  D_f(p\|q)=\frac{1}{2}[D_{KL}(p\|\frac{p+q}{2})+D_{KL}(q\|\frac{p+q}{2})]
+  $$</div>
+  ，為 JS Divergence (用在GAN)</li>
+</ul>
+<p>f-divergence在意義上代表：我在model的分布 <span class="math">\(q(x)\)</span> 上估計 <span class="math">\(f(\frac{p(x)}{q(x)})\)</span> ，<span class="math">\(f(.)\)</span>是用來評估分布間距離的函數，當<span class="math">\(p(x)=q(x)\)</span>時距離為0 — <span class="math">\(f(\frac{p(x)}{q(x)})=0\)</span>，當<span class="math">\(p(x)\neq q(x)\)</span>時距離為正 — <span class="math">\(f(\frac{p(x)}{q(x)})&gt; 0\)</span>。</p>
+<h3>結論</h3>
+<p>機器學習和深度學習充分的借用了資訊理論裡對資訊量的衡量技術，包括：Entropy、Cross Entropy和KL Divergence。因為機器學習中充斥著統計分布，而這些衡量方法可以幫助我們度量種種分布的資訊量，有了這把尺我們才可以進行各類優化來讓機器學習。</p>
+<ul>
+<li>Entropy:  <span class="math">\(H(p)=E_{x\sim p}[-\operatorname{ln}p(x)]\)</span> ，為最小可得的nats期望值</li>
+<li>Cross Entropy: <span class="math">\(H(p, q)=E_{x\sim p}[-\operatorname{ln}q(x)]\)</span> ，利用<span class="math">\(q(x)\)</span>來編碼可得的nats期望值</li>
+<li>KL Divergence: <span class="math">\(D_{KL}(p\|q)=H(p,q)-H(p)\)</span> ，表示的是目前的編碼方法最多還可以下降多少nats期望值</li>
+</ul>
+<p>其實，這一講的內容可以說是為了接下來幾講而生，下一講我們會開始套用資訊理論的這些概念，帶大家重新了解優化和擬合是怎麼一回事，敬請期待！</p>
+<h3>Reference</h3>
+<ul>
+<li><a href="https://www.deeplearningbook.org">Ian Goodfellow and Yoshua Bengio and Aaron Courville. Deep Learning. 2016.</a></li>
+<li>Christopher Bishop. Pattern Recognition and Machine Learning. 2006.</li>
+<li><a href="https://en.wikipedia.org/wiki/Entropy_(information_theory)">Wiki: Entropy_(information_theory)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cross_entropy">Wiki: Cross Entropy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Kullback–Leibler_divergence">Wiki: Kullback–Leibler_divergence</a></li>
+<li><a href="https://hackmd.io/@sXG2cRDpRbONCsrtz8jfqg/ry-0k0PwH">從計算機編碼的角度看Entropy</a></li>
+<li><a href="https://www.youtube.com/watch?v=av1bqilLsyQ&amp;list=PLJV_el3uVTsMq6JEFPW35BCiOQTsoqwNw&amp;index=6&amp;t=0s">李宏毅, GAN Lecture 5 (2018): General Framework</a></li>
+</ul>
+<p><em>[此文章為原創文章，轉載前請註明文章來源]</em></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+
+                    </div> <!-- end entry content -->
+
+                    <div class="entry__pagenav">
+                        <div class="entry__nav">
+                            <div class="entry__prev">
+                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" rel="prev">
+                                    <span>Previous Post</span>
+                                    剖析深度學習 (1)：為什麼Normal Distribution這麼好用？
+                                </a>
+                            </div>
+                            <div class="entry__next">
+                            </div>
+                        </div>
+                    </div> <!-- end entry__pagenav -->
+
+                    <div class="entry__related">
+                        <h3 class="h2">Related Articles</h3>
+                        <ul class="related">
+                            <li class="related__item">
+                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" class="related__link">
+                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
+                                    <h5 class="related__post-title">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</h5>
+                                </a>
+                            </li>
+                        </ul>
+                    </div> <!-- end entry related -->
+
+                    <div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+/* <![CDATA[ */
+
+    var disqus_shortname = 'ycnote-1';
+    var disqus_identifier = "deep-dl_2.html";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+/* ]]> */
+</script>
+<noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+                    </div>
+                    <br/><br/>
+                </article> <!-- end column large-full entry-->
+            </main>
+
+        </div> <!-- end s-content -->
+
+        <!-- footer
+        ================================================== -->
+        <footer class="s-footer footer">
+            <div class="row">
+                <div class="column large-full footer__content">
+                    <div class="footer__copyright">
+                        <span>© Copyright YC Note 2019</span> 
+                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="go-top">
+                <a class="smoothscroll" title="Back to Top" href="#top"></a>
+            </div>
+        </footer>
+
+    </div> <!-- end s-wrap -->
+
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
+    <script>
+        var elements = document.getElementsByTagName("h3");
+        for(i = 0; i < elements.length; i++)
+        {
+            elements[i].setAttribute("id", "anchor"+i);
+        }
+    </script>
+
+</body>
