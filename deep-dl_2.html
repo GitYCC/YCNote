@@ -6,12 +6,12 @@
     ================================================== -->
     <meta charset="utf-8">
     <title>剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論 - YC Note</title>
-    <meta name="description" content="在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。">
+    <meta name="description" content="在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。">
     <meta name="author" content="YC Chen">
 
     <meta property="og:type" content="article" />
     <meta property="og:title" content="剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論" />
-    <meta property="og:description" content="在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。" />
+    <meta property="og:description" content="在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。" />
     <meta property="og:image" content="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" />
     <meta property="og:url" content="https://www.ycc.idv.tw/deep-dl_2.html" />
     <meta property="og:site_name" content="YC Note" />
@@ -45,7 +45,7 @@
           "datePublished" : "2020-02-25",
           "image" : "https://www.ycc.idv.tw/images/deep_dl_cover.jpg",
           "articleSection" : "AI.ML",
-          "articleBody" : "在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。",
+          "articleBody" : "在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。",
           "url" : "https://www.ycc.idv.tw/deep-dl_2.html",
           "publisher" : {
             "@type" : "Organization",
@@ -226,14 +226,16 @@
 
                     <div class="entry__content">
                         <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。
+                            在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。
                         </div>
 
                         <blockquote>
 <p>深度學習發展至今已經有相當多好用的套件，使得進入的門檻大大的降低，因此如果想要快速的實作一些深度學習或機器學習，通常是幾行程式碼可以解決的事。但是，如果想要將深度學習或機器學習當作一份工作，深入了解它背後的原理和數學是必要的，才有可能因地制宜的靈活運用，YC準備在這一系列當中帶大家深入剖析深度學習。</p>
 </blockquote>
 <p><a href="https://www.ycc.idv.tw/deep-dl_1.html">在上一講當中</a>，我鉅細靡遺的介紹了Normal Distribution。其中我有稍微的提到Entropy的概念，並且說在未來會有一講專門來談機器學習裡面會用到的資訊理論，而那個未來就是現在！</p>
-<p>在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。</p>
+<p>在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。</p>
+<p>還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。</p>
+<p>這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。</p>
 <p>這一切都要先從Entropy開始講起。</p>
 <h3>資訊熵（Information Entropy）</h3>
 <p>資訊理論是應用數學的一個分支，主要是對訊號中存在的資訊多寡做量化。最初研究目的是為了數據傳輸的編碼，探討要怎麼編碼資料傳輸才有效率。</p>
