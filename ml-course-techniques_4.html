@@ -461,4 +461,23 @@ $$</div>
     </script>
     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
+    <script>
+    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
+    
+    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
+        var src = $(this).attr('src');
+        $('<div>').css({
+            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
+            backgroundSize: 'auto 85%',
+            width:'100%', height:'100%',
+            position:'fixed',
+            zIndex:'10000',
+            top:'0', left:'0',
+            cursor: 'zoom-out'
+        }).click(function(){
+            $(this).remove();
+        }).appendTo('body');
+    });
+    </script>
+
 </body>
