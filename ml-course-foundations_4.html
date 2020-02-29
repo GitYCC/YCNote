@@ -474,7 +474,8 @@ $$</div>
         var src = $(this).attr('src');
         $('<div>').css({
             background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'auto 85%',
+            backgroundSize: 'contain',
+            border: '30px solid RGBA(0,0,0,0.0)',
             width:'100%', height:'100%',
             position:'fixed',
             zIndex:'10000',
