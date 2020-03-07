@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點 - YC Note</title>
+    <meta name="description" content="本講主要探討統計的兩大學派（頻率學派和貝氏學派）對於機器如何學習的觀點。頻率學派主張Maximum Likelihood Estimation (MLE)，會提到這等同於最小化data與model之間的Cross Entropy或KL Divergence。而貝氏學派則主張Maximum A Posterior (MAP) ，會提到這會等同於極大化Likelihood並同時考慮Regularization Term，我們也可以在本講看到L1和L2 Regularation Term是怎麼被導出的。">
+    <meta name="author" content="YC Chen">
+
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點" />
+    <meta property="og:description" content="本講主要探討統計的兩大學派（頻率學派和貝氏學派）對於機器如何學習的觀點。頻率學派主張Maximum Likelihood Estimation (MLE)，會提到這等同於最小化data與model之間的Cross Entropy或KL Divergence。而貝氏學派則主張Maximum A Posterior (MAP) ，會提到這會等同於極大化Likelihood並同時考慮Regularization Term，我們也可以在本講看到L1和L2 Regularation Term是怎麼被導出的。" />
+    <meta property="og:image" content="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/deep-dl_3.html" />
+    <meta property="og:site_name" content="YC Note" />
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "AI.ML",
+            "item": "https://www.ycc.idv.tw/category/aiml.html"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點",
+            "item": "https://www.ycc.idv.tw/deep-dl_3.html"
+          }]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "Article",
+          "name" : "剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點 - YC Note",
+          "author" : {
+            "@type" : "Person",
+            "name" : "YC Chen"
+          },
+          "datePublished" : "2020-02-20",
+          "image" : "https://www.ycc.idv.tw/images/deep_dl_cover.jpg",
+          "articleSection" : "AI.ML",
+          "articleBody" : "本講主要探討統計的兩大學派（頻率學派和貝氏學派）對於機器如何學習的觀點。頻率學派主張Maximum Likelihood Estimation (MLE)，會提到這等同於最小化data與model之間的Cross Entropy或KL Divergence。而貝氏學派則主張Maximum A Posterior (MAP) ，會提到這會等同於極大化Likelihood並同時考慮Regularization Term，我們也可以在本講看到L1和L2 Regularation Term是怎麼被導出的。",
+          "url" : "https://www.ycc.idv.tw/deep-dl_3.html",
+          "publisher" : {
+            "@type" : "Organization",
+            "name" : "YC Note",
+            "logo" : {
+                "@type" : "ImageObject",
+                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
+            }
+          },
+          "headline" : "剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點"
+        }
+    </script>
+
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
+    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
+    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
+
+    <!-- script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
+
+    <!-- favicons
+    ================================================== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+
+    <!-- Google Analytics
+    ================================================== -->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-68393177-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+    <script type="text/x-mathjax-config"> 
+        MathJax.Hub.Config({ 
+            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
+            SVG: { linebreaks: { automatic:true } } 
+            });
+    </script>
+
+</head>
+
+<body class="ss-bg-white">
+
+    <!-- preloader
+    ================================================== -->
+    <div id="preloader">
+        <div id="loader" class="dots-fade">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div id="top" class="s-wrap site-wrapper">
+
+        <!-- site header
+        ================================================== -->
+        <header class="s-header header">
+
+            <div class="header__top">
+                <div class="header__logo">
+                    <a class="site-logo" href="https://www.ycc.idv.tw/">
+                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
+                    </a>
+                </div>
+
+                <!-- toggles -->
+                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
+
+            </div>
+
+            <nav class="header__nav-wrap">
+
+                <ul class="header__nav">
+                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
+                    <li class="has-children">
+                        <a href="#0" title="">Categories</a>
+                        <ul class="sub-menu">
+                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-children">
+                        <a href="#0" title="">Tags</a>
+                        <ul class="sub-menu">
+                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
+                        </ul>
+                    </li>
+                    <li></li>
+                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
+                </ul> <!-- end header__nav -->
+
+                <ul class="header__social">
+                    <li class="ss-facebook">
+                        <a href="https://www.facebook.com/pg/yc.note" target="_blank">
+                            <span class="screen-reader-text">Facebook</span>
+                        </a>
+                    </li>
+                    <li class="ss-github">
+                        <a href="https://github.com/GitYCC" target="_blank">
+                            <span class="screen-reader-text">Github</span>
+                        </a>
+                    </li>
+                    <li class="ss-linkedin">
+                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+                            <span class="screen-reader-text">Linkedin</span>
+                        </a>
+                    </li>
+                    <li class="ss-email">
+                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
+                            <span class="screen-reader-text">Email</span>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </nav> <!-- end header__nav-wrap -->
+
+        </header> <!-- end s-header -->
+
+
+        <!-- site content
+        ================================================== -->
+        <div class="s-content content">
+            <main class="row content__page">
+
+                <article class="column large-full entry format-standard">
+
+                    <div class="media-wrap entry__media">
+                        <div class="entry__post-thumb">
+                            <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" 
+                                 srcset="https://www.ycc.idv.tw/images/deep_dl_cover.jpg 2000w, 
+                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 1000w, 
+                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                        </div>
+                    </div>
+
+                    <div class="content__page-header entry__header">
+                        <h1 class="display-1 entry__title">
+                        剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點
+                        </h1>
+                        <ul class="entry__header-meta">
+                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
+                            <li class="date"><i class="fa fa-calendar"></i> 2020-02-20</li>
+                            <li class="cat-links">
+                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
+                            </li>
+                            <li>
+                                <i class="fa fa-tags"></i> 
+<a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>                            </li>
+                        </ul>
+                    </div> <!-- end entry__header -->
+
+                    <div class="entry__content">
+                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
+                            本講主要探討統計的兩大學派（頻率學派和貝氏學派）對於機器如何學習的觀點。頻率學派主張Maximum Likelihood Estimation (MLE)，會提到這等同於最小化data與model之間的Cross Entropy或KL Divergence。而貝氏學派則主張Maximum A Posterior (MAP) ，會提到這會等同於極大化Likelihood並同時考慮Regularization Term，我們也可以在本講看到L1和L2 Regularation Term是怎麼被導出的。
+                        </div>
+
+                        <blockquote>
+<p>深度學習發展至今已經有相當多好用的套件，使得進入的門檻大大的降低，因此如果想要快速的實作一些深度學習或機器學習，通常是幾行程式碼可以解決的事。但是，如果想要將深度學習或機器學習當作一份工作，深入了解它背後的原理和數學是必要的，才有可能因地制宜的靈活運用，YC準備在這一系列當中帶大家深入剖析深度學習。</p>
+</blockquote>
+<p>本講主要探討統計的兩大學派（頻率學派和貝氏學派）對於機器如何學習的觀點。頻率學派主張Maximum Likelihood Estimation (MLE)，會提到這等同於最小化data與model之間的Cross Entropy或KL Divergence。而貝氏學派則主張Maximum A Posterior (MAP) ，會提到這會等同於極大化Likelihood並同時考慮Regularization Term，我們也可以在本講看到L1和L2 Regularation Term是怎麼被導出的。</p>
+<h3>條件機率</h3>
+<p>因為本講會牽涉到許多條件機率的計算，所以把條件機率常用的公式先列下來，讓大家溫習一下。</p>
+<ul>
+<li>
+<p>邊際機率（marginal probability）
+    <div class="math">$$
+    p(X=x_i)=\sum_j p(X=x_i, Y=y_j)  \ \ ↪︎【1】
+    $$</div>
+(如下圖所示)</p>
+</li>
+<li>
+<p>條件機率（conditional probability）
+  <div class="math">$$
+  p(X=x_i, Y=y_j)=p(Y=y_j\mid X=x_i)p(X=x_i)  \ \ ↪︎【2】
+  $$</div>
+(如下圖所示)</p>
+</li>
+<li>
+<p>條件機率的鏈鎖法則
+  <div class="math">$$
+  p(a,b,c)=p(a\mid b,c)\cdot p(b,c)=p(a\mid b,c)\cdot p(b\mid c)\cdot p(c)  \ \ ↪︎【3】
+  $$</div>
+(因為 <span class="math">\(a\cap b\cap c=a\cap (b\cap c)\)</span>)</p>
+</li>
+<li>
+<p>獨立性</p>
+</li>
+<li>
+<p>if X and Y are independent, <span class="math">\(p(X=x_i,Y=y_j)=p(X=x_i)\cdot p(Y=y_j)\)</span></p>
+</li>
+<li>if X and Y are independent, 
+    <span class="math">\(p(X=x_i,Y=y_j\mid Z=z_k)=p(X=x_i\mid Z=z_k)\cdot p(Y=y_j\mid Z=z_k)  \ \ ↪︎【4】\)</span></li>
+</ul>
+<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/IMG_conditional_probability.png"></p>
+<p><center><small>
+碰到條件機率，心中應該要有這張圖，如果公式忘記了也可以輕易的推出來
+</small></center><br></p>
+<h3>頻率學派 v.s. 貝氏學派</h3>
+<p><strong>頻率學派和貝氏學派為統計上面重要的兩大觀點，透徹的了解這兩個學派的觀點，可以幫助你在做機器學習或深度學習時選擇模型有所幫助。</strong></p>
+<p>舉個例子，如果你在做詞性標記（POS tagging）的任務，你採用隱馬爾科夫模型 (HMM)，那麼你採用的是類似貝氏學派的觀點；但如果你採用 Conditional Random Field (CRF)，那麼你就是採用類似頻率學派的觀點。</p>
+<p>再舉個平易近人一點的例子，Loss Function中的Regularization Term其實可以看作是從先驗機率 (Prior Probability) 來的，這也有貝氏學派的味道，待會會再仔細的介紹。</p>
+<p>簡單講，<strong>頻率學派相信世界的本質是穩定的</strong>，所有現象背後都有一個穩定的母群體，所以我們只要透過來自母群體大量隨機且可重複實驗的事件，就可以透過<strong>期望值</strong>估算各種統計量，這就是頻率學派的認知：不需要太多其他的人為假設，只需要單純從母群體抽樣即可。</p>
+<p>但是貝氏學派不這麼認為，他們認為至少有一些現象是不穩定的，例如：北極的冰是否會在本世紀溶解殆盡，這種問題不存在穩定的母群體讓你可以在短時間內「大量」的量測，因為系統不斷的在演進，因此我們需要有一個具有演進特性的統計模型，那就是貝氏機率，<strong>貝氏機率的精髓是演進，手中先握著一個先驗機率 (Prior Probability) ，再透過不斷觀察新的證據來更新手上的機率</strong>。</p>
+<p>在機器學習上，<strong>頻率學派的優點是無額外的假設</strong>，相反的貝氏學派需要假設先驗機率 (Prior Probability) ，錯誤的先驗機率可能會去誤導模型，讓它反而忽視甚至曲解數據帶來的信息。另外，<strong>貝氏學派的優點也正是因為它有先驗機率，所以在資料筆數不多的情況下較不容易出錯</strong>，如果你使用頻率學派的觀點在小樣本上，由於統計量不足可能導致你的估計也不準確。</p>
+<p>所以說，先驗機率的使用是把雙面刃，水可載舟亦可覆舟。</p>
+<h3>Maximum Likelihood Estimation (MLE)</h3>
+<p>首先我們來看頻率學派，也就是傳統學派，究竟用什麼什麼觀點讓機器學習的，我們從頭到腳來理一遍。</p>
+<p>給定一個Dataset <span class="math">\(\mathcal{D}\)</span> ，並且決定好Model的Hyperparameters <span class="math">\(m\)</span>，此時我只需要尋找Model權重參數 <span class="math">\(\theta\)</span> ，就可以決定好一個Model。</p>
+<p>那怎麼決定 <span class="math">\(\theta\)</span> 呢？頻率學派認為只要先決定好Model (決定<span class="math">\(m\)</span>和<span class="math">\(\theta\)</span>)，再算算看這個Model產生Dataset <span class="math">\(\mathcal{D}\)</span> 的機率，這就是Likelihood，我們希望這個Likelihood可以越高越好，也就是Maximum Likelihood。化成數學式子： ⚠️
+</p>
+<div class="math">$$
+\theta_{MLE}=argmax_\theta\ p(\mathcal{D}\mid m,\theta)  \ \ ↪︎【5】
+$$</div>
+<p>
+其中：<span class="math">\(p(\mathcal{D}\mid m,\theta)\)</span> 稱為Likelihood。</p>
+<p>而Dataset <span class="math">\(\mathcal{D}\)</span> 理當有多筆資料：
+</p>
+<div class="math">$$
+=argmax_\theta\ p_{\mathcal{D}_1,...,\mathcal{D}_N}(d_1,...,d_N\mid m,\theta)  \ \ ↪︎【6】
+$$</div>
+<p>
+假設從Dataset <span class="math">\(\mathcal{D}\)</span> 抽樣資料的過程每一筆是Independent的，則
+</p>
+<div class="math">$$
+=argmax_\theta\ \prod_{i}\ p_{\mathcal{D}_i}(d_i\mid m,\theta)  \ \ ↪︎【7】
+$$</div>
+<p>
+再假設從Dataset <span class="math">\(\mathcal{D}\)</span> 抽樣資料的過程是從同一個分布來的 (identically distributed) ，則
+</p>
+<div class="math">$$
+\theta_{MLE}=argmax_\theta\ \prod_{i}\ p(d_i\mid m,\theta)  \ \ ↪︎【8】
+$$</div>
+<p>
+接下來，為了方便計算而取 <span class="math">\(\operatorname{ln}\)</span>：
+</p>
+<div class="math">$$
+\theta_{MLE}=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(d_i\mid m,\theta)  \ \ ↪︎【9】
+$$</div>
+<p>
+再來我們<strong>考慮監督式學習的情況</strong>，每一筆數據 <span class="math">\(d_i\)</span> 是由一對輸入與輸出所組成 <span class="math">\((x_i, y_i)\)</span> ：
+</p>
+<div class="math">$$
+\theta_{MLE}=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(x_i,y_i\mid m,\theta)  \ \ ↪︎【10】
+$$</div>
+<p>
+因為 <span class="math">\(y_i\)</span> 是depend on <span class="math">\(x_i\)</span> 的，所以使用【3】式將 <span class="math">\(x_i\)</span> 往後搬，得
+</p>
+<div class="math">$$
+=argmax_\theta\ \sum_{i}\ \operatorname{ln}[p(y_i\mid x_i,m,\theta)p(x_i\mid m,\theta)]  \ \ ↪︎【11】
+$$</div>
+<p>
+ <span class="math">\(x_i\)</span> 與 model參數 <span class="math">\(m\)</span> 和 <span class="math">\(\theta\)</span> 應該是互相獨立的，
+</p>
+<div class="math">$$
+=argmax_\theta\ \sum_{i}\ \operatorname{ln}[p(y_i\mid x_i,m,\theta)p(x_i)]  \ \ ↪︎【12】
+$$</div>
+<div class="math">$$
+=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(y_i\mid x_i,m,\theta)+\operatorname{ln}p(x_i)  \ \ ↪︎【13】
+$$</div>
+<p><span class="math">\(p(x_i)\)</span> 與<span class="math">\(\theta\)</span> 無關，在優化過程可忽略，得： ⚠️
+</p>
+<div class="math">$$
+\theta_{MLE}=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(y_i\mid x_i,m,\theta)  \ \ ↪︎【14】
+$$</div>
+<p>
+上面這個式子是可以透過實驗來找到 <span class="math">\(\theta_{MLE}\)</span> 的，其中 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 表示在Model固定的情況下，估計輸入<span class="math">\(x_i\)</span>會得到<span class="math">\(y_i\)</span>的機率，我們可以透過Grandient Descent的方法調整參數來最大化這一項，詳細怎麼做我會在下一講交代清楚。</p>
+<hr>
+<p>還沒有結束喔！大家有沒有覺得【14】式怪眼熟的，這很像是我們在<a href="https://www.ycc.idv.tw/deep-dl_2.html">上一講</a>討論的東西。</p>
+<p>我們把【14】式乘上負號，再除上資料筆數 <span class="math">\(N\)</span>，得
+</p>
+<div class="math">$$
+\theta_{MLE}=argmin_\theta\ \frac{1}{N}\sum_{i}-\operatorname{ln}p(y_i\mid x_i,m,\theta)  \ \ ↪︎【15】
+$$</div>
+<p>
+有沒有看出來！沒有的話，我們繼續導下去，<span class="math">\(\frac{1}{N}\sum_i\)</span> 其實就是代表對data的採樣並平均，將它表示成為期望值
+</p>
+<div class="math">$$
+\theta_{MLE}=argmin_\theta\ E_{x\sim p_{data}}[-\operatorname{ln}p_{model}(y_i\mid x_i,m,\theta)]＝argmin_\theta\ H(p_{data},p_{model})  \ \ ↪︎【16】
+$$</div>
+<p>
+<strong>所以說Maximum Likelihood就是在最小化Data和Model的Cross Entropy</strong>，當<span class="math">\(p_{data}=p_{model}\)</span>時有最小的Cross Entropy，這也間接證明了Maximum Likelihood的最優解就是<span class="math">\(p_{data}=p_{model}\)</span>，也就是model分布等同於母體分布。</p>
+<p>當然，<strong>你也可以說Maximum Likelihood就是在最小化KL Divergence</strong>，KL Divergence：
+</p>
+<div class="math">$$
+D_{KL}(p_{data}\| p_{model})=E_{x\sim p_{data}}[\operatorname{ln}p_{data}(x)-\operatorname{ln}p_{model}(x)]  \ \ ↪︎【17】
+$$</div>
+<p>
+但是因為 <span class="math">\(\operatorname{ln}p_{data}(x)\)</span> 與 <span class="math">\(\theta\)</span> 無關，所以計算還是只剩下第二項的Cross Entropy。</p>
+<p>特別注意，<strong>剛剛的所有推論並沒有提到我們的問題是Regression問題還是Classification問題，再次強調Cross Entropy並不專屬於Sigmoid或Softmax</strong>，甚至下一講我還會提到Mean Squared Error是源於Data分布與Normal Distribution的Cross Entropy。</p>
+<h3>Maximum A Posterior (MAP)</h3>
+<p>再來我們聊聊貝氏學派，我們好奇頻率學派究竟有什麼不足？MLE有什麼不足？為什麼我們需要一個新的觀點。</p>
+<p>最重要的一點是<strong>MLE認為所有 <span class="math">\(\theta\)</span> 出現的機率是均等的</strong>，我們優化的目標是 <span class="math">\(p(\mathcal{D}\mid m,\theta)\)</span> [from 【5】]，式子中是直接「給定」一組 <span class="math">\(\theta\)</span> ，所以這個 <span class="math">\(\theta\)</span> 怎麼來的、 <span class="math">\(\theta\)</span> 出現的機率，這些都不在MLE的考量當中。</p>
+<p>我們知道這樣並不好，假設以下有兩組 <span class="math">\(\theta\)</span> 都可以得到一樣的Likelihood，依照你學機器學習和深度學習的經驗，你會喜歡哪組？</p>
+<ul>
+<li>第一組： <span class="math">\(\theta_1=0.5,\ \theta_2=0.1,\ \theta_3=-0.1\)</span></li>
+<li>第二組： <span class="math">\(\theta_1=1000.0,\ \theta_2=12.5,\ \theta_3=-500.0\)</span></li>
+</ul>
+<p>以前的所學告訴我們第一組比較好，<strong>因為 <span class="math">\(\theta\)</span> 接近 0，這樣的參數會讓我的輸入和輸出不會差異太大，Model會比較穩定，比較不會Overfitting，普遍作法是將Loss加入Regularization Term來壓低 <span class="math">\(\theta\)</span> 的大小</strong>。</p>
+<p>那麼這個Regularization Term究竟怎麼來的？</p>
+<p>一開始學機器學習或深度學習時，你應該會覺得貿然的加上Regularization Term怪怪的，而今天你可以從這裡得到更好的解釋。神奇的是！當你在優化MAP時假設了參數 <span class="math">\(\theta\)</span> 分布的同時，Regularization Term會被自然的推導出來，讓我們繼續看下去。</p>
+<hr>
+<p>透過【5】式 <span class="math">\(p(\mathcal{D},m,\theta)\)</span> 可以列出以下關係式：
+</p>
+<div class="math">$$
+p((\mathcal{D}\cap m), \theta)=p(\mathcal{D},m\mid \theta)p(\theta)=p(\theta\mid \mathcal{D},m)p(\mathcal{D},m)  \ \ ↪︎【18】
+$$</div>
+<p>
+稍作移項可得：
+</p>
+<div class="math">$$
+p(\theta\mid \mathcal{D},m)=\frac{p(\mathcal{D},m\mid \theta)p(\theta)}{p(\mathcal{D},m)}  \ \ ↪︎【19】
+$$</div>
+<p>
+因為 <span class="math">\(m\)</span> 是給定的，我們想要將它向後移，使用【1】、【2】、【3】去轉換右式：
+</p>
+<div class="math">$$
+\frac{p(\mathcal{D},m\mid \theta)p(\theta)}{p(\mathcal{D},m)}=\frac{p(\mathcal{D}\mid m,\theta)[p(m\mid \theta)p(\theta)]}{p(\mathcal{D\mid m})p(m)}＝\frac{p(\mathcal{D}\mid m,\theta)}{p(\mathcal{D}\mid m)}\frac{p(m,\theta)}{p(m)}=\frac{p(\mathcal{D}\mid m,\theta)p(\theta\mid m)}{p(\mathcal{D}\mid m)}  \ \ ↪︎【20】
+$$</div>
+<p>
+於是我們得到了大名鼎鼎的貝氏定理： ⚠️
+</p>
+<div class="math">$$
+p(\theta\mid \mathcal{D},m)=\frac{p(\mathcal{D}\mid m,\theta)p(\theta\mid m)}{p(\mathcal{D}\mid m)}  \ \ ↪︎【21】
+$$</div>
+<p>
+其中：</p>
+<ul>
+<li><strong><span class="math">\(p(\mathcal{D}\mid m,\theta)\)</span> 就是Likelihood</strong>，Maximum這一項就是MLE，不用再特別討論。</li>
+<li><strong><span class="math">\(p(\theta\mid m)\)</span> 稱為先驗機率 (Prior Probability)</strong>，它所代表的意義正是描述 <span class="math">\(\theta\)</span> 這個參數在給定 <span class="math">\(m\)</span> 之後出現的機率有多大，這一項是先於經驗的，這裡的經驗指的是「這一次的實驗」，而這個 <span class="math">\(p(\theta\mid m)\)</span> 是與本次實驗 <span class="math">\(\mathcal{D}\)</span> 無關的。因此這個 <span class="math">\(p(\theta\mid m)\)</span> 是需要人為給定的，你可以自己假設分布，例如：假設為有最少假設的Normal Distribution，或者是從過去的歷史紀錄去統計出 <span class="math">\(p(\theta\mid m)\)</span> 也行。</li>
+<li><strong><span class="math">\(p(\mathcal{D}\mid m)\)</span> 稱為資料機率（probability of data）</strong>，通常數據與模型的Hyperparameters應該是相互獨立的，所以其實可以簡寫成  <span class="math">\(p(\mathcal{D})\)</span> ，這一項只需要統計一下Dataset的分布即可得到。</li>
+<li><strong><span class="math">\(p(\theta\mid \mathcal{D},m)\)</span> 稱為後驗機率 (Posterior Probability)</strong>，它所代表的意義是給定數據 <span class="math">\(\mathcal{D}\)</span> 和 Hyperparameters <span class="math">\(m\)</span> 之後，會出現 <span class="math">\(\theta\)</span> 的機率，有注意到嗎？我們在【21】中同時連結了先驗機率和後驗機率，這代表的是手上原先有一個 <span class="math">\(\theta\)</span> 分布（先驗機率），經過觀察數據後，我重新的去更新這個 <span class="math">\(\theta\)</span> 分布（後驗機率），這充分的傳達了貝氏學派的演進概念。</li>
+</ul>
+<p>後驗機率也是我們準備要最大化的目標，所以此方法才稱為Maximum A Posterior (MAP) 。</p>
+<p><strong>最大化後驗機率MAP是直接問貝氏定理什麼樣的 <span class="math">\(\theta\)</span> 在給定條件下出現機率最大？而最大化Likelihood則是間接的希望找出一組 <span class="math">\(\theta\)</span> 讓Model能產生Data的機率變高，兩者的優化邏輯是不一樣的。</strong></p>
+<p>從 【21】式出發：
+</p>
+<div class="math">$$
+\theta_{MAP}=argmax_\theta\ p(\theta\mid \mathcal{D},m)=argmax_\theta\ \frac{p(\mathcal{D}\mid m,\theta)p(\theta\mid m)}{p(\mathcal{D}\mid m)}  \ \ ↪︎【22】
+$$</div>
+<p>
+然後如【6】、【7】、【8】式一樣假設取樣是i.i.d. (independent and identically distributed)，得：
+</p>
+<div class="math">$$
+\theta_{MAP}=argmax_\theta\ [\prod_{i}\ \frac{p(d_i\mid m,\theta)}{p(d_i\mid m)}]p(\theta\mid m)  \ \ ↪︎【23】
+$$</div>
+<p>
+接下來，為了方便計算如【9】式取 <span class="math">\(\operatorname{ln}\)</span>：
+</p>
+<div class="math">$$
+\theta_{MAP}=argmax_\theta\ \{\sum_{i}\ [\operatorname{ln}p(d_i\mid m,\theta)-\operatorname{ln}p(d_i\mid m)]\}+\operatorname{ln}p(\theta\mid m)  \ \ ↪︎【24】
+$$</div>
+<p>
+其中 <span class="math">\(-\operatorname{ln}p(d_i\mid m)\)</span> 與 <span class="math">\(\theta\)</span> 無關，可忽略：
+</p>
+<div class="math">$$
+\theta_{MAP}=argmax_\theta\ \{\sum_{i}\ \operatorname{ln}p(d_i\mid m,\theta)\}+\operatorname{ln}p(\theta\mid m)  \ \ ↪︎【25】
+$$</div>
+<p>
+第一項其實就是跟MLE一模模一樣樣，所以直接套用【9】到【14】式的推論，得：⚠️
+</p>
+<div class="math">$$
+\theta_{MAP}=argmax_\theta\ \{\sum_{i}\ \operatorname{ln}p(y_i\mid x_i,m,\theta)\}+\operatorname{ln}p(\theta\mid m)  \ \ ↪︎【26】
+$$</div>
+<hr>
+<p>觀察 【26】式，非常清楚的我們在優化第一項就如同優化MLE，<strong>但是MAP比MLE多了 <span class="math">\(\operatorname{ln}p(\theta\mid m)\)</span> </strong>，我們就針對這一項來討論，</p>
+<ul>
+<li>假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Uniform Distribution，也就是說所有的 <span class="math">\(\theta\)</span> 出現機率均等，則 <span class="math">\(p(\theta\mid m)=const.\)</span>，這麼一來這一項在【26】式可以直接槓掉，因為它與 <span class="math">\(\theta\)</span> 無關，此時 <span class="math">\(\theta_{MAP}=\theta_{MLE}\)</span> 。所以說在貝氏學派的觀點下，MLE只是MAP的一個特例，MLE只是假設 <span class="math">\(\theta\)</span> 出現機率均等的MAP，<a href="https://www.ycc.idv.tw/deep-dl_2.html">上一講有提過</a>Uniform Distribution為所有分布當中Entropy最大的，也就是不確定程度最大的，也就是人為假設幾乎為零的分布，確實符合頻率學派的觀點：不需要太多人為假設。</li>
+</ul>
+<p>但是基於剛剛的推論 <span class="math">\(p(\theta\mid m)\)</span> 的均等並不是我們想要的，我們希望 <span class="math">\(\theta\)</span> 可以多出現在接近 <span class="math">\(\theta=0\)</span> 的附近，<strong>因此我們希望  <span class="math">\(p(\theta\mid m)\)</span> 的分布具有 有限Variance且平均值接近0 (<span class="math">\(E_{p(\theta\mid m)}[x]=0\)</span>)</strong>。此時的第一首選就是Normal Distribution，因為我們在<a href="https://www.ycc.idv.tw/deep-dl_1.html">第一講</a>中說過：Normal Distribution是具有限Variance分布中具有最少人為假設的。</p>
+<ul>
+<li>假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Normal Distribution且平均值為0，則
+  <div class="math">$$
+  p(\theta\mid m)=\frac{1}{\sqrt{2\pi}\sigma}exp\{{-\frac{\theta^2}{2\sigma^2}}\}  \ \ ↪︎【27】
+  $$</div>
+</li>
+</ul>
+<div class="math">$$
+  \operatorname{ln}p(\theta\mid m)=\operatorname{ln}(\frac{1}{\sqrt{2\pi}\sigma})-\frac{\theta^2}{2\sigma^2}  \ \ ↪︎【28】
+  $$</div>
+<p>代入【26】，並且取負號，得
+  </p>
+<div class="math">$$
+  \theta_{MAP}=argmin_\theta\ \sum_{i}-\operatorname{ln}p(y_i\mid x_i,m,\theta)+\frac{1}{2\sigma^2}\theta^2  \ \ ↪︎【29】
+  $$</div>
+<p>
+  哇！ L2 Regularization Term <span class="math">\(\frac{1}{2\sigma^2}\theta^2\)</span> 就在這不經意間被導出了，所以<strong>未來看到L2 Regularization Term就要知道它隱藏了參數分布呈現Normal Distribution的假設</strong>。</p>
+<p>可以預期的，<strong>當假設不同的參數分布 <span class="math">\(p(\theta\mid m)\)</span> 就會得到不同型式的Regularization Term</strong>，如果我假設Laplace Distribution則會得到L1 Regularization Term，來看一下。</p>
+<ul>
+<li>假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Laplace Distribution且平均值為0，則
+  <div class="math">$$
+  p(\theta\mid m)=\frac{1}{2b}exp\{{-\frac{|\theta|}{b}}\}  \ \ ↪︎【30】
+  $$</div>
+</li>
+</ul>
+<div class="math">$$
+  \operatorname{ln}p(\theta\mid m)=\operatorname{ln}(\frac{1}{2b})-\frac{|\theta|}{b}  \ \ ↪︎【31】
+  $$</div>
+<p>代入【26】，並且取負號，得
+  </p>
+<div class="math">$$
+  \theta_{MAP}=argmin_\theta\ \sum_{i}-\operatorname{ln}p(y_i\mid x_i,m,\theta)+\frac{1}{b}|\theta|   \ \ ↪︎【32】
+  $$</div>
+<p>
+  第二項就是L1 Regularization Term。</p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/Gaussian-distribution-and-Laplace-distribution.ppm.png"></p>
+<p><center><small>
+  Courtesy <a href="https://www.researchgate.net/figure/Gaussian-distribution-and-Laplace-distribution_fig7_321825093">Youngjoo Kim</a>
+</small></center><br></p>
+<h3>結語</h3>
+<p>這一講我們清楚的了解了頻率學派和貝氏學派各自的觀點，並且從兩者觀點出發去探討機器學習問題。</p>
+<p>頻率學派使用Maximum Likelihood Estimation (MLE) 來優化，優化關係式如下：
+</p>
+<div class="math">$$
+\theta_{MLE}=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(y_i\mid x_i,m,\theta)
+$$</div>
+<p>
+此項經過轉換會等同於最小化Data與Model之間的Cross Entropy，或等同於最小化Data與Model之間的KL Divergence，與<a href="https://www.ycc.idv.tw/deep-dl_2.html">上一講的資訊理論</a>完美契合。</p>
+<p>貝氏學派則使用Maximum A Posterior (MAP) 來優化，優化關係式如下：
+</p>
+<div class="math">$$
+\theta_{MAP}=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(y_i\mid x_i,m,\theta)+\operatorname{ln}p(\theta\mid m)
+$$</div>
+<p>
+除了第一項與MLE一樣之外，此時我們還需考慮了參數可能的分布，當參數分布是均等時，MAP和MLE是等價的。但是我們希望 <span class="math">\(\theta\)</span> 可以接近0，所以一般會去假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Variance有限且平均值為0的分布，如果選擇使用Normal Distribution，則會得到L2 Regularization Term；如果選擇用Laplace Distribution，則會得到L1 Regularization Term。</p>
+<p>本講已經給出了兩個觀點的機率優化式，但是要怎麼變換成擬合問題呢？這需要一大篇幅來介紹，我們會在下一講來仔細討論這個問題，敬請期待囉！</p>
+<h3>Reference</h3>
+<ul>
+<li><a href="https://www.deeplearningbook.org">Ian Goodfellow and Yoshua Bengio and Aaron Courville. Deep Learning. 2016.</a></li>
+<li>Christopher Bishop. Pattern Recognition and Machine Learning. 2006.</li>
+<li><a href="https://zhuanlan.zhihu.com/p/32480810">聊一聊机器学习的MLE和MAP：最大似然估计和最大后验估计</a></li>
+<li><a href="https://wiseodd.github.io/techblog/2017/01/01/mle-vs-map/">MLE vs MAP: the connection between Maximum Likelihood and Maximum A Posteriori Estimation</a></li>
+<li><a href="https://blog.metaflow.fr/ml-notes-why-the-log-likelihood-24f7b6c40f83">Morgan. ML notes: Why the log-likelihood?</a></li>
+</ul>
+<p><em>[此文章為原創文章，轉載前請註明文章來源]</em></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+
+                    </div> <!-- end entry content -->
+                    
+                    <div class="entry__pagenav">
+                        <div class="entry__nav">
+                            <div class="entry__prev">
+                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" rel="prev">
+                                    <span>Previous Post</span>
+                                    剖析深度學習 (1)：為什麼Normal Distribution這麼好用？
+                                </a>
+                            </div>
+                            <div class="entry__next">
+                                <a href="https://www.ycc.idv.tw/deep-dl_2.html" rel="next">
+                                    <span>Next Post</span>
+                                    剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論
+                                </a>
+                            </div>
+                        </div>
+                    </div> <!-- end entry__pagenav -->
+
+                    <div class="entry__related">
+                        <h3 class="h2">Related Articles</h3>
+                        <ul class="related">
+                            <li class="related__item">
+                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" class="related__link">
+                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
+                                    <h5 class="related__post-title">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</h5>
+                                </a>
+                            </li>
+                            <li class="related__item">
+                                <a href="https://www.ycc.idv.tw/deep-dl_2.html" class="related__link">
+                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
+                                    <h5 class="related__post-title">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</h5>
+                                </a>
+                            </li>
+                        </ul>
+                    </div> <!-- end entry related -->
+
+                    <div id="disqus-wrapper">
+                        <div id="disqus_thread"></div>
+                    </div>
+
+                </article> <!-- end column large-full entry-->
+            </main>
+
+        </div> <!-- end s-content -->
+
+        <!-- footer
+        ================================================== -->
+        <footer class="s-footer footer">
+            <div class="row">
+                <div class="column large-full footer__content">
+                    <div class="footer__copyright">
+                        <span>© Copyright YC Note 2019</span> 
+                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="go-top">
+                <a class="smoothscroll" title="Back to Top" href="#top"></a>
+            </div>
+        </footer>
+
+    </div> <!-- end s-wrap -->
+
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
+    <script>
+        var elements = document.getElementsByTagName("h3");
+        for(i = 0; i < elements.length; i++)
+        {
+            elements[i].setAttribute("id", "anchor"+i);
+        }
+    </script>
+    <script type="text/javascript">
+        var disqus_config = function () {
+            this.page.url = "ycnote-1";
+            this.page.identifier = "deep-dl_3.html";
+            this.page.title = "剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點";
+            this.language = "zh_TW";
+        };
+
+       (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://ycnote-1.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    <script>
+    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
+    
+    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
+        var src = $(this).attr('src');
+        $('<div>').css({
+            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
+            backgroundSize: 'contain',
+            borderTop: '40px solid RGBA(0,0,0,0.0)',
+            borderBottom: '40px solid RGBA(0,0,0,0.0)',
+            width:'100%', height:'100%',
+            position:'fixed',
+            zIndex:'10000',
+            top:'0', left:'0',
+            cursor: 'zoom-out'
+        }).click(function(){
+            $(this).remove();
+        }).appendTo('body');
+    });
+    </script>
+
+</body>

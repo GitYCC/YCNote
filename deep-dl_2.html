@@ -371,7 +371,7 @@ $$</div>
 H(p,q)=-y\cdot \operatorname{ln}(q)-(1-y)\cdot \operatorname{ln}(1-q)
 $$</div>
 <p>
-就跟【14】式一模一樣了，<strong>這裡注意一點，在推導的過程當中我都不需要去假設模型的長相，我不需要假設模型為Sigmoid，推出Cross Entropy的過程是和模型的選擇無關的，所以千萬不要認為選擇使用Cross Entropy是因為Sigmoid的緣故。進一步說Cross Entropy其實可以用在各種問題（或分布），包括：Regression問題，我們會在接下來的文章裡讓大家真正了解這一點。</strong></p>
+就跟【14】式一模一樣了，<strong>這裡注意一點，在推導的過程當中我都不需要去假設模型的長相，我不需要假設模型為Sigmoid，推出Cross Entropy的過程是和模型的選擇無關的，所以千萬不要認為選擇使用Cross Entropy是因為Sigmoid的緣故。進一步說Cross Entropy其實可以用在各種問題（或分布），包括：Regression問題，我們會在<a href="https://www.ycc.idv.tw/deep-dl_3.html">接下來的文章</a>裡讓大家真正了解這一點。</strong></p>
 <h3>KL Divergence (Kullback-Leibler Divergence)</h3>
 <p>KL Divergence對碰過深度學習一段時間的大家應該是一個既熟悉又陌生的東西吧！我們就在這邊把它搞懂吧！</p>
 <p>如果有兩個獨立的機率分布<span class="math">\(p(x)\)</span>和<span class="math">\(q(x)\)</span>同時對應到同一個隨機變數<span class="math">\(x\)</span>，也就是它們所在的空間是一樣的，則可以使用KL Divergence來測量這兩個分布的差異程度：
@@ -439,7 +439,7 @@ $$</div>
 <li>Cross Entropy: <span class="math">\(H(p, q)=E_{x\sim p}[-\operatorname{ln}q(x)]\)</span> ，利用<span class="math">\(q(x)\)</span>來編碼可得的nats期望值</li>
 <li>KL Divergence: <span class="math">\(D_{KL}(p\|q)=H(p,q)-H(p)\)</span> ，表示的是目前的編碼方法最多還可以下降多少nats期望值</li>
 </ul>
-<p>其實，這一講的內容可以說是為了接下來幾講而生，下一講我們會開始套用資訊理論的這些概念，帶大家重新了解優化和擬合是怎麼一回事，敬請期待！</p>
+<p>其實，這一講的內容可以說是為了接下來幾講而生，<a href="https://www.ycc.idv.tw/deep-dl_3.html">下一講</a>我們會開始套用資訊理論的這些概念，帶大家重新了解優化和擬合是怎麼一回事，敬請期待！</p>
 <h3>Reference</h3>
 <ul>
 <li><a href="https://www.deeplearningbook.org">Ian Goodfellow and Yoshua Bengio and Aaron Courville. Deep Learning. 2016.</a></li>
@@ -512,9 +512,9 @@ $$</div>
                     <div class="entry__pagenav">
                         <div class="entry__nav">
                             <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" rel="prev">
+                                <a href="https://www.ycc.idv.tw/deep-dl_3.html" rel="prev">
                                     <span>Previous Post</span>
-                                    剖析深度學習 (1)：為什麼Normal Distribution這麼好用？
+                                    剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點
                                 </a>
                             </div>
                             <div class="entry__next">
@@ -529,6 +529,12 @@ $$</div>
                                 <a href="https://www.ycc.idv.tw/deep-dl_1.html" class="related__link">
                                     <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
                                     <h5 class="related__post-title">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</h5>
+                                </a>
+                            </li>
+                            <li class="related__item">
+                                <a href="https://www.ycc.idv.tw/deep-dl_3.html" class="related__link">
+                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
+                                    <h5 class="related__post-title">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</h5>
                                 </a>
                             </li>
                         </ul>
