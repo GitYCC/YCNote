@@ -289,7 +289,13 @@ $$</div>
 <div class="math">$$
 =\frac{n}{\sqrt{2\pi}\sigma_\theta}exp\{{-\frac{1}{2\sigma_\theta^2}(\sum_iy_i^2-2\mu_\theta \sum_iy_i+\mu_\theta^2)}\}  \ \ ↪︎【4】
 $$</div>
-<p>當我定義兩個充分統計量 <span class="math">\(S_1=\sum_iy_i\)</span> 和 <span class="math">\(S_2=\sum_iy_i^2\)</span> ，所以充分統計量 <span class="math">\(T(.)=<div class="math">\begin{bmatrix} S_1 \\ S_2 \end{bmatrix}</div>\)</span>：
+<p>當我定義兩個充分統計量 <span class="math">\(S_1=\sum_iy_i\)</span> 和 <span class="math">\(S_2=\sum_iy_i^2\)</span> ，所以充分統計量為
+</p>
+<div class="math">$$
+T=\begin{bmatrix} S_1 \\ S_2 \end{bmatrix}
+$$</div>
+<p>
+代入得：
 </p>
 <div class="math">$$
 p_{\theta}(y_1,y_2,..,y_n)=\frac{n}{\sqrt{2\pi}\sigma_\theta}exp\{{-\frac{1}{2\sigma_\theta^2}(\begin{bmatrix} -2\mu_\theta \ 1 \end{bmatrix}\begin{bmatrix} S_1 \\ S_2 \end{bmatrix}+\mu_\theta^2)}\}  \ \ ↪︎【5】
@@ -512,10 +518,26 @@ $$</div>
 $$</div>
 <p>對應【20】式得：</p>
 <ul>
-<li><span class="math">\(h(y)=\frac{1}{\sqrt{2\pi}}  \ \ ↪︎【30】\)</span></li>
-<li><span class="math">\(\eta=<div class="math">\begin{bmatrix} \mu/\sigma^2 \\ -1/2\sigma^2 \end{bmatrix}</div>  \ \ ↪︎【31】\)</span></li>
-<li><span class="math">\(T(y)=<div class="math">\begin{bmatrix} y \\ y^2 \end{bmatrix}</div>  \ \ ↪︎【32】\)</span></li>
-<li><span class="math">\(A(\eta)=\operatorname{ln}\sigma+\frac{1}{2\sigma^2}\mu^2=\frac{-\eta_1^2}{4\eta_2}-\frac{1}{2}\operatorname{ln}(-2\eta_2)  \ \ ↪︎【33】\)</span></li>
+<li>
+<div class="math">$$
+  h(y)=\frac{1}{\sqrt{2\pi}}  \ \ ↪︎【30】
+  $$</div>
+</li>
+<li>
+<div class="math">$$
+  \eta=\begin{bmatrix} \mu/\sigma^2 \\ -1/2\sigma^2 \end{bmatrix}  \ \ ↪︎【31】
+  $$</div>
+</li>
+<li>
+<div class="math">$$
+  T(y)=\begin{bmatrix} y \\ y^2 \end{bmatrix}  \ \ ↪︎【32】
+  $$</div>
+</li>
+<li>
+<div class="math">$$
+  A(\eta)=\operatorname{ln}\sigma+\frac{1}{2\sigma^2}\mu^2=\frac{-\eta_1^2}{4\eta_2}-\frac{1}{2}\operatorname{ln}(-2\eta_2)  \ \ ↪︎【33】
+  $$</div>
+</li>
 </ul>
 <p>再代入【20】式找 Link Function：
 </p>
