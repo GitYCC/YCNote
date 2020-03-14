@@ -338,7 +338,7 @@ $$</div>
 \theta_{MLE}=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(y_i\mid x_i,m,\theta)  \ \ ↪︎【14】
 $$</div>
 <p>
-上面這個式子是可以透過實驗來找到 <span class="math">\(\theta_{MLE}\)</span> 的，其中 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 表示在Model固定的情況下，估計輸入<span class="math">\(x_i\)</span>會得到<span class="math">\(y_i\)</span>的機率，我們可以透過Grandient Descent的方法調整參數來最大化這一項，詳細怎麼做我會在下一講交代清楚。</p>
+上面這個式子是可以透過實驗來找到 <span class="math">\(\theta_{MLE}\)</span> 的，其中 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 表示在Model固定的情況下，估計輸入<span class="math">\(x_i\)</span>會得到<span class="math">\(y_i\)</span>的機率，我們可以透過Grandient Descent的方法調整參數來最大化這一項，詳細怎麼做我會在<a href="https://www.ycc.idv.tw/deep-dl_4.html">下一講</a>交代清楚。</p>
 <hr>
 <p>還沒有結束喔！大家有沒有覺得【14】式怪眼熟的，這很像是我們在<a href="https://www.ycc.idv.tw/deep-dl_2.html">上一講</a>討論的東西。</p>
 <p>我們把【14】式乘上負號，再除上資料筆數 <span class="math">\(N\)</span>，得
@@ -361,7 +361,7 @@ D_{KL}(p_{data}\| p_{model})=E_{x\sim p_{data}}[\operatorname{ln}p_{data}(x)-\op
 $$</div>
 <p>
 但是因為 <span class="math">\(\operatorname{ln}p_{data}(x)\)</span> 與 <span class="math">\(\theta\)</span> 無關，所以計算還是只剩下第二項的Cross Entropy。</p>
-<p>特別注意，<strong>剛剛的所有推論並沒有提到我們的問題是Regression問題還是Classification問題，再次強調Cross Entropy並不專屬於Sigmoid或Softmax</strong>，甚至下一講我還會提到Mean Squared Error是源於Data分布與Normal Distribution的Cross Entropy。</p>
+<p>特別注意，<strong>剛剛的所有推論並沒有提到我們的問題是Regression問題還是Classification問題，再次強調Cross Entropy並不專屬於Sigmoid或Softmax</strong>，甚至<a href="https://www.ycc.idv.tw/deep-dl_4.html">下一講</a>我還會提到Mean Squared Error是源於Data分布與Normal Distribution的Cross Entropy。</p>
 <h3>Maximum A Posterior (MAP)</h3>
 <p>再來我們聊聊貝氏學派，我們好奇頻率學派究竟有什麼不足？MLE有什麼不足？為什麼我們需要一個新的觀點。</p>
 <p>最重要的一點是<strong>MLE認為所有 <span class="math">\(\theta\)</span> 出現的機率是均等的</strong>，我們優化的目標是 <span class="math">\(p(\mathcal{D}\mid m,\theta)\)</span> [from 【5】]，式子中是直接「給定」一組 <span class="math">\(\theta\)</span> ，所以這個 <span class="math">\(\theta\)</span> 怎麼來的、 <span class="math">\(\theta\)</span> 出現的機率，這些都不在MLE的考量當中。</p>
@@ -497,7 +497,7 @@ $$</div>
 $$</div>
 <p>
 除了第一項與MLE一樣之外，此時我們還需考慮了參數可能的分布，當參數分布是均等時，MAP和MLE是等價的。但是我們希望 <span class="math">\(\theta\)</span> 可以接近0，所以一般會去假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Variance有限且平均值為0的分布，如果選擇使用Normal Distribution，則會得到L2 Regularization Term；如果選擇用Laplace Distribution，則會得到L1 Regularization Term。</p>
-<p>本講已經給出了兩個觀點的機率優化式，但是要怎麼變換成擬合問題呢？這需要一大篇幅來介紹，我們會在下一講來仔細討論這個問題，敬請期待囉！</p>
+<p>本講已經給出了兩個觀點的機率優化式，但是要怎麼變換成擬合問題呢？這需要一大篇幅來介紹，我們會在<a href="https://www.ycc.idv.tw/deep-dl_4.html">下一講</a>來仔細討論這個問題，敬請期待囉！</p>
 <h3>Reference</h3>
 <ul>
 <li><a href="https://www.deeplearningbook.org">Ian Goodfellow and Yoshua Bengio and Aaron Courville. Deep Learning. 2016.</a></li>
@@ -574,6 +574,10 @@ $$</div>
                                 </a>
                             </div>
                             <div class="entry__next">
+                                <a href="https://www.ycc.idv.tw/deep-dl_4.html" rel="next">
+                                    <span>Next Post</span>
+                                    剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型
+                                </a>
                             </div>
                         </div>
                     </div> <!-- end entry__pagenav -->
@@ -581,6 +585,12 @@ $$</div>
                     <div class="entry__related">
                         <h3 class="h2">Related Articles</h3>
                         <ul class="related">
+                            <li class="related__item">
+                                <a href="https://www.ycc.idv.tw/deep-dl_4.html" class="related__link">
+                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
+                                    <h5 class="related__post-title">剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型</h5>
+                                </a>
+                            </li>
                             <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/deep-dl_1.html" class="related__link">
                                     <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">

@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型 - YC Note</title>
+    <meta name="description" content="學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。">
+    <meta name="author" content="YC Chen">
+
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型" />
+    <meta property="og:description" content="學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。" />
+    <meta property="og:image" content="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/deep-dl_4.html" />
+    <meta property="og:site_name" content="YC Note" />
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "AI.ML",
+            "item": "https://www.ycc.idv.tw/category/aiml.html"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型",
+            "item": "https://www.ycc.idv.tw/deep-dl_4.html"
+          }]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "Article",
+          "name" : "剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型 - YC Note",
+          "author" : {
+            "@type" : "Person",
+            "name" : "YC Chen"
+          },
+          "datePublished" : "2020-03-14",
+          "image" : "https://www.ycc.idv.tw/images/deep_dl_cover.jpg",
+          "articleSection" : "AI.ML",
+          "articleBody" : "學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。",
+          "url" : "https://www.ycc.idv.tw/deep-dl_4.html",
+          "publisher" : {
+            "@type" : "Organization",
+            "name" : "YC Note",
+            "logo" : {
+                "@type" : "ImageObject",
+                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
+            }
+          },
+          "headline" : "剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型"
+        }
+    </script>
+
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
+    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
+    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
+
+    <!-- script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
+
+    <!-- favicons
+    ================================================== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+
+    <!-- Google Analytics
+    ================================================== -->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-68393177-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+    <script type="text/x-mathjax-config"> 
+        MathJax.Hub.Config({ 
+            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
+            SVG: { linebreaks: { automatic:true } } 
+            });
+    </script>
+
+</head>
+
+<body class="ss-bg-white">
+
+    <!-- preloader
+    ================================================== -->
+    <div id="preloader">
+        <div id="loader" class="dots-fade">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div id="top" class="s-wrap site-wrapper">
+
+        <!-- site header
+        ================================================== -->
+        <header class="s-header header">
+
+            <div class="header__top">
+                <div class="header__logo">
+                    <a class="site-logo" href="https://www.ycc.idv.tw/">
+                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
+                    </a>
+                </div>
+
+                <!-- toggles -->
+                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
+
+            </div>
+
+            <nav class="header__nav-wrap">
+
+                <ul class="header__nav">
+                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
+                    <li class="has-children">
+                        <a href="#0" title="">Categories</a>
+                        <ul class="sub-menu">
+                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-children">
+                        <a href="#0" title="">Tags</a>
+                        <ul class="sub-menu">
+                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
+                        </ul>
+                    </li>
+                    <li></li>
+                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
+                </ul> <!-- end header__nav -->
+
+                <ul class="header__social">
+                    <li class="ss-facebook">
+                        <a href="https://www.facebook.com/pg/yc.note" target="_blank">
+                            <span class="screen-reader-text">Facebook</span>
+                        </a>
+                    </li>
+                    <li class="ss-github">
+                        <a href="https://github.com/GitYCC" target="_blank">
+                            <span class="screen-reader-text">Github</span>
+                        </a>
+                    </li>
+                    <li class="ss-linkedin">
+                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+                            <span class="screen-reader-text">Linkedin</span>
+                        </a>
+                    </li>
+                    <li class="ss-email">
+                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
+                            <span class="screen-reader-text">Email</span>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </nav> <!-- end header__nav-wrap -->
+
+        </header> <!-- end s-header -->
+
+
+        <!-- site content
+        ================================================== -->
+        <div class="s-content content">
+            <main class="row content__page">
+
+                <article class="column large-full entry format-standard">
+
+                    <div class="media-wrap entry__media">
+                        <div class="entry__post-thumb">
+                            <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" 
+                                 srcset="https://www.ycc.idv.tw/images/deep_dl_cover.jpg 2000w, 
+                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 1000w, 
+                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                        </div>
+                    </div>
+
+                    <div class="content__page-header entry__header">
+                        <h1 class="display-1 entry__title">
+                        剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型
+                        </h1>
+                        <ul class="entry__header-meta">
+                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
+                            <li class="date"><i class="fa fa-calendar"></i> 2020-03-14</li>
+                            <li class="cat-links">
+                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
+                            </li>
+                            <li>
+                                <i class="fa fa-tags"></i> 
+<a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>                            </li>
+                        </ul>
+                    </div> <!-- end entry__header -->
+
+                    <div class="entry__content">
+                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
+                            學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。
+                        </div>
+
+                        <blockquote>
+<p>深度學習發展至今已經有相當多好用的套件，使得進入的門檻大大的降低，因此如果想要快速的實作一些深度學習或機器學習，通常是幾行程式碼可以解決的事。但是，如果想要將深度學習或機器學習當作一份工作，深入了解它背後的原理和數學是必要的，才有可能因地制宜的靈活運用，YC準備在這一系列當中帶大家深入剖析深度學習。</p>
+</blockquote>
+<p>前面的<a href="https://www.ycc.idv.tw/deep-dl_2.html">第二講</a>和<a href="https://www.ycc.idv.tw/deep-dl_3.html">第三講</a>其實都是為了這一講而存在。</p>
+<p>學習一段時間深度學習的你是不是有一個疑惑：</p>
+<ul>
+<li>Activation Function為什麼要用Sigmoid和Softmax？</li>
+<li>Loss Function為什麼要用MSE和Cross Entropy？</li>
+<li>其他狀況要用什麼？</li>
+</ul>
+<p>當然你可以把它們看作是個合理定義，</p>
+<blockquote>
+<p>但是學習深度就端看你是不是可以用最少的定義表示最多的東西</p>
+</blockquote>
+<p>如果你仔細google一下就會發現有一個相關名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。</p>
+<p>在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。</p>
+<p>這一篇我可以非常自豪的說，網路上的資料在這個議題上找不到寫的比我更詳細的，這是我看過很多書和教材融會貫通而成的，請大家一定要看到最後，必定收穫滿滿。</p>
+<h3>前情提要</h3>
+<p><a href="https://www.ycc.idv.tw/deep-dl_3.html">上一講</a>中我們清楚的了解頻率學派和貝氏學派各自的觀點，並且從兩者觀點出發去探討機器學習問題。</p>
+<p>頻率學派使用Maximum Likelihood Estimation (MLE) 來優化，優化關係式如下：
+</p>
+<div class="math">$$
+\theta_{MLE}=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(y_i\mid x_i,m,\theta)  \ \ ↪︎【1】
+$$</div>
+<p>
+此式等價於最小化Data與Model之間的Cross Entropy，或等價於最小化Data與Model之間的KL Divergence，與<a href="https://www.ycc.idv.tw/deep-dl_2.html">第二講的資訊理論</a>完美契合。</p>
+<p>貝氏學派則使用Maximum A Posterior (MAP) 來優化，優化關係式如下：
+</p>
+<div class="math">$$
+\theta_{MAP}=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(y_i\mid x_i,m,\theta)+\operatorname{ln}p(\theta\mid m)  \ \ ↪︎【2】
+$$</div>
+<p>
+除了第一項與MLE一樣之外，我們還需要考慮第二項，此項考慮了參數的出現分布，當參數分布是均等時，MAP和MLE是等價的。但是我們希望 <span class="math">\(\theta\)</span> 可以接近0，所以一般會去假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Variance有限且平均值為0的分布，如果選擇使用Normal Distribution，則會得到L2 Regularization Term；如果選擇用Laplace Distribution，則會得到L1 Regularization Term。</p>
+<p>所以接下來要讓機器可以學習只剩下最後一哩路，如何將【1】或【2】變換成擬合問題呢？</p>
+<p>其實只需要找到合適的分布代入 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 就可以了。</p>
+<h3>充分統計量 (sufficient statistic)</h3>
+<p>在這之前要引入一個重要的統計工具，那就是「充分統計量」。</p>
+<p>什麼「充分統計量」呢？Wiki的定義是</p>
+<blockquote>
+<p>在統計學中，關於一個統計模型和其相關的未知參數的充分統計量是指「沒有任何其他可以從同一樣本中計算得出的統計量可以提供任何有關未知參數的額外信息」。</p>
+</blockquote>
+<p>其數學表示式為：
+</p>
+<div class="math">$$
+p_\theta (y_1,y_2,..,y_n)=h(y_1,y_2,..,y_n)g_\theta(T(y_1,y_2,..,y_n))  \ \ ↪︎【3】
+$$</div>
+<p>
+其中：<span class="math">\(f_\theta(.)\)</span>為你的Model假定的分布，當中包含決定Model的參數<span class="math">\(\theta\)</span>；<span class="math">\(y_1,y_2,..,y_n\)</span> 為多筆資料；<span class="math">\(T(.)\)</span> 稱為充分統計量，可以是一個單值或矩陣，它可以讓唯一包含 <span class="math">\(\theta\)</span> 資訊的 <span class="math">\(g_\theta\)</span> 不在直接depend on <span class="math">\(y_i\)</span>，而是depend on <span class="math">\(T(.)\)</span> ，也因此做到了「沒有任何其他可以從同一樣本中計算得出的統計量可以提供任何有關未知參數的額外信息」，因為唯一包含未知參數 <span class="math">\(\theta\)</span> 的 <span class="math">\(g_\theta(.)\)</span> 只需要 <span class="math">\(T(.)\)</span> 當作Input，其餘的統計量皆不需要，此時我們會稱 <span class="math">\(T\)</span> 為充分統計量。</p>
+<hr>
+<p>還是以我們相當熟悉的Normal Distribution當作例子 （如果不熟悉，<a href="https://www.ycc.idv.tw/deep-dl_1.html">請詳見第一講</a>） ：
+</p>
+<div class="math">$$
+p_{\theta}(y_1,y_2,..,y_n)=\frac{n}{\sqrt{2\pi}\sigma_\theta}exp\{{\sum_i-\frac{1}{2\sigma_\theta^2}(y_i-\mu_\theta)^2}\}
+$$</div>
+<div class="math">$$
+=\frac{n}{\sqrt{2\pi}\sigma_\theta}exp\{{\sum_i-\frac{1}{2\sigma_\theta^2}(y_i^2-2\mu_\theta y_i+\mu_\theta^2)}\}
+$$</div>
+<div class="math">$$
+=\frac{n}{\sqrt{2\pi}\sigma_\theta}exp\{{-\frac{1}{2\sigma_\theta^2}(\sum_iy_i^2-2\mu_\theta \sum_iy_i+\mu_\theta^2)}\}  \ \ ↪︎【4】
+$$</div>
+<p>當我定義兩個充分統計量 <span class="math">\(S_1=\sum_iy_i\)</span> 和 <span class="math">\(S_2=\sum_iy_i^2\)</span> ，所以充分統計量 <span class="math">\(T(.)=<div class="math">\begin{bmatrix} S_1 \\ S_2 \end{bmatrix}</div>\)</span>：
+</p>
+<div class="math">$$
+p_{\theta}(y_1,y_2,..,y_n)=\frac{n}{\sqrt{2\pi}\sigma_\theta}exp\{{-\frac{1}{2\sigma_\theta^2}(\begin{bmatrix} -2\mu_\theta \ 1 \end{bmatrix}\begin{bmatrix} S_1 \\ S_2 \end{bmatrix}+\mu_\theta^2)}\}  \ \ ↪︎【5】
+$$</div>
+<p>
+此時整個分布都不需要depend on <span class="math">\(y_i\)</span> ，只depend on 充分統計量 <span class="math">\(T(.)\)</span>。</p>
+<p>將【5】式取 <span class="math">\(\operatorname{ln}\)</span> ，就得到它的log probability：
+</p>
+<div class="math">$$
+\operatorname{ln}p_{\theta}(y_1,y_2,..,y_n)=\operatorname{ln}\frac{n}{\sqrt{2\pi}\sigma_\theta}-\frac{1}{2\sigma_\theta^2}(S_2-2\mu_\theta S_1+\mu_\theta^2)  \ \ ↪︎【6】
+$$</div>
+<hr>
+<p>這樣分離有什麼好處？好處是當我們需要Maximum <span class="math">\(\operatorname{ln}p_{\theta}(y_1,y_2,..,y_n)\)</span> 時事情會變得容易。</p>
+<p>假設我想利用數據 <span class="math">\(y_1,y_2,..,y_n\)</span> 找一組參數 <span class="math">\(\theta\)</span> 使 <span class="math">\(\operatorname{ln}p_{\theta}(y_1,y_2,..,y_n)\)</span> 最大：
+</p>
+<div class="math">$$
+\theta^*=argmax_\theta\ \operatorname{ln}f_{\theta}(y_1,y_2,..,y_n)=argmax_\theta\ \operatorname{ln}h(y_1,y_2,..,y_n)+\operatorname{ln}g_\theta(\{T(y_1,y_2,..,y_n)\})
+$$</div>
+<p>
+其優化式為：
+</p>
+<div class="math">$$
+0=\frac{\partial}{\partial \theta}\operatorname{ln}f_{\theta}(y_1,y_2,..,y_n)|_{\theta^*}=\frac{\partial}{\partial \theta}\operatorname{ln}g_\theta(\{T(y_1,y_2,..,y_n)\})|_{\theta^*}
+$$</div>
+<p>
+所以：
+</p>
+<div class="math">$$
+\frac{\partial}{\partial \theta}\operatorname{ln}g_\theta(\{T(y_1,y_2,..,y_n)\})|_{\theta^*}=0  \ \ ↪︎【7】
+$$</div>
+<p>
+這個關係式就足以讓我們找到最佳的 <span class="math">\(\theta^*\)</span> ，而其只與充分統計量 <span class="math">\(\{T(...)\}\)</span> 有關，也就是說：<strong>當我從數據當中統計出充分統計量 <span class="math">\(\{T(...)\}\)</span> 就足以讓我找到最佳的Model參數</strong>。</p>
+<hr>
+<p>繼續剛剛的例子，將【6】代入【7】就可以得到Model的最佳參數：
+</p>
+<div class="math">$$
+0=\frac{\partial}{\partial \mu_{\theta}}[\operatorname{ln}\frac{n}{\sqrt{2\pi}\sigma_\theta}-\frac{1}{2\sigma_\theta^2}(S_2-2\mu_\theta S_1+\mu_\theta^2)]=\frac{1}{2\sigma_\theta^2}(-2S_1+2\mu_{\theta})
+$$</div>
+<div class="math">$$
+\Rightarrow \mu_{\theta}=S_1=\sum_iy_i  \ \ ↪︎【8】
+$$</div>
+<div class="math">$$
+0=\frac{\partial}{\partial \sigma_{\theta}}[\operatorname{ln}\frac{n}{\sqrt{2\pi}\sigma_\theta}-\frac{1}{2\sigma_\theta^2}(S_2-2\mu_\theta S_1+\mu_\theta^2)]=\frac{1}{\sigma_\theta}(\frac{S_2-S_1^2}{\sigma_\theta^2}-1)
+$$</div>
+<div class="math">$$
+\Rightarrow \sigma_\theta^2=S_2-S_1^2=(\sum_iy_i^2)-(\sum_iy_i)^2  \ \ ↪︎【9】
+$$</div>
+<p>是不是跟我們之前學的東西是自恰的啊！</p>
+<hr>
+<p>現在你知道我不得不提「充分統計量」這個概念的原因了吧！</p>
+<p><strong>有了「充分統計量」的概念，拿到一個分布你可以清楚的知道：我需要哪些必要的統計量才可以擬合這個分布，並且可以透過Maximun Log Probability輕易的找到這些充分統計量對應的Model變數。</strong></p>
+<h3>廣義線性模型（Generalized Linear Models, GLM）</h3>
+<p>如果你看其他的介紹文章，通常會先講古典線性模型，再講廣義線性模型，我這邊會反過來講，因為古典線性模型只是廣義線性模型的特例 — 當假設Normal Distribution時，所以只要真正搞懂廣義線性模型，古典線性模型也就懂了。</p>
+<p>我們手上現在會有兩個東西：分布模型和線性擬合模型</p>
+<ul>
+<li>分布模型：就是 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span>，搭配優化準則MLE和MAP就可以找最佳參數</li>
+<li>擬合模型：寫作為 <span class="math">\(h(x_i,m,\theta)=\theta^0+\sum_k \theta_i^kx_i^k  \ \ ↪︎【10】\)</span></li>
+</ul>
+<p>如何將這兩者連繫起來呢？我們透過Mean <span class="math">\(\mu\)</span> 和 Link Function <span class="math">\(g(.)\)</span> 來做到：
+</p>
+<div class="math">$$
+\mu=E_{y\sim p(y_i\mid x_i,m,\theta)}[y]  \ \ ↪︎【11】
+$$</div>
+<div class="math">$$
+g(\mu)=h(x_i,m,\theta)  \ \ ↪︎【12】
+$$</div>
+<p>其中：擬合模型 <span class="math">\(h(x_i,m,\theta)\)</span> 負責擬合Mean經Link Function <span class="math">\(g(.)\)</span> 轉換後的值。這個Link Function <span class="math">\(g(.)\)</span> 其實限制很少，只需要符合兩點即可：</p>
+<ol>
+<li>Link Function必須是單調遞增（monotonic）</li>
+<li>Link Function的值域必須能夠覆蓋理論分布的空間</li>
+</ol>
+<hr>
+<p>所以接下來作法就容易了，只要依以下步驟：</p>
+<ol>
+<li>決定好分布模型 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 且決定好Link Function <span class="math">\(g(.)\)</span> </li>
+<li>算出模型的Mean並透過Link Function來連接Mean和擬合模型： <span class="math">\(\mu=E_{y\sim p(y_i\mid x_i,m,\theta)}[y]=g^{-1}(h(x_i,m,\theta))\)</span></li>
+<li>用上面的關係式將 <span class="math">\(h(x_i,m,\theta)\)</span> 代換到 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 裡</li>
+<li>利用MLE和MAP來找尋最佳參數 <span class="math">\(\theta\)</span></li>
+</ol>
+<h3>古典線性模型</h3>
+<p>接下來我們就來演示一下廣義線性模型的特例—古典線性模型，<strong>古典線性模型使用Normal Distribution當分布模型 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span>，並且使用Identity Function當作 Link Function <span class="math">\(g(.)\)</span> </strong>。</p>
+<ol>
+<li>使用Normal Distribution和Identity Link Function
+   <div class="math">$$
+   p(y_i\mid x_i,m,\theta)=\frac{1}{\sqrt{2\pi}\sigma}exp\{{-\frac{1}{2\sigma^2}(y_i-\mu)^2}\}  \ \ ↪︎【13】
+   $$</div>
+</li>
+</ol>
+<div class="math">$$
+   g(\mu)=\mu  \ \ ↪︎【14】
+   $$</div>
+<ol>
+<li>
+<p>算出模型的Mean並透過Link Function來連接Mean和線性擬合模型
+   <div class="math">$$
+   \mu=g^{-1}(h(x_i,m,\theta))=h(x_i,m,\theta)  \ \ ↪︎【15】
+   $$</div>
+</p>
+</li>
+<li>
+<p>用上面的關係式將 <span class="math">\(h(x_i,\theta)\)</span> 代換到 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 裡
+   <div class="math">$$
+   p(y_i\mid x_i,m,\theta)=\frac{1}{\sqrt{2\pi}\sigma}exp\{{-\frac{1}{2\sigma^2}(y_i-h(x_i,m,\theta))^2}\}  \ \ ↪︎【16】
+   $$</div>
+</p>
+</li>
+<li>
+<p>利用MLE和MAP來找尋最佳參數 <span class="math">\(\theta\)</span>
+   將【16】式代入【1】式，經化簡可得：
+   <div class="math">$$
+   \theta_{MLE}=argmax_\theta\ \sum_{i}\ -\frac{1}{2\sigma^2}(y_i-h(x_i,m,\theta))^2  \ \ ↪︎【17】
+   $$</div>
+   因為擬合模型只對 <span class="math">\(\mu\)</span> 感興趣，所以這裡令 <span class="math">\(\sigma^2=1\)</span> ，得：
+   <div class="math">$$
+   \theta_{MLE}=argmin_\theta\ \sum_{i}\ \frac{1}{2}(y_i-h(x_i,m,\theta))^2  \ \ ↪︎【18】
+   $$</div>
+</p>
+</li>
+</ol>
+<p>上面的式子就是Loss Function為Mean Squared Error (MSE) 的Regression，它背後假設的分布就是Normal Distribution。</p>
+<p><strong>這裡的 <span class="math">\(h(x_i,m,\theta)\)</span> 可以是線性的，當然如果將feature space先作非線性轉換得 <span class="math">\(z_i\)</span> 再代入得 <span class="math">\(h(z_i,m,\theta)\)</span> 也可以是非線性的，當然 <span class="math">\(h(z_i,m,\theta)\)</span> 可以是Neural Network，先用前面幾層Hidden Layers做非線性轉換，在拿轉換後的結果與數據做線性擬合。其中：<span class="math">\(m\)</span> 代表的是Network的Hyperparameters，包括：Network的結構、Learning Rate的大小、Batch Size、...等等；而 <span class="math">\(\theta\)</span> 則是Network中需要學習的權重。</strong></p>
+<hr>
+<p>接下來我要問一個問題：</p>
+<blockquote>
+<p>其他分布能使用古典線性模型嗎？</p>
+</blockquote>
+<p>假設今天是Binary Classification的問題，則其分布不再是Normal Distribution，而是Bernoulli Distribution：
+</p>
+<div class="math">$$
+p(y_i\mid x_i,m,\theta)=\pi^{y_i}(1-\pi)^{1-y_i}  \ \ ↪︎【19】
+$$</div>
+<p>
+其中：<span class="math">\(y_i \in \{0,1\}\)</span>，<span class="math">\(\pi\)</span> 代表 <span class="math">\(y_i=1\)</span> 的機率。</p>
+<p>一樣假設Identity Function當作 Link Function <span class="math">\(g(.)\)</span> 
+</p>
+<div class="math">$$
+h(x_i,m,\theta)=E_{x\sim p_{model}}[y_i]=\sum_{y_i=0}^{y_i=1} y_i \pi^{y_i}(1-\pi)^{1-y_i}=\pi
+$$</div>
+<p>
+這樣對嗎？其實是錯誤的。Link Function沒有對應到正確的值域，所以 <span class="math">\(h(x_i,m,\theta)\)</span> 可以是整個實數空間，而 <span class="math">\(\pi\)</span> 卻只能是落在0到1之間，等式不能成立。</p>
+<p>所以古典線性模型並不能適用於非Normal Distribution，我們必須找其他合適的Link Function。</p>
+<p><strong>事實上，認真找可以找到若干個正確符合的 Link Function，但是只有唯一一種Link Function符合讓Mean符合「充分統計」，這就是 Canonical Link Function。而其他符合的 Link Function 則稱為 Non-Canonical Link Function。</strong></p>
+<h3>指數族分布（Exponential Family）與 Canonical Link Function</h3>
+<p>要談Canonical Link Function就必須要談「指數族分布」，指數族分布很好的囊括了常見的分布，包括：Normal Distribution、Bernoulli Distribution、Poisson Distribution、...等等，而且還具備了許多良好的性質。</p>
+<p>指數族分布定義如下：
+</p>
+<div class="math">$$
+p(y\mid \eta)=h(y)exp\{\eta^T T(y)-A(\eta)\}  \ \ ↪︎【20】
+$$</div>
+<p>
+其中：</p>
+<ul>
+<li><span class="math">\(\eta\)</span> : Natural Parameters or Linear Predictor</li>
+<li><span class="math">\(A(\eta)\)</span>: Log Partition Function or Log Normalizer</li>
+<li><span class="math">\(T(y)\)</span>: sufficient statistics (充分統計量)，通常的分布是 <span class="math">\(T(y)=y\)</span></li>
+<li><span class="math">\(h(y)\)</span>: base measure</li>
+</ul>
+<p>因為機率加總為1，所以 <span class="math">\(A(\eta)\)</span> 的型式是受其他變數的影響：
+</p>
+<div class="math">$$
+A(\eta)=ln[\int h(y)exp\{\eta^T T(y)\}dy]  \ \ ↪︎【21】
+$$</div>
+<p>
+然後指數族分布有一些重要的數學關係式（證明詳見<a href="https://www.cs.princeton.edu/~bee/courses/scribe/lec_09_02_2013.pdf">此篇</a>）
+</p>
+<div class="math">$$
+E[T(y)|\eta]=\frac{\partial A(\eta)}{\partial \eta}  \ \ ↪︎【22】
+$$</div>
+<div class="math">$$
+Var[T(y)|\eta]=\frac{\partial^2 A(\eta)}{\partial \eta\partial \eta}  \ \ ↪︎【23】
+$$</div>
+<hr>
+<p>列下考慮多筆Data的情況：
+</p>
+<div class="math">$$
+p(y_1,y_2,..,y_n|\eta)=[\prod_i h(y_i)]exp\{\eta^T\sum_i T(y_i)-nA(\eta)\}  \ \ ↪︎【24】
+$$</div>
+<p>
+仔細觀察【24】式和【3】式：指數族分布的 <span class="math">\(T(y)\)</span> 符合「充分統計」，你會發現 <span class="math">\(exp\{.\}\)</span> 這裡對映到的是 <span class="math">\(g_\theta\)</span> 。</p>
+<p>所以我們可以依循著剛剛的套路找到最佳參數與統計量的對映，使用【7】式：
+</p>
+<div class="math">$$
+0=\frac{\partial}{\partial \eta}[\eta^T \sum_iT(y_i)-nA(\eta)]=\sum_i T(y_i)-n\frac{\partial A(\eta)}{\partial \eta}=\sum_i T(y_i)-n\cdot E[T(y)|\eta]
+$$</div>
+<div class="math">$$
+\Rightarrow E[T(y)|\eta^*]=\frac{1}{n} \sum_{i=1}^{n} T(y_i)  \ \ ↪︎【24】
+$$</div>
+<p><strong>因此指數族分布隱含著一個相當好的特性：在最好的參數 <span class="math">\(\eta^*\)</span> 之下，分布對 <span class="math">\(T(y)\)</span> 的期望值就等同於你量測 <span class="math">\(T(y_i)\)</span> 的平均值，而且 <span class="math">\(T(y_i)\)</span> 還是一個充分統計量，也就是說你已經不需要其他統計量了。</strong></p>
+<hr>
+<p>當 <span class="math">\(T(y)=y\)</span> (大部分情形都是)，可得與Mean的關係式：
+</p>
+<div class="math">$$
+\mu=\frac{1}{n} \sum_{i=1}^{n} y_i=E[y|\eta^*]=\frac{\partial A(\eta)}{\partial \eta}|_{\eta^*}  \ \ ↪︎【25】
+$$</div>
+<p>
+因此我們建立了 Mean <span class="math">\(\mu\)</span> 和 <span class="math">\(\eta\)</span> 的關係，假設：
+</p>
+<div class="math">$$
+\frac{\partial A(\eta)}{\partial \eta}=g^{-1}(\eta)=\mu  \ \ ↪︎【26】
+$$</div>
+<p>
+<strong>其中： <span class="math">\(g^{-1}(.)\)</span> 就是大名鼎鼎的 Activation Function 。</strong></p>
+<p>此時，讓 <span class="math">\(\eta=h(x_i,m,\theta)\)</span>，則Link Function <span class="math">\(g(.)\)</span> 稱為Canonical Link Function：
+</p>
+<div class="math">$$
+g(.)=(\frac{\partial A(\eta)}{\partial \eta})^{-1}  \ \ ↪︎【27】
+$$</div>
+<div class="math">$$
+g(\mu)=h(x_i,m,\theta)  \ \ ↪︎【28】
+$$</div>
+<p><strong>在符合指數族分布的情況下，採用 <span class="math">\(\eta\)</span> 和 Canonical Link Function，會讓Mean變成為充分統計量，這意味著我們很有效率的使用著數據。</strong></p>
+<hr>
+<p>現在我們可以回頭加深觀念：<strong>為什麼在古典模型當中會選擇 Identity Link Function 呢？因為對於Normal Distribution而言，Identity Link Function 是 Canonical Link Function。</strong>
+</p>
+<div class="math">$$
+p_{normal}(y)=\frac{1}{\sqrt{2\pi}\sigma}exp\{{-\frac{1}{2\sigma^2}(y-\mu)^2}\}
+$$</div>
+<div class="math">$$
+=\frac{1}{\sqrt{2\pi}}exp\{\frac{\mu}{\sigma^2}y-\frac{1}{2\sigma^2}y^2-(ln\sigma+\frac{1}{2\sigma^2}\mu^2)\}  \ \ ↪︎【29】
+$$</div>
+<p>對應【20】式得：</p>
+<ul>
+<li><span class="math">\(h(y)=\frac{1}{\sqrt{2\pi}}  \ \ ↪︎【30】\)</span></li>
+<li><span class="math">\(\eta=<div class="math">\begin{bmatrix} \mu/\sigma^2 \\ -1/2\sigma^2 \end{bmatrix}</div>  \ \ ↪︎【31】\)</span></li>
+<li><span class="math">\(T(y)=<div class="math">\begin{bmatrix} y \\ y^2 \end{bmatrix}</div>  \ \ ↪︎【32】\)</span></li>
+<li><span class="math">\(A(\eta)=\operatorname{ln}\sigma+\frac{1}{2\sigma^2}\mu^2=\frac{-\eta_1^2}{4\eta_2}-\frac{1}{2}\operatorname{ln}(-2\eta_2)  \ \ ↪︎【33】\)</span></li>
+</ul>
+<p>再代入【20】式找 Link Function：
+</p>
+<div class="math">$$
+\frac{\partial A(\eta)}{\partial \eta}=\begin{bmatrix} -\eta_1/2\eta_2 \\ \eta_1^2/4\eta_2^2-1/2\eta_2 \end{bmatrix}=\begin{bmatrix} \mu \\ \mu^2+\sigma^2 \end{bmatrix}  \ \ ↪︎【34】
+$$</div>
+<p>
+有兩項充分統計量，所以要擬合一個Normal Distribution需要兩個統計量（其實我們剛才我們已經知道）。但是對於線性模型我們只需要 Mean <span class="math">\(\mu\)</span> ，所以暫且把 <span class="math">\(\sigma\)</span> 當作定值，而為了便於計算設 <span class="math">\(\sigma=1\)</span>，所以：
+</p>
+<div class="math">$$
+\eta=\begin{bmatrix} \mu \\ -1/2 \end{bmatrix}  \ \ ↪︎【35】
+$$</div>
+<div class="math">$$
+\mu=g^{-1}(\eta)=-\eta_1/2\eta_2=\eta_1 \Rightarrow g(\mu)=\mu  \ \ ↪︎【36】
+$$</div>
+<p>得證，確實古典模型在使用Normal Distribution時選擇的 Identity Link Function 是Canonical Link Function。</p>
+<h3>Binary Classification：從GLM推出Sigmoid和(狹義的)Cross Entropy</h3>
+<p>再重新來看Bernoulli Distribution。</p>
+<p>再寫一次【19】式：
+</p>
+<div class="math">$$
+p(y_i\mid x_i,m,\theta)=\pi^{y_i}(1-\pi)^{1-y_i}
+$$</div>
+<div class="math">$$
+=exp\{\operatorname{ln}(\frac{\pi}{1-\pi})y+\operatorname{ln}(1-\pi)\}
+$$</div>
+<p>對應【20】式得：</p>
+<ul>
+<li><span class="math">\(h(y)=1  \ \ ↪︎【37】\)</span></li>
+<li><span class="math">\(\eta=\operatorname{ln}(\frac{\pi}{1-\pi}) \ \ ↪︎【38】\)</span></li>
+<li><span class="math">\(T(y)=y  \ \ ↪︎【39】\)</span></li>
+<li><span class="math">\(A(\eta)=-\operatorname{ln}(1-\pi)=ln(1+e^\eta)  \ \ ↪︎【40】\)</span></li>
+</ul>
+<p>再代入【20】式找 Canonical Link Function：
+</p>
+<div class="math">$$
+\frac{\partial A(\eta)}{\partial \eta}=\frac{1}{1+e^{-\eta}}=g^{-1}(\eta)=\mu \Rightarrow g(\mu)=\operatorname{ln}(\frac{\mu}{1-\mu})  \ \ ↪︎【41】
+$$</div>
+<p>
+其中： <span class="math">\(\frac{1}{1+e^{-\eta}}\)</span> 就是Sigmoid Function，計作 <span class="math">\(\sigma(.)\)</span>
+</p>
+<div class="math">$$
+\Rightarrow \mu=\sigma(h(x_i,m,\theta))  \ \ ↪︎【42】
+$$</div>
+<p>
+上式就是我們擬合的關係式， <span class="math">\(h(x_i,m,\theta)\)</span> 可以是線性方程式，也可以是Neural Network，然後有注意到嗎？<strong>Sigmoid 剛剛好是 <span class="math">\(h(x_i,m,\theta)\)</span> 輸出後的最後一層，我們使用廣義線性定理就自然而然的得到Activation Function，這就是為什麼在Binary Classification問題中NN最後一層是Sigmoid的原因 </strong>。</p>
+<hr>
+<p>接下來就按步驟求出最佳參數：</p>
+<ol>
+<li>使用Bernoulli Distribution和相應的 Canonical Link Function
+   <div class="math">$$
+   p(y_i\mid x_i,m,\theta)=\pi^{y_i}(1-\pi)^{1-y_i}  \ \ ↪︎【43】
+   $$</div>
+</li>
+</ol>
+<div class="math">$$
+   g(\mu)=\operatorname{ln}(\frac{\mu}{1-\mu})  \ \ ↪︎【44】
+   $$</div>
+<ol>
+<li>
+<p>算出模型的Mean並透過Link Function來連接Mean和線性擬合模型
+   <div class="math">$$
+   \pi=g^{-1}(h(x_i,m,\theta))=\sigma (h(x_i,m,\theta) ) \ \ ↪︎【45】
+   $$</div>
+</p>
+</li>
+<li>
+<p>用上面的關係式將 <span class="math">\(h(x_i,\theta)\)</span> 代換到 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 裡
+   <div class="math">$$
+   p(y_i\mid x_i,m,\theta)=(\sigma (h(x_i,m,\theta) ))^{y_i}(1-\sigma (h(x_i,m,\theta) ))^{1-y_i}  \ \ ↪︎【46】
+   $$</div>
+</p>
+</li>
+<li>
+<p>利用MLE和MAP來找尋最佳參數 <span class="math">\(\theta\)</span>
+   將【46】式代入【1】式，經化簡可得：
+   <div class="math">$$
+   \theta_{MLE}=argmin_\theta\ \sum_{i}\ -y_i \operatorname{ln}(p_i)-(1-y_i)\operatorname{ln}(1-p_i) \ \ ↪︎【47】
+   $$</div>
+   其中： <span class="math">\(p_i=\sigma (h(x_i,m,\theta))\)</span>。沒錯！我們推出了(狹義的)Cross Entropy。</p>
+</li>
+</ol>
+<h3>Multi-class Classification：從GLM推出Softmax和(狹義的)Cross Entropy</h3>
+<p>Categorical Distribution的分布：
+</p>
+<div class="math">$$
+p(y_i\mid x_i,m,\theta)=\prod_{j=1}^{k-1}\phi_j^{\delta(y_i=j)}\cdot \phi_k^{1-\sum_{j=1}^{k-1}\delta(y_i=j)}
+$$</div>
+<div class="math">$$
+=exp\{\sum_{j=1}^{k-1}\delta(y_i=j)\operatorname{ln}\phi_j+(1-\sum_{j=1}^{k-1}\delta(y_i=j))\operatorname{ln}\phi_k \}
+$$</div>
+<p>將第二個 <span class="math">\(\sum\)</span> 猜開放到前一個<span class="math">\(\sum\)</span> 裡：
+</p>
+<div class="math">$$
+=exp\{\sum_{j=1}^{k-1}\delta(y_i=j)\operatorname{ln}\frac{\phi_j}{\phi_k}+\operatorname{ln}\phi_k \} \ \ ↪︎【48】
+$$</div>
+<p>
+對應【20】式得：</p>
+<ul>
+<li><span class="math">\(h(y)=1  \ \ ↪︎【49】\)</span></li>
+<li><span class="math">\(\eta_j=\operatorname{ln}\frac{\phi_j}{\phi_k};\ \ \ (j=1,...,k-1) \ \ ↪︎【50】\)</span></li>
+<li><span class="math">\(T_j(y)=\delta(y=j)  \ \ ↪︎【51】\)</span></li>
+<li><span class="math">\(A(\eta_1,...,\eta_{k-1})=-\operatorname{ln}\phi_k=\operatorname{ln}[\sum_{j=1}^{k}e^{\eta_j}]  \ \ ↪︎【52】\)</span></li>
+</ul>
+<hr>
+<p>[堆導] <span class="math">\(A(\eta_j)\)</span> 的計算過程，從【50】式出發：
+</p>
+<div class="math">$$
+\eta_j=\operatorname{ln}(\frac{\phi_j}{\phi_k}) \Rightarrow \phi_ke^{\eta_j}=\phi_j  \ \ ↪︎【53】
+$$</div>
+<p>胡亂假設 <span class="math">\(\phi_k\)</span> 存在，接下來加總所有的 <span class="math">\(\phi_j\)</span> 應該為 1：
+</p>
+<div class="math">$$
+\Rightarrow \sum_{j=1}^{k}\phi_ke^{\eta_j}=\sum_{j=1}^{k}\phi_j=1  \ \ ↪︎【54】
+$$</div>
+<p>
+所以：
+</p>
+<div class="math">$$
+\phi_k=\frac{1}{\sum_{j=1}^{k}e^{\eta_j}}  \ \ ↪︎【55】
+$$</div>
+<p>回代【53】式，得：
+</p>
+<div class="math">$$
+\phi_j=\frac{e^{\eta_j}}{\sum_{j=1}^{k}e^{\eta_j}}  \ \ ↪︎【56】
+$$</div>
+<p>剛剛我雖然胡亂假設有<span class="math">\(\phi_k\)</span>的存在，不過做完的結果並不違和，<span class="math">\(e^{\eta_j}\)</span> 作為各項的機率，並且除上所有機率的相加 <span class="math">\(\sum_{j=1}^{k}e^{\eta_j}\)</span>，可以確保所有機率總和為 <span class="math">\(\sum_{j=1}^{k}\phi_j=1\)</span> 。所以：
+</p>
+<div class="math">$$
+A(\eta_1,...,\eta_{k-1})=-\operatorname{ln}\phi_k=\operatorname{ln}[\sum_{j=1}^{k}e^{\eta_j}]  \ \ ↪︎【57】
+$$</div>
+<hr>
+<p>將【52】式代入【20】式找 Canonical Link Function：
+</p>
+<div class="math">$$
+\frac{\partial A(\eta_1,...,\eta_{k-1})}{\partial \eta_j}=\frac{e^{\eta_j}}{\sum_{j=1}^{k-1}e^{\eta_j}}=g^{-1}(\eta_j)  \ \ ↪︎【58】
+$$</div>
+<p>
+其中： <span class="math">\(\frac{e^{\eta_j}}{\sum_{j=1}^{k-1}e^{\eta_j}}\)</span> 就是Softmax Function，計作 <span class="math">\(softmax\{.\}\)</span>
+</p>
+<div class="math">$$
+\mu_j=softmax(h_j(x_i,m,\theta))  \ \ ↪︎【59】
+$$</div>
+<hr>
+<p>接下來就按步驟求出最佳參數：</p>
+<ol>
+<li>使用Categorical Distribution和相應的 Canonical Link Function
+   <div class="math">$$
+   p(y_i\mid x_i,m,\theta)=\prod_{j=1}^{k}\phi_j^{\delta(y_i=j)}  \ \ ↪︎【60】
+   $$</div>
+</li>
+</ol>
+<div class="math">$$
+   g^{-1}(\eta_j)=softmax\{\eta_j\}  \ \ ↪︎【61】
+   $$</div>
+<ol>
+<li>
+<p>算出模型的Mean並透過Link Function來連接Mean和線性擬合模型
+   <div class="math">$$
+   \phi_j=g^{-1}(h(x_i,m,\theta))=softmax\{h_j(x_i,m,\theta)\} \ \ ↪︎【62】
+   $$</div>
+</p>
+</li>
+<li>
+<p>用上面的關係式將 <span class="math">\(h(x_i,\theta)\)</span> 代換到 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 裡
+   <div class="math">$$
+   p(y_i\mid x_i,m,\theta)=\prod_{j=1}^{k}softmax\{h_j(x_i,m,\theta)\}^{\delta(y_i=j)}  \ \ ↪︎【63】
+   $$</div>
+</p>
+</li>
+<li>
+<p>利用MLE和MAP來找尋最佳參數 <span class="math">\(\theta\)</span>
+   將【63】式代入【1】式，經化簡可得：
+   <div class="math">$$
+   \theta_{MLE}=argmin_\theta\ \sum_{i}\sum_{j} -\delta(y_i=j)\operatorname{ln}p_{i,j} \ \ ↪︎【64】
+   $$</div>
+   其中： <span class="math">\(p_{i,j}=softmax\{h_j(x_i,m,\theta)\}\)</span>。我們也推出了Multi-class Cross Entropy。</p>
+</li>
+</ol>
+<h3>結論</h3>
+<p>恭喜大家堅持到這裡，應該會收穫不少。以後別人問你為什麼使用Mean Square Error？為什麼這裡要加Sigmoid？為什麼這裡要用 (狹義的) Cross Entropy？為什麼這裡卻要用Softmax？你都可以輕易的回答，甚至給你另外一個Distribution，例如：Possion Distribution，你也可以推出它的Canonical Link Function，也可以知道應該要用什麼樣的Loss去優化，你已經融會貫通了！</p>
+<p>再複習一下！</p>
+<p>為了將上章節提到的MLE和MAP化作擬合問題實際用數據去訓練Model，我們需要廣義線性定理，廣義線性定理必須藉由 Link Function 來連接擬合模型和分布模型，這樣就可以藉由MLE和MAP來優化擬合模型內的參數， Link Function 的限制只有兩條：單調遞增和值域覆蓋。</p>
+<p>但是任意取的話，其平均值不一定是模型的「充分統計量」，而當 Link Function 為 Canonical Link Function時，平均值正是「充分統計量」，因此意味著我們可以很有效率的使用著數據，而Canonical Link Function的反函數正是大名鼎鼎的Activation Function，所以在廣義線性模型的推導中自然會得到：</p>
+<ul>
+<li>Regression問題時，Normal Distribution使用Linear當Activation Function</li>
+<li>Binary Classification問題時，Bernoulli Distribution使用Sigmoid當Activation Function</li>
+<li>Multi-class Classification問題時，Categorical Distribution使用Softmax當Activation Function</li>
+</ul>
+<p>當定義完成含有擬合參數的分布模型後，我們就可以用MLE或MAP來找到擬合的優化方式：</p>
+<ul>
+<li>Regression問題時，使用Mean Square Error</li>
+<li>Binary Classification問題時，使用（狹義的）Cross Entropy</li>
+<li>Multi-class Classification問題時，使用 Multi-class Cross Entropy</li>
+</ul>
+<p>所有這些以前不加解釋的東西，都可以由廣義線性定理推導出來。</p>
+<h3>Reference</h3>
+<ul>
+<li><a href="https://www.deeplearningbook.org">Ian Goodfellow and Yoshua Bengio and Aaron Courville. Deep Learning. 2016.</a></li>
+<li>Christopher Bishop. Pattern Recognition and Machine Learning. 2006.</li>
+<li><a href="https://towardsdatascience.com/ml-notes-why-the-least-square-error-bf27fdd9a721">ML notes: why the Least Square Error?</a></li>
+<li><a href="https://www.cs.princeton.edu/~bee/courses/scribe/lec_09_02_2013.pdf">Introduction: exponential family, conjugacy, and sufficiency</a></li>
+<li><a href="https://www.cs.princeton.edu/~bee/courses/scribe/lec_09_02_2013.pdf">Generalized Linear Models</a></li>
+<li><a href="https://towardsdatascience.com/generalized-linear-models-9cbf848bb8ab">towardsdatascience: Generalized linear models</a></li>
+<li>https://stats.stackexchange.com/questions/40876/what-is-the-difference-between-a-link-function-and-a-canonical-link-function</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Sufficient_statistic">Wiki: sufficient statistic</a></p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Generalized_linear_model">Wiki: Generalized linear model</a></p>
+</li>
+<li><a href="https://en.wikipedia.org/wiki/Exponential_family#Properties">Wiki: Exponential family</a></li>
+<li>http://statmath.wu.ac.at/courses/heather_turner/glmCourse_001.pdf</li>
+<li>http://zhouyichu.com/machine-learning/Generalized-Linear-Models/</li>
+<li>http://www.airc.org.tw/newsfiles/r.pdf</li>
+<li>https://www.flutterbys.com.au/stats/tut/tut10.4.html</li>
+<li>https://stats.stackexchange.com/questions/40876/what-is-the-difference-between-a-link-function-and-a-canonical-link-function</li>
+<li>https://stats.stackexchange.com/questions/288451/why-is-mean-squared-error-the-cross-entropy-between-the-empirical-distribution-a</li>
+<li>https://ithelp.ithome.com.tw/articles/10200862</li>
+<li><a href="http://benz.nchu.edu.tw/~kucst/數統CH7-CH9.pdf">Chapter 7 &amp; 8 Sufficient Statistics &amp; More about Estimation</a></li>
+<li>https://beginningwithml.wordpress.com/2018/06/22/3-4-softmax-regression/</li>
+</ul>
+<p><em>[此文章為原創文章，轉載前請註明文章來源]</em></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+
+                    </div> <!-- end entry content -->
+                    
+                    <div class="entry__pagenav">
+                        <div class="entry__nav">
+                            <div class="entry__prev">
+                                <a href="https://www.ycc.idv.tw/deep-dl_3.html" rel="prev">
+                                    <span>Previous Post</span>
+                                    剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點
+                                </a>
+                            </div>
+                            <div class="entry__next">
+                            </div>
+                        </div>
+                    </div> <!-- end entry__pagenav -->
+
+                    <div class="entry__related">
+                        <h3 class="h2">Related Articles</h3>
+                        <ul class="related">
+                            <li class="related__item">
+                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" class="related__link">
+                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
+                                    <h5 class="related__post-title">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</h5>
+                                </a>
+                            </li>
+                            <li class="related__item">
+                                <a href="https://www.ycc.idv.tw/deep-dl_2.html" class="related__link">
+                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
+                                    <h5 class="related__post-title">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</h5>
+                                </a>
+                            </li>
+                            <li class="related__item">
+                                <a href="https://www.ycc.idv.tw/deep-dl_3.html" class="related__link">
+                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
+                                    <h5 class="related__post-title">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</h5>
+                                </a>
+                            </li>
+                        </ul>
+                    </div> <!-- end entry related -->
+
+                    <div id="disqus-wrapper">
+                        <div id="disqus_thread"></div>
+                    </div>
+
+                </article> <!-- end column large-full entry-->
+            </main>
+
+        </div> <!-- end s-content -->
+
+        <!-- footer
+        ================================================== -->
+        <footer class="s-footer footer">
+            <div class="row">
+                <div class="column large-full footer__content">
+                    <div class="footer__copyright">
+                        <span>© Copyright YC Note 2019</span> 
+                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="go-top">
+                <a class="smoothscroll" title="Back to Top" href="#top"></a>
+            </div>
+        </footer>
+
+    </div> <!-- end s-wrap -->
+
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
+    <script>
+        var elements = document.getElementsByTagName("h3");
+        for(i = 0; i < elements.length; i++)
+        {
+            elements[i].setAttribute("id", "anchor"+i);
+        }
+    </script>
+    <script type="text/javascript">
+        var disqus_config = function () {
+            this.page.url = "https://www.ycc.idv.tw/deep-dl_4.html";
+            this.page.identifier = "deep-dl_4.html";
+            this.page.title = "剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型";
+            this.language = "zh_TW";
+        };
+
+       (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = '//ycnote-1.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    <script>
+    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
+    
+    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
+        var src = $(this).attr('src');
+        $('<div>').css({
+            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
+            backgroundSize: 'contain',
+            borderTop: '40px solid RGBA(0,0,0,0.0)',
+            borderBottom: '40px solid RGBA(0,0,0,0.0)',
+            width:'100%', height:'100%',
+            position:'fixed',
+            zIndex:'10000',
+            top:'0', left:'0',
+            cursor: 'zoom-out'
+        }).click(function(){
+            $(this).remove();
+        }).appendTo('body');
+    });
+    </script>
+
+</body>
