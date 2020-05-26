@@ -490,15 +490,15 @@ $$</div>
 引入<a href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Lagrange Multiplier</a>結合【19】,【20】,【21】,【22】：
 </p>
 <div class="math">$$
-L=\int^{\infty}_{-\infty}ln\ p(x)\cdot p(x)dx+\lambda_1 (\int^{\infty}_{-\infty}p(x)dx-1)+\lambda_2(\int^{\infty}_{-\infty}x\cdot p(x)dx-\mu)+\lambda_3(\int^{\infty}_{-\infty}(x-\mu)^2\cdot p(x)dx-\sigma^2)
+L=\int^{\infty}_{-\infty}ln\ p(x)\cdot p(x)dx-\lambda_1 (\int^{\infty}_{-\infty}p(x)dx-1)-\lambda_2(\int^{\infty}_{-\infty}x\cdot p(x)dx-\mu)-\lambda_3(\int^{\infty}_{-\infty}(x-\mu)^2\cdot p(x)dx-\sigma^2)
 $$</div>
 <div class="math">$$
-=\int^{\infty}_{-\infty}[\lambda_1 p(x)+\lambda_2 p(x)x+\lambda_3 p(x)(x-\mu)^2-p(x)ln(p(x))]dx-\lambda_1 -\mu\lambda_2-\sigma^2\lambda_3  \ \ ↪︎【23】
+=\int^{\infty}_{-\infty}[-\lambda_1 p(x)-\lambda_2 p(x)x-\lambda_3 p(x)(x-\mu)^2+p(x)ln(p(x))]dx+\lambda_1 +\mu\lambda_2+\sigma^2\lambda_3  \ \ ↪︎【23】
 $$</div>
 <p>接下來對【23】微分求極值
 </p>
 <div class="math">$$
-0=\frac{\partial L}{\partial p(x)}|_{p^*(x)}=\int^{\infty}_{-\infty}[\lambda_1+\lambda_2 x+\lambda_3 (x-\mu)^2-ln(p^*(x))-1]dx  \ \ ↪︎【24】
+0=\frac{\partial L}{\partial p(x)}|_{p^*(x)}=\int^{\infty}_{-\infty}[-\lambda_1-\lambda_2 x-\lambda_3 (x-\mu)^2+ln(p^*(x))+1]dx  \ \ ↪︎【24】
 $$</div>
 <p>
 所以
