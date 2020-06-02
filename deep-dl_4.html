@@ -281,13 +281,13 @@ $$</div>
 <p>還是以我們相當熟悉的Normal Distribution當作例子 （如果不熟悉，<a href="https://www.ycc.idv.tw/deep-dl_1.html">請詳見第一講</a>） ：
 </p>
 <div class="math">$$
-p_{\theta}(y_1,y_2,..,y_n)=\frac{n}{\sqrt{2\pi}\sigma_\theta}exp\{{\sum_i-\frac{1}{2\sigma_\theta^2}(y_i-\mu_\theta)^2}\}
+p_{\theta}(y_1,y_2,..,y_n)=(\frac{1}{\sqrt{2\pi}\sigma_\theta})^n exp\{{\sum_i-\frac{1}{2\sigma_\theta^2}(y_i-\mu_\theta)^2}\}
 $$</div>
 <div class="math">$$
-=\frac{n}{\sqrt{2\pi}\sigma_\theta}exp\{{\sum_i-\frac{1}{2\sigma_\theta^2}(y_i^2-2\mu_\theta y_i+\mu_\theta^2)}\}
+=(\frac{1}{\sqrt{2\pi}\sigma_\theta})^nexp\{{\sum_i-\frac{1}{2\sigma_\theta^2}(y_i^2-2\mu_\theta y_i+\mu_\theta^2)}\}
 $$</div>
 <div class="math">$$
-=\frac{n}{\sqrt{2\pi}\sigma_\theta}exp\{{-\frac{1}{2\sigma_\theta^2}(\sum_iy_i^2-2\mu_\theta \sum_iy_i+\mu_\theta^2)}\}  \ \ ↪︎【4】
+=(\frac{1}{\sqrt{2\pi}\sigma_\theta})^nexp\{{-\frac{1}{2\sigma_\theta^2}(\sum_iy_i^2-2\mu_\theta \sum_iy_i+n\mu_\theta^2)}\}  \ \ ↪︎【4】
 $$</div>
 <p>當我定義兩個充分統計量 <span class="math">\(S_1=\sum_iy_i\)</span> 和 <span class="math">\(S_2=\sum_iy_i^2\)</span> ，所以充分統計量為
 </p>
@@ -298,14 +298,14 @@ $$</div>
 代入得：
 </p>
 <div class="math">$$
-p_{\theta}(y_1,y_2,..,y_n)=\frac{n}{\sqrt{2\pi}\sigma_\theta}exp\{{-\frac{1}{2\sigma_\theta^2}(\begin{bmatrix} -2\mu_\theta \ 1 \end{bmatrix}\begin{bmatrix} S_1 \\ S_2 \end{bmatrix}+\mu_\theta^2)}\}  \ \ ↪︎【5】
+p_{\theta}(y_1,y_2,..,y_n)=(\frac{1}{\sqrt{2\pi}\sigma_\theta})^n exp\{{-\frac{1}{2\sigma_\theta^2}(\begin{bmatrix} -2\mu_\theta \ 1 \end{bmatrix}\begin{bmatrix} S_1 \\ S_2 \end{bmatrix}+n\mu_\theta^2)}\}  \ \ ↪︎【5】
 $$</div>
 <p>
 此時整個分布都不需要depend on <span class="math">\(y_i\)</span> ，只depend on 充分統計量 <span class="math">\(T(.)\)</span>。</p>
 <p>將【5】式取 <span class="math">\(\operatorname{ln}\)</span> ，就得到它的log probability：
 </p>
 <div class="math">$$
-\operatorname{ln}p_{\theta}(y_1,y_2,..,y_n)=\operatorname{ln}\frac{n}{\sqrt{2\pi}\sigma_\theta}-\frac{1}{2\sigma_\theta^2}(S_2-2\mu_\theta S_1+\mu_\theta^2)  \ \ ↪︎【6】
+\operatorname{ln}p_{\theta}(y_1,y_2,..,y_n)=n\operatorname{ln}\frac{1}{\sqrt{2\pi}\sigma_\theta}-\frac{1}{2\sigma_\theta^2}(S_2-2\mu_\theta S_1+n\mu_\theta^2)  \ \ ↪︎【6】
 $$</div>
 <hr>
 <p>這樣分離有什麼好處？好處是當我們需要Maximum <span class="math">\(\operatorname{ln}p_{\theta}(y_1,y_2,..,y_n)\)</span> 時事情會變得容易。</p>
@@ -332,16 +332,16 @@ $$</div>
 <p>繼續剛剛的例子，將【6】代入【7】就可以得到Model的最佳參數：
 </p>
 <div class="math">$$
-0=\frac{\partial}{\partial \mu_{\theta}}[\operatorname{ln}\frac{n}{\sqrt{2\pi}\sigma_\theta}-\frac{1}{2\sigma_\theta^2}(S_2-2\mu_\theta S_1+\mu_\theta^2)]=\frac{1}{2\sigma_\theta^2}(-2S_1+2\mu_{\theta})
+0=\frac{\partial}{\partial \mu_{\theta}}[n\operatorname{ln}\frac{1}{\sqrt{2\pi}\sigma_\theta}-\frac{1}{2\sigma_\theta^2}(S_2-2\mu_\theta S_1+n\mu_\theta^2)]=\frac{1}{2\sigma_\theta^2}(-2S_1+2n\mu_{\theta})
 $$</div>
 <div class="math">$$
-\Rightarrow \mu_{\theta}=S_1=\sum_iy_i  \ \ ↪︎【8】
+\Rightarrow \mu_{\theta}=\frac{1}{n}S_1=\frac{1}{n}\sum_iy_i  \ \ ↪︎【8】
 $$</div>
 <div class="math">$$
-0=\frac{\partial}{\partial \sigma_{\theta}}[\operatorname{ln}\frac{n}{\sqrt{2\pi}\sigma_\theta}-\frac{1}{2\sigma_\theta^2}(S_2-2\mu_\theta S_1+\mu_\theta^2)]=\frac{1}{\sigma_\theta}(\frac{S_2-S_1^2}{\sigma_\theta^2}-1)
+0=\frac{\partial}{\partial \sigma_{\theta}}[n\operatorname{ln}\frac{1}{\sqrt{2\pi}\sigma_\theta}-\frac{1}{2\sigma_\theta^2}(S_2-2\mu_\theta S_1+n\mu_\theta^2)]=-\frac{n}{\sigma_\theta}+\frac{1}{\sigma_\theta^3}(S_2-\frac{1}{n}S_1^2)
 $$</div>
 <div class="math">$$
-\Rightarrow \sigma_\theta^2=S_2-S_1^2=(\sum_iy_i^2)-(\sum_iy_i)^2  \ \ ↪︎【9】
+\Rightarrow \sigma_\theta^2=\frac{S_2}{n}-(\frac{S_1}{n})^2=(\frac{1}{n}\sum_iy_i^2)-(\frac{1}{n}\sum_iy_i)^2  \ \ ↪︎【9】
 $$</div>
 <p>是不是跟我們之前學的東西是自恰的啊！</p>
 <hr>
@@ -535,23 +535,23 @@ $$</div>
 </li>
 <li>
 <div class="math">$$
-  A(\eta)=\operatorname{ln}\sigma+\frac{1}{2\sigma^2}\mu^2=\frac{-\eta_1^2}{4\eta_2}-\frac{1}{2}\operatorname{ln}(-2\eta_2)  \ \ ↪︎【33】
+  A(\eta)=\operatorname{ln}\sigma+\frac{1}{2\sigma^2}\mu^2=-\frac{1}{2}\operatorname{ln}(-2\eta_2) -\frac{\eta_1^2}{4\eta_2}  \ \ ↪︎【33】
   $$</div>
 </li>
 </ul>
 <p>再代入【20】式找 Link Function：
 </p>
 <div class="math">$$
-\frac{\partial A(\eta)}{\partial \eta}=\begin{bmatrix} -\eta_1/2\eta_2 \\ \eta_1^2/4\eta_2^2-1/2\eta_2 \end{bmatrix}=\begin{bmatrix} \mu \\ \mu^2+\sigma^2 \end{bmatrix}  \ \ ↪︎【34】
+\frac{\partial A(\eta)}{\partial \eta}=\begin{bmatrix} -\eta_1/2\eta_2 \\ -1/2\eta_2+\eta_1^2/4\eta_2^2 \end{bmatrix}=\begin{bmatrix} \mu \\ \mu^2+\sigma^2 \end{bmatrix}  \ \ ↪︎【34】
 $$</div>
 <p>
-有兩項充分統計量，所以要擬合一個Normal Distribution需要兩個統計量（其實我們剛才我們已經知道）。但是對於線性模型我們只需要 Mean <span class="math">\(\mu\)</span> ，所以暫且把 <span class="math">\(\sigma\)</span> 當作定值，而為了便於計算設 <span class="math">\(\sigma=1\)</span>，所以：
+有兩項充分統計量，所以要擬合一個Normal Distribution需要兩個統計量（其實我們剛才我們已經知道）。但是對於線性模型我們只需要 Mean <span class="math">\(\mu\)</span> ，所以我們只考慮第一項：
 </p>
 <div class="math">$$
-\eta=\begin{bmatrix} \mu \\ -1/2 \end{bmatrix}  \ \ ↪︎【35】
+\frac{\partial A(\eta)}{\partial \eta}|_0=g^{-1}(\eta)=\mu  \ \ ↪︎【35】
 $$</div>
 <div class="math">$$
-\mu=g^{-1}(\eta)=-\eta_1/2\eta_2=\eta_1 \Rightarrow g(\mu)=\mu  \ \ ↪︎【36】
+\mu=g^{-1}(\eta) \Rightarrow g(\mu)=\mu  \ \ ↪︎【36】
 $$</div>
 <p>得證，確實古典模型在使用Normal Distribution時選擇的 Identity Link Function 是Canonical Link Function。</p>
 <h3>Binary Classification：從GLM推出Sigmoid和(狹義的)Cross Entropy</h3>
@@ -761,6 +761,9 @@ $$</div>
 <li>https://beginningwithml.wordpress.com/2018/06/22/3-4-softmax-regression/</li>
 </ul>
 <p><em>[此文章為原創文章，轉載前請註明文章來源]</em></p>
+<ul>
+<li>20200603: 修正從【4】到【9】式的公式錯誤（感謝 俊嘉 細心的揪出公式的錯誤）</li>
+</ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -842,15 +845,15 @@ $$</div>
                                 </a>
                             </li>
                             <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/deep-dl_2.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
-                                    <h5 class="related__post-title">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
                                 <a href="https://www.ycc.idv.tw/deep-dl_3.html" class="related__link">
                                     <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
                                     <h5 class="related__post-title">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</h5>
+                                </a>
+                            </li>
+                            <li class="related__item">
+                                <a href="https://www.ycc.idv.tw/deep-dl_2.html" class="related__link">
+                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
+                                    <h5 class="related__post-title">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</h5>
                                 </a>
                             </li>
                         </ul>
