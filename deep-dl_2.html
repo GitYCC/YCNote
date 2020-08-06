@@ -312,7 +312,7 @@ $$</div>
 <p>最後，來看看什麼分布的Entropy最大，在給定 <span class="math">\(\int p(x)dx=1\)</span> 的情況下試圖找到一個 <span class="math">\(p(x)\)</span> 可以使 Entropy <span class="math">\(H\)</span> 最大，引入<a href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Lagrange Multiplier</a>：
 </p>
 <div class="math">$$
-L=\int^{\infty}_{-\infty}\operatorname{ln}p(x)\cdot p(x)dx+\lambda (\int^{\infty}_{-\infty}p(x)dx-1)
+L=\int^{\infty}_{-\infty}-\operatorname{ln}p(x)\cdot p(x)dx+\lambda (\int^{\infty}_{-\infty}p(x)dx-1)
 $$</div>
 <div class="math">$$
 =\int^{\infty}_{-\infty}[\lambda p(x)-p(x)\operatorname{ln}(p(x))]dx-\lambda  \ \ ↪︎【11】
