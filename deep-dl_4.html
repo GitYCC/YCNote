@@ -432,7 +432,7 @@ $$</div>
 <p>一樣假設Identity Function當作 Link Function <span class="math">\(g(.)\)</span> 
 </p>
 <div class="math">$$
-h(x_i,m,\theta)=E_{x\sim p_{model}}[y_i]=\sum_{y_i=0}^{y_i=1} y_i \pi^{y_i}(1-\pi)^{1-y_i}=\pi
+h(x_i,m,\theta)=E_{y\sim p_{model}}[y_i]=\sum_{y_i=0}^{y_i=1} y_i \pi^{y_i}(1-\pi)^{1-y_i}=\pi
 $$</div>
 <p>
 這樣對嗎？其實是錯誤的。Link Function沒有對應到正確的值域，所以 <span class="math">\(h(x_i,m,\theta)\)</span> 可以是整個實數空間，而 <span class="math">\(\pi\)</span> 卻只能是落在0到1之間，等式不能成立。</p>
