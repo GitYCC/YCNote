@@ -396,7 +396,7 @@ $$</div>
 連接到 <span class="math">\((t,s)\)</span> 可分為三種路徑情況，如下圖：</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_example_02.png"></p>
 <p><center><small>
-  圖二：向前算法可能路徑
+  圖二：Forward Algorithm可能路徑
 </small></center><br></p>
 <p>所以我們可以把【8】遞迴式寫得更加清楚：
 </p>
@@ -435,7 +435,7 @@ $$</div>
 從 <span class="math">\((t,s)\)</span> 連接的情況一樣也可分為三種情況，如下圖：</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_example_03.png"></p>
 <p><center><small>
-  圖三：向後算法可能路徑
+  圖三：Backward Algorithm可能路徑
 </small></center><br></p>
 <p>所以我們可以把【12】遞迴式寫得更加清楚：
 </p>
@@ -488,7 +488,7 @@ $$</div>
 <p>因此綜【6】和【18】我們就可以解【4】式，然後就可以對網路做反向傳播優化參數了！</p>
 <h3>Inference of CTC</h3>
 <p>在 <a href="https://github.com/GitYCC/crnn-pytorch">GitYCC/crnn-pytorch</a> 中我有實作了<a href="https://github.com/GitYCC/crnn-pytorch/blob/master/src/ctc_decoder.py">三種 CTC 的 Inference 方法</a>，分別為 <code>greedy_decode</code>、<code>beam_search_decode</code> 和 <code>prefix_beam_decode</code>，精確度依序越來越準確，但是隨著精確度提高所花的 Inference 時間也就越長。</p>
-<p>事實上，這三種方式都不是最佳解，真正的最佳解得枚舉出所有可能的 Sequence Label 組合再取最大機率的那一個，它必須要衡量 <span class="math">\((C+1)^T\)</span> 條路徑且每條路徑都需要要做 <span class="math">\(T\)</span> 次的乘法，所以時間複雜度為 <span class="math">\(O(T\times (C+1)^T)\)</span>，這個計算量大到不切實際，假設英文字母 <span class="math">\(C=26\)</span> ，然後 <span class="math">\(T\)</span> 假設為 <span class="math">\(20\)</span>，時間複雜度為 <span class="math">\(8.4e\text{+}29\)</span>。</p>
+<p>事實上，這三種方式都不是最佳解，真正的最佳解得枚舉出所有可能的 Sequence Label 組合再取最大機率的那一個，它必須要衡量 <span class="math">\((C+1)^T\)</span> 條路徑且每條路徑都需要要做 <span class="math">\(T\)</span> 次的乘法，所以時間複雜度為 <span class="math">\(O(T\times (C+1)^T)\)</span>，這個計算量大到不切實際，假設英文字母 <span class="math">\(C=26\)</span> ，然後 <span class="math">\(T\)</span> 假設為 <span class="math">\(20\)</span>，時間複雜度會達到 <span class="math">\(8.4e\text{+}29\)</span>。</p>
 <p>所以接下來我會逐一介紹三種常見的近似方法。</p>
 <h4>Greedy Decode</h4>
 <div class="math">$$
