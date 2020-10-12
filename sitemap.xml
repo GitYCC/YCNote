@@ -5,21 +5,21 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://www.ycc.idv.tw/</loc>
-<lastmod>2020-10-10T02:20:54-00:00</lastmod>
+<lastmod>2020-10-12T14:52:22-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://www.ycc.idv.tw/tags.html</loc>
-<lastmod>2020-10-10T02:20:54-00:00</lastmod>
+<lastmod>2020-10-12T14:52:22-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://www.ycc.idv.tw/crnn-ctc.html</loc>
-<lastmod>2020-10-10T12:00:00+08:00</lastmod>
+<lastmod>2020-10-12T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
@@ -355,7 +355,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://www.ycc.idv.tw/category/aiml.html</loc>
-<lastmod>2020-10-10T12:00:00+08:00</lastmod>
+<lastmod>2020-10-12T12:00:00+08:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -446,7 +446,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://www.ycc.idv.tw/tag/cv.html</loc>
-<lastmod>2020-10-10T12:00:00+08:00</lastmod>
+<lastmod>2020-10-12T12:00:00+08:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>

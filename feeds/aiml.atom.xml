@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>YC Note - AI.ML</title><link href="https://www.ycc.idv.tw/" rel="alternate"></link><link href="https://www.ycc.idv.tw/feeds/aiml.atom.xml" rel="self"></link><id>https://www.ycc.idv.tw/</id><updated>2020-10-10T12:00:00+08:00</updated><subtitle>YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)</subtitle><entry><title>OCR場景文字辨識：CRNN+CTC開源加詳細解析</title><link href="https://www.ycc.idv.tw/crnn-ctc.html" rel="alternate"></link><published>2020-10-10T12:00:00+08:00</published><updated>2020-10-10T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:www.ycc.idv.tw,2020-10-10:/crnn-ctc.html</id><summary type="html"></summary><content type="html">&lt;p&gt;場景文字辨識 OCR (Optical Character Recognition) 應用場景非常多，例如：Evernote提供的名片辨識、諸多銀行內部使用的存摺影像辨識、新型停車場提供的車牌辨識系統、證件識別工具、旅遊業會用到護照識別，不勝枚舉！凡是想要將生活場景中的文字藉由機器去讀取的都是OCR的範疇，它會為企業省下許多人工判讀的人力成本。&lt;/p&gt;
-&lt;p&gt;在場景文字辨識中相當經典的模型就是&lt;a href="http://arxiv.org/abs/1507.05717"&gt;CRNN+CTC&lt;/a&gt;，Github上也有許多相關的Repo.，但是YC發現沒有一個將這個模型寫的夠好、夠容易修改的開源程式碼，所以YC決定自己幹一個並且將它開源，目前搭配資料集 Synth90k 已經可以在英文辨識上做到 93.9 % 的 Sequence Accuracy。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>YC Note - AI.ML</title><link href="https://www.ycc.idv.tw/" rel="alternate"></link><link href="https://www.ycc.idv.tw/feeds/aiml.atom.xml" rel="self"></link><id>https://www.ycc.idv.tw/</id><updated>2020-10-12T12:00:00+08:00</updated><subtitle>YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)</subtitle><entry><title>OCR場景文字辨識：CRNN+CTC開源加詳細解析</title><link href="https://www.ycc.idv.tw/crnn-ctc.html" rel="alternate"></link><published>2020-10-12T12:00:00+08:00</published><updated>2020-10-12T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:www.ycc.idv.tw,2020-10-12:/crnn-ctc.html</id><summary type="html">&lt;p&gt;Pytorch CRNN+CTC 開源囉！並且在這篇中會仔細介紹 CRNN 的架構，以及 CTC 的架構、訓練的參數優化和其三種 Inference 方法（greedy decode, beam search decode, prefix beam search decode）&lt;/p&gt;</summary><content type="html">&lt;p&gt;場景文字辨識 OCR (Optical Character Recognition) 應用場景非常多，例如：Evernote提供的名片辨識、諸多銀行內部使用的存摺影像辨識、新型停車場提供的車牌辨識系統、證件識別工具、旅遊業會用到護照識別，不勝枚舉！凡是想要將生活場景中的文字藉由機器去讀取的都是OCR的範疇，它會為企業省下許多人工判讀的人力成本。&lt;/p&gt;
+&lt;p&gt;在場景文字辨識中相當經典的模型就是 &lt;a href="http://arxiv.org/abs/1507.05717"&gt;CRNN+CTC&lt;/a&gt;，Github 上也有許多相關的 Repo.，但 YC 發現沒有一個將這個模型寫的夠好、夠容易修改的 pytorch 開源程式碼，所以 YC 決定自己幹一個並且將它開源，目前搭配資料集 Synth90k 已經可以在英文辨識上做到 93.9 % 的 Sequence Accuracy，歡迎大家來嘗試使用！&lt;/p&gt;
 &lt;h3&gt;開源：pytorch版本的CRNN+CTC&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;&lt;a href="https://github.com/GitYCC/crnn-pytorch"&gt;GitYCC/crnn-pytorch&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/GitYCC/crnn-pytorch"&gt;GitYCC/crnn-pytorch&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;👆🏼👆🏼👆🏼👆🏼👆🏼&lt;/p&gt;
 &lt;p&gt;麻煩大家不吝給予星星 ⭐️，並且分享給更多人知道！&lt;/p&gt;
 &lt;p&gt;&lt;img alt="reading" src="http://www.ycc.idv.tw/media/CV/170_READING_62745.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="showtime" src="http://www.ycc.idv.tw/media/CV/178_Showtime_70541.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="novel" src="http://www.ycc.idv.tw/media/CV/78_Novel_52433.jpg"&gt;&lt;/p&gt;
 &lt;h3&gt;網路架構&lt;/h3&gt;
-&lt;p&gt;CRNN+CTC結構源於論文&lt;a href="http://arxiv.org/abs/1507.05717"&gt;An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition (2015), Baoguang Shi et al.&lt;/a&gt;，其網路架構其實並不複雜，講白了就是CNN的Backbone再搭配Bi-directional RNN，最後對每個時間點作Softmax分類問題，但是在衡量分類是否正確則是需要綜觀每個時間點的CTC Loss。&lt;/p&gt;
+&lt;p&gt;CRNN+CTC 結構源於論文&lt;a href="http://arxiv.org/abs/1507.05717"&gt;An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition (2015), Baoguang Shi et al.&lt;/a&gt;，其網路架構其實並不複雜，講白了就是 CNN 的 Backbone 再搭配 Bi-directional RNN，最後對每個時間點作Softmax分類問題，但是在衡量輸出時則是需要綜觀每個時間點的 CTC Loss。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="crnn_structure" src="http://www.ycc.idv.tw/media/CV/crnn_structure.png"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="crnn_structure_detail" src="http://www.ycc.idv.tw/media/CV/crnn_structure_detail.png"&gt;&lt;/p&gt;
 &lt;p&gt;首先，將圖片轉成灰階並且伸縮至高度32，通過多層的Conv2D、MaxPool和BatchNormalization抽取圖片相關的特徵。&lt;/p&gt;
@@ -66,20 +66,392 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;接下來藉由一個DenseLayer去將圖片轉成維度為 &lt;code&gt;map_to_seq_hidden&lt;/code&gt; 的序列，這樣就可以接續的使用RNN來萃取序列的特徵。&lt;/p&gt;
+&lt;p&gt;接下來藉由一個 DenseLayer 去將圖片轉成維度為 &lt;code&gt;map_to_seq_hidden&lt;/code&gt; 的序列，這樣就可以接續的使用 RNN 來萃取序列的特徵。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map_to_seq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Linear&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;output_channel&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;output_height&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;map_to_seq_hidden&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;這邊特別注意一下，當你經過CNN Backbone之後的維度是：&lt;code&gt;(batch, channel, new_height, new_width)&lt;/code&gt; ，但是你希望進RNN前的維度是：&lt;code&gt;(seq_len, batch, map_to_seq_hidden)&lt;/code&gt; ，所以需要將&lt;code&gt;channel, new_height&lt;/code&gt; 攤平再過DenseLayer，如下：&lt;/p&gt;
+&lt;p&gt;這邊特別注意一下，當你經過 CNN Backbone 之後的維度是：&lt;code&gt;(batch, channel, new_height, new_width)&lt;/code&gt; ，但是你希望進RNN前的維度是：&lt;code&gt;(seq_len, batch, map_to_seq_hidden)&lt;/code&gt; ，所以需要將 &lt;code&gt;channel, new_height&lt;/code&gt; 攤平再過 DenseLayer，如下：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;conv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;conv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;batch&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;channel&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;conv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;conv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;permute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c"&gt;# (width, batch, feature)&lt;/span&gt;
 &lt;span class="n"&gt;seq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map_to_seq&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;conv&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;最後再過兩層Bi-directional LSTM 萃取序列相關的特徵，並且過DenseLayer來將維度轉成分類的數量，再過Softmax就大功告成！注意：分類的類別是所有要預測的字元再加上blank &lt;span class="math"&gt;\(φ\)&lt;/span&gt; ，一般我們會讓blank &lt;span class="math"&gt;\(φ\)&lt;/span&gt; 在Onehot Encoding時放在index=0的位置，要預測的字元接續其後。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="map_to_seq" src="http://www.ycc.idv.tw/media/CV/map_to_seq.png"&gt;&lt;/p&gt;
+&lt;p&gt;最後再過兩層 Bi-directional LSTM 萃取序列相關的特徵，並且過 DenseLayer 來將維度轉成與分類的數量相同，再過 Softmax 就大功告成！注意：分類的類別是所有要預測的字元再加上 blank ε ，一般我們會讓 blank ε 在Onehot Encoding 時放在 index=0 的位置。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/CV/biLSTM.png"&gt;&lt;/p&gt;
+&lt;p&gt;詳細模型架構請詳見：&lt;a href="https://github.com/GitYCC/crnn-pytorch/blob/master/src/model.py"&gt;src/model.py&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;CTC (Connectionist Temporal Classification)&lt;/h3&gt;
+&lt;p&gt;RNNs 與其他傳統方法相比，如：HMMs (Hidden Markov Model) 和 CRFs (Conditional Random Field) 有以下優勢：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;RNNs 無須多餘的先驗假設&lt;/li&gt;
+&lt;li&gt;RNNs 提供了相當強大且一般化的機制去描述時間序列&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;但是 RNNs 只能訓練在已經分配好的序列上，所以當你僅有 Sequence Label 是不夠的，還需要知道這些 Label 要怎麼被&lt;strong&gt;分配&lt;/strong&gt;。舉個例子：如果今天你要辨識的圖片包含 &lt;code&gt;"CAT"&lt;/code&gt; 這個詞，你想要使用 RNN 進行辨識，而這個 RNN 長度假設為 7，為了要能訓練 RNN 我們需要給它 Groud True，此時你就需要將 &lt;code&gt;"CAT"&lt;/code&gt; 這 3 個字&lt;strong&gt;分配&lt;/strong&gt;到 7 格中，但是這樣的標注是費工的、不切實際的，&lt;strong&gt;我們希望可以直接訓練在沒有分配前的 Sequence Label 上&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;CTC 設計了一個機制讓我們可以做到這件事：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;在原本要預測的字元中多加入了 blank ε &lt;/li&gt;
+&lt;li&gt;透過映射機制 &lt;span class="math"&gt;\(B\)&lt;/span&gt; 將 RNN 的輸出轉化成 Sequence Prediction&lt;/li&gt;
+&lt;li&gt;映射機制 &lt;span class="math"&gt;\(B\)&lt;/span&gt;：合併相鄰的字元並且除去 blank ε &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img alt="ctc mapping" src="http://www.ycc.idv.tw/media/CV/ctc_mapping.png"&gt;&lt;/p&gt;
+&lt;p&gt;有了這個映射機制 &lt;span class="math"&gt;\(B\)&lt;/span&gt; 我們就可以不需要事先分配 Sequence Label 也能訓練網路，但是要注意：能映射到一組 Sequence Label 的可能性是有很多組合的，例如：&lt;code&gt;"hee-l-lloo"&lt;/code&gt; 和 &lt;code&gt;"hheel-lloo"&lt;/code&gt; 都會映射到 &lt;code&gt;"hello"&lt;/code&gt;，所以要特別去設計它的 Loss 讓其可以考慮各種可能性，這會在下一節中仔細闡述。&lt;/p&gt;
+&lt;h3&gt;CTC Loss: Forward-Backward Algorithm&lt;/h3&gt;
+&lt;p&gt;接下來這一個部分將會是本篇最難理解的部分，而且也最為數學，所以在陷進去數學漩渦之前，我們先來概念性的了解 CTC Loss 究竟是做了什麼。簡言之，&lt;strong&gt;我們需要讓 CTC Loss 降低的同時，等同於做到提升產生 Groud True Sequence Label 的機率，而在映射函數 &lt;span class="math"&gt;\(B\)&lt;/span&gt; 的作用下產生這個 Groud True Sequence Label 會有多種來源組合，這些組合都必須被考慮進去，然後我們有了 CTC Loss 與參數的關係式就可以使用梯度下降進行優化。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;所以我們需要窮舉所有可能的組合才能正確的將產生 Groud True Sequence Label 的機率算出來，我們就來試著羅列。假設我們的 Sequence Label 是 &lt;code&gt;"CAT"&lt;/code&gt; ，見圖一，所以我們的 &lt;span class="math"&gt;\(\ell\)&lt;/span&gt; 為 &lt;code&gt;"CAT"&lt;/code&gt;，為了把 blank ε 列入考慮，我們設計了 &lt;span class="math"&gt;\(\ell'\)&lt;/span&gt;，其長度關係為 &lt;span class="math"&gt;\(|\ell'|=2|\ell|+1\)&lt;/span&gt; 。參照映射函數的規則，只有圖中兩個紅點是可能的出發點、兩個藍點是可能的結束點，因此我們需要羅列從出發點到結束點可能的路徑 &lt;span class="math"&gt;\(\pi\)&lt;/span&gt;，這些路徑都可以在經過映射函數 &lt;span class="math"&gt;\(B\)&lt;/span&gt; 後產生 Sequence Label &lt;code&gt;"CAT"&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_example_01.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;small&gt;
+  圖一
+&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;加總所有可能透過 &lt;span class="math"&gt;\(B\)&lt;/span&gt; 映射至 Groud True Sequence Label &lt;span class="math"&gt;\(\ell\)&lt;/span&gt; 的條件機率：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+p(\ell|y)=\sum_{π:B(π)=\ell}p(π|y)\ \text{ ↪︎【1】}
+$$&lt;/div&gt;
+&lt;p&gt;
+其中：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+p(π|y)=\prod_{t=1}^{T}y^{t}_{π_t}\ \text{ ↪︎【2】}
+$$&lt;/div&gt;
+&lt;p&gt;
+&lt;span class="math"&gt;\(y^{t}_{π_t}\)&lt;/span&gt; 表示在時間 &lt;span class="math"&gt;\(t\)&lt;/span&gt; Label 為 &lt;span class="math"&gt;\(π_t\)&lt;/span&gt; 的機率。&lt;/p&gt;
+&lt;p&gt;而我們的目標就是想要最大化 &lt;span class="math"&gt;\(p(\ell|y)\)&lt;/span&gt; ，取 &lt;span class="math"&gt;\(ln\)&lt;/span&gt; 在加上負號，就會變換成為最小化問題：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+min_{y}\ -ln[p(\ell|y)]\ \text{ ↪︎【3】}
+$$&lt;/div&gt;
+&lt;p&gt;
+只要算其微分，就可以使用梯度下降的方法進行優化：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\frac{\partial}{\partial y}\{ -ln[p(\ell|y)]\}=\frac{-1}{p(\ell|y)}\frac{\partial p(\ell|y)}{\partial y}\ \text{ ↪︎【4】}
+$$&lt;/div&gt;
+&lt;p&gt;
+所以只要解決兩件事：如何計算 &lt;span class="math"&gt;\(p(\ell|y)\)&lt;/span&gt; 和 &lt;span class="math"&gt;\(\frac{\partial p(\ell|y)}{\partial y}\)&lt;/span&gt; ，就可以優化參數了！&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;但是窮舉各種可能路徑有這麼簡單嗎？幸好我們有 &lt;a href="https://zh.wikipedia.org/zh-tw/动态规划"&gt;Dynamic Programming&lt;/a&gt; ，這裡借鏡解 HMM 優化問題會使用的 Forward-Backward Algorithm 來解決這個問題。 &lt;a href="https://zh.wikipedia.org/zh-tw/动态规划"&gt;Dynamic Programming&lt;/a&gt; 是一種遞迴的演算法，只要有初始值和遞迴式就可以一路算下去。運用在這個問題上，我們只需要找到在 &lt;span class="math"&gt;\(y_t\)&lt;/span&gt; 和 &lt;span class="math"&gt;\(y_{t-1}\)&lt;/span&gt; 的機率累加遞迴關係，以及 &lt;span class="math"&gt;\(y_1\)&lt;/span&gt; 時刻的機率分布，就可以一路算到最後一個時刻點 &lt;span class="math"&gt;\(T\)&lt;/span&gt; 的機率累積。&lt;/p&gt;
+&lt;p&gt;首先，我們先來定義「Forward Algorithm」的 &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; ：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\alpha_t(s)\equiv\sum_{π:B(π_{1:t})=\ell_{1:s}}\prod_{t'=1}^{t}y^{t'}_{π_{t'}}\ \text{ ↪︎【5】}
+$$&lt;/div&gt;
+&lt;p&gt;
+&lt;span class="math"&gt;\(\alpha_t(s)\)&lt;/span&gt; 表示從可能的起始點累積到 &lt;span class="math"&gt;\(t\)&lt;/span&gt; 時刻且 Label &lt;span class="math"&gt;\(\ell'=s\)&lt;/span&gt;  那點的總機率，可以從式子的右式看出，加總所有能將 &lt;span class="math"&gt;\(π_{1:t}\)&lt;/span&gt; (圖一中的衡欄) 映射到 &lt;span class="math"&gt;\(\ell_{1:s}\)&lt;/span&gt; (圖一中的縱欄) 的路徑 &lt;span class="math"&gt;\(\pi\)&lt;/span&gt; ，並且將這路徑 &lt;span class="math"&gt;\(\pi\)&lt;/span&gt; 上的各點機率相乘 (因為互為獨立事件)。&lt;/p&gt;
+&lt;p&gt;再參照圖一和【1】式，我們知道 &lt;span class="math"&gt;\(p(\ell|y)\)&lt;/span&gt; 可以用 &lt;span class="math"&gt;\(\alpha_t(s)\)&lt;/span&gt; 表示：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+p(\ell|y)=\alpha_T(|\ell'|)+\alpha_T(|\ell'|-1)\ \text{ ↪︎【6】}
+$$&lt;/div&gt;
+&lt;p&gt;
+右式的兩項代表結束的兩個藍點。&lt;/p&gt;
+&lt;p&gt;從【5】式我們可以得到 &lt;span class="math"&gt;\(t=1\)&lt;/span&gt; 的初始值，因為只有兩個紅點是可能的路徑，所以得到：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{cases}
+    \alpha_1(1)=y_\epsilon^1 \\
+    \alpha_1(2)=y_{\ell_1}^1 \\
+    \alpha_1(s)=0,\ \forall s&amp;gt; 2
+\end{cases}\ \text{ ↪︎【7】}
+$$&lt;/div&gt;
+&lt;p&gt;
+從【5】式我們也可以得到遞迴式：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\alpha_t(s)=[\sum_{π:B(π_{1:t-1})=\ell_{1:s}}\prod_{t'=1}^{t}y^{t'}_{π_{t'}}]y^{t}_{l'_{s}}=[\sum_{s'\in connected\ to\ (t,s)}\alpha_{t-1}(s')]y^{t}_{l'_{s}}\ \text{ ↪︎【8】}
+$$&lt;/div&gt;
+&lt;p&gt;
+連接到 &lt;span class="math"&gt;\((t,s)\)&lt;/span&gt; 可分為三種路徑情況，如下圖：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_example_02.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;small&gt;
+  圖二：向前算法可能路徑
+&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;所以我們可以把【8】遞迴式寫得更加清楚：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\alpha_t(s)= 
+\begin{cases}
+    [\alpha_{t-1}(s)+\alpha_{t-1}(s-1)]y_{l'_s}^t&amp;amp; \text{if } l'_s=\epsilon\text{ or }l'_{s-2}=l'_s\\
+    [\alpha_{t-1}(s)+\alpha_{t-1}(s-1)+\alpha_{t-1}(s-2)]y_{l'_s}^t   &amp;amp; \text{otherwise}
+\end{cases}\ \text{ ↪︎【9】}
+$$&lt;/div&gt;
+&lt;p&gt;
+善用【9】式遞迴式和【7】式初始值，你就可以求得圖一中所有格子的 &lt;span class="math"&gt;\(\alpha_t(s)\)&lt;/span&gt; 值，再藉由【6】式就可以得到 &lt;span class="math"&gt;\(p(\ell|y)\)&lt;/span&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;我們順利的解決了【4】式中的 &lt;span class="math"&gt;\(p(\ell|y)\)&lt;/span&gt;，那接下來只剩下 &lt;span class="math"&gt;\(\frac{\partial p(\ell|y)}{\partial y}\)&lt;/span&gt;，為了算這一項我們還需要「Backward Algorithm」，「Backward Algorithm」的 &lt;span class="math"&gt;\(\beta\)&lt;/span&gt; 定義如下： 
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\beta_t(s)\equiv\sum_{π:B(π_{t:T})=\ell_{s:|\ell|}}\prod_{t'=t}^{T}y^{t'}_{π_{t'}}\ \text{ ↪︎【10】}
+$$&lt;/div&gt;
+&lt;p&gt;
+從【10】式我們可以得到 &lt;span class="math"&gt;\(t=T\)&lt;/span&gt; 的初始值，因為只有兩個藍點是可能的路徑，所以得到：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\begin{cases}
+    \beta_T(|\ell'|)=y_\epsilon^T \\
+    \beta_T(|\ell'|-1)=y_{\ell_{|\ell|}}^T \\
+    \beta_T(s)=0,\ \forall s&amp;lt; |\ell'|-1
+\end{cases}\ \text{ ↪︎【11】}
+$$&lt;/div&gt;
+&lt;p&gt;
+從【10】式我們也可以得到遞迴式：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\beta_t(s)=y^{t}_{l'_{s}}[\sum_{π:B(π_{t:T})=\ell_{s:|\ell|}}\prod_{t'=t+1}^{T}y^{t'}_{π_{t'}}]=y^{t}_{l'_{s}}[\sum_{s'\in connected\ from\ (t,s)}\beta_{t+1}(s')]\ \text{ ↪︎【12】}
+$$&lt;/div&gt;
+&lt;p&gt;
+從 &lt;span class="math"&gt;\((t,s)\)&lt;/span&gt; 連接的情況一樣也可分為三種情況，如下圖：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_example_03.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;small&gt;
+  圖三：向後算法可能路徑
+&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;所以我們可以把【12】遞迴式寫得更加清楚：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\beta_t(s)= 
+\begin{cases}
+    [\beta_{t+1}(s)+\beta_{t+1}(s+1)]y_{l'_s}^t&amp;amp; \text{if } l'_s=\epsilon\text{ or }l'_{s+2}=l'_s\\
+    [\beta_{t+1}(s)+\beta_{t+1}(s+1)+\beta_{t+1}(s+2)]y_{l'_s}^t   &amp;amp; \text{otherwise}
+\end{cases}\ \text{ ↪︎【13】}
+$$&lt;/div&gt;
+&lt;hr&gt;
+&lt;p&gt;當我們把 Forward Algorithm 和 Backward Algorithm 合在一起就會得到一個好用的公式，綜【5】和【10】式：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\alpha_t(s)\beta_t(s)=\sum_{π:B(π)=\ell\ \&amp;amp;\ \pi_t=\ell'_s}\ y_{\ell'_s}^t\prod_{t'=1}^{T}y^{t'}_{π_{t'}}\ \text{ ↪︎【14】}
+$$&lt;/div&gt;
+&lt;p&gt;
+再考慮【2】式
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\Rightarrow \frac{\alpha_t(s)\beta_t(s)}{y_{\ell'_s}^t}=\sum_{π:B(π)=\ell\ \&amp;amp;\ \pi_t=\ell'_s}\ \prod_{t'=1}^{T}y^{t'}_{π_{t'}}＝\sum_{π:B(π)=\ell\ \&amp;amp;\ \pi_t=\ell'_s}p(π|y)\ \text{ ↪︎【15】}
+$$&lt;/div&gt;
+&lt;p&gt;
+再考慮【1】式
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+p(\ell|y)=\sum_{s=1}^{|\ell'|}\sum_{π:B(π)=\ell\ \&amp;amp;\ \pi_t=\ell'_s}p(π|y)=\sum_{s=1}^{|\ell'|}\frac{\alpha_t(s)\beta_t(s)}{y_{\ell'_s}^t}\ \text{ ↪︎【16】}
+$$&lt;/div&gt;
+&lt;p&gt;
+【16】式提供了另外一個求 &lt;span class="math"&gt;\(p(\ell|y)\)&lt;/span&gt; 的方法，而且這個算法可以在任意時間點 &lt;span class="math"&gt;\(t\)&lt;/span&gt; 作計算，更棒的是它可以讓我們很方便的求得 &lt;span class="math"&gt;\(\frac{\partial p(\ell|y)}{\partial y}\)&lt;/span&gt; ：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+\frac{\partial p(l|x)}{\partial y_k^t}=\frac{\partial}{\partial y_k^t}[\sum_{s=1}^{|\ell'|}\frac{\alpha_t(s)\beta_t(s)}{y_{\ell'_s}^t}]\ \text{ ↪︎【17】}
+$$&lt;/div&gt;
+&lt;p&gt;
+因為微分的關係，上式加總中與 &lt;span class="math"&gt;\(y_k^t\)&lt;/span&gt; 無關的項都會化為零，可以進一步改寫：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+=\frac{\partial}{\partial y_k^t}[\sum_{s\in \{\ell'_s=k\}}\frac{\alpha_t(s)\beta_t(s)}{y_{\ell'_s}^t}]
+$$&lt;/div&gt;
+&lt;div class="math"&gt;$$
+=\frac{\partial}{\partial y_k^t}[\sum_{s\in \{\ell'_s=k\}}\frac{(\cdots)y_{l'_s}^t\times y_{l'_s}^t(\cdots)}{y_{l'_s}^t}]
+$$&lt;/div&gt;
+&lt;div class="math"&gt;$$
+=\sum_{s\in \{\ell'_s=k\}}\frac{(\cdots)y_{l'_s}^t\times y_{l'_s}^t(\cdots)}{[y_{l'_s}^{t}]^2}
+$$&lt;/div&gt;
+&lt;div class="math"&gt;$$
+\Rightarrow \frac{\partial p(l|x)}{\partial y_k^t}=\frac{1}{[y_{l'_s}^{t}]^2}\sum_{s\in \{\ell'_s=k\}}\alpha_t(s)\beta_t(s)\ \text{ ↪︎【18】}
+$$&lt;/div&gt;
+&lt;p&gt;因此綜【6】和【18】我們就可以解【4】式，然後就可以對網路做反向傳播優化參數了！&lt;/p&gt;
+&lt;h3&gt;Inference of CTC&lt;/h3&gt;
+&lt;p&gt;在 &lt;a href="https://github.com/GitYCC/crnn-pytorch"&gt;GitYCC/crnn-pytorch&lt;/a&gt; 中我有實作了&lt;a href="https://github.com/GitYCC/crnn-pytorch/blob/master/src/ctc_decoder.py"&gt;三種 CTC 的 Inference 方法&lt;/a&gt;，分別為 &lt;code&gt;greedy_decode&lt;/code&gt;、&lt;code&gt;beam_search_decode&lt;/code&gt; 和 &lt;code&gt;prefix_beam_decode&lt;/code&gt;，精確度依序越來越準確，但是隨著精確度提高所花的 Inference 時間也就越長。&lt;/p&gt;
+&lt;p&gt;事實上，這三種方式都不是最佳解，真正的最佳解得枚舉出所有可能的 Sequence Label 組合再取最大機率的那一個，它必須要衡量 &lt;span class="math"&gt;\((C+1)^T\)&lt;/span&gt; 條路徑且每條路徑都需要要做 &lt;span class="math"&gt;\(T\)&lt;/span&gt; 次的乘法，所以時間複雜度為 &lt;span class="math"&gt;\(O(T\times (C+1)^T)\)&lt;/span&gt;，這個計算量大到不切實際，假設英文字母 &lt;span class="math"&gt;\(C=26\)&lt;/span&gt; ，然後 &lt;span class="math"&gt;\(T\)&lt;/span&gt; 假設為 &lt;span class="math"&gt;\(20\)&lt;/span&gt;，時間複雜度為 &lt;span class="math"&gt;\(8.4e\text{+}29\)&lt;/span&gt;。&lt;/p&gt;
+&lt;p&gt;所以接下來我會逐一介紹三種常見的近似方法。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Greedy Decode&lt;/strong&gt;
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+l^*\approx B(\pi^*)\ ;\ \pi^*= \{argmax_{s}\ y^{t}_{s}\ \text{ for t=1..T}\}
+$$&lt;/div&gt;
+&lt;p&gt;
+這是最 heuristic 的方法，直接找在每個時間點 &lt;span class="math"&gt;\(t\)&lt;/span&gt; 最大的 &lt;span class="math"&gt;\(s\)&lt;/span&gt; 當作路徑 &lt;span class="math"&gt;\(\pi^*\)&lt;/span&gt; 再過映射函數 &lt;span class="math"&gt;\(B\)&lt;/span&gt;。這個方法雖然簡單，但在大部分情況下會是正確的。在最佳解時我們希望的是在過完映射函數 &lt;span class="math"&gt;\(B\)&lt;/span&gt; 之後得到最大可能的路徑 &lt;span class="math"&gt;\(\ell^*\)&lt;/span&gt; ，所以需要考慮所有可能的路徑並將其機率加總才能得到最佳解，但是  Greedy Decode 則是只考慮了最高機率的一條路徑。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_greed_decode.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;small&gt;
+  圖四：Greedy Decode
+&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;greedy_decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;emission_log_prob&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;blank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;labels&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;argmax&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;emission_log_prob&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;axis&lt;/span&gt;&lt;span class="o"&gt;=-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;labels&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;_reconstruct&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;labels&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;blank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;blank&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;labels&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Beam Search Decode&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;既然只選一條機率最大的路徑不那麼精確，那麼我就選最大的前 &lt;span class="math"&gt;\(k\)&lt;/span&gt; 條路徑再將其機率相加，這個就是 Beam Search 的近似方法。為了達到這個目的，我們在每一個時間點 &lt;span class="math"&gt;\(t\)&lt;/span&gt; 都會保留前 &lt;span class="math"&gt;\(k\)&lt;/span&gt; 條累積相乘機率最大的可能路徑，如下圖所示。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_beam_search.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;small&gt;
+  圖五：Beam Search Decode (beam size = 2)
+&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;beam_search_decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;emission_log_prob&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;blank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;beam_size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;beam_size&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;emission_threshold&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;emission_threshold&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;DEFAULT_EMISSION_THRESHOLD&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+    &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;class_count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;emission_log_prob&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;
+
+    &lt;span class="n"&gt;beams&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[([],&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;  &lt;span class="c"&gt;# (prefix, accumulated_log_prob)&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;new_beams&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;prefix&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;accumulated_log_prob&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;beams&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;class_count&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                &lt;span class="n"&gt;log_prob&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;emission_log_prob&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;log_prob&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;emission_threshold&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="k"&gt;continue&lt;/span&gt;
+                &lt;span class="n"&gt;new_prefix&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;prefix&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="c"&gt;# log(p1 * p2) = log_p1 + log_p2&lt;/span&gt;
+                &lt;span class="n"&gt;new_accu_log_prob&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;accumulated_log_prob&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;log_prob&lt;/span&gt;
+                &lt;span class="n"&gt;new_beams&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;new_prefix&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;new_accu_log_prob&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+        &lt;span class="c"&gt;# sorted by accumulated_log_prob&lt;/span&gt;
+        &lt;span class="n"&gt;new_beams&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;reverse&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;beams&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new_beams&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="n"&gt;beam_size&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="c"&gt;# sum up beams to produce labels&lt;/span&gt;
+    &lt;span class="n"&gt;total_accu_log_prob&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;prefix&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;accu_log_prob&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;beams&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;labels&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;tuple&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_reconstruct&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;prefix&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="c"&gt;# log(p1 + p2) = logsumexp([log_p1, log_p2])&lt;/span&gt;
+        &lt;span class="n"&gt;total_accu_log_prob&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;labels&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; \
+            &lt;span class="n"&gt;logsumexp&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;accu_log_prob&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;total_accu_log_prob&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;labels&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NINF&lt;/span&gt;&lt;span class="p"&gt;)])&lt;/span&gt;
+
+    &lt;span class="n"&gt;labels_beams&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;labels&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;accu_log_prob&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;labels&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;accu_log_prob&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;total_accu_log_prob&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="p"&gt;()]&lt;/span&gt;
+    &lt;span class="n"&gt;labels_beams&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;reverse&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;labels&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;labels_beams&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;labels&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;其中用到 &lt;code&gt;logsumexp&lt;/code&gt; 的用意是因為我們操作在 Log Probability 上面，雖然機率相乘即是 Log Probability 相加，很方便操作。但是如果碰到需要機率相加時，就需要先取 &lt;span class="math"&gt;\(exp\)&lt;/span&gt; 還原後再相加再取 &lt;span class="math"&gt;\(log\)&lt;/span&gt; ，即：&lt;span class="math"&gt;\(log(p1 + p2) = logsumexp([log(p1), log(p2)])\)&lt;/span&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Prefix Beam Search Decode&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;我們可以再進一步讓它更精確一點，剛剛的 Beam Search 是在映射函數 &lt;span class="math"&gt;\(B\)&lt;/span&gt; 之前找 &lt;span class="math"&gt;\(k\)&lt;/span&gt; 條路徑，Prefix Beam Search 更進一步拿前 &lt;span class="math"&gt;\(k\)&lt;/span&gt; 條經過映射函數 &lt;span class="math"&gt;\(B\)&lt;/span&gt; 後的 Prefix 當作評估的方式 ，如此會更接近我們想要找到映射後的最高機率的 Sequence。&lt;/p&gt;
+&lt;p&gt;在 Prefix 的世界裡不存在 blank ε，但是 blank ε 卻是會影響 Prefix，例如：&lt;code&gt;"A-A"&lt;/code&gt; 映射完會是 &lt;code&gt;"AA"&lt;/code&gt;，但是 &lt;code&gt;"AA"&lt;/code&gt; 映射完則會是 &lt;code&gt;"A"&lt;/code&gt; ，所以在 Prefix Beam Search 存在 &lt;code&gt;ProbabilityWithBlank&lt;/code&gt; 和 &lt;code&gt;ProbabilityNoBlank&lt;/code&gt; 兩種累積機率，這兩種情況分別是結尾有 blank 的&lt;strong&gt;累積&lt;/strong&gt;機率和結尾沒有 blank 的&lt;strong&gt;累積&lt;/strong&gt;機率，特別注意：&lt;strong&gt;累積&lt;/strong&gt;機率代表從開始到目前的總機率。&lt;/p&gt;
+&lt;p&gt;有了這個概念，我們來看會遇到什麼樣的狀況，並且在每個狀況下我們要怎麼去計算 &lt;code&gt;ProbabilityWithBlank&lt;/code&gt; 和 &lt;code&gt;ProbabilityNoBlank&lt;/code&gt; ，以下符號 &lt;code&gt;*&lt;/code&gt; 代表上一時刻的 prefix，&lt;code&gt;E&lt;/code&gt; 代表上一時刻 prefix 的最後一個字元，&lt;code&gt;ε&lt;/code&gt; 代表 blank，以下的情況皆是在考慮新字元進來要怎麼去累加 &lt;code&gt;ProbabilityWithBlank&lt;/code&gt; 和 &lt;code&gt;ProbabilityNoBlank&lt;/code&gt; ：
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+*\begin{cases}
+    \text{WithBlank: }p_b\\
+    \text{NoBlank: }p_{nb}
+\end{cases}
++ε\ (p) \Rightarrow
+*\begin{cases}
+    \text{WithBlank: }p_b\times p+p_{nb}\times p\\
+    \text{NoBlank: }0
+\end{cases}
+$$&lt;/div&gt;
+&lt;div class="math"&gt;$$
+*\begin{cases}
+    \text{WithBlank: }p_b\\
+    \text{NoBlank: }p_{nb}
+\end{cases}
++Char_{NotE}\ (p) \Rightarrow
+(*+Char_{NotE})\begin{cases}
+    \text{WithBlank: }0\\
+    \text{NoBlank: }p_b\times p+p_{nb}\times p
+\end{cases}
+$$&lt;/div&gt;
+&lt;p&gt;$$
+&lt;em&gt;&lt;div class="math"&gt;\begin{cases}
+    \text{WithBlank: }p_b\\
+    \text{NoBlank: }p_{nb}
+\end{cases}&lt;/div&gt;
++E\ (p) \Rightarrow&lt;div class="math"&gt;\begin{cases}
+    (*+E)\begin{cases}&lt;/div&gt;
+    \text{WithBlank: }0\
+    \text{NoBlank: }p_b\times p
+\end{cases}\
+\
+    &lt;/em&gt;&lt;/p&gt;
+&lt;div class="math"&gt;\begin{cases}
+    \text{WithBlank: }0\\
+    \text{NoBlank: }p_{nb}\times p
+\end{cases}&lt;/div&gt;
+&lt;p&gt;
+\end{cases}&lt;/p&gt;
+&lt;p&gt;$$&lt;/p&gt;
+&lt;p&gt;特別注意，以上初始化是遇到新的字元就假設其後會不帶 blank。&lt;/p&gt;
+&lt;p&gt;當然每次考慮一個新的時間點，我們都需要去累加可能會產生這個 Prefix 的各種情況，因此在以下的程式碼中，我們的 &lt;code&gt;ProbabilityWithBlank&lt;/code&gt; 和 &lt;code&gt;ProbabilityNoBlank&lt;/code&gt; 是會迭代累加的。當累積完這個時間點的所有 Prefix 機率後，我們會取前 &lt;span class="math"&gt;\(k\)&lt;/span&gt; 大機率的 Prefix 留下來繼續往下一個時間點累加，此時要用 &lt;code&gt;ProbabilityWithBlank&lt;/code&gt; 和 &lt;code&gt;ProbabilityNoBlank&lt;/code&gt; 的合來當作排序的依據。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_prefix_beam_search.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;small&gt;
+  圖六：Prefix Beam Search Decode (beam size = 2)
+&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;prefix_beam_decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;emission_log_prob&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;blank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;beam_size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;beam_size&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;emission_threshold&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;emission_threshold&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;DEFAULT_EMISSION_THRESHOLD&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+    &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;class_count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;emission_log_prob&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;
+
+    &lt;span class="n"&gt;beams&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="nb"&gt;tuple&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NINF&lt;/span&gt;&lt;span class="p"&gt;))]&lt;/span&gt;  &lt;span class="c"&gt;# (prefix, (blank_log_prob, non_blank_log_prob))&lt;/span&gt;
+    &lt;span class="c"&gt;# initial of beams: (empty_str, (log(1.0), log(0.0)))&lt;/span&gt;
+
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;new_beams_dict&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;defaultdict&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;NINF&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NINF&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;  &lt;span class="c"&gt;# log(0.0) = NINF&lt;/span&gt;
+
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;prefix&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lp_b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lp_nb&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;beams&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;class_count&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                &lt;span class="n"&gt;log_prob&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;emission_log_prob&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;log_prob&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;emission_threshold&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="k"&gt;continue&lt;/span&gt;
+
+                &lt;span class="n"&gt;end_t&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;prefix&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;prefix&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+
+                &lt;span class="c"&gt;# if new_prefix == prefix&lt;/span&gt;
+                &lt;span class="n"&gt;new_lp_b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;new_lp_nb&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new_beams_dict&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;prefix&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;blank&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="n"&gt;new_beams_dict&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;prefix&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+                        &lt;span class="n"&gt;logsumexp&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;new_lp_b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lp_b&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;log_prob&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lp_nb&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;log_prob&lt;/span&gt;&lt;span class="p"&gt;]),&lt;/span&gt;
+                        &lt;span class="n"&gt;new_lp_nb&lt;/span&gt;
+                    &lt;span class="p"&gt;)&lt;/span&gt;
+                    &lt;span class="k"&gt;continue&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;end_t&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="n"&gt;new_beams_dict&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;prefix&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+                        &lt;span class="n"&gt;new_lp_b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                        &lt;span class="n"&gt;logsumexp&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;new_lp_nb&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lp_nb&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;log_prob&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+                    &lt;span class="p"&gt;)&lt;/span&gt;
+
+                &lt;span class="c"&gt;# if new_prefix == prefix + (c,)&lt;/span&gt;
+                &lt;span class="n"&gt;new_prefix&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;prefix&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,)&lt;/span&gt;
+                &lt;span class="n"&gt;new_lp_b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;new_lp_nb&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new_beams_dict&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;new_prefix&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;end_t&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="n"&gt;new_beams_dict&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;new_prefix&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+                        &lt;span class="n"&gt;new_lp_b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                        &lt;span class="n"&gt;logsumexp&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;new_lp_nb&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lp_b&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;log_prob&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lp_nb&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;log_prob&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+                    &lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="n"&gt;new_beams_dict&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;new_prefix&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+                        &lt;span class="n"&gt;new_lp_b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                        &lt;span class="n"&gt;logsumexp&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;new_lp_nb&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lp_b&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;log_prob&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+                    &lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="c"&gt;# sorted by log(blank_prob + non_blank_prob)&lt;/span&gt;
+        &lt;span class="n"&gt;beams&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;new_beams_dict&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;logsumexp&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]),&lt;/span&gt; &lt;span class="n"&gt;reverse&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;beams&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;beams&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="n"&gt;beam_size&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="n"&gt;labels&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;beams&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;labels&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;結語&lt;/h3&gt;
+&lt;p&gt;我們在這篇文章當中清楚的了解到 CRNN 的架構，以及 CTC 的架構、訓練的參數優化和其三種 Inference 方法。看完了這些原理，也該動手試玩看看，在 &lt;a href="https://github.com/GitYCC/crnn-pytorch"&gt;GitYCC/crnn-pytorch&lt;/a&gt; 中已經有已經 pretrained 的模型可以使用，不妨跟著以下步驟實際動手玩玩看 OCR 場景辨識吧！&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;git&lt;/span&gt; &lt;span class="n"&gt;clone&lt;/span&gt; &lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//github.com/GitYCC/crnn-pytorch.git&lt;/span&gt;
+&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;cd&lt;/span&gt; &lt;span class="n"&gt;crnn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;pytorch&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="n"&gt;requirements&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;txt&lt;/span&gt;
+&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;predict&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;demo&lt;/span&gt;&lt;span class="o"&gt;/*&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;jpg&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Reference&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://arxiv.org/pdf/1507.05717.pdf"&gt;An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition (2015), Baoguang Shi et al.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.cs.toronto.edu/~graves/icml_2006.pdf"&gt;Connectionist Temporal Classification: Labelling Unsegmented Sequence Data with Recurrent Neural Networks (2006), Alex Graves et al.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://arxiv.org/pdf/1408.2873.pdf"&gt;First-Pass Large Vocabulary Continuous Speech Recognition using Bi-Directional Recurrent DNNs (2014), Awni Y. Hannun et al.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://distill.pub/2017/ctc/"&gt;Sequence Modeling With CTC, Awni Hannun.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://zhuanlan.zhihu.com/p/39266552"&gt;对《CTC 原理及实现》中的一些算法的解释&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
