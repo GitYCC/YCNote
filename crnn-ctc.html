@@ -319,7 +319,7 @@
 <li>RNNs 無須多餘的先驗假設</li>
 <li>RNNs 提供了相當強大且一般化的機制去描述時間序列</li>
 </ul>
-<p>但是 RNNs 只能訓練在已經分配好的序列上，所以當你僅有 Sequence Label 是不夠的，還需要知道這些 Label 要怎麼被<strong>分配</strong>。舉個例子：如果今天你要辨識的圖片包含 <code>"CAT"</code> 這個詞，你想要使用 RNN 進行辨識，而這個 RNN 長度假設為 7，為了要能訓練 RNN 我們需要給它 Groud True，此時你就需要將 <code>"CAT"</code> 這 3 個字<strong>分配</strong>到 7 格中，但是這樣的標注是費工的、不切實際的，<strong>我們希望可以直接訓練在沒有分配前的 Sequence Label 上</strong>。</p>
+<p>但是 RNNs 只能訓練在已經分配好的序列上，所以當你僅有 Sequence Label 是不夠的，還需要知道這些 Label 要怎麼被<strong>分配</strong>。舉個例子：如果今天你要辨識的圖片包含 <code>"CAT"</code> 這個詞，你想要使用 RNN 進行辨識，而這個 RNN 長度假設為 7，為了要能訓練 RNN 我們需要給它 Ground True，此時你就需要將 <code>"CAT"</code> 這 3 個字<strong>分配</strong>到 7 格中，但是這樣的標注是費工的、不切實際的，<strong>我們希望可以直接訓練在沒有分配前的 Sequence Label 上</strong>。</p>
 <p>CTC 設計了一個機制讓我們可以做到這件事：</p>
 <ol>
 <li>在原本要預測的字元中多加入了 blank ε </li>
@@ -329,13 +329,13 @@
 <p><img alt="ctc mapping" src="http://www.ycc.idv.tw/media/CV/ctc_mapping.png"></p>
 <p>有了這個映射機制 <span class="math">\(B\)</span> 我們就可以不需要事先分配 Sequence Label 也能訓練網路，但是要注意：能映射到一組 Sequence Label 的可能性是有很多組合的，例如：<code>"hee-l-lloo"</code> 和 <code>"hheel-lloo"</code> 都會映射到 <code>"hello"</code>，所以要特別去設計它的 Loss 讓其可以考慮各種可能性，這會在下一節中仔細闡述。</p>
 <h3>CTC Loss: Forward-Backward Algorithm</h3>
-<p>接下來這一個部分將會是本篇最難理解的部分，而且也最為數學，所以在陷進去數學漩渦之前，我們先來概念性的了解 CTC Loss 究竟是做了什麼。簡言之，<strong>我們需要讓 CTC Loss 降低的同時，等同於做到提升產生 Groud True Sequence Label 的機率，而在映射函數 <span class="math">\(B\)</span> 的作用下產生這個 Groud True Sequence Label 會有多種來源組合，這些組合都必須被考慮進去，然後我們有了 CTC Loss 與參數的關係式就可以使用梯度下降進行優化。</strong></p>
-<p>所以我們需要窮舉所有可能的組合才能正確的將產生 Groud True Sequence Label 的機率算出來，我們就來試著羅列。假設我們的 Sequence Label 是 <code>"CAT"</code> ，見圖一，所以我們的 <span class="math">\(\ell\)</span> 為 <code>"CAT"</code>，為了把 blank ε 列入考慮，我們設計了 <span class="math">\(\ell'\)</span>，其長度關係為 <span class="math">\(|\ell'|=2|\ell|+1\)</span> 。參照映射函數的規則，只有圖中兩個紅點是可能的出發點、兩個藍點是可能的結束點，因此我們需要羅列從出發點到結束點可能的路徑 <span class="math">\(\pi\)</span>，這些路徑都可以在經過映射函數 <span class="math">\(B\)</span> 後產生 Sequence Label <code>"CAT"</code> 。</p>
+<p>接下來這一個部分將會是本篇最難理解的部分，而且也最為數學，所以在陷進去數學漩渦之前，我們先來概念性的了解 CTC Loss 究竟是做了什麼。簡言之，<strong>我們需要讓 CTC Loss 降低的同時，等同於做到提升產生 Ground True Sequence Label 的機率，而在映射函數 <span class="math">\(B\)</span> 的作用下產生這個 Ground True Sequence Label 會有多種來源組合，這些組合都必須被考慮進去，然後我們有了 CTC Loss 與參數的關係式就可以使用梯度下降進行優化。</strong></p>
+<p>所以我們需要窮舉所有可能的組合才能正確的將產生 Ground True Sequence Label 的機率算出來，我們就來試著羅列。假設我們的 Sequence Label 是 <code>"CAT"</code> ，見圖一，所以我們的 <span class="math">\(\ell\)</span> 為 <code>"CAT"</code>，為了把 blank ε 列入考慮，我們設計了 <span class="math">\(\ell'\)</span>，其長度關係為 <span class="math">\(|\ell'|=2|\ell|+1\)</span> 。參照映射函數的規則，只有圖中兩個紅點是可能的出發點、兩個藍點是可能的結束點，因此我們需要羅列從出發點到結束點可能的路徑 <span class="math">\(\pi\)</span>，這些路徑都可以在經過映射函數 <span class="math">\(B\)</span> 後產生 Sequence Label <code>"CAT"</code> 。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_example_01.png"></p>
 <p><center><small>
   圖一
 </small></center><br></p>
-<p>加總所有可能透過 <span class="math">\(B\)</span> 映射至 Groud True Sequence Label <span class="math">\(\ell\)</span> 的條件機率：
+<p>加總所有可能透過 <span class="math">\(B\)</span> 映射至 Ground True Sequence Label <span class="math">\(\ell\)</span> 的條件機率：
 </p>
 <div class="math">$$
 p(\ell|y)=\sum_{π:B(π)=\ell}p(π|y)\ \text{ ↪︎【1】}
