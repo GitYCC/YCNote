@@ -6,7 +6,7 @@ AUTHOR = u'YC Chen'
 SITENAME = u'YC Note'
 SITEURL = 'https://www.ycc.idv.tw'
 
-PATH = 'content'
+# PATH = 'content'
 
 TIMEZONE = 'Asia/Taipei'
 
