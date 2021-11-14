@@ -128,4 +128,4 @@ dmypy.json
 # pelican files
 output
 
-raw_markdown/content/
+ycnote_raw_source
