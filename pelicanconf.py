@@ -42,7 +42,7 @@ DISQUS_SITENAME = 'ycnote-1'
 
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 
-RELATED_POSTS_MAX = 10
+RELATED_POSTS_MAX = 8
 
 THEME = 'theme/typerite'
 SITESUBTITLE = u'YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)'

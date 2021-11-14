@@ -3757,7 +3757,8 @@ code, pre {
  font-size:12px;
  line-height:16px;
  font-family:Consolas,monaco,monospace;
- border-radius:0;
+ border-radius:3px;
+ border:0;
  color:#4b505a;
  margin:34px 0;
  font-weight:700
