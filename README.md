@@ -1,5 +1,7 @@
 # Github Page for YC Note Blog
 
+**You must clone `ycnote_raw_source`**
+
 ## Docker
 
 ```
