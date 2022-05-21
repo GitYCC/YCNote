@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>擴散模型（Duffusion Model）：生成模型的新成員 - YC Note</title>
+    <meta name="description" content="本篇從概念到深入數學的介紹的擴散模型（Duffusion Model）。">
+    <meta name="author" content="YC Chen">
+
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="擴散模型（Duffusion Model）：生成模型的新成員" />
+    <meta property="og:description" content="本篇從概念到深入數學的介紹的擴散模型（Duffusion Model）。" />
+    <meta property="og:image" content="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" />
+    <meta property="og:url" content="https://www.ycc.idv.tw/diffusion-model.html" />
+    <meta property="og:site_name" content="YC Note" />
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "AI.ML",
+            "item": "https://www.ycc.idv.tw/category/aiml.html"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "擴散模型（Duffusion Model）：生成模型的新成員",
+            "item": "https://www.ycc.idv.tw/diffusion-model.html"
+          }]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context" : "http://schema.org",
+          "@type" : "Article",
+          "name" : "擴散模型（Duffusion Model）：生成模型的新成員 - YC Note",
+          "author" : {
+            "@type" : "Person",
+            "name" : "YC Chen"
+          },
+          "datePublished" : "2022-05-20",
+          "image" : "https://www.ycc.idv.tw/images/deep_dl_cover.jpg",
+          "articleSection" : "AI.ML",
+          "articleBody" : "本篇從概念到深入數學的介紹的擴散模型（Duffusion Model）。",
+          "url" : "https://www.ycc.idv.tw/diffusion-model.html",
+          "publisher" : {
+            "@type" : "Organization",
+            "name" : "YC Note",
+            "logo" : {
+                "@type" : "ImageObject",
+                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
+            }
+          },
+          "headline" : "擴散模型（Duffusion Model）：生成模型的新成員"
+        }
+    </script>
+
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
+    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
+    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
+    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
+
+    <!-- script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
+
+    <!-- favicons
+    ================================================== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+
+    <!-- Google Analytics
+    ================================================== -->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-68393177-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+    <script type="text/x-mathjax-config"> 
+        MathJax.Hub.Config({ 
+            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
+            SVG: { linebreaks: { automatic:true } } 
+            });
+    </script>
+
+</head>
+
+<body class="ss-bg-white">
+
+    <!-- preloader
+    ================================================== -->
+    <div id="preloader">
+        <div id="loader" class="dots-fade">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div id="top" class="s-wrap site-wrapper">
+
+        <!-- site header
+        ================================================== -->
+        <header class="s-header header">
+
+            <div class="header__top">
+                <div class="header__logo">
+                    <a class="site-logo" href="https://www.ycc.idv.tw/">
+                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
+                    </a>
+                </div>
+
+                <!-- toggles -->
+                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
+
+            </div>
+
+            <nav class="header__nav-wrap">
+
+                <ul class="header__nav">
+                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
+                    <li class="has-children">
+                        <a href="#0" title="">Categories</a>
+                        <ul class="sub-menu">
+                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
+                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-children">
+                        <a href="#0" title="">Tags</a>
+                        <ul class="sub-menu">
+                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
+                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
+                        </ul>
+                    </li>
+                    <li></li>
+                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
+                </ul> <!-- end header__nav -->
+
+                <ul class="header__social">
+                    <li class="ss-facebook">
+                        <a href="https://www.facebook.com/yc.note/" target="_blank">
+                            <span class="screen-reader-text">Facebook</span>
+                        </a>
+                    </li>
+                    <li class="ss-github">
+                        <a href="https://github.com/GitYCC" target="_blank">
+                            <span class="screen-reader-text">Github</span>
+                        </a>
+                    </li>
+                    <li class="ss-linkedin">
+                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+                            <span class="screen-reader-text">Linkedin</span>
+                        </a>
+                    </li>
+                    <li class="ss-email">
+                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
+                            <span class="screen-reader-text">Email</span>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </nav> <!-- end header__nav-wrap -->
+
+        </header> <!-- end s-header -->
+
+
+        <!-- site content
+        ================================================== -->
+        <div class="s-content content">
+            <main class="row content__page">
+
+                <article class="column large-full entry format-standard">
+
+                    <div class="media-wrap entry__media">
+                        <div class="entry__post-thumb">
+                            <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" 
+                                 srcset="https://www.ycc.idv.tw/images/deep_dl_cover.jpg 2000w, 
+                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 1000w, 
+                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
+                        </div>
+                    </div>
+
+                    <div class="content__page-header entry__header">
+                        <h1 class="display-1 entry__title">
+                        擴散模型（Duffusion Model）：生成模型的新成員
+                        </h1>
+                        <ul class="entry__header-meta">
+                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
+                            <li class="date"><i class="fa fa-calendar"></i> 2022-05-20</li>
+                            <li class="cat-links">
+                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
+                            </li>
+                            <li>
+                                <i class="fa fa-tags"></i> 
+<a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a>                            </li>
+                        </ul>
+                    </div> <!-- end entry__header -->
+
+                    <div class="entry__content">
+                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
+                            本篇從概念到深入數學的介紹的擴散模型（Duffusion Model）。
+                        </div>
+
+                        <h2>生成模型 (Generative Model) 家族</h2>
+<p>在過去，作為生成模型的 GAN (Generative Adversarial Network) 最廣為人使用，GAN是在2014年由 Goodfellow 所提出來的方法，其結構由兩個網路所組成：生成器網路和鑑別器網路，生成器網路負責生成以假亂真的合成樣本，而鑑別器網路負責仔細區分出真實樣本和合成樣本，經由兩者交替對抗學習，最終我們可以得到一個好的生成器。這個生成器網路通常輸入為一組取樣自高斯分布的亂數，而輸出就是合成樣本。</p>
+<p><strong>為何我們需要取樣於一個「分布」？</strong>以圖片為例，假設是長32寬32的一張圖片可以由一組長度為32x32x3的向量來表示，這並不意味著一組長度為32x32x3的隨機向量就能產生一張「有意義的」圖片，所以在32x32x3的空間中存在著能產生有意義圖片的不同機率分布，我們只要能把這個機率分布估準了，就可以從這個機率分布抽樣出有意義的圖片，這就是為何生成模型往往需要抽樣至某個分布，可想而知要用簡單的數學式來表示這樣的分布是多們困難的一件事，因此科學家們設計了一個簡單分布—高斯分布，並希望透過若干複雜的轉換（通常使用深度網路）後可以得到這個複雜的分布，通常我們會稱這個高斯分布為Hidden Space，因此「從樣本空間抽樣」等效於「從Hidden Space抽樣再轉換」。</p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Generative/hidden-to-sample-space.jpeg"></p>
+<p>繼GAN以後有一個後起之秀 — Flow-based Generative Model，不同於 GAN 需要一個鑑別器網路來輔助訓練生成器網路，Flow-based Generative Model 透過一個可逆推的網路結構來訓練，這個可逆推網路的兩端就是Hidden Space跟我們想要得到的Sample Space，既然網路是可以逆推的，我們就可以輸入一群真實樣本訓練網路將其分布轉換為高斯分布的Hidden Space，待網路訓練完成我們就可以逆推來作為生成器使用。</p>
+<p><img alt="ddpm" src="http://www.ycc.idv.tw/media/Generative/ddpm.png"></p>
+<p>近期，生成模型的家族又多了一個新的模型，就是本篇要介紹的擴散模型（Duffusion Model），Duffusion Model 的中心思想是使用若干個微幅轉換來轉換Hidden Space成為Sample Space，如下圖所示， <span class="math">\(\pmb{x}_T\)</span> 代表抽樣自高斯分布Hidden Space的圖片，<span class="math">\(\pmb{x}_0\)</span> 代表抽樣自Sample Space的圖片，從 <span class="math">\(\pmb{x}_0\)</span> 到 <span class="math">\(\pmb{x}_T\)</span> 是模糊化的過程，中間經過若干事先定義好的操作 <span class="math">\(q(\pmb{x}_{t}\mid \pmb{x}_{t-1})\)</span>，而生成模型旨於學習模糊化的逆向轉換 <span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> ，當我們有了<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 就可以隨機抽樣自Hidden Space並轉成一張合成的圖片。實際操作上，<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 是一個神經網路，其輸入為圖片 <span class="math">\(\pmb{x}_t\)</span> 和其所在的step <span class="math">\(t\)</span>，其輸出為預測模糊化中被添加的雜訊 <span class="math">\(\epsilon\)</span> ，經理論的推導證明：
+</p>
+<div class="math">$$
+\pmb{x}_{t}=\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon} \text{ ; }\pmb{\epsilon}\sim\mathcal{N}(0;\pmb{I}) 
+$$</div>
+<p>
+(詳見【5.14】)，因此只要能成功預測隨機數 <span class="math">\(\epsilon\)</span> 就可以得到逆推模糊化的反轉換。</p>
+<p>閱讀到這裡的你已經把它的概念弄懂八成了，接下來要進入到可怕的數學時間，Are you ready?</p>
+<h2>從 Variational Inference 到 Evidence Lower Bound (ELBO)</h2>
+<p>近年來面對極其複雜（e.g. NN）的機率模型，傳統的優化方式變得不可行，如： Expectation-Maximization Algorithm ，所以接下來要跟大家介紹的 Variational Inference (VI) 就變得開始廣為人使用。</p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Generative/variational_inference.png"></p>
+<p>常見的生成模型可以表示成如上圖所示，<span class="math">\(\pmb{x}\)</span>  為生成之樣本，而 <span class="math">\(\pmb{z}\)</span> 座落於 latent space <span class="math">\(Z\)</span> 上的一個點，這個 latent space 可以具有各類可能的分布，為求方便通常會定義為一個 <a href="https://www.ycc.idv.tw/deep-dl_1.html">高斯分佈</a>，即 <span class="math">\(p (\pmb{z})\sim\mathcal{N}(\pmb{z}:\pmb{0};\pmb{I})\)</span> 。假設 <span class="math">\(p (\pmb{x}\mid \pmb{z})\)</span> (給定<span class="math">\(\pmb{z}\)</span> 之後求 <span class="math">\(\pmb{x}\)</span>  的分布) 是已知的，則聯合機率為
+</p>
+<div class="math">$$
+p (\pmb{x},\pmb{z})=p (\pmb{x}\mid \pmb{z})p (\pmb{z})   \ \ 【1.1】
+$$</div>
+<p>
+也可推得
+</p>
+<div class="math">$$
+p(\pmb{z}\mid \pmb{x})=\frac{p (\pmb{x},\pmb{z})}{p (\pmb{x})}  \ \ 【1.2】
+$$</div>
+<p>
+【1.2】是無法輕易求得的，這是雞生蛋蛋生雞的問題，分母的 <span class="math">\(p(\pmb{x})\)</span> 不正是我們想要學習的目標，所以在缺乏這一項的情況下求取 <span class="math">\(p(\pmb{z}\mid \pmb{x})\)</span> 是做不到的。</p>
+<p>Variational Inference 的技巧就是引入 <span class="math">\(q(\pmb{z}\mid \pmb{x})\)</span> 來近似 <span class="math">\(p(\pmb{z}\mid \pmb{x})\)</span>，這麼做可以得到一個較易計算的 Evidence Lower Bound (ELBO)。接下來我們來推導一下，由於我們希望 <span class="math">\(q(\pmb{z}\mid \pmb{x})\)</span> 和 <span class="math">\(p(\pmb{z}\mid \pmb{x})\)</span>分布盡可能的靠近，所以需要最小化他們之間的 KL Divergence：
+</p>
+<div class="math">$$
+min\ D_{KL}[q(\pmb{z}\mid \pmb{x})\mid\mid p(\pmb{z}\mid \pmb{x})]  \ \ 【1.3】
+$$</div>
+<p>
+其中：
+</p>
+<div class="math">$$
+D_{KL}[q(\pmb{z}\mid \pmb{x})\mid\mid p(\pmb{z}\mid \pmb{x})]\\
+= \int q(\pmb{z}\mid \pmb{x})\ log\ \frac{q(\pmb{z}\mid \pmb{x})}{p(\pmb{z}\mid \pmb{x})}d\pmb{z}\\
+= \int q(\pmb{z}\mid \pmb{x})\ log\ \frac{p(\pmb{x})q(\pmb{z}\mid \pmb{x})}{p(\pmb{x},\pmb{z})}d\pmb{z}\ \ \ \text{;因為 }p(\pmb{x},\pmb{z})=p (\pmb{z}\mid \pmb{x})p(\pmb{x})\\
+=log\ p(\pmb{x})-\int q(\pmb{z}\mid \pmb{x})\ log\ \frac{p(\pmb{x},\pmb{z})}{q(\pmb{z}\mid \pmb{x})}d\pmb{z}
+$$</div>
+<p>
+其中：
+</p>
+<div class="math">$$
+ELBO_{\pmb{x},\pmb{z}}=\int q (\pmb{z}\mid \pmb{x})\ log\ \frac{p(\pmb{x},\pmb{z})}{q(\pmb{z}\mid \pmb{x})}d\pmb{z} \ \ 【1.4】
+$$</div>
+<p>
+這一項被稱為 Evidence Lower Bound (ELBO)，因為 <span class="math">\(p(\pmb{x})\)</span> 是樣本空間機率，應該是一個上帝決定好的定值，所以如果想要讓 <span class="math">\(q(\pmb{z}\mid \pmb{x})\)</span> 和 <span class="math">\(p(\pmb{z}\mid \pmb{x})\)</span>分布盡可能的靠近，就需要最大化ELBO。而這項是可以計算的，將其寫成抽樣估計的形式：
+</p>
+<div class="math">$$
+ELBO_{\pmb{x},\pmb{z}}=E_{q (\pmb{z}\mid \pmb{x})}[log\ \frac{p(\pmb{x}\mid\pmb{z})p(\pmb{z})}{q(\pmb{z}\mid \pmb{x})}]\ \ 【1.5】
+$$</div>
+<p>
+上式中的 <span class="math">\(p(\pmb{z})\)</span> 是定義好的分布，通常為高斯分布，<span class="math">\(p(\pmb{x}\mid\pmb{z})\)</span> 和 <span class="math">\(q(\pmb{z}\mid \pmb{x})\)</span> 也是兩個已知的函式，所以【1.5】是可求得的。</p>
+<p>回過頭來看Diffusion Model，每一個 Step 中模糊化 <span class="math">\(q(\pmb{x}_{t}\mid \pmb{x}_{t-1})\)</span> 與逆模糊化 <span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 應該存在ELBO的限制，在待會的推倒中我們會看到這一點。</p>
+<h2>擴散模型的Loss Function</h2>
+<p>接著我們來完整推導Duffusion Model 吧！每一次的模糊化我們可以定義為
+</p>
+<div class="math">$$
+q(\pmb{x}_t\mid\pmb{x}_{t-1})=\mathcal{N}(\pmb{x}_t:\sqrt{1-\beta_t}\pmb{x}_{t-1};\beta_t\pmb{I}) \ \ 【5.1】
+$$</div>
+<p>
+其中 <span class="math">\(\beta\)</span>是介於0到1之間，這項可以是學來的，也可以是事前定義的定值，在 DDPM 論文中，<span class="math">\(\beta\)</span> 是一個定好的值。而經過 <span class="math">\(T\)</span> 次（事先定義）的模糊化後，我們希望最終的 <span class="math">\(\pmb{x}_T\)</span> 可以接近高斯分布，即：
+</p>
+<div class="math">$$
+\pmb{x}_T\sim\mathcal{N}(\pmb{x}_T:0;\pmb{I}) \ \ 【5.2】
+$$</div>
+<p>
+這個過程我們稱之為正向擴散過程（forward diffusion process）。而逆模糊化我們定義成：
+</p>
+<div class="math">$$
+p_\theta (\pmb{x}_{t-1}\mid\pmb{x}_{t})\sim\mathcal{N}(\pmb{x}_{t-1}:\pmb{\mu}_\theta (\pmb{x}_t ,t);\pmb{\Sigma}_\theta (\pmb{x}_t ,t)) \ \ 【5.3】
+$$</div>
+<p>
+其中 <span class="math">\(p_\theta (\pmb{x}_{t-1}\mid\pmb{x}_{t})\)</span> 用來近似 <span class="math">\(q(\pmb{x}_{t-1}\mid\pmb{x}_{t})\)</span>，<span class="math">\(\pmb{\mu}_\theta\)</span> 和 <span class="math">\(\pmb{\Sigma}_\theta\)</span> 代表模型 <span class="math">\(\theta\)</span> 預測的平均值和標準差。</p>
+<p>然而模糊化 <span class="math">\(q(\pmb{x}_{t}\mid \pmb{x}_{t-1})\)</span> 與逆模糊化 <span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 應該存在ELBO的限制，從 【1.4】出發：
+</p>
+<div class="math">$$
+ELBO_{\pmb{x}_{0:T}}=\int q (\pmb{x}_{1:T}\mid \pmb{x}_0)\ log\ \frac{p_{\theta}(\pmb{x}_{0:T})}{q (\pmb{x}_{1:T}\mid \pmb{x}_0)}d\pmb{x}_{1:T}\\
+=-\int q (\pmb{x}_{1:T}\mid \pmb{x}_0)\ [log\frac{q (\pmb{x}_{T}\mid \pmb{x}_{0})}{p_{\theta}(\pmb{x}_{T})}+\sum_{t=2}^{T}log\frac{q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})}{p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_{t})}-log\ p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1})]d\pmb{x}_{1:T}\\
+=-\{D_{KL}[q (\pmb{x}_{T}\mid \pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{T})]+\sum_{t=2}^{T}D_{KL}[q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{t-1}\mid\pmb{x}_{t})]-log\ p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1})\} \ \ 【5.4】
+$$</div>
+<p>
+其中：
+</p>
+<div class="math">$$
+log\ \frac{p_{\theta}(\pmb{x}_{0:T})}{q (\pmb{x}_{1:T}\mid \pmb{x}_0)}\\
+=-log\ \frac{q (\pmb{x}_{1:T}\mid \pmb{x}_0)}{p_{\theta}(\pmb{x}_{0:T})}\\
+=-log\ \frac{\prod_{t=1}^{T} q (\pmb{x}_{t}\mid \pmb{x}_{t-1})}{p_{\theta}(\pmb{x}_{T})\prod_{t=1}^{T}p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_{t})}\\
+=-[-log\ p_{\theta}(\pmb{x}_{T})+\sum_{t=1}^{T}log\frac{q (\pmb{x}_{t}\mid \pmb{x}_{t-1})}{p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_{t})}]\\
+=-[-log\ p_{\theta}(\pmb{x}_{T})+\sum_{t=2}^{T}log\frac{q (\pmb{x}_{t}\mid \pmb{x}_{t-1})}{p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_{t})}+log\frac{q (\pmb{x}_{1}\mid \pmb{x}_{0})}{p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1})}] \\
+=-[-log\ p_{\theta}(\pmb{x}_{T})+\sum_{t=2}^{T}log\frac{q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})}{p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_{t})}\frac{q (\pmb{x}_{t}\mid \pmb{x}_{0})}{q(\pmb{x}_{t-1}\mid \pmb{x}_{0})}+log\frac{q (\pmb{x}_{1}\mid \pmb{x}_{0})}{p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1})}]\\
+\text{;因為 }q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})=\frac{q (\pmb{x}_{t-1}, \pmb{x}_{t},\pmb{x}_{0})}{q (\pmb{x}_{t},\pmb{x}_{0})}=\frac{q (\pmb{x}_{t}\mid\pmb{x}_{t-1})q (\pmb{x}_{t-1}\mid\pmb{x}_{0})q (\pmb{x}_{0})}{q (\pmb{x}_{t}\mid\pmb{x}_{0})q (\pmb{x}_{0})}\\
+=-[-log\ p_{\theta}(\pmb{x}_{T})+\sum_{t=2}^{T}log\frac{q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})}{p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_{t})}+\sum_{t=2}^{T}log\frac{q (\pmb{x}_{t}\mid \pmb{x}_{0})}{q(\pmb{x}_{t-1}\mid \pmb{x}_{0})}+log\frac{q (\pmb{x}_{1}\mid \pmb{x}_{0})}{p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1})}]\\
+=-[-log\ p_{\theta}(\pmb{x}_{T})+\sum_{t=2}^{T}log\frac{q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})}{p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_{t})}+log\frac{q (\pmb{x}_{T}\mid \pmb{x}_{0})}{q(\pmb{x}_{1}\mid \pmb{x}_{0})}+log\frac{q (\pmb{x}_{1}\mid \pmb{x}_{0})}{p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1})}]\\
+=-[log\frac{q (\pmb{x}_{T}\mid \pmb{x}_{0})}{p_{\theta}(\pmb{x}_{T})}+\sum_{t=2}^{T}log\frac{q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})}{p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_{t})}-log\ p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1})]
+$$</div>
+<p>
+我們需要最大化ELBO，從【5.4】可得優化任務為：
+</p>
+<div class="math">$$
+\theta^*=\text{argmin}_{\theta}\ -ELBO_{\pmb{x},\pmb{z}}=\text{argmin}_{\theta}\{L_T+L_{T-1}+...+L_{1}+L_0\} \ \ 【5.5】
+$$</div>
+<p>
+其中：
+</p>
+<div class="math">$$
+L_T=D_{KL}[q (\pmb{x}_{T}\mid \pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{T})] \ \ 【5.6】
+$$</div>
+<div class="math">$$
+L_{1\leq t\leq T-1}=D_{KL}[q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{t-1}\mid\pmb{x}_{t})] \ \ 【5.7】
+$$</div>
+<div class="math">$$
+L_0=-log\ p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1}) \ \ 【5.8】
+$$</div>
+<p><strong>計算<span class="math">\(L_T\)</span></strong></p>
+<p><span class="math">\(L_T\)</span> 與 <span class="math">\(\theta\)</span> 無關，不需要優化，可以忽略。</p>
+<p><strong>計算<span class="math">\(L_0\)</span></strong></p>
+<p>因為【5.3】，所以 <span class="math">\(p_\theta(\pmb{x}_0\mid\pmb{x}_1)\)</span> 是可以由模型預測而得的。</p>
+<p><strong>計算<span class="math">\(L_{1\leq t\leq T-1}\)</span></strong></p>
+<p><span class="math">\(L_t\)</span> 這一項先從 <span class="math">\(q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})\)</span> 開始做起，先給公式後面再補上證明：
+</p>
+<div class="math">$$
+q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})=\mathcal{N}(\pmb{x}_{t-1}:\tilde{\pmb{\mu}}_t (\pmb{x}_t ,\pmb{x}_0);\tilde{\beta}_t\pmb{I}) \ \ 【5.9】
+$$</div>
+<p>
+其中：
+</p>
+<div class="math">$$
+\tilde{\pmb{\mu}}_t (\pmb{x}_t ,\pmb{x}_0)=\frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1-\bar{\alpha}_{t}}\pmb{x}_0+\frac{\sqrt{\alpha_t}(1-\bar{\alpha}_{t-1})}{(1-\bar{\alpha}_{t})}\pmb{x}_t \ \ 【5.10】
+$$</div>
+<div class="math">$$
+\tilde{\beta}_t=\frac{1-\bar{\alpha}_{t-1}}{1-\bar{\alpha}_{t}}\beta_t \ \ 【5.11】
+$$</div>
+<div class="math">$$
+\alpha_t=1-\beta_t \ \ 【5.12】
+$$</div>
+<div class="math">$$
+\bar{\alpha}_t=\prod_{s=1}^t\alpha_s \ \ 【5.13】
+$$</div>
+<hr>
+<p>接下來回過頭來，我們要來證明【5.9】，在那之前我們要來證明一個好用的式子，由【5.1】搭配【5.12】、【5.13】置換變數可得
+</p>
+<div class="math">$$
+\pmb{x}_t=\sqrt{\alpha_t}\pmb{x}_{t-1}+\sqrt{1-\alpha_t}\pmb{\epsilon}_{t-1}\\
+=\sqrt{\alpha_t}(\sqrt{\alpha_{t-1}}\pmb{x}_{t-2}+\sqrt{1-\alpha_{t-1}}\pmb{\epsilon}_{t-2})+\sqrt{1-\alpha_t}\pmb{\epsilon}_{t-1} \\
+=\sqrt{\alpha_t\alpha_{t-1}}\pmb{x}_{t-2}+[\sqrt{\alpha_t-\alpha_t\alpha_{t-1}}\pmb{\epsilon}_{t-2}+\sqrt{1-\alpha_t}\pmb{\epsilon}_{t-1}]\\
+=\sqrt{\alpha_t\alpha_{t-1}}\pmb{x}_{t-2}+\sqrt{1-\alpha_t\alpha_{t-1}}\bar{\pmb{\epsilon}}_{t-2}\\
+...\\
+=\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon}\text{ ; }\pmb{\epsilon}\sim\mathcal{N}(0;\pmb{I}) \ \ 【5.14】\\
+\Rightarrow q (\pmb{x}_{t}\mid \pmb{x}_{0})=\mathcal{N}(\sqrt{\bar{\alpha}_t}\pmb{x}_{0};(1-\bar{\alpha}_t)\pmb{I}) \ \ 【5.15】
+$$</div>
+<p>
+上式中 <span class="math">\(\bar{\epsilon}\)</span> 代表兩個 Guaissan 的相加，其分布遵循 <span class="math">\(\sum_{i=1}^{n}a_i\cdot \mathcal{N}(z:\mu_i;\sigma^2_i)=\mathcal{N}(z:\sum_{i=1}^{n}a_i\mu_i;\sum_{i=1}^{n}a_i^2\sigma_i^2)\)</span>。</p>
+<p>如此一來就可以來計算目標了，【5.1】、【5.15】代入
+</p>
+<div class="math">$$
+q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})=q (\pmb{x}_{t}\mid \pmb{x}_{t-1},\pmb{x}_{0})\frac{q (\pmb{x}_{t-1}\mid \pmb{x}_{0})}{q (\pmb{x}_{t}\mid \pmb{x}_{0})}\\
+\propto exp\{-\frac{1}{2}[\frac{(\pmb{x}_{t}-\sqrt{\alpha_t}\pmb{x}_{t-1})^2}{\beta_t}+\frac{(\pmb{x}_{t-1}-\sqrt{\bar{\alpha}_{t-1}}\pmb{x}_{0})^2}{1-\bar{\alpha}_{t-1}}-\frac{(\pmb{x}_{t}-\sqrt{\bar{\alpha}_{t}}\pmb{x}_{0})^2}{1-\bar{\alpha}_{t}}]\}\\
+=exp\{-\frac{1}{2}[(\frac{\alpha_t}{\beta_t}+\frac{1}{1-\bar{\alpha}_{t-1}})\pmb{x}_{t-1}^2-(\frac{2\sqrt{\alpha_t}}{\beta_t}\pmb{x}_{t}+\frac{2\sqrt{\bar{\alpha}_t}}{1-\bar{\alpha}_t}\pmb{x}_{0})\pmb{x}_{t-1}+C(\pmb{x}_{t},\pmb{x}_{0})]\}
+$$</div>
+<p>
+整理可得平均值和方差為【5.10】和【5.11】。</p>
+<hr>
+<p>【5.9】、【5.3】和【A.1】代入【5.7】可得
+</p>
+<div class="math">$$
+L_{1\leq t\leq T-1}=D_{KL}[\mathcal{N}(\pmb{x}_{t-1}:\tilde{\pmb{\mu}}_t (\pmb{x}_t ,\pmb{x}_0);\tilde{\beta}_t\pmb{I})\mid\mid \mathcal{N}(\pmb{x}_{t-1}:\pmb{\mu}_\theta (\pmb{x}_t ,t);\pmb{\Sigma}_\theta (\pmb{x}_t ,t))] \\
+=\sum_{j=1}^{J} D_{KL}[\mathcal{N}(x_{t-1,j}:\tilde{\mu}_{t,j} (\pmb{x}_t ,\pmb{x}_0);\tilde{\beta}_{t,j})\mid\mid \mathcal{N}(x_{t-1,j}:\mu_{\theta,j} (\pmb{x}_t ,t);\Sigma_{\theta,j} (\pmb{x}_t ,t))] \text{;假設 }\pmb{\Sigma}_{\theta}=diag(\Sigma_{\theta,1},\Sigma_{\theta,2},...)\\
+=\sum_{j=1}^{J} log\frac{\Sigma_{\theta,j}}{\tilde{\beta}_{t,j}}+\frac{\tilde{\beta}_{t,j}^2+[\tilde{\mu}_{t,j} (\pmb{x}_t ,\pmb{x}_0)-\mu_{\theta,j} (\pmb{x}_t ,t)]^2}{2\Sigma_{\theta,j}^2}-\frac{1}{2} \ \ 【5.16】
+$$</div>
+<p>
+其中：<span class="math">\(\Sigma_{\theta,j}\)</span> 這一項在DDPM當中設為定值，作者實驗了兩種假設 <span class="math">\(\Sigma_{\theta}=\beta_t\)</span> 和 <span class="math">\(\Sigma_{\theta}=\tilde{\beta}_t\)</span> 發現對成效來說沒太大的差別。而Improved DDPM這一項則是用學的，作者假設 <span class="math">\(\Sigma_{\theta}=exp(v\ log\beta_t+(1-v)\ log\tilde{\beta}_t)\)</span>。</p>
+<p>觀察【5.16】可發現平均值的優化：
+</p>
+<div class="math">$$
+L_{t,mean}=\frac{1}{2\Sigma_{\theta,j}^2}[\tilde{\pmb{\mu}}_{t} (\pmb{x}_t ,\pmb{x}_0)-\pmb{\mu}_{\theta} (\pmb{x}_t ,t)]^2\ \ 【5.17】
+$$</div>
+<p>
+其中：
+</p>
+<div class="math">$$
+\tilde{\pmb{\mu}}_{t} (\pmb{x}_t ,\pmb{x}_0) =\frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1-\bar{\alpha}_{t}}\pmb{x}_0+\frac{\sqrt{\alpha_t}(1-\bar{\alpha}_{t-1})}{(1-\bar{\alpha}_{t})}\pmb{x}_t
+$$</div>
+<p>
+我們可以藉由變換上式來得到優化目標，我們可以優化還原狀況（也就是原圖 <span class="math">\(\pmb{x}_0\)</span>），也可以預測添加的雜訊，而 DDPM作者實驗發現預測添加的雜訊得到的效果比較好，因此我們使用【5.14】替換掉 <span class="math">\(\pmb{x}_0\)</span>：
+</p>
+<div class="math">$$
+=\frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1-\bar{\alpha}_{t}}\times\frac{1}{\sqrt{\bar{\alpha}_t}}[\pmb{x}_t-\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon}]+\frac{\sqrt{\alpha_t}(1-\bar{\alpha}_{t-1})}{(1-\bar{\alpha}_{t})}\pmb{x}_t\\
+=\frac{1}{\sqrt{\bar{\alpha}_t}}(\pmb{x}_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\pmb{\epsilon})\ \ 【5.18】
+$$</div>
+<p>
+【5.17】式中 <span class="math">\(\pmb{\mu}_{\theta} (\pmb{x}_t ,t)\)</span> 是我們可以假設的，假設我讓它預測添加的雜訊，我們可以假設為 
+</p>
+<div class="math">$$
+\pmb{\mu}_{\theta} (\pmb{x}_t ,t)=\frac{1}{\sqrt{\bar{\alpha}_t}}(\pmb{x}_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\pmb{\epsilon}_\theta) \ \ 【5.19】
+$$</div>
+<p>
+【5.18】和【5.19】代入【5.17】得
+</p>
+<div class="math">$$
+L_{t,mean}=\frac{\beta^2_t}{2\bar{\alpha}_t(1-\bar{\alpha}_t)\Sigma_{\theta,j}^2}\mid\mid\pmb{\epsilon}-\pmb{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon},t)\mid\mid^2\ \ 【5.20】
+$$</div>
+<p>
+在DDPM中，作者發現使用去除上式Weighting的優化式效果更好，寫作：
+</p>
+<div class="math">$$
+L_{t,mean,simple}=\mid\mid\pmb{\epsilon}-\pmb{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon},t)\mid\mid^2\ \ 【5.21】
+$$</div>
+<p>
+因此DDPM的訓練和取樣示例代碼如下：</p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Generative/DDPM-algo.png"></p>
+<h2>Appendix A: KL Divergence between two Gaussians</h2>
+<div class="math">$$
+D_{KL}[\mathcal{N}(z:\mu_1;\sigma^2_1)\mid\mid\mathcal{N}(z:\mu_2;\sigma^2_2)]\\
+=\int \mathcal{N}(z:\mu_1;\sigma^2_1)[log\ \mathcal{N}(z:\mu_1;\sigma^2_1)-log\ \mathcal{N}(z:\mu_2;\sigma^2_2)]dz\\
+=\int \mathcal{N}(z:\mu_1;\sigma^2_1)\{-\frac{1}{2}[log\ 2\pi\cdot \sigma^2_1+\frac{(z-\mu_1)^2}{\sigma_1^2}]+\frac{1}{2}[log\ 2\pi\cdot \sigma^2_2+\frac{(z-\mu_2)^2}{\sigma_2^2}]\}dz \\
+\text{;因為 }\mathcal{N}(\mu;\sigma^2)=\frac{1}{\sqrt{2\pi\cdot \sigma^2}}exp(-\frac{(z-\mu)^2}{2\sigma^2})\\
+=-\frac{1}{2}[log\ 2\pi\cdot \sigma^2_1+\frac{(\sigma_1^2+\mu_1^2)-2\mu_1\mu_1+\mu_1^2}{\sigma_1^2}]+\frac{1}{2}[log\ 2\pi\cdot \sigma^2_2+\frac{(\sigma_1^2+\mu_1^2)-2\mu_2\mu_1+\mu_2^2}{\sigma_2^2}] \\
+\text{;因為 }\int z\cdot\mathcal{N}(\mu;\sigma^2)dz=\mu\text{ 且 }\int z^2\cdot\mathcal{N}(\mu;\sigma^2)dz=\sigma^2+\mu^2\\
+=log\frac{\sigma_2}{\sigma_1}+\frac{\sigma_1^2+(\mu_1-\mu_2)^2}{2\sigma_2^2}-\frac{1}{2} \ \ 【A.1】
+$$</div>
+<h2>Reference</h2>
+<ul>
+<li>Auto-Encoding Variational Bayes: https://arxiv.org/pdf/1312.6114.pdf</li>
+<li>An Introduction to Variational Inference: https://arxiv.org/pdf/2108.13083.pdf</li>
+<li>From Autoencoder to Beta-VAE: https://lilianweng.github.io/posts/2018-08-12-vae/</li>
+<li>Denoising Diffusion Probabilistic Models: https://arxiv.org/pdf/2006.11239.pdf</li>
+</ul>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+
+                    </div> <!-- end entry content -->
+                    
+                    <div class="entry__pagenav">
+                        <div class="entry__nav">
+                            <div class="entry__prev">
+                                <a href="https://www.ycc.idv.tw/crnn-ctc.html" rel="prev">
+                                    <span>Previous Post</span>
+                                    OCR：CRNN+CTC開源加詳細解析
+                                </a>
+                            </div>
+                            <div class="entry__next">
+                            </div>
+                        </div>
+                    </div> <!-- end entry__pagenav -->
+
+                    <div class="entry__related">
+                    </div> <!-- end entry related -->
+
+                    <div id="disqus-wrapper">
+                        <div id="disqus_thread"></div>
+                    </div>
+
+                </article> <!-- end column large-full entry-->
+            </main>
+
+        </div> <!-- end s-content -->
+
+        <!-- footer
+        ================================================== -->
+        <footer class="s-footer footer">
+            <div class="row">
+                <div class="column large-full footer__content">
+                    <div class="footer__copyright">
+                        <span>© Copyright YC Note 2019</span> 
+                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="go-top">
+                <a class="smoothscroll" title="Back to Top" href="#top"></a>
+            </div>
+        </footer>
+
+    </div> <!-- end s-wrap -->
+
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
+    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
+    <script>
+        var elements = document.getElementsByTagName("h3");
+        for(i = 0; i < elements.length; i++)
+        {
+            elements[i].setAttribute("id", "anchor"+i);
+        }
+    </script>
+    <script type="text/javascript">
+        var disqus_config = function () {
+            this.page.url = "https://www.ycc.idv.tw/diffusion-model.html";
+            this.page.identifier = "diffusion-model.html";
+            this.page.title = "擴散模型（Duffusion Model）：生成模型的新成員";
+            this.language = "zh_TW";
+        };
+
+       (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = '//ycnote-1.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    <script>
+    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
+    
+    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
+        var src = $(this).attr('src');
+        $('<div>').css({
+            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
+            backgroundSize: 'contain',
+            borderTop: '40px solid RGBA(0,0,0,0.0)',
+            borderBottom: '40px solid RGBA(0,0,0,0.0)',
+            width:'100%', height:'100%',
+            position:'fixed',
+            zIndex:'10000',
+            top:'0', left:'0',
+            cursor: 'zoom-out'
+        }).click(function(){
+            $(this).remove();
+        }).appendTo('body');
+    });
+    </script>
+
+</body>

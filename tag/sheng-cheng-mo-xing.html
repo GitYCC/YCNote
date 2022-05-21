@@ -5,12 +5,12 @@
     <!--- basic page needs
     ================================================== -->
     <meta charset="utf-8">
-    <title>Tag:剖析深度學習 - YC Note</title>
+    <title>Tag:生成模型 - YC Note</title>
     <meta name="description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)">
     <meta name="author" content="YC Chen">
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Tag:剖析深度學習 - YC Note" />
+    <meta property="og:title" content="Tag:生成模型 - YC Note" />
     <meta property="og:description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)" />
     <meta property="og:image" content="https://www.ycc.idv.tw/theme/images/favicon.png" />
     <meta property="og:url" content="https://www.ycc.idv.tw/" />
@@ -144,7 +144,7 @@
         <div class="s-content">
 
             <header class="listing-header">
-                <h1 class="h2"><i class="fa fa-tags"></i> 剖析深度學習</h1>
+                <h1 class="h2"><i class="fa fa-tags"></i> 生成模型</h1>
             </header>
 
             <div class="masonry-wrap">
@@ -156,7 +156,7 @@
                     <article class="masonry__brick entry format-standard animate-this">
 
                         <div class="entry__thumb">
-                            <a href="https://www.ycc.idv.tw/deep-dl_4.html" class="entry__thumb-link">
+                            <a href="https://www.ycc.idv.tw/diffusion-model.html" class="entry__thumb-link">
                                 <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
                             </a>
                         </div>
@@ -164,110 +164,20 @@
                         <div class="entry__text">
                             <div class="entry__header">
 
-                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/deep-dl_4.html">剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型</a></h2>
+                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/diffusion-model.html">擴散模型（Duffusion Model）：生成模型的新成員</a></h2>
                                 <div class="entry__meta">
                                     <span class="entry__meta-cat">
-                                        <a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>
+                                        <a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a>
                                     </span>
                                     <span class="entry__meta-date">
-                                        2020-03-14
+                                        2022-05-20
                                     </span>
                                 </div>
 
                             </div>
                             <div class="entry__excerpt">
                                 <p>
-                                    <p>學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。</p>
-                                </p>
-                            </div>
-                        </div>
-
-                    </article> <!-- end article -->
-                    <article class="masonry__brick entry format-standard animate-this">
-
-                        <div class="entry__thumb">
-                            <a href="https://www.ycc.idv.tw/deep-dl_3.html" class="entry__thumb-link">
-                                <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
-                            </a>
-                        </div>
-
-                        <div class="entry__text">
-                            <div class="entry__header">
-
-                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/deep-dl_3.html">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</a></h2>
-                                <div class="entry__meta">
-                                    <span class="entry__meta-cat">
-                                        <a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>
-                                    </span>
-                                    <span class="entry__meta-date">
-                                        2020-03-07
-                                    </span>
-                                </div>
-
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                    <p>本講主要探討統計的兩大學派（頻率學派和貝氏學派）對於機器如何學習的觀點。頻率學派主張Maximum Likelihood Estimation (MLE)，會提到這等同於最小化data與model之間的Cross Entropy或KL Divergence。而貝氏學派則主張Maximum A Posterior (MAP) ，會提到這會等同於極大化Likelihood並同時考慮Regularization Term，我們也可以在本講看到L1和L2 Regularation Term是怎麼被導出的。</p>
-                                </p>
-                            </div>
-                        </div>
-
-                    </article> <!-- end article -->
-                    <article class="masonry__brick entry format-standard animate-this">
-
-                        <div class="entry__thumb">
-                            <a href="https://www.ycc.idv.tw/deep-dl_2.html" class="entry__thumb-link">
-                                <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
-                            </a>
-                        </div>
-
-                        <div class="entry__text">
-                            <div class="entry__header">
-
-                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/deep-dl_2.html">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</a></h2>
-                                <div class="entry__meta">
-                                    <span class="entry__meta-cat">
-                                        <a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>
-                                    </span>
-                                    <span class="entry__meta-date">
-                                        2020-02-25
-                                    </span>
-                                </div>
-
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                    <p>在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。</p>
-                                </p>
-                            </div>
-                        </div>
-
-                    </article> <!-- end article -->
-                    <article class="masonry__brick entry format-standard animate-this">
-
-                        <div class="entry__thumb">
-                            <a href="https://www.ycc.idv.tw/deep-dl_1.html" class="entry__thumb-link">
-                                <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
-                            </a>
-                        </div>
-
-                        <div class="entry__text">
-                            <div class="entry__header">
-
-                                <h2 class="entry__title"><a href="https://www.ycc.idv.tw/deep-dl_1.html">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</a></h2>
-                                <div class="entry__meta">
-                                    <span class="entry__meta-cat">
-                                        <a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>
-                                    </span>
-                                    <span class="entry__meta-date">
-                                        2020-02-18
-                                    </span>
-                                </div>
-
-                            </div>
-                            <div class="entry__excerpt">
-                                <p>
-                                    <p>如果你已經學了好一陣子的機器學習或深度學習，應該對於Normal Distribution不陌生，但是你真的懂Normal Distribution嗎？本講會詳細的探討Normal Distribution，並且引入中央極限定理（Central Limit Theorm）來解釋為何自然界的隨機誤差大都呈現Normal Distribution，再來介紹Entropy，並且利用Entropy揭示Normal Distribution具有最少先驗知識（Prior Knowledge）的特性。</p>
+                                    <p>本篇從概念到深入數學的介紹的擴散模型（Duffusion Model）。</p>
                                 </p>
                             </div>
                         </div>
