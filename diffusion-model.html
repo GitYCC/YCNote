@@ -5,13 +5,13 @@
     <!--- basic page needs
     ================================================== -->
     <meta charset="utf-8">
-    <title>擴散模型（Duffusion Model）：生成模型的新成員 - YC Note</title>
-    <meta name="description" content="本篇從概念到深入數學的介紹的擴散模型（Duffusion Model）。">
+    <title>擴散模型（Diffusion Model）：生成模型的新成員 - YC Note</title>
+    <meta name="description" content="本篇從概念到深入數學的介紹的擴散模型（Diffusion Model）。">
     <meta name="author" content="YC Chen">
 
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="擴散模型（Duffusion Model）：生成模型的新成員" />
-    <meta property="og:description" content="本篇從概念到深入數學的介紹的擴散模型（Duffusion Model）。" />
+    <meta property="og:title" content="擴散模型（Diffusion Model）：生成模型的新成員" />
+    <meta property="og:description" content="本篇從概念到深入數學的介紹的擴散模型（Diffusion Model）。" />
     <meta property="og:image" content="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" />
     <meta property="og:url" content="https://www.ycc.idv.tw/diffusion-model.html" />
     <meta property="og:site_name" content="YC Note" />
@@ -28,7 +28,7 @@
           },{
             "@type": "ListItem",
             "position": 2,
-            "name": "擴散模型（Duffusion Model）：生成模型的新成員",
+            "name": "擴散模型（Diffusion Model）：生成模型的新成員",
             "item": "https://www.ycc.idv.tw/diffusion-model.html"
           }]
         }
@@ -37,7 +37,7 @@
         {
           "@context" : "http://schema.org",
           "@type" : "Article",
-          "name" : "擴散模型（Duffusion Model）：生成模型的新成員 - YC Note",
+          "name" : "擴散模型（Diffusion Model）：生成模型的新成員 - YC Note",
           "author" : {
             "@type" : "Person",
             "name" : "YC Chen"
@@ -45,7 +45,7 @@
           "datePublished" : "2022-05-20",
           "image" : "https://www.ycc.idv.tw/images/deep_dl_cover.jpg",
           "articleSection" : "AI.ML",
-          "articleBody" : "本篇從概念到深入數學的介紹的擴散模型（Duffusion Model）。",
+          "articleBody" : "本篇從概念到深入數學的介紹的擴散模型（Diffusion Model）。",
           "url" : "https://www.ycc.idv.tw/diffusion-model.html",
           "publisher" : {
             "@type" : "Organization",
@@ -55,7 +55,7 @@
                 "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
             }
           },
-          "headline" : "擴散模型（Duffusion Model）：生成模型的新成員"
+          "headline" : "擴散模型（Diffusion Model）：生成模型的新成員"
         }
     </script>
 
@@ -212,7 +212,7 @@
 
                     <div class="content__page-header entry__header">
                         <h1 class="display-1 entry__title">
-                        擴散模型（Duffusion Model）：生成模型的新成員
+                        擴散模型（Diffusion Model）：生成模型的新成員
                         </h1>
                         <ul class="entry__header-meta">
                             <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
@@ -228,7 +228,7 @@
 
                     <div class="entry__content">
                         <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            本篇從概念到深入數學的介紹的擴散模型（Duffusion Model）。
+                            本篇從概念到深入數學的介紹的擴散模型（Diffusion Model）。
                         </div>
 
                         <h2>生成模型 (Generative Model) 家族</h2>
@@ -237,7 +237,7 @@
 <p><img alt="" src="http://www.ycc.idv.tw/media/Generative/hidden-to-sample-space.jpeg"></p>
 <p>繼GAN以後有一個後起之秀 — Flow-based Generative Model，不同於 GAN 需要一個鑑別器網路來輔助訓練生成器網路，Flow-based Generative Model 透過一個可逆推的網路結構來訓練，這個可逆推網路的兩端就是Hidden Space跟我們想要得到的Sample Space，既然網路是可以逆推的，我們就可以輸入一群真實樣本訓練網路將其分布轉換為高斯分布的Hidden Space，待網路訓練完成我們就可以逆推來作為生成器使用。</p>
 <p><img alt="ddpm" src="http://www.ycc.idv.tw/media/Generative/ddpm.png"></p>
-<p>近期，生成模型的家族又多了一個新的模型，就是本篇要介紹的擴散模型（Duffusion Model），Duffusion Model 的中心思想是使用若干個微幅轉換來轉換Hidden Space成為Sample Space，如下圖所示， <span class="math">\(\pmb{x}_T\)</span> 代表抽樣自高斯分布Hidden Space的圖片，<span class="math">\(\pmb{x}_0\)</span> 代表抽樣自Sample Space的圖片，從 <span class="math">\(\pmb{x}_0\)</span> 到 <span class="math">\(\pmb{x}_T\)</span> 是模糊化的過程，中間經過若干事先定義好的操作 <span class="math">\(q(\pmb{x}_{t}\mid \pmb{x}_{t-1})\)</span>，而生成模型旨於學習模糊化的逆向轉換 <span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> ，當我們有了<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 就可以隨機抽樣自Hidden Space並轉成一張合成的圖片。實際操作上，<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 是一個神經網路，其輸入為圖片 <span class="math">\(\pmb{x}_t\)</span> 和其所在的step <span class="math">\(t\)</span>，其輸出為預測模糊化中被添加的雜訊 <span class="math">\(\epsilon\)</span> ，經理論的推導證明：
+<p>近期，生成模型的家族又多了一個新的模型，就是本篇要介紹的擴散模型（Diffusion Model），Diffusion Model 的中心思想是使用若干個微幅轉換來轉換Hidden Space成為Sample Space，如下圖所示， <span class="math">\(\pmb{x}_T\)</span> 代表抽樣自高斯分布Hidden Space的圖片，<span class="math">\(\pmb{x}_0\)</span> 代表抽樣自Sample Space的圖片，從 <span class="math">\(\pmb{x}_0\)</span> 到 <span class="math">\(\pmb{x}_T\)</span> 是模糊化的過程，中間經過若干事先定義好的操作 <span class="math">\(q(\pmb{x}_{t}\mid \pmb{x}_{t-1})\)</span>，而生成模型旨於學習模糊化的逆向轉換 <span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> ，當我們有了<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 就可以隨機抽樣自Hidden Space並轉成一張合成的圖片。實際操作上，<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 是一個神經網路，其輸入為圖片 <span class="math">\(\pmb{x}_t\)</span> 和其所在的step <span class="math">\(t\)</span>，其輸出為預測模糊化中被添加的雜訊 <span class="math">\(\epsilon\)</span> ，經理論的推導證明：
 </p>
 <div class="math">$$
 \pmb{x}_{t}=\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon} \text{ ; }\pmb{\epsilon}\sim\mathcal{N}(0;\pmb{I}) 
@@ -291,7 +291,7 @@ $$</div>
 上式中的 <span class="math">\(p(\pmb{z})\)</span> 是定義好的分布，通常為高斯分布，<span class="math">\(p(\pmb{x}\mid\pmb{z})\)</span> 和 <span class="math">\(q(\pmb{z}\mid \pmb{x})\)</span> 也是兩個已知的函式，所以【1.5】是可求得的。</p>
 <p>回過頭來看Diffusion Model，每一個 Step 中模糊化 <span class="math">\(q(\pmb{x}_{t}\mid \pmb{x}_{t-1})\)</span> 與逆模糊化 <span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 應該存在ELBO的限制，在待會的推倒中我們會看到這一點。</p>
 <h2>擴散模型的Loss Function</h2>
-<p>接著我們來完整推導Duffusion Model 吧！每一次的模糊化我們可以定義為
+<p>接著我們來完整推導Diffusion Model 吧！每一次的模糊化我們可以定義為
 </p>
 <div class="math">$$
 q(\pmb{x}_t\mid\pmb{x}_{t-1})=\mathcal{N}(\pmb{x}_t:\sqrt{1-\beta_t}\pmb{x}_{t-1};\beta_t\pmb{I}) \ \ 【5.1】
@@ -583,7 +583,7 @@ $$</div>
         var disqus_config = function () {
             this.page.url = "https://www.ycc.idv.tw/diffusion-model.html";
             this.page.identifier = "diffusion-model.html";
-            this.page.title = "擴散模型（Duffusion Model）：生成模型的新成員";
+            this.page.title = "擴散模型（Diffusion Model）：生成模型的新成員";
             this.language = "zh_TW";
         };
 
