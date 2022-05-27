@@ -237,13 +237,13 @@
 <p><img alt="" src="http://www.ycc.idv.tw/media/Generative/hidden-to-sample-space.jpeg"></p>
 <p>繼GAN以後有一個後起之秀 — Flow-based Generative Model，不同於 GAN 需要一個鑑別器網路來輔助訓練生成器網路，Flow-based Generative Model 透過一個可逆推的網路結構來訓練，這個可逆推網路的兩端就是Hidden Space跟我們想要得到的Sample Space，既然網路是可以逆推的，我們就可以輸入一群真實樣本訓練網路將其分布轉換為高斯分布的Hidden Space，待網路訓練完成我們就可以逆推來作為生成器使用。</p>
 <p><img alt="ddpm" src="http://www.ycc.idv.tw/media/Generative/ddpm.png"></p>
-<p>近期，生成模型的家族又多了一個新的模型，就是本篇要介紹的擴散模型（Diffusion Model），Diffusion Model 的中心思想是使用若干個微幅轉換來轉換Hidden Space成為Sample Space，如下圖所示， <span class="math">\(\pmb{x}_T\)</span> 代表抽樣自高斯分布Hidden Space的圖片，<span class="math">\(\pmb{x}_0\)</span> 代表抽樣自Sample Space的圖片，從 <span class="math">\(\pmb{x}_0\)</span> 到 <span class="math">\(\pmb{x}_T\)</span> 是模糊化的過程，中間經過若干事先定義好的操作 <span class="math">\(q(\pmb{x}_{t}\mid \pmb{x}_{t-1})\)</span>，而生成模型旨於學習模糊化的逆向轉換 <span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> ，當我們有了<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 就可以隨機抽樣自Hidden Space並轉成一張合成的圖片。實際操作上，<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 是一個神經網路，其輸入為圖片 <span class="math">\(\pmb{x}_t\)</span> 和其所在的step <span class="math">\(t\)</span>，其輸出為預測模糊化中被添加的雜訊 <span class="math">\(\epsilon\)</span> ，經理論的推導證明：
+<p>近期，生成模型的家族又多了一個新的模型，就是本篇要介紹的擴散模型（Diffusion Model），Diffusion Model 的中心思想是使用若干個微幅轉換來轉換Hidden Space成為Sample Space，如上圖所示， <span class="math">\(\pmb{x}_T\)</span> 代表抽樣自高斯分布Hidden Space的圖片，<span class="math">\(\pmb{x}_0\)</span> 代表抽樣自Sample Space的圖片，從 <span class="math">\(\pmb{x}_0\)</span> 到 <span class="math">\(\pmb{x}_T\)</span> 是模糊化的過程，中間經過若干事先定義好的操作 <span class="math">\(q(\pmb{x}_{t}\mid \pmb{x}_{t-1})\)</span>，而生成模型旨於學習模糊化的逆向轉換 <span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> ，當我們有了<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 就可以隨機抽樣自Hidden Space並轉成一張合成的圖片。實際操作上，<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 是一個神經網路，其輸入為圖片 <span class="math">\(\pmb{x}_t\)</span> 和其所在的step <span class="math">\(t\)</span>，其輸出為預測模糊化中被添加的雜訊 <span class="math">\(\pmb{z}_\theta(\pmb{x}_t ,t)\)</span> ，經理論的推導證明：
 </p>
 <div class="math">$$
-\pmb{x}_{t}=\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon} \text{ ; }\pmb{\epsilon}\sim\mathcal{N}(0;\pmb{I}) 
+\pmb{x}_{t-1}=\frac{1}{\sqrt{\bar{\alpha}_t}}(\pmb{x}_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\pmb{z}_\theta(\pmb{x}_t ,t))+\sigma_t\pmb{z}\ \ \text{ ; }\pmb{z}\sim\mathcal{N}(0;\pmb{I})
 $$</div>
 <p>
-(詳見【5.14】)，因此只要能成功預測隨機數 <span class="math">\(\epsilon\)</span> 就可以得到逆推模糊化的反轉換。</p>
+(詳見【2.22】)，因此只要能成功預測隨機數 <span class="math">\(\pmb{z}_\theta(\pmb{x}_t ,t)\)</span> 就可以得到逆推模糊化的反轉換。</p>
 <p>閱讀到這裡的你已經把它的概念弄懂八成了，接下來要進入到可怕的數學時間，Are you ready?</p>
 <h2>從 Variational Inference 到 Evidence Lower Bound (ELBO)</h2>
 <p>近年來面對極其複雜（e.g. NN）的機率模型，傳統的優化方式變得不可行，如： Expectation-Maximization Algorithm ，所以接下來要跟大家介紹的 Variational Inference (VI) 就變得開始廣為人使用。</p>
@@ -294,19 +294,19 @@ $$</div>
 <p>接著我們來完整推導Diffusion Model 吧！每一次的模糊化我們可以定義為
 </p>
 <div class="math">$$
-q(\pmb{x}_t\mid\pmb{x}_{t-1})=\mathcal{N}(\pmb{x}_t:\sqrt{1-\beta_t}\pmb{x}_{t-1};\beta_t\pmb{I}) \ \ 【5.1】
+q(\pmb{x}_t\mid\pmb{x}_{t-1})=\mathcal{N}(\pmb{x}_t:\sqrt{1-\beta_t}\pmb{x}_{t-1};\beta_t\pmb{I}) \ \ 【2.1】
 $$</div>
 <p>
 其中 <span class="math">\(\beta\)</span>是介於0到1之間，這項可以是學來的，也可以是事前定義的定值，在 DDPM 論文中，<span class="math">\(\beta\)</span> 是一個定好的值。而經過 <span class="math">\(T\)</span> 次（事先定義）的模糊化後，我們希望最終的 <span class="math">\(\pmb{x}_T\)</span> 可以接近高斯分布，即：
 </p>
 <div class="math">$$
-\pmb{x}_T\sim\mathcal{N}(\pmb{x}_T:0;\pmb{I}) \ \ 【5.2】
+\pmb{x}_T\sim\mathcal{N}(\pmb{x}_T:0;\pmb{I}) \ \ 【2.2】
 $$</div>
 <p>
 這個過程我們稱之為正向擴散過程（forward diffusion process）。而逆模糊化我們定義成：
 </p>
 <div class="math">$$
-p_\theta (\pmb{x}_{t-1}\mid\pmb{x}_{t})\sim\mathcal{N}(\pmb{x}_{t-1}:\pmb{\mu}_\theta (\pmb{x}_t ,t);\pmb{\Sigma}_\theta (\pmb{x}_t ,t)) \ \ 【5.3】
+p_\theta (\pmb{x}_{t-1}\mid\pmb{x}_{t})\sim\mathcal{N}(\pmb{x}_{t-1}:\pmb{\mu}_\theta (\pmb{x}_t ,t);\pmb{\Sigma}_\theta (\pmb{x}_t ,t)) \ \ 【2.3】
 $$</div>
 <p>
 其中 <span class="math">\(p_\theta (\pmb{x}_{t-1}\mid\pmb{x}_{t})\)</span> 用來近似 <span class="math">\(q(\pmb{x}_{t-1}\mid\pmb{x}_{t})\)</span>，<span class="math">\(\pmb{\mu}_\theta\)</span> 和 <span class="math">\(\pmb{\Sigma}_\theta\)</span> 代表模型 <span class="math">\(\theta\)</span> 預測的平均值和標準差。</p>
@@ -315,7 +315,7 @@ $$</div>
 <div class="math">$$
 ELBO_{\pmb{x}_{0:T}}=\int q (\pmb{x}_{1:T}\mid \pmb{x}_0)\ log\ \frac{p_{\theta}(\pmb{x}_{0:T})}{q (\pmb{x}_{1:T}\mid \pmb{x}_0)}d\pmb{x}_{1:T}\\
 =-\int q (\pmb{x}_{1:T}\mid \pmb{x}_0)\ [log\frac{q (\pmb{x}_{T}\mid \pmb{x}_{0})}{p_{\theta}(\pmb{x}_{T})}+\sum_{t=2}^{T}log\frac{q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})}{p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_{t})}-log\ p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1})]d\pmb{x}_{1:T}\\
-=-\{D_{KL}[q (\pmb{x}_{T}\mid \pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{T})]+\sum_{t=2}^{T}D_{KL}[q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{t-1}\mid\pmb{x}_{t})]-log\ p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1})\} \ \ 【5.4】
+=-\{D_{KL}[q (\pmb{x}_{T}\mid \pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{T})]+\sum_{t=2}^{T}D_{KL}[q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{t-1}\mid\pmb{x}_{t})]-log\ p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1})\} \ \ 【2.4】
 $$</div>
 <p>
 其中：
@@ -333,50 +333,50 @@ log\ \frac{p_{\theta}(\pmb{x}_{0:T})}{q (\pmb{x}_{1:T}\mid \pmb{x}_0)}\\
 =-[log\frac{q (\pmb{x}_{T}\mid \pmb{x}_{0})}{p_{\theta}(\pmb{x}_{T})}+\sum_{t=2}^{T}log\frac{q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})}{p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_{t})}-log\ p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1})]
 $$</div>
 <p>
-我們需要最大化ELBO，從【5.4】可得優化任務為：
+我們需要最大化ELBO，從【2.4】可得優化任務為：
 </p>
 <div class="math">$$
-\theta^*=\text{argmin}_{\theta}\ -ELBO_{\pmb{x},\pmb{z}}=\text{argmin}_{\theta}\{L_T+L_{T-1}+...+L_{1}+L_0\} \ \ 【5.5】
+\theta^*=\text{argmin}_{\theta}\ -ELBO_{\pmb{x},\pmb{z}}=\text{argmin}_{\theta}\{L_T+L_{T-1}+...+L_{1}+L_0\} \ \ 【2.5】
 $$</div>
 <p>
 其中：
 </p>
 <div class="math">$$
-L_T=D_{KL}[q (\pmb{x}_{T}\mid \pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{T})] \ \ 【5.6】
+L_T=D_{KL}[q (\pmb{x}_{T}\mid \pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{T})] \ \ 【2.6】
 $$</div>
 <div class="math">$$
-L_{1\leq t\leq T-1}=D_{KL}[q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{t-1}\mid\pmb{x}_{t})] \ \ 【5.7】
+L_{1\leq t\leq T-1}=D_{KL}[q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})\mid\mid p_{\theta}(\pmb{x}_{t-1}\mid\pmb{x}_{t})] \ \ 【2.7】
 $$</div>
 <div class="math">$$
-L_0=-log\ p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1}) \ \ 【5.8】
+L_0=-log\ p_\theta(\pmb{x}_{0}\mid \pmb{x}_{1}) \ \ 【2.8】
 $$</div>
 <p><strong>計算<span class="math">\(L_T\)</span></strong></p>
 <p><span class="math">\(L_T\)</span> 與 <span class="math">\(\theta\)</span> 無關，不需要優化，可以忽略。</p>
 <p><strong>計算<span class="math">\(L_0\)</span></strong></p>
-<p>因為【5.3】，所以 <span class="math">\(p_\theta(\pmb{x}_0\mid\pmb{x}_1)\)</span> 是可以由模型預測而得的。</p>
+<p>因為【2.3】，所以 <span class="math">\(p_\theta(\pmb{x}_0\mid\pmb{x}_1)\)</span> 是可以由模型預測而得的。</p>
 <p><strong>計算<span class="math">\(L_{1\leq t\leq T-1}\)</span></strong></p>
 <p><span class="math">\(L_t\)</span> 這一項先從 <span class="math">\(q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})\)</span> 開始做起，先給公式後面再補上證明：
 </p>
 <div class="math">$$
-q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})=\mathcal{N}(\pmb{x}_{t-1}:\tilde{\pmb{\mu}}_t (\pmb{x}_t ,\pmb{x}_0);\tilde{\beta}_t\pmb{I}) \ \ 【5.9】
+q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})=\mathcal{N}(\pmb{x}_{t-1}:\tilde{\pmb{\mu}}_t (\pmb{x}_t ,\pmb{x}_0);\tilde{\beta}_t\pmb{I}) \ \ 【2.9】
 $$</div>
 <p>
 其中：
 </p>
 <div class="math">$$
-\tilde{\pmb{\mu}}_t (\pmb{x}_t ,\pmb{x}_0)=\frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1-\bar{\alpha}_{t}}\pmb{x}_0+\frac{\sqrt{\alpha_t}(1-\bar{\alpha}_{t-1})}{(1-\bar{\alpha}_{t})}\pmb{x}_t \ \ 【5.10】
+\tilde{\pmb{\mu}}_t (\pmb{x}_t ,\pmb{x}_0)=\frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1-\bar{\alpha}_{t}}\pmb{x}_0+\frac{\sqrt{\alpha_t}(1-\bar{\alpha}_{t-1})}{(1-\bar{\alpha}_{t})}\pmb{x}_t \ \ 【2.10】
 $$</div>
 <div class="math">$$
-\tilde{\beta}_t=\frac{1-\bar{\alpha}_{t-1}}{1-\bar{\alpha}_{t}}\beta_t \ \ 【5.11】
+\tilde{\beta}_t=\frac{1-\bar{\alpha}_{t-1}}{1-\bar{\alpha}_{t}}\beta_t \ \ 【2.11】
 $$</div>
 <div class="math">$$
-\alpha_t=1-\beta_t \ \ 【5.12】
+\alpha_t=1-\beta_t \ \ 【2.12】
 $$</div>
 <div class="math">$$
-\bar{\alpha}_t=\prod_{s=1}^t\alpha_s \ \ 【5.13】
+\bar{\alpha}_t=\prod_{s=1}^t\alpha_s \ \ 【2.13】
 $$</div>
 <hr>
-<p>接下來回過頭來，我們要來證明【5.9】，在那之前我們要來證明一個好用的式子，由【5.1】搭配【5.12】、【5.13】置換變數可得
+<p>接下來回過頭來，我們要來證明【2.9】，在那之前我們要來證明一個好用的式子，由【2.1】搭配【2.12】、【2.13】置換變數可得
 </p>
 <div class="math">$$
 \pmb{x}_t=\sqrt{\alpha_t}\pmb{x}_{t-1}+\sqrt{1-\alpha_t}\pmb{\epsilon}_{t-1}\\
@@ -384,12 +384,12 @@ $$</div>
 =\sqrt{\alpha_t\alpha_{t-1}}\pmb{x}_{t-2}+[\sqrt{\alpha_t-\alpha_t\alpha_{t-1}}\pmb{\epsilon}_{t-2}+\sqrt{1-\alpha_t}\pmb{\epsilon}_{t-1}]\\
 =\sqrt{\alpha_t\alpha_{t-1}}\pmb{x}_{t-2}+\sqrt{1-\alpha_t\alpha_{t-1}}\bar{\pmb{\epsilon}}_{t-2}\\
 ...\\
-=\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon}\text{ ; }\pmb{\epsilon}\sim\mathcal{N}(0;\pmb{I}) \ \ 【5.14】\\
-\Rightarrow q (\pmb{x}_{t}\mid \pmb{x}_{0})=\mathcal{N}(\sqrt{\bar{\alpha}_t}\pmb{x}_{0};(1-\bar{\alpha}_t)\pmb{I}) \ \ 【5.15】
+=\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon}\text{ ; }\pmb{\epsilon}\sim\mathcal{N}(0;\pmb{I}) \ \ 【2.14】\\
+\Rightarrow q (\pmb{x}_{t}\mid \pmb{x}_{0})=\mathcal{N}(\sqrt{\bar{\alpha}_t}\pmb{x}_{0};(1-\bar{\alpha}_t)\pmb{I}) \ \ 【2.15】
 $$</div>
 <p>
 上式中 <span class="math">\(\bar{\epsilon}\)</span> 代表兩個 Guaissan 的相加，其分布遵循 <span class="math">\(\sum_{i=1}^{n}a_i\cdot \mathcal{N}(z:\mu_i;\sigma^2_i)=\mathcal{N}(z:\sum_{i=1}^{n}a_i\mu_i;\sum_{i=1}^{n}a_i^2\sigma_i^2)\)</span>。</p>
-<p>如此一來就可以來計算目標了，【5.1】、【5.15】代入
+<p>如此一來就可以來計算目標了，引入【2.1】、【2.15】可得
 </p>
 <div class="math">$$
 q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})=q (\pmb{x}_{t}\mid \pmb{x}_{t-1},\pmb{x}_{0})\frac{q (\pmb{x}_{t-1}\mid \pmb{x}_{0})}{q (\pmb{x}_{t}\mid \pmb{x}_{0})}\\
@@ -397,21 +397,26 @@ q (\pmb{x}_{t-1}\mid \pmb{x}_{t},\pmb{x}_{0})=q (\pmb{x}_{t}\mid \pmb{x}_{t-1},\
 =exp\{-\frac{1}{2}[(\frac{\alpha_t}{\beta_t}+\frac{1}{1-\bar{\alpha}_{t-1}})\pmb{x}_{t-1}^2-(\frac{2\sqrt{\alpha_t}}{\beta_t}\pmb{x}_{t}+\frac{2\sqrt{\bar{\alpha}_t}}{1-\bar{\alpha}_t}\pmb{x}_{0})\pmb{x}_{t-1}+C(\pmb{x}_{t},\pmb{x}_{0})]\}
 $$</div>
 <p>
-整理可得平均值和方差為【5.10】和【5.11】。</p>
+整理可得平均值和方差為【2.10】和【2.11】。</p>
 <hr>
-<p>【5.9】、【5.3】和【A.1】代入【5.7】可得
+<p>接下來為求方便計算，我們假設 <span class="math">\(\pmb{\Sigma}_{\theta}\)</span> 為：
+</p>
+<div class="math">$$
+\pmb{\Sigma}_\theta (\pmb{x}_t ,t)=\sigma_{t,\theta} \pmb{I} \ \ 【2.16】
+$$</div>
+<p>【2.16】、【2.9】、【2.3】和【A.1】代入【2.7】可得
 </p>
 <div class="math">$$
 L_{1\leq t\leq T-1}=D_{KL}[\mathcal{N}(\pmb{x}_{t-1}:\tilde{\pmb{\mu}}_t (\pmb{x}_t ,\pmb{x}_0);\tilde{\beta}_t\pmb{I})\mid\mid \mathcal{N}(\pmb{x}_{t-1}:\pmb{\mu}_\theta (\pmb{x}_t ,t);\pmb{\Sigma}_\theta (\pmb{x}_t ,t))] \\
-=\sum_{j=1}^{J} D_{KL}[\mathcal{N}(x_{t-1,j}:\tilde{\mu}_{t,j} (\pmb{x}_t ,\pmb{x}_0);\tilde{\beta}_{t,j})\mid\mid \mathcal{N}(x_{t-1,j}:\mu_{\theta,j} (\pmb{x}_t ,t);\Sigma_{\theta,j} (\pmb{x}_t ,t))] \text{;假設 }\pmb{\Sigma}_{\theta}=diag(\Sigma_{\theta,1},\Sigma_{\theta,2},...)\\
-=\sum_{j=1}^{J} log\frac{\Sigma_{\theta,j}}{\tilde{\beta}_{t,j}}+\frac{\tilde{\beta}_{t,j}^2+[\tilde{\mu}_{t,j} (\pmb{x}_t ,\pmb{x}_0)-\mu_{\theta,j} (\pmb{x}_t ,t)]^2}{2\Sigma_{\theta,j}^2}-\frac{1}{2} \ \ 【5.16】
+=\sum_{j=1}^{J} D_{KL}[\mathcal{N}(x_{t-1,j}:\tilde{\mu}_{t,j} (\pmb{x}_t ,\pmb{x}_0);\tilde{\beta}_{t,j})\mid\mid \mathcal{N}(x_{t-1,j}:\mu_{\theta,j} (\pmb{x}_t ,t);\sigma_{t,\theta} (\pmb{x}_t ,t)\pmb{I})]\\
+=\sum_{j=1}^{J} log\frac{\sigma_{t,\theta}}{\tilde{\beta}_{t,j}}+\frac{\tilde{\beta}_{t,j}^2+[\tilde{\mu}_{t,j} (\pmb{x}_t ,\pmb{x}_0)-\mu_{\theta,j} (\pmb{x}_t ,t)]^2}{2\sigma_{t,\theta}^2}-\frac{1}{2} \ \ 【2.17】
 $$</div>
 <p>
-其中：<span class="math">\(\Sigma_{\theta,j}\)</span> 這一項在DDPM當中設為定值，作者實驗了兩種假設 <span class="math">\(\Sigma_{\theta}=\beta_t\)</span> 和 <span class="math">\(\Sigma_{\theta}=\tilde{\beta}_t\)</span> 發現對成效來說沒太大的差別。而Improved DDPM這一項則是用學的，作者假設 <span class="math">\(\Sigma_{\theta}=exp(v\ log\beta_t+(1-v)\ log\tilde{\beta}_t)\)</span>。</p>
-<p>觀察【5.16】可發現平均值的優化：
+其中：<span class="math">\(\sigma_{t,\theta}\)</span> 這一項在DDPM當中設為定值，作者實驗了兩種假設 <span class="math">\(\sigma_{t,\theta}=\beta_t\)</span> 和 <span class="math">\(\sigma_{t,\theta}=\tilde{\beta}_t\)</span> 發現對成效來說沒太大的差別。而Improved DDPM這一項則是用學的，作者假設 <span class="math">\(\sigma_{t,\theta}=exp(v\ log\beta_t+(1-v)\ log\tilde{\beta}_t)\)</span>。</p>
+<p>觀察【2.17】可發現平均值的優化：
 </p>
 <div class="math">$$
-L_{t,mean}=\frac{1}{2\Sigma_{\theta,j}^2}[\tilde{\pmb{\mu}}_{t} (\pmb{x}_t ,\pmb{x}_0)-\pmb{\mu}_{\theta} (\pmb{x}_t ,t)]^2\ \ 【5.17】
+L_{t,mean}=\frac{1}{2\sigma_{t,\theta}^2}[\tilde{\pmb{\mu}}_{t} (\pmb{x}_t ,\pmb{x}_0)-\pmb{\mu}_{\theta} (\pmb{x}_t ,t)]^2\ \ 【2.18】
 $$</div>
 <p>
 其中：
@@ -420,33 +425,45 @@ $$</div>
 \tilde{\pmb{\mu}}_{t} (\pmb{x}_t ,\pmb{x}_0) =\frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1-\bar{\alpha}_{t}}\pmb{x}_0+\frac{\sqrt{\alpha_t}(1-\bar{\alpha}_{t-1})}{(1-\bar{\alpha}_{t})}\pmb{x}_t
 $$</div>
 <p>
-我們可以藉由變換上式來得到優化目標，我們可以優化還原狀況（也就是原圖 <span class="math">\(\pmb{x}_0\)</span>），也可以預測添加的雜訊，而 DDPM作者實驗發現預測添加的雜訊得到的效果比較好，因此我們使用【5.14】替換掉 <span class="math">\(\pmb{x}_0\)</span>：
+我們可以藉由變換上式來得到優化目標，我們可以優化還原狀況（也就是原圖 <span class="math">\(\pmb{x}_0\)</span>），也可以預測添加的雜訊，而 DDPM作者實驗發現預測添加的雜訊得到的效果比較好，因此我們使用【2.14】替換掉 <span class="math">\(\pmb{x}_0\)</span>：
 </p>
 <div class="math">$$
 =\frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1-\bar{\alpha}_{t}}\times\frac{1}{\sqrt{\bar{\alpha}_t}}[\pmb{x}_t-\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon}]+\frac{\sqrt{\alpha_t}(1-\bar{\alpha}_{t-1})}{(1-\bar{\alpha}_{t})}\pmb{x}_t\\
-=\frac{1}{\sqrt{\bar{\alpha}_t}}(\pmb{x}_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\pmb{\epsilon})\ \ 【5.18】
+=\frac{1}{\sqrt{\bar{\alpha}_t}}(\pmb{x}_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\pmb{\epsilon})\ \ 【2.19】
 $$</div>
 <p>
-【5.17】式中 <span class="math">\(\pmb{\mu}_{\theta} (\pmb{x}_t ,t)\)</span> 是我們可以假設的，假設我讓它預測添加的雜訊，我們可以假設為 
+【2.18】式中 <span class="math">\(\pmb{\mu}_{\theta} (\pmb{x}_t ,t)\)</span> 是我們可以假設的，假設我讓它預測添加的雜訊，我們可以假設為 
 </p>
 <div class="math">$$
-\pmb{\mu}_{\theta} (\pmb{x}_t ,t)=\frac{1}{\sqrt{\bar{\alpha}_t}}(\pmb{x}_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\pmb{\epsilon}_\theta) \ \ 【5.19】
+\pmb{\mu}_{\theta} (\pmb{x}_t ,t)=\frac{1}{\sqrt{\bar{\alpha}_t}}(\pmb{x}_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\pmb{z}_\theta(\pmb{x}_t ,t)) \ \ 【2.20】
 $$</div>
 <p>
-【5.18】和【5.19】代入【5.17】得
+因此，我們可以推得逆模糊的關鍵公式，【2.20】代入【2.3】得：
 </p>
 <div class="math">$$
-L_{t,mean}=\frac{\beta^2_t}{2\bar{\alpha}_t(1-\bar{\alpha}_t)\Sigma_{\theta,j}^2}\mid\mid\pmb{\epsilon}-\pmb{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon},t)\mid\mid^2\ \ 【5.20】
+p_\theta (\pmb{x}_{t-1}\mid\pmb{x}_{t})\sim\mathcal{N}(\pmb{x}_{t-1}:\frac{1}{\sqrt{\bar{\alpha}_t}}(\pmb{x}_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\pmb{z}_\theta(\pmb{x}_t ,t));\pmb{\Sigma}_\theta (\pmb{x}_t ,t)) \ \ 【2.21】
+$$</div>
+<p>
+上式也可以寫作：
+</p>
+<div class="math">$$
+\pmb{x}_{t-1}=\frac{1}{\sqrt{\bar{\alpha}_t}}(\pmb{x}_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\pmb{z}_\theta(\pmb{x}_t ,t))+\sigma_t\pmb{z}\ \ \text{ ; }\pmb{z}\sim\mathcal{N}(0;\pmb{I}) \ \ 【5.22】
+$$</div>
+<p>【2.19】和【2.20】代入【2.18】得
+</p>
+<div class="math">$$
+L_{t,mean}=\frac{\beta^2_t}{2\bar{\alpha}_t(1-\bar{\alpha}_t)\Sigma_{\theta,j}^2}\mid\mid\pmb{\epsilon}-\pmb{z}_\theta(\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon},t)\mid\mid^2\ \ 【2.23】
 $$</div>
 <p>
 在DDPM中，作者發現使用去除上式Weighting的優化式效果更好，寫作：
 </p>
 <div class="math">$$
-L_{t,mean,simple}=\mid\mid\pmb{\epsilon}-\pmb{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon},t)\mid\mid^2\ \ 【5.21】
+L_{t,mean,simple}=\mid\mid\pmb{\epsilon}-\pmb{z}_\theta(\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon},t)\mid\mid^2\ \ 【2.24】
 $$</div>
 <p>
 因此DDPM的訓練和取樣示例代碼如下：</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Generative/DDPM-algo.png"></p>
+<p>其中應用到【2.24】和【2.22】。</p>
 <h2>Appendix A: KL Divergence between two Gaussians</h2>
 <div class="math">$$
 D_{KL}[\mathcal{N}(z:\mu_1;\sigma^2_1)\mid\mid\mathcal{N}(z:\mu_2;\sigma^2_2)]\\
@@ -463,6 +480,7 @@ $$</div>
 <li>An Introduction to Variational Inference: https://arxiv.org/pdf/2108.13083.pdf</li>
 <li>From Autoencoder to Beta-VAE: https://lilianweng.github.io/posts/2018-08-12-vae/</li>
 <li>Denoising Diffusion Probabilistic Models: https://arxiv.org/pdf/2006.11239.pdf</li>
+<li>What are Diffusion Models: https://lilianweng.github.io/posts/2021-07-11-diffusion-models/</li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
