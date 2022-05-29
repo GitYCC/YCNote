@@ -452,7 +452,7 @@ $$</div>
 <p>【2.19】和【2.20】代入【2.18】得
 </p>
 <div class="math">$$
-L_{t,mean}=\frac{\beta^2_t}{2\bar{\alpha}_t(1-\bar{\alpha}_t)\Sigma_{\theta,j}^2}\mid\mid\pmb{\epsilon}-\pmb{z}_\theta(\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon},t)\mid\mid^2\ \ 【2.23】
+L_{t,mean}=\frac{\beta^2_t}{2\bar{\alpha}_t(1-\bar{\alpha}_t)\sigma_{t,\theta}^2}\mid\mid\pmb{\epsilon}-\pmb{z}_\theta(\sqrt{\bar{\alpha}_t}\pmb{x}_{0}+\sqrt{1-\bar{\alpha}_t}\pmb{\epsilon},t)\mid\mid^2\ \ 【2.23】
 $$</div>
 <p>
 在DDPM中，作者發現使用去除上式Weighting的優化式效果更好，寫作：
