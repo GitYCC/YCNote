@@ -232,7 +232,8 @@
                         <blockquote>
 <p>Tesla AI Day 2021</p>
 </blockquote>
-<h2>Tesla Vision</h2>
+<h2>How do we make a car autonomous?</h2>
+<h3>Vision</h3>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/convert_to_vector_space.jpg"></p>
 <p>在 Full Self-Driving（FSD）的任務當中，需要利用多顆鏡頭的影像來重建出 3-D 的 Vector Space，在這 Vector Space 中我們就可以靠著 Planing Algorithm 來駕駛汽車。</p>
 <p><br><br></p>
@@ -268,6 +269,21 @@
 <p><br><br></p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/tesla_vision_summary.png"></p>
 <p>以上就是 Tesla Vision 模型的大架構。</p>
+<p><br><br></p>
+<h3>Planning &amp; Control</h3>
+<p>我們已經有了由 Tesla Vision 建立的 Vector Space，接下來我們就可以在這個空間裡開車，但這不是一件簡單的事，會遇到 Non-Convex    和 High-Dimensional 兩個問題。Non-Convex 意味著路線規劃中存在著多條足夠好的路徑，但是想要找到全局最優的那個路徑會變得困難，很有可能會卡在局部最優解；High-Dimensional 的原因是因為車輛需要為接下來10-15秒做規劃，要估計這一個時間區間的位置、速度、加速度，因此要描述一整條路徑是高維的。</p>
+<p><br><br></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/planning_and_control.gif"></p>
+<p>優化方法有兩種策略 — Discrete Search 和 Continuous Function Optimization，但這兩種策略都有侷限性，Discrete Search 用在 High-Dimensional 的情況下會造成計算複雜度相當高，而 Continuous Function Optimization 用在 Non-Convex 容易陷在局部最佳解，因此 Tesla 的解法是採用混合式，先使用 Discrete Search 來建立一條可走的通道，來侷限路徑，稱為 Convex Corridor，再使用 Continuous Function Optimization 的方法找出一條平穩的路徑。</p>
+<p><br><br></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/need_consider_other.png"></p>
+<p>另外，我們在做行車規劃時還需要考慮其他車輛的移動，例如遇到會車的狀況，自動駕駛要能分辨來車是否要讓道，如果對方讓道，我們的車子前進；如果對方不讓道前進，我們的車子要讓道。</p>
+<p><br><br></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/example_parking_problem.png"></p>
+<p>在一般道路，尤其是高速公路，路徑搜索還算簡單，但是有一些狀況卻是相當棘手的，例如：停車問題。如上圖，停車場充斥著許多障礙物，在路徑搜索中最常見的方法是使用 A<em> 演算法，但是展開次數要多達近40萬次，所以再進一步加入行進方向導航，可以讓 A</em> 演算法進步到展開次數大概2萬次，但這仍然不夠快速。原因是因為目前作法並不能綜觀全局來找路徑，於是我們借助神經網路的幫忙，利用類似AlphaGO的方式來做路徑搜索，結果展開次數可以降到近300次而已，差異相當的大。</p>
+<p><br><br></p>
+<h2>How do we generate training data?</h2>
+<h3>Manual labeling</h3>
 
                     </div> <!-- end entry content -->
                     
