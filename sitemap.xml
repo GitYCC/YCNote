@@ -5,21 +5,21 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://www.ycc.idv.tw/</loc>
-<lastmod>2022-10-08T02:57:53-00:00</lastmod>
+<lastmod>2022-10-09T14:15:45-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://www.ycc.idv.tw/tags.html</loc>
-<lastmod>2022-10-08T02:57:53-00:00</lastmod>
+<lastmod>2022-10-09T14:15:45-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://www.ycc.idv.tw/tesla-aiday2021.html</loc>
-<lastmod>2022-10-14T12:00:00+08:00</lastmod>
+<lastmod>2022-10-09T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
@@ -369,7 +369,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://www.ycc.idv.tw/category/aiml.html</loc>
-<lastmod>2022-10-14T12:00:00+08:00</lastmod>
+<lastmod>2022-10-09T12:00:00+08:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -425,7 +425,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://www.ycc.idv.tw/tag/tesla.html</loc>
-<lastmod>2022-10-14T12:00:00+08:00</lastmod>
+<lastmod>2022-10-09T12:00:00+08:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
