@@ -246,12 +246,12 @@
 <p><img alt="" src="http://www.ycc.idv.tw/media/CS/thread_and_process.png"></p>
 <ul>
 <li>Single Process Single Thread<ul>
-<li>Single Process中記憶體存放Code、Data、Files</li>
-<li>Single Thread 進行中需使用 Register和Stack來紀錄</li>
+<li>Single Process中記憶體存放Code、Data</li>
+<li>Single Thread 進行中需使用 Stack 來追蹤紀錄</li>
 </ul>
 </li>
 <li>Single Process Multi-Thread<ul>
-<li>單一Process中的多個Thread共享資源（記憶體存放的Code、Data、Files）</li>
+<li>單一Process中的多個Thread共享資源（記憶體存放的Code、Data）</li>
 <li>也因為共享資源的緣故，要小心撰寫程式碼避免dead lock和race condition等問題</li>
 </ul>
 </li>
@@ -262,7 +262,7 @@
 </ul>
 </li>
 <li>譬喻：<ul>
-<li>Process 像是一間工廠，工廠裡面有許多器具（Code、Data、Files）</li>
+<li>Process 像是一間工廠，工廠裡面有許多器具（Code、Data）</li>
 <li>Thread 像是裡頭的工人</li>
 <li>Multi-Thread就像是一間工廠有多個工人，這樣的話那就需要避免他們互搶設備或互相等待</li>
 <li>Multi-Process就像是蓋多間工廠，蓋更多工廠意味著更多的資本支出，而且工廠和工廠間要資源交換比較不容易</li>
