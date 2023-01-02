@@ -6,7 +6,7 @@
 &lt;li&gt;&lt;a href="#gil-global-interpreter-lock"&gt;GIL (Global Interpreter Lock)&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-&lt;h2 id="tldr"&gt;TL;DR&lt;/h2&gt;
+&lt;h3 id="tldr"&gt;TL;DR&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;Multi-Thread中每個Thread會共享資源，因此其優點是：資源利用較有效率、共享資源存取較快速&lt;/li&gt;
 &lt;li&gt;Multi-process將這些資源複製且隔離，其優點是：Process間不共享記憶體、程式碼比較好寫&lt;/li&gt;
@@ -15,7 +15,7 @@
 &lt;li&gt;Python 在原始 default 的編譯器是採用CPython，而 CPython 採用了GIL，這導致了一個Python Job（一個Process）同一時間只能跑一個Thread。最終導致，CPython 的 Multi-thread 不能同時吃到多顆CPU，因此無法解決CPU-bound Task的問題。&lt;/li&gt;
 &lt;li&gt;粗略的原則：在CPython的情況下，遇到CPU-bound Task使用Multi-process，遇到 IO-bound Task使用Multi-thread。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="multi-thread-and-multi-process"&gt;Multi-Thread and Multi-Process&lt;/h2&gt;
+&lt;h3 id="multi-thread-and-multi-process"&gt;Multi-Thread and Multi-Process&lt;/h3&gt;
 &lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/CS/thread_and_process.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Single Process Single Thread&lt;ul&gt;
@@ -50,7 +50,7 @@
 &lt;/li&gt;
 &lt;li&gt;特別注意：不管在 Multi-Thread 和 Multi-process 都可以吃到完整的多顆CPU，因為所有工作都會丟到OS Thread Scheduler，Scheduler會管控CPU的使用，但是Python情況特殊我們待會討論。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="cpu-bound-and-io-bound"&gt;CPU-bound and IO-bound&lt;/h2&gt;
+&lt;h3 id="cpu-bound-and-io-bound"&gt;CPU-bound and IO-bound&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;CPU-bound&lt;ul&gt;
 &lt;li&gt;當某個工作高度仰賴CPU計算，我們會稱之為CPU-bound Task&lt;/li&gt;
@@ -63,7 +63,7 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="gil-global-interpreter-lock"&gt;GIL (Global Interpreter Lock)&lt;/h2&gt;
+&lt;h3 id="gil-global-interpreter-lock"&gt;GIL (Global Interpreter Lock)&lt;/h3&gt;
 &lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/CS/cpython_thread_and_process.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Python 在原始 default 的編譯器是採用CPython，而 CPython 採用了GIL，這導致了一個Python Job（一個Process）同一時間只能跑一個Thread，這意味著就算有多顆CPU的存在，同時間還是沒辦法吃一顆以上的CPU，也因此會有以下情況。&lt;/li&gt;
