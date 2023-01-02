@@ -1,7 +1,7 @@
 from datetime import datetime
 
 AUTHOR = 'Yi-Chang Chen'
-SITEURL = '.'
+SITEURL = ' '
 SITENAME = 'YC Note'
 SITETITLE = 'YC Note'
 SITESUBTITLE = 'ML/DL Tech Blog'
@@ -25,6 +25,15 @@ TIMEZONE = 'Asia/Taipei'
 
 DISABLE_URL_HASH = True
 
+MARKDOWN = {
+    'extension_configs': {
+        'markdown.extensions.codehilite': {'css_class': 'highlight'},
+        'markdown.extensions.extra': {},
+        'markdown.extensions.meta': {},
+        'markdown.extensions.toc': {'title': 'Table of Contents'},
+    },
+}
+
 PLUGIN_PATHS = ['plugins']
 PLUGINS = ['render_math', 'sitemap', 'related_posts', 'ga_pageviews', 'seo', 'neighbors', 'series', 'search']
 
@@ -43,7 +52,7 @@ SITEMAP = {
 }
 
 MATH_JAX = {
-    'color': '#0B5345',
+    'color': 'black', #'#0B5345'
     'align': 'left',
     'indent': '1em',
     'linebreak_automatic': True,
@@ -126,14 +135,14 @@ GA_START_DATE = '2005-01-01'
 GA_END_DATE = 'today'
 
 GOOGLE_ADSENSE = {
-    "ca_id": "ca-pub-5639899546876072",
-    "page_level_ads": True,
-    "ads": {
-        "aside": "",
-        "main_menu": "",
-        "index_top": "",
-        "index_bottom": "",
-        "article_top": "5718861428",
-        "article_bottom": "",
+    'ca_id': 'ca-pub-5639899546876072',
+    'page_level_ads': True,
+    'ads': {
+        'aside': '',
+        'main_menu': '',
+        'index_top': '',
+        'index_bottom': '',
+        'article_top': '5718861428',
+        'article_bottom': '',
     },
 }

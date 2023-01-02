@@ -1,3 +1,10 @@
 {% extends "index.html" %}
 {% block title %} &ndash; {{ _('Category %(name)s', name=category) }}{% endblock %}
+{% block section %}
+<article class="single">
+    <header>
+        <h1>{{ _('Category: %(name)s', name=category) }}</h1> 
+    </header>
+</article>
+{% endblock %}
 {% set summarise = True %}

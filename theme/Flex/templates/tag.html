@@ -1,3 +1,10 @@
 {% extends "index.html" %}
 {% block title %} &ndash; {{ _('Tag %(name)s', name=tag) }}{% endblock %}
+{% block section %}
+<article class="single">
+    <header>
+        <h1>{{ _('Tag: %(name)s', name=tag) }}</h1> 
+    </header>
+</article>
+{% endblock %}
 {% set summarise = True %}
