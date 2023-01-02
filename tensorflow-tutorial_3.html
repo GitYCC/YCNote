@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -140,19 +140,19 @@
 <div class="main-contents">
 <p>這一章我們終於要討論到影像辨識的重頭戲啦！通常，處理影像類別我們會用Convolutional Neurel Network，聽起來很難很厲害，不過只要了解背後概念你就知道為什麼要這麼做了，讓我們看下去。</p>
 <p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/03_CNN_classification_on_MNIST.py">Github</a>下載。</p>
-<h3>影像有什麼特性</h3>
+<h3 id="_1">影像有什麼特性</h3>
 <p>來想一下，影像具備了什麼特性？</p>
 <p>(1) 局域性：通常物件只在一個局域的範圍裡有效，而與太遠的距離無關，譬如我要找一張圖的鳥嘴，鳥嘴的呈現在一張圖當中只會出現在一個小範圍內，所以其實只需要評估這小範圍就可以判斷這是不是鳥嘴了。</p>
 <p>(2) 平移性：通常一張圖任意平移並不影響它的意義，一隻鳥不管是放在圖片的左上角還是右下角，牠都是一隻鳥。</p>
 <p>(3) 縮放性：通常一張圖我把它等比例的放大縮小是不影響它的意義的。</p>
 <p><img alt="影像特性" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.004.jpeg"/></p>
-<h3>DNN用在影像上的侷限</h3>
+<h3 id="dnn">DNN用在影像上的侷限</h3>
 <p>我們剛剛看過了影像具有的三種特性：「局域性」、「平移性」和「縮放性」，那我們就拿這三種特性來檢驗上一回的DNN Classification。</p>
 <p>DNN有「局域性」嗎？沒有，因為我們把圖片攤平處理，原本應該是相鄰的關係就被打壞了，事實上DNN的結構會造成每個Input都會同時影響下一層的「每個」神經元，所以相不相鄰根本沒關係，因為每個Pixels的影響是全域的。</p>
 <p>DNN有「平移性」嗎？沒有，沒有局域性就沒有平移性。</p>
 <p>DNN有「縮放性」嗎？我們沒有一層試著去縮放，而且圖片已經被攤平了，難以做到縮放的效果。</p>
 <p>所以其實使用DNN並不能好好的詮釋影像。</p>
-<h3>Convolutional Neurel Network (CNN)</h3>
+<h3 id="convolutional-neurel-network-cnn">Convolutional Neurel Network (CNN)</h3>
 <p>我們需要引入新的架構來處理影像，讓它可以擁有以上三種特性，Convolutional Neurel Network (CNN)此時就登場了，CNN有兩大新要素：Convolution Layer和Pooling Layer，Convolution Layer為我們的Model添加了局域性和平移性，而Pooling Layer則讓Model擁有縮放的特性。</p>
 <p><img alt="Convolution Layer和Pooling Layer" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.005.jpeg"/></p>
 <p>Convolution Layer是由Filters所構成的，Filters可以想像是一張小圖，以上面的例子，Filter是一個鳥嘴的小圖，這張小圖要怎麼去過濾原圖呢？答案是使用Convolution(卷積)，把小圖疊到大圖的任意位置，接下來將大圖小圖對到的相應元素相乘起來再加總一起，然後在另外一張表格中填入這個加總值，接下來移動Filter，重複的動作再做一次，如此循環並將值陸續填入表格中，這表格最後就會像是另外一張圖一樣，而這張圖可以繼續串另外的Neurel Network，這就是Convolution Layer的計算方法。</p>
@@ -187,7 +187,7 @@
 <p>接下來來看Pooling Layer如何讓Model擁有檢視縮放的特性？</p>
 <p>先來看在影像上如何做到放大縮小，以Pixels的觀點來看，最簡單的放大方法是，在每個既有的Pixels附近增加一些與它們相似的新Pixel，這樣做就像是將原本的小圖直接拉成大圖，畫質雖然很差，不過這是最簡單的放大方法。那麼縮小就相反操作，把一群附近的Pixels濃縮成一個Pixel當作代表，就可以達到縮小圖片的效果。</p>
 <p>所以回到Pooling Layer的討論，Pooling做的事情就是在縮小圖片，例如我使用2x2來做Pooling，它會在原圖上以2x2來掃描，所以會有四個元素被檢視，然後從這四個值當中產生一個代表值，把原本2x2的Pixels減少成這個1x1的代表值，如果是Max Pooling就是從四個中選最大的那個，如果是Average Pooling則是平均四個值得到平均值，通常如果是2x2的Pooling我們會以每2格一跳的方式掃視，如果是3x3則會以每3格一跳，以此類推。</p>
-<h3>Convolution Layer</h3>
+<h3 id="convolution-layer">Convolution Layer</h3>
 <p>來看一下Tensorflow如何實作Convolution Layer。</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">random</span>
 
@@ -253,7 +253,7 @@
 <p><code>filter_</code>的部分Rank為4，每個維度分別為<code>[filter_height, filter_width, in_channels, out_channels]</code>，當如果我想要使用多個filters的時候，我的out_channels就不只1而已，如果有RGB的話，in_channels則會是3。</p>
 <p>接下來來看一下<code>tf.nn.conv2d</code>裡頭的參數<code>strides</code>，這可能會讓人感到困惑，它的設定值是<code>[1, conv_strides[0], conv_strides[1], 1]</code>，我特別把第二、三項額外用<code>conv_strides</code>來表示，因為這兩個值才是真正代表在圖片上平移每步的距離，那第一項和最後一項的1代表什麼意義呢？是這樣的，Tensorflow是站在維度的角度看平移這件事情，這四個維度分別表示<code>[batch, in_height, in_width, in_channels]</code>的移動量，所以一般情況下只有<code>in_height</code>和<code>in_width</code>需要指定平移的距離。</p>
 <p>最後一個參數就是<code>padding</code>，有兩種可以選擇，分別為<code>VALID</code>和<code>SAME</code>，<code>VALID</code>指的就是沒有額外鋪上0的邊界的情形，<code>SAME</code>則是額外鋪上0的邊界，並且使得輸出的維度和輸入一樣。</p>
-<h3>Pooling Layer</h3>
+<h3 id="pooling-layer">Pooling Layer</h3>
 <p>接下來來看Tensorflow如何實作Pooling Layer。</p>
 <div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
     <span class="n">img</span> <span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([[[[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
@@ -278,7 +278,7 @@
 <span class="w">   </span><span class="p p-Indicator">[</span><span class="nv">3.</span><span class="p p-Indicator">]]]]</span><span class="w"></span>
 </code></pre></div>
 <p><code>tf.nn.max_pool</code>的參數中<code>ksize</code>代表kernel size，也就是要Pooling的大小，一樣依照Input layer的Rank去配置，還有<code>strides</code>決定平移的方法。</p>
-<h3>最簡單的CNN架構：LeNet5</h3>
+<h3 id="cnnlenet5">最簡單的CNN架構：LeNet5</h3>
 <p><img alt="LeNet5" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.006.jpeg"/></p>
 <p>接下來我們就真正的來實作一下CNN網路，和之前兩個單元一樣，我們拿MNIST的分類問題來當作題目。</p>
 <p>本單元介紹的是最簡單的CNN Classification的方法—LeNet5，流程如上圖所示。</p>
@@ -557,7 +557,7 @@
 <span class="l l-Scalar l-Scalar-Plain">test_acc = 98.89%</span><span class="w"></span>
 </code></pre></div>
 <p>太棒了！我們的預測效果如果跟之前的結果比較，在Epoch=3已經達到98.5%了，在Epoch=10更是高達99%！</p>
-<h3>圖像化</h3>
+<h3 id="_2">圖像化</h3>
 <p>有這麼好的成果，我們不妨就拉進去看，裡面每個Filters究竟是長什麼樣子的？</p>
 <p>先來看第一層Convolution的Filters。</p>
 <div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">))</span>
@@ -708,8 +708,8 @@
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

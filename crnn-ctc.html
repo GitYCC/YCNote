@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -140,14 +140,14 @@
 <div class="main-contents">
 <p>場景文字辨識 OCR (Optical Character Recognition) 應用場景非常多，例如：Evernote提供的名片辨識、諸多銀行內部使用的存摺影像辨識、新型停車場提供的車牌辨識系統、證件識別工具、旅遊業會用到護照識別，不勝枚舉！凡是想要將生活場景中的文字藉由機器去讀取的都是OCR的範疇，它會為企業省下許多人工判讀的人力成本。</p>
 <p>在場景文字辨識中相當經典的模型就是 <a href="http://arxiv.org/abs/1507.05717">CRNN+CTC</a>，Github 上也有許多相關的 Repo.，但 YC 發現沒有一個將這個模型寫的夠好、夠容易修改的 pytorch 開源程式碼，所以 YC 決定自己幹一個並且將它開源，目前搭配資料集 Synth90k 已經可以在英文辨識上做到 93.9 % 的 Sequence Accuracy，歡迎大家來嘗試使用！</p>
-<h3>開源：pytorch版本的CRNN+CTC</h3>
+<h3 id="pytorchcrnnctc">開源：pytorch版本的CRNN+CTC</h3>
 <p><a href="https://github.com/GitYCC/crnn-pytorch">GitYCC/crnn-pytorch</a></p>
 <p>👆🏼👆🏼👆🏼👆🏼👆🏼</p>
 <p>麻煩大家不吝給予星星 ⭐️，並且分享給更多人知道！</p>
 <p><img alt="reading" src="http://www.ycc.idv.tw/media/CV/170_READING_62745.jpg"/></p>
 <p><img alt="showtime" src="http://www.ycc.idv.tw/media/CV/178_Showtime_70541.jpg"/></p>
 <p><img alt="novel" src="http://www.ycc.idv.tw/media/CV/78_Novel_52433.jpg"/></p>
-<h3>網路架構</h3>
+<h3 id="_1">網路架構</h3>
 <p>CRNN+CTC 結構源於論文<a href="http://arxiv.org/abs/1507.05717">An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition (2015), Baoguang Shi et al.</a>，其網路架構其實並不複雜，講白了就是 CNN 的 Backbone 再搭配 Bi-directional RNN，最後對每個時間點作Softmax分類問題，但是在衡量輸出時則是需要綜觀每個時間點的 CTC Loss。</p>
 <p><img alt="crnn_structure" src="http://www.ycc.idv.tw/media/CV/crnn_structure.png"/></p>
 <p><img alt="crnn_structure_detail" src="http://www.ycc.idv.tw/media/CV/crnn_structure_detail.png"/></p>
@@ -215,7 +215,7 @@
 <p>最後再過兩層 Bi-directional LSTM 萃取序列相關的特徵，並且過 DenseLayer 來將維度轉成與分類的數量相同，再過 Softmax 就大功告成！注意：分類的類別是所有要預測的字元再加上 blank ε ，一般我們會讓 blank ε 在Onehot Encoding 時放在 index=0 的位置。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/CV/biLSTM.png"/></p>
 <p>詳細模型架構請詳見：<a href="https://github.com/GitYCC/crnn-pytorch/blob/master/src/model.py">src/model.py</a></p>
-<h3>CTC (Connectionist Temporal Classification)</h3>
+<h3 id="ctc-connectionist-temporal-classification">CTC (Connectionist Temporal Classification)</h3>
 <p>RNNs 與其他傳統方法相比，如：HMMs (Hidden Markov Model) 和 CRFs (Conditional Random Field) 有以下優勢：</p>
 <ul>
 <li>RNNs 無須多餘的先驗假設</li>
@@ -230,7 +230,7 @@
 </ol>
 <p><img alt="ctc mapping" src="http://www.ycc.idv.tw/media/CV/ctc_mapping.png"/></p>
 <p>有了這個映射機制 <span class="math">\(B\)</span> 我們就可以不需要事先分配 Sequence Label 也能訓練網路，但是要注意：能映射到一組 Sequence Label 的可能性是有很多組合的，例如：<code>"hee-l-lloo"</code> 和 <code>"hheel-lloo"</code> 都會映射到 <code>"hello"</code>，所以要特別去設計它的 Loss 讓其可以考慮各種可能性，這會在下一節中仔細闡述。</p>
-<h3>CTC Loss: Forward-Backward Algorithm</h3>
+<h3 id="ctc-loss-forward-backward-algorithm">CTC Loss: Forward-Backward Algorithm</h3>
 <p>接下來這一個部分將會是本篇最難理解的部分，而且也最為數學，所以在陷進去數學漩渦之前，我們先來概念性的了解 CTC Loss 究竟是做了什麼。簡言之，<strong>我們需要讓 CTC Loss 降低的同時，等同於做到提升產生 Ground True Sequence Label 的機率，而在映射函數 <span class="math">\(B\)</span> 的作用下產生這個 Ground True Sequence Label 會有多種來源組合，這些組合都必須被考慮進去，然後我們有了 CTC Loss 與參數的關係式就可以使用梯度下降進行優化。</strong></p>
 <p>所以我們需要窮舉所有可能的組合才能正確的將產生 Ground True Sequence Label 的機率算出來，我們就來試著羅列。假設我們的 Sequence Label 是 <code>"CAT"</code> ，見圖一，所以我們的 <span class="math">\(\ell\)</span> 為 <code>"CAT"</code>，為了把 blank ε 列入考慮，我們設計了 <span class="math">\(\ell'\)</span>，其長度關係為 <span class="math">\(|\ell'|=2|\ell|+1\)</span> 。參照映射函數的規則，只有圖中兩個紅點是可能的出發點、兩個藍點是可能的結束點，因此我們需要羅列從出發點到結束點可能的路徑 <span class="math">\(\pi\)</span>，這些路徑都可以在經過映射函數 <span class="math">\(B\)</span> 後產生 Sequence Label <code>"CAT"</code> 。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_example_01.png"/></p>
@@ -388,11 +388,11 @@ $$</div>
 \Rightarrow \frac{\partial p(\ell|x)}{\partial y_k^t}=\frac{1}{[y_{l'_s}^{t}]^2}\sum_{s\in \{\ell'_s=k\}}\alpha_t(s)\beta_t(s)\ \text{ ↪︎【18】}
 $$</div>
 <p>因此綜【6】和【18】我們就可以解【4】式，然後就可以對網路做反向傳播優化參數了！</p>
-<h3>Inference of CTC</h3>
+<h3 id="inference-of-ctc">Inference of CTC</h3>
 <p>在 <a href="https://github.com/GitYCC/crnn-pytorch">GitYCC/crnn-pytorch</a> 中我有實作了<a href="https://github.com/GitYCC/crnn-pytorch/blob/master/src/ctc_decoder.py">三種 CTC 的 Inference 方法</a>，分別為 <code>greedy_decode</code>、<code>beam_search_decode</code> 和 <code>prefix_beam_decode</code>，精確度依序越來越準確，但是隨著精確度提高所花的 Inference 時間也就越長。</p>
 <p>事實上，這三種方式都不是最佳解，真正的最佳解得枚舉出所有可能的 Sequence Label 組合再取最大機率的那一個，它必須要衡量 <span class="math">\((C+1)^T\)</span> 條路徑且每條路徑都需要要做 <span class="math">\(T\)</span> 次的乘法，所以時間複雜度為 <span class="math">\(O(T\times (C+1)^T)\)</span>，這個計算量大到不切實際，假設英文字母 <span class="math">\(C=26\)</span> ，然後 <span class="math">\(T\)</span> 假設為 <span class="math">\(20\)</span>，時間複雜度會達到 <span class="math">\(8.4e\text{+}29\)</span>。</p>
 <p>所以接下來我會逐一介紹三種常見的近似方法。</p>
-<h4>Greedy Decode</h4>
+<h4 id="greedy-decode">Greedy Decode</h4>
 <div class="math">$$
 \ell^*\approx B(\pi^*)\ ;\ \pi^*= \{argmax_{s}\ y^{t}_{s}\ \text{ for t=1..T}\}
 $$</div>
@@ -406,7 +406,7 @@ $$</div>
     <span class="n">labels</span> <span class="o">=</span> <span class="n">_reconstruct</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="n">blank</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">labels</span>
 </code></pre></div>
-<h4>Beam Search Decode</h4>
+<h4 id="beam-search-decode">Beam Search Decode</h4>
 <p>既然只選一條機率最大的路徑不那麼精確，那麼我就選最大的前 <span class="math">\(k\)</span> 條路徑再將其機率相加，這個就是 Beam Search 的近似方法。為了達到這個目的，我們在每一個時間點 <span class="math">\(t\)</span> 都會保留前 <span class="math">\(k\)</span> 條累積相乘機率最大的可能路徑，如下圖所示。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_beam_search.png"/></p>
 <p><center><small>
@@ -451,7 +451,7 @@ $$</div>
     <span class="k">return</span> <span class="n">labels</span>
 </code></pre></div>
 <p>其中用到 <code>logsumexp</code> 的用意是因為我們操作在 Log Probability 上面，雖然機率相乘即是 Log Probability 相加，很方便操作。但是如果碰到需要機率相加時，就需要先取 <span class="math">\(exp\)</span> 還原後再相加再取 <span class="math">\(log\)</span> ，即：<span class="math">\(log(p1 + p2) = logsumexp([log(p1), log(p2)])\)</span>。</p>
-<h4>Prefix Beam Search Decode</h4>
+<h4 id="prefix-beam-search-decode">Prefix Beam Search Decode</h4>
 <p>我們可以再進一步讓它更精確一點，剛剛的 Beam Search 是在映射函數 <span class="math">\(B\)</span> 之前找 <span class="math">\(k\)</span> 條路徑，Prefix Beam Search 更進一步拿前 <span class="math">\(k\)</span> 條經過映射函數 <span class="math">\(B\)</span> 後的 Prefix 當作評估的方式 ，如此會更接近我們想要找到映射後的最高機率的 Sequence。</p>
 <p>在 Prefix 的世界裡不存在 blank ε，但是 blank ε 卻是會影響 Prefix，例如：<code>"A-A"</code> 映射完會是 <code>"AA"</code>，但是 <code>"AA"</code> 映射完則會是 <code>"A"</code> ，所以在 Prefix Beam Search 存在 <code>ProbabilityWithBlank</code> 和 <code>ProbabilityNoBlank</code> 兩種累積機率，這兩種情況分別是結尾有 blank 的<strong>累積</strong>機率和結尾沒有 blank 的<strong>累積</strong>機率，特別注意：<strong>累積</strong>機率代表從開始到目前的總機率。</p>
 <p>有了這個概念，我們來看會遇到什麼樣的狀況，並且在每個狀況下我們要怎麼去計算 <code>ProbabilityWithBlank</code> 和 <code>ProbabilityNoBlank</code> ，以下符號 <code>*</code> 代表上一時刻的 prefix，<code>E</code> 代表上一時刻 prefix 的最後一個字元，<code>ε</code> 代表 blank，以下的情況皆是在考慮新字元進來要怎麼去累加 <code>ProbabilityWithBlank</code> 和 <code>ProbabilityNoBlank</code> ：</p>
@@ -519,14 +519,14 @@ $$</div>
     <span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">beams</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">labels</span>
 </code></pre></div>
-<h3>結語</h3>
+<h3 id="_2">結語</h3>
 <p>我們在這篇文章當中清楚的了解到 CRNN 的架構，以及 CTC 的架構、訓練的參數優化和其三種 Inference 方法。看完了這些原理，也該動手試玩看看，在 <a href="https://github.com/GitYCC/crnn-pytorch">GitYCC/crnn-pytorch</a> 中已經有已經 pretrained 的模型可以使用，不妨跟著以下步驟實際動手玩玩看 OCR 場景辨識吧！</p>
 <div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">$ git clone https://github.com/GitYCC/crnn-pytorch.git</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">$ cd crnn-pytorch/</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">$ pip install -r requirements.txt</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">$ python src/predict.py demo/*.jpg</span><span class="w"></span>
 </code></pre></div>
-<h3>Reference</h3>
+<h3 id="reference">Reference</h3>
 <ul>
 <li><a href="https://arxiv.org/pdf/1507.05717.pdf">An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition (2015), Baoguang Shi et al.</a></li>
 <li><a href="https://www.cs.toronto.edu/~graves/icml_2006.pdf">Connectionist Temporal Classification: Labelling Unsegmented Sequence Data with Recurrent Neural Networks (2006), Alex Graves et al.</a></li>
@@ -628,8 +628,8 @@ $$</div>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

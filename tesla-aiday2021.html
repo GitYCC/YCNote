@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -138,9 +138,26 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 <div class="main-contents">
+<div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#how-do-we-make-a-car-autonomous">How do we make a car autonomous?</a><ul>
+<li><a href="#vision">Vision</a></li>
+<li><a href="#planning-control">Planning &amp; Control</a></li>
+</ul>
+</li>
+<li><a href="#how-do-we-generate-training-data">How do we generate training data?</a><ul>
+<li><a href="#manual-labeling">Manual labeling</a></li>
+<li><a href="#auto-labeling">Auto Labeling</a></li>
+<li><a href="#simulation">Simulation</a></li>
+</ul>
+</li>
+<li><a href="#dojo">Dojo</a></li>
+<li><a href="#tesla-bot-optimus">Tesla Bot — Optimus</a></li>
+<li><a href="#_1">我的觀點</a></li>
+</ul>
+</div>
 <p>原始影片：<a href="https://www.youtube.com/watch?v=j0z4FweCy4M&amp;t=7750s">youtube</a></p>
-<h2>How do we make a car autonomous?</h2>
-<h3>Vision</h3>
+<h2 id="how-do-we-make-a-car-autonomous">How do we make a car autonomous?</h2>
+<h3 id="vision">Vision</h3>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/convert_to_vector_space.jpg"/></p>
 <p>在 Full Self-Driving（FSD）的任務當中，需要利用多顆鏡頭的影像來重建出 3-D 的 Vector Space，而在這 Vector Space 中我們就可以靠著 Planing Algorithm 來駕駛汽車。</p>
 <p><br/></p>
@@ -176,7 +193,7 @@
 <p><br/></p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/tesla_vision_summary.png"/></p>
 <p>以上就是 Tesla Vision 模型的大架構。</p>
-<h3>Planning &amp; Control</h3>
+<h3 id="planning-control">Planning &amp; Control</h3>
 <p>我們已經有了由 Tesla Vision 建立的 Vector Space，接下來我們就可以在這個空間裡開車，但這不是一件簡單的事，會遇到 Non-Convex    和 High-Dimensional 兩個問題。Non-Convex 意味著路線規劃中存在著多條足夠好的路徑，但是想要找到全局最優的那個路徑會變得困難，很有可能會卡在局部最優解；High-Dimensional 的原因是因為車輛需要為接下來10-15秒做規劃，要估計這一個時間區間的位置、速度、加速度，因此要描述一整條路徑是高維的。</p>
 <p><br/></p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/planning_and_control.gif"/></p>
@@ -187,11 +204,11 @@
 <p><br/></p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/example_parking_problem.png"/></p>
 <p>在一般道路，尤其是高速公路，路徑搜索還算簡單，但是有一些狀況卻是相當棘手的，例如：停車問題。如上圖，停車場充斥著許多障礙物，在路徑搜索中最常見的方法是使用 A* 演算法，但是這個簡單的方法展開次數要多達近40萬次，這樣的運算速度是不能接受的，所以 Tesla 再進一步加入行進方向導航，可以讓 A* 演算法進步到展開次數大概2萬次，但這仍然不夠快速。原因是因為目前作法並不能綜觀全局（使用鳥瞰圖）來找路徑，於是我們借助神經網路的幫忙，<strong>利用類似AlphaGO的方式來做路徑搜索，結果展開次數可以降到近300次而已，差異相當的巨大</strong>。</p>
-<h2>How do we generate training data?</h2>
-<h3>Manual labeling</h3>
+<h2 id="how-do-we-generate-training-data">How do we generate training data?</h2>
+<h3 id="manual-labeling">Manual labeling</h3>
 <p>演算法僅僅提供了效能的上界，我們還是需要充足的資料來調整演算法的參數，所以建構一個品質良好且量大的資料集是重要的，因此 <strong>Tesla 聘僱了大約1000名專業的標注人員進行標注，並且開發了專屬的標注軟體</strong>。在一開始他們是在2維的圖片上面標注，後來如上述所提及的，模型要直接預測 Vector Space 才能表現的夠好，所以他們開始在 Vector Space 上標注，直接標注在3維的空間加上時間尺度。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/labeding_tools.png"/></p>
-<h3>Auto Labeling</h3>
+<h3 id="auto-labeling">Auto Labeling</h3>
 <p>人與電腦擅長的東西不同，人擅長語意相關的東西，而電腦擅長幾何、重建、追蹤等等，所以 Tesla 的標注軟體充分利用兩方的所長，進行人機協作，來更快速的建立良好的資料集，這就是Auto Labeling的技術。</p>
 <p><br/></p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/restructuring_the_road.png"/></p>
@@ -203,7 +220,7 @@
 <p><br/></p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/and_that_solve_the_problem.png"/></p>
 <p><strong>利用這樣的 Auto Labeling 技術 Tesla 成功的在三個月內將光雷達給移除</strong>，初期因為資料不夠充足，如果遇到視線不佳的情況，預測將會失準，如上圖左側所示。為了解決這個問題，Tesla 團隊從大量車輛中找尋類似視線不佳的影片一萬枚，並且利用 Auto Labeling 技術自動標注，大概只花了一週就完成，而這在過去採用純人工標記可能需要好幾個月，結果模型在加上這樣的資料集訓練後，就能在視線不佳的情況下做出良好的預測，如上圖右測所示，縱使視線不佳也能穩定的預測前方車輛，這為 Tesla 帶來移除光雷達的信心。</p>
-<h3>Simulation</h3>
+<h3 id="simulation">Simulation</h3>
 <p>Tesla 團隊也嘗試的使用模擬的方式人工合成影像資料來訓練模型。</p>
 <p><br/></p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/simulation.png"/></p>
@@ -215,7 +232,7 @@
 <li>基於算法的場景生成：盡量減少在場景生成時的人員介入，讓這項技術可以大量生成多樣的場景，雖然可能大部分的合成資料模型都預測的不錯，但是他們會針對那些模型沒辦法預測好的場景多產生一些資料讓模型學習</li>
 <li>場景重建：更神的是，他們可以將真實世界的片段轉化成為虛擬的場景，如此一來就可以針對困難的場景多生成多筆資料</li>
 </ol>
-<h2>Dojo</h2>
+<h2 id="dojo">Dojo</h2>
 <p>為了應付自動駕駛的龐大計算量，Tesla 還自建了他們自己的超級電腦—Dojo。</p>
 <p><br/></p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo.png"/></p>
@@ -235,10 +252,10 @@
 <p><br/></p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo_software.png"/></p>
 <p>得益於 Tesla 構建的強大的編譯器，只需要少許的改動原本的 Pytorch 就可以使用 Dojo。</p>
-<h2>Tesla Bot — Optimus</h2>
+<h2 id="tesla-bot-optimus">Tesla Bot — Optimus</h2>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/tesla_bot.png"/></p>
 <p>Tesla 將打造機器人，他們想延伸自動駕駛上面技術來打造一個通用機器人。</p>
-<h2>我的觀點</h2>
+<h2 id="_1">我的觀點</h2>
 <ul>
 <li>End-to-end 是個重要的趨勢，當預測目標與真實目標貼近時往往表現得更好。Tesla 一開始嘗試想從影像的預測去推算出 Vector Space 的預測，但因為誤差累積的緣故，無法得到好的預測結果，當他們採用 End-to-end 直接預測在 Vector Space 後才得以解決問題。</li>
 <li>讓模型合理的掌握所有資訊是重要的，例如在這裡：綜合八顆鏡頭的影像、在時間尺度和空間尺度上讓模型使用這些上下文的資訊。</li>
@@ -288,8 +305,8 @@
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

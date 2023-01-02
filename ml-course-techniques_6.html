@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="ml-course-techniques_6">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</h1>
 <p>
-      Posted on April 17, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 30,952
+      Posted on April 17, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 30,953
 
     </p>
 </header>
@@ -138,7 +138,7 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 <div class="main-contents">
-<h3>神經網路(Neural Network)</h3>
+<h3 id="neural-network">神經網路(Neural Network)</h3>
 <p>最後一個主題，我們要來講第三種「特徵轉換」— Extraction Models，其實就是現今很流行的「類神經網路」(Neural Network) 和「深度學習」(Deep Learning)，包括下圍棋的AlphaGo、Tesla的自動駕駛都是採用這一類的Machine Learning。</p>
 <p>Extraction Models的基本款就是廣為人知的「神經網路」(Neural Network)，它的特色是使用神經元來做非線性的特徵轉換，那如果具有多層神經元，就是做了多次的非線性特徵轉換，這就是所謂的「深度學習」(Deep Learning)。</p>
 <p><img alt="Neural Network" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.016.jpeg"/></p>
@@ -147,7 +147,7 @@
 <p>如果我們有多組權重<span class="math">\(W\)</span>就能產生多組神經元<span class="math">\(g_{t}\)</span>，然後最後把<span class="math">\(g_{t}\)</span>做線性組合並使用Output Function <span class="math">\(h(x)\)</span>來衡量出最後的答案，Output Function可以是Linear Classification的Binary Function <span class="math">\(h(x)=sign(x)\)</span>，不過一樣的問題，它不可以微分，通常不會被使用，常見的是使用Linear Regression <span class="math">\(h(x)=x\)</span>，或者Logistic Regression <span class="math">\(h(x)=Θ(x)\)</span>來當作Output Function，最後的結果可以表示成 <span class="math">\(y=h(𝚺_{t}α_{t}g_{t})\)</span>，看到這個式子有沒有覺得很熟悉，它就像我們上一回講的Aggregation，將特徵X使用特徵轉換轉成使用<span class="math">\(g_{t}\)</span>表示，再來組合這些<span class="math">\(g_{t}\)</span>成為最後的Model，所以單層的Neural Network就使用到了Aggregation，它繼承了Aggregation的優點。</p>
 <p>有了這個Model的形式了，我們可以使用Gradient Descent的手法來做最佳化，這也就是為什麼要讓操作過程當中所使用的函數都可以微分的原因。Gradient Descent在Neural Network的領域裡面發展出一套方法稱為Backpropagation，我們待會會介紹。<strong>因此實現Backpropagation，我只要餵Data進去，Model就會去尋找可以描述這組Data的特徵轉換<span class="math">\(g_{t}\)</span>，這就好像是可以從Data中萃取出隱含的Feature一樣，所以這類的Models才會被統稱為Extraction Models</strong>。</p>
 <p><br/></p>
-<h3>深度學習(Deep Learning)</h3>
+<h3 id="deep-learning">深度學習(Deep Learning)</h3>
 <p>剛剛我們介紹了最基本款的Neural Network，那如果這個Neural Network有好幾層，我還會稱它為Deep Learning，所以基本上Deep Neural Network和Deep Learning是指同一件事，那為什麼會有兩個名字呢？其實是有歷史典故的。</p>
 <p>Neural Network的歷史相當悠久，早在1958年就有人提出以Perceptron當作Activation Function的單層Neural Network，大家也知道一層的Neural Network是不Powerful的，所以在1969年，就有人寫了論文叫做「perceptron has limitation」，從那時起Neural Network的方法就很少人研究了。</p>
 <p>直到1980年代，有人開始使用多層的Neural Network，並在1989年，Yann LeCun博士等人就已經將反向傳播演算法(Backpropagation, BP)應用於Neural Network，當時Neural Network的架構已經和現在的Deep Learning很接近了，不過礙於當時的硬體設備計算力不足，Neural Network無法發揮功效，並且緊接的<strong>有人在1989年證明了只要使用一層Neural Network就可以代表任意函數，那為何還要Deep呢？</strong>所以Deep Neural Network這方法就徹底黑掉了。</p>
@@ -158,7 +158,7 @@
 </blockquote>
 <p><strong>因此，Deep Learning中每一層當中做了Aggregation，在增加模型複雜度的同時，也因為平均的效果而做到截長補短，這具有Regularization的效果，並且在採用多層且瘦的結構也同時因為「模組化」而做到降低參數使用量，來減少模型複雜度，這就不難想像Deep Learning為何如此強大。</strong></p>
 <p><br/></p>
-<h3>反向傳播算法(Backpropagation, BP)</h3>
+<h3 id="backpropagation-bp">反向傳播算法(Backpropagation, BP)</h3>
 <p><img alt="Neural Network" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.017.jpeg"/></p>
 <p>我們接下來就來看一下Deep Learning的演算法—反向傳播法，我們來看要怎麼從Gradient Descent來推出這個算法。</p>
 <p>看一下上面的圖，我畫出了具有<span class="math">\(L\)</span>層深的Deep Learning，每一層都有一個權重<span class="math">\(W_{ij}^{(ℓ)}\)</span>，因此我們可以估計出每一層的Score <span class="math">\(s_{j}^{(ℓ)}= 𝚺_{i} W_{ij}^{(ℓ)}X_{i}^{(ℓ-1)}\)</span>，把Score <span class="math">\(s_{j}^{(ℓ)}\)</span>通過Activation Function，就可以得到下一層的Input，如此不斷的疊上去，直到最後一層L為Output Layer，Output最後的結果<span class="math">\(y\)</span>，這裡我使用Linear Function來當作Output Function，這就是Deep Learning最簡單的架構。</p>
@@ -207,7 +207,7 @@
 <p><strong><span class="math">\(δ_{j}^{(ℓ)}\)</span>為Backword Pass Term；<span class="math">\(X_{i}^{(ℓ-1)}\)</span>為Forward Pass Term。</strong></p>
 </blockquote>
 <p><br/></p>
-<h3>Regularization in Deep Learning</h3>
+<h3 id="regularization-in-deep-learning">Regularization in Deep Learning</h3>
 <p>那麼使用Deep Learning的時候，我們要怎麼避免Overfitting呢？有五個方法。</p>
 <p>第一個方法，就是我們剛剛提過的<strong>「設計Deep Neural Network的結構」</strong>，藉由限縮一層當中的神經元來達到一種限制，做到Regularization。</p>
 <p>第二個方法是<strong>「限制W的大小」</strong>，和標準Regularization作一樣的事情，我們將<span class="math">\(W\)</span>的大小加進去Cost裡頭做Fitting，例如使用L2 Regularizer <span class="math">\(Ω(W)=𝚺(W_{jk}^{(ℓ)})^{2}\)</span>，但這樣使用有一個問題就是<span class="math">\(W\)</span>並不是Sparse的，L2 Regularizer在抑制<span class="math">\(W\)</span>的方法是，如果W的分量大的話就抑制多一點，如果分量小就抑制少一點（因為<span class="math">\(W^{2}\)</span>微分為1次），所以最後會留下很多很小的分量，造成計算量大大增加，尤其像是Deep Learing這麼龐大的Model，這樣的Regularization顯然不夠好，L1 Regularizer顯然可以解決這個問題（因為在大部分位置微分為常數），但不幸的是它無法微分，所以就有了L2 Regularizer的衍生版本，</p>
@@ -217,7 +217,7 @@
 <p>第四種方法是<strong>「Drop-out」</strong>，在Deep Learing Fitting的過程中，隨機的關閉部分神經元，藉由這樣的作法使得Fitting的過程使用較少的神經元，並且使得結構是瘦長狀的，來達到Regularization。</p>
 <p>第五種方法是接下來會用更大篇幅介紹的<strong>「Denoising Autoencoder」</strong>，在Deep Neural Network前面加入這樣的結構有助於抑制雜訊。</p>
 <p><br/></p>
-<h3>Autoencoder</h3>
+<h3 id="autoencoder">Autoencoder</h3>
 <p><img alt="Regularization in Deep Learning" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.018.jpeg"/></p>
 <p>Neural Network針對不同需要發展出很多不同的型態，包括CNN, RNN，還有接下來要介紹的Autoencoder，<strong>Autoencoder是一種可以將資料重要資訊保留下來的Neural Network</strong>，效果有點像是資料壓縮，在做資料壓縮時，會有一個稱為Encoder的方法可以將資料壓縮，那當然還要有另外一個方法將它還原回去，這方法稱為Decoder，壓縮的過程就是用更精簡的方式保存了資料。<strong>Autoencoder同樣的有Encoder和Decoder，不過它不像資料壓縮一樣可以百分之一百還原，不過特別之處是Autoencoder會試著從Data中自己學習出Encoder和Decoder，並盡量讓資料在壓縮完了可以還原回去原始數據</strong>。</p>
 <p>見上圖中Basic Autoencoder的部分，透過兩層的轉換，我們試著讓Input <span class="math">\(X\)</span>可以完整還原回去，通常中間這一層會使用比較少的神經元，因為我們想要將資訊做壓縮，所以第一層的部分就是一個Encoder，而第二層則是Decoder，他們由權重<span class="math">\(W_{jk}^{(ℓ)}\)</span>決定，而在Training的過程，Autoencoder會試著找出最好的<span class="math">\(W_{jk}^{(ℓ)}\)</span>來使得資訊可以盡量完整還原回去，這也代表Autoencoder可以自行找出了Encoder和Decoder。</p>
@@ -226,14 +226,14 @@
 <p>緊接著介紹兩種特殊的例子，第一個是Linear Autoencoder，我們把所有的Activation Function改成線性的，這個方法可以等效於待會要講的Principal Component Analysis (PCA)的方法，PCA是一個全然線性的方法，所以它的效力會比Autoencoder差一點。</p>
 <p>第二個是剛剛提到的Denoising Autoencoder，我們在原本Autoencoder的前面加了一道增加人工雜訊的流程，但是又要讓Autoencoder試著去還原出原來沒有加入雜訊的資訊，這麼一來<strong>我們將可以找到一個Autoencoder是可以消除雜訊的</strong>，把這個Denoising Autoencoder加到正常Neural Network的前面，那這個Neural Network就擁有了抑制雜訊的功用，所以可以當作一種Regularization的方法。</p>
 <p><br/></p>
-<h3>Principal Component Analysis (PCA)</h3>
+<h3 id="principal-component-analysis-pca">Principal Component Analysis (PCA)</h3>
 <p>最後來講一下Principal Component Analysis (PCA)，它不太算是Deep Learning的範疇，不過它是一個傳統且重要的Dimension Reduction的方法，我們就來看一下。</p>
 <p><img alt="PCA" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.019.jpeg"/></p>
 <p>PCA的演算法是這樣的，第一步先求出資料Features的平均值，並且將各個Features減掉平均值，令為<span class="math">\(ζ\)</span>，第二步求出由<span class="math">\(ζ^{T}ζ\)</span>產生的矩陣的Eigenvalue和Eigenvector，第三步，從這些Eigenvalue和Eigenvector中挑選前面<span class="math">\(k\)</span>個，並組成轉換矩陣<span class="math">\(W\)</span>，而最終PCA的轉換就是<span class="math">\(Φ(x)=W^{T}(X-mean(X))\)</span>，這個轉換做的就是Dimension Reduction，將數據降維到<span class="math">\(k\)</span>維。</p>
 <p>PCA做的事是這樣的，每一個Eigenvector代表新空間裡頭的一個軸，而Eigenvalue代表站在這個軸上看資料的離散程度，當然我們如果可以描述每筆資料越分離，就代表這樣的描述方法越好，所以Eigenvalue越大的Eigenvector越是重要，<strong>所以取前面<span class="math">\(k\)</span>個Eigenvector的用意是在降低維度的過程，還可以盡量的保持對數據的描述力，而且Eigenvector彼此是正交的，也就是說在新空間裡頭的每個軸是彼此垂直，彼此沒有Dependent的軸是最精簡的，所以PCA所做的Dimension Reduction一定是線性模型中最好、最有效率的</strong>。</p>
 <p>另外，剛剛有提到的Linear Autoencode幾乎是等效於PCA，大家可以看上圖中的描述，這裡不多贅述，不過不同的是，Linear Autoencoder並沒有限制新空間軸必須是正交的特性，所以它的效率一定會比PCA來的差。</p>
 <p><br/></p>
-<h3>結語</h3>
+<h3 id="_1">結語</h3>
 <p>這一篇當中，我們介紹了Neural Network，並且探討多層Neural Network—Deep Neural Network，也等同於Deep Learning，並且說明為什麼需要「Deep」，然後介紹Deep Learning最重要的演算法—反向傳播算法，接著介紹五種常用的Regularization的方法：設計Deep Neural Network的結構、限制W的大小、Early Stopping、Drop-out和Denoising Autoencoder。</p>
 <p>介紹完以上內容，我們就已經對於Deep Learning的全貌有了一些認識了，緊接著來看Deep Learning的特殊例子—Autoencoder，Autoencoder可以用來做Dimension Reduction，那既然提到了Dimension Reduction，那就不得不在講一下重要的線性方法PCA。</p>
 <p>那在下一回，我們會繼續探討Neural Network還有哪些特殊的分支。</p>
@@ -342,8 +342,8 @@
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

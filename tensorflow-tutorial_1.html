@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -150,7 +150,7 @@
 <span class="c1"># Config the matplotlib backend as plotting inline in IPython</span>
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
 </code></pre></div>
-<h3>MNIST Dataset</h3>
+<h3 id="mnist-dataset">MNIST Dataset</h3>
 <p>定義<code>summary</code> function以便於觀察ndarray。</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)</span>
@@ -274,7 +274,7 @@
 <div class="highlight"><pre><span></span><code><span class="p p-Indicator">[</span><span class="nv">1. 0. 0. 0. 0. 0. 0. 0. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
 </code></pre></div>
 <p>看起來的確沒錯，在0的位置標示1.，而其他地方標示為0.，因此這是一個標示為0的label沒有錯，這種表示方法稱為One-Hot Encoding，它具有機率的涵義，所代表的是有100%的機會落在0的類別上。</p>
-<h3>Softmax</h3>
+<h3 id="softmax">Softmax</h3>
 <p>通常One-Hot Encoding會搭配Softmax一同服用，最後的Output結果如果是機率分布，那我也需要讓我的Neurel Network可以輸出機率分布。</p>
 <p><img alt="softmax" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.001.jpeg"/></p>
 <p>通過Softmax這一層，我們就可以將輸出轉變為以「機率」表示。</p>
@@ -297,7 +297,7 @@
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p p-Indicator">[</span><span class="nv">0.8360188  0.11314284 0.05083836</span><span class="p p-Indicator">]</span><span class="w"></span>
 </code></pre></div>
-<h3>Cross-Entropy Loss</h3>
+<h3 id="cross-entropy-loss">Cross-Entropy Loss</h3>
 <p>一旦我們要處理機率預測的問題，就不可以使用單純的「平方誤差」，而必須使用Cross-Entropy Loss，是這樣計算的：</p>
 <div class="math">$$
 Loss_{cross-entropy} = - \sum_i y_i ln(s_i)
@@ -305,12 +305,12 @@ $$</div>
 <p>
 其中，<span class="math">\(y_i\)</span>為目標Label，<span class="math">\(s_i\)</span>為經過Softmax產生的預測值。</p>
 <p>至於如果你想要了解為何需要使用Cross-Entropy Loss？這我在機器學習基石的筆記中已經有提及過，請看<a href="http://www.ycc.idv.tw/YCNote/post/27">介紹Logistic Regression的部分</a>。</p>
-<h3>分離數據的重要性</h3>
+<h3 id="_1">分離數據的重要性</h3>
 <p>在MNIST Dataset中，你會發現分為Training Dataset、Validation Dataset和Testing Dataset，這樣的作法在Machine Learning中是常見且必要的。</p>
 <p>流程是這樣的，我們會先使用Training Dataset來訓練Model，並且使用Validation Dataset來檢驗Model的好壞，我們會依據Validation Dataset的檢驗調整Model上的參數，試著盡可能的壓低Validation Dataset的Error，記住！在過程中所產生的所有Models都要保留下來，因為最後選擇的Model並不是Validation Dataset的Error最小的，而是要再由Testing Dataset來做最後的挑選，挑選出能使Testing Dataset的Error最小的Model。</p>
 <p>這所有的作法都是為了避免Overfitting的情況發生，也就是機器可能因為看過一筆Data，結果就把這筆Data給完整記了起來，而Data本身含有雜訊，雜訊就這樣滲透到Model裡，確實做到分離是很重要的，讓Model在測試階段時可以使用沒有看過的Data。</p>
 <p>因此，Validation Dataset的分離是為了避免讓Model在Training階段看到要驗證的資料，所以更能正確的評估Model的好壞。但這樣是不夠的，人為會根據Validation Dataset來調整Model，這樣無形之中已經將Validation Dataset的資訊間接的經由人傳給了Model，所以還是沒有徹底分離，因此在最後挑選Models時，我們會使用另外一筆從沒看過的資料Testing Dataset來做挑選，一旦挑選完就不能再去調整任何參數了。</p>
-<h3>Tensorflow工作流程</h3>
+<h3 id="tensorflow">Tensorflow工作流程</h3>
 <p>我們這一篇將會使用Tensorflow實作最簡單的單層Neurel Network，在這之前我們來看看Tensorflow是如何運作的？</p>
 <p>深度學習是由一層一層可以微分的神經元所連接而成，數學上可以表示為張量(Tensor)的表示式，我們一般講的矩陣運算是指2x2的矩陣運算，而張量(Tensor)則是拓寬到n維陣列做計算，在Machine Learning當中我們常常需要處理到相當高維度的計算，例如：有五張28x28的彩色圖的表示就必須使用到四維張量，第一維表示第幾張、第二、三維表示圖片的大小、第四維則表示RGB，如果你是物理系的學生應該也對張量不陌生，廣義相對論裡頭大量的使用四維張量運算，三維空間加一維時間。</p>
 <p>而在做Neurel Network時，我們會根據需求不同設計不同形式但合理的流程(Flow)，再使用數據來訓練我的Model。所以，這就是Tensorflow命名由來：Tensor+Flow。</p>
@@ -330,7 +330,7 @@ $$</div>
 <div class="highlight"><pre><span></span><code><span class="n">my_session</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">my_graph</span><span class="p">)</span>
 <span class="n">my_session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </code></pre></div>
-<h3>Tensorflow的基本「張量」元素</h3>
+<h3 id="tensorflow_1">Tensorflow的基本「張量」元素</h3>
 <p>接下來我們就來看看有哪些構成Graph的基本元素可以使用。</p>
 <p>(1) 常數張量：</p>
 <p>一開始來看看「常數張量」，常數指的是在Model中不會改變的數值。</p>
@@ -359,7 +359,7 @@ $$</div>
 <div class="highlight"><pre><span></span><code><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
 </code></pre></div>
 <p>這一個步驟是必要的但常常被忽略，還記得剛剛我們定義「變數張量」時有用到Initalizer，這些Initalizer在Graph完成時還不具有數值，必須使用<code>init_op</code>來給予數值，所以記住一定要放<code>init_op</code>進去Graph裡頭，而且必須先定義完成所有會用到的Initalizer再來設定這個<code>init_op</code>。</p>
-<h3>Session的操作</h3>
+<h3 id="session">Session的操作</h3>
 <p>「張量」元素具有兩個面向：功能和數值，在Graph階段「張量」只具有功能但不具有數值，只有到了Session階段才開始有數值，那如何將這些數值取出來呢？有兩種方法，以1+1當作範例來看看，</p>
 <div class="highlight"><pre><span></span><code><span class="n">g1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
 <span class="k">with</span> <span class="n">g1</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
@@ -402,7 +402,7 @@ $$</div>
 <div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">12</span><span class="w"></span>
 </code></pre></div>
 <p>因為x和y是placeholder，所以必須使用<code>feed_dict</code>來餵入相關資訊，否則會報錯。</p>
-<h3>第一個Tensorflow Model</h3>
+<h3 id="tensorflow-model">第一個Tensorflow Model</h3>
 <p>有了以上的認識我們就可以來建立我們第一個Model。</p>
 <p>以下我會使用物件導向的寫法，讓程式碼更有條理。</p>
 <p>Machine Learning在操作上可以整理成三個大步驟：建構(Building)、訓練(Fitting)和推論(Inference)，所以我們將會使用這三大步驟來建製我們的Model。</p>
@@ -658,8 +658,8 @@ $$</div>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

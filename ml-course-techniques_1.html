@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -144,7 +144,7 @@
 <p>以前，我曾經和實驗室的英國學長聊英國的教育方法，然後我驚人的發現，他的學校在大一就已經學過量子場論（物理上很難的學科XDD）了，我就很好奇量子場論不是需要很深厚的數學基礎嗎？大一是要怎麼教啊？他告訴我，他們大一就會完整走過物理的各大領域，不過是用非常概念的方式來學習，不牽涉到太困難的數學，但這概念的一系列課程卻是四年大學中相當重要的基礎，讓他在開始學細節前就可以知道這些東西未來會用在哪裡？產生了連結讓學習更有效率。</p>
 <p>所以，《機器學習技法》中會介紹很多厲害的機器學習的方法，但這一篇我不直接進去看每個方法的細節，我想帶大家坐著直升機來先看看這遊樂園中有哪些遊樂設施，先來見林再來見樹，會更容易了解。</p>
 <p><br/></p>
-<h3>有什麼特徵可以使用？</h3>
+<h3 id="_1">有什麼特徵可以使用？</h3>
 <p>在之前《機器學習基石》中，我們講到了Features（特徵）的選擇，<strong>Features（特徵）就是我的Model描述Data的方法，也可以說是影響Data的變數</strong>，那在之前我們講過Features（特徵）的選擇可以是線性的，那也可以使用「特徵轉換」來產生非線性。</p>
 <p>在這系列文章，我們會看到更多種類的Features，可以分為三類：</p>
 <ol>
@@ -161,7 +161,7 @@
 </ol>
 <p>讓我們依序來看。</p>
 <p><br/></p>
-<h3>Embedding Numerous Features ：Kernel Models</h3>
+<h3 id="embedding-numerous-features-kernel-models">Embedding Numerous Features ：Kernel Models</h3>
 <p>還記得《機器學習基石》中，我們講了哪些Model嗎？我們一開始講了二元分類問題，然後提出了Perceptron Learning Algorithm (PLA)來解決這個問題（<a href="http://www.ycc.idv.tw/ml-course-foundations_1.html">詳見《機器學習基石》第一篇</a>），如果數據是線性可分的話，我們就可以使用PLA劃分出一條邊界來區分兩種種類。</p>
 <p>接下來提到我們可以使用Regression的方法來做二元分類問題，其中Logistic Regression考慮了雜訊造成每個Label的出現呈機率分布，給予一個較為寬鬆的區分方法，我們會稱PLA為Hard Classification，而Logistic Regression為Soft Classification。（<a href="http://www.ycc.idv.tw/ml-course-foundations_3.html">詳見《機器學習基石》第三篇</a>）</p>
 <p>最後，我們引入「特徵轉換」將我們原本的線性區分推到非線性區分，讓我的Model有更大的複雜度，也因為如此，我們需要使用Regularization和Validation來避免 Overfitting。（<a href="http://www.ycc.idv.tw/ml-course-foundations_4.html">詳見《機器學習基石》第四篇</a>）</p>
@@ -177,7 +177,7 @@
 <p>第六堂課「Support Vector Regression」中，會介紹如何使用Kernel Model來做各類Regression的問題。</p>
 <p><strong>這6堂課，主要做的事是把《機器學習基石》裡面學到的東西，全部引入數學工具讓Model的Features可以擴展到無窮多項，產生更強大的Kernel Model。</strong></p>
 <p><br/></p>
-<h3>Combining Predictive Features：Aggregation Models</h3>
+<h3 id="combining-predictive-featuresaggregation-models">Combining Predictive Features：Aggregation Models</h3>
 <p>那如果今天我有很多支的Model，我有辦法融合他們得到更好的效果嗎？</p>
 <p><strong>這就是Aggregation Models的精髓，Aggregation Models藉由類似於投票的方法綜合各個子Models的結果得到效果更好的Model。換個角度看，你可以把整個體系看成一個新的Model，而原本這些子Models當作轉換過後的新Features，所以Aggregation Model裡頭做了「特徵轉換」，這個轉換產生出許多有預測答案能力的Features，稱為Predictive Features，然後再綜合它們。</strong></p>
 <p>Aggregation Models可以分成兩大類，第一種的作法比較簡單，先Train出一個一個獨立的Predictive Features，然後在綜合它們，<strong>「集合」的動作是發生在得到Train好的Predictive Feature之後，這叫做「Blending Models」</strong>；第二種作法則是，<strong>「集合」的動作和Training同步進行，這叫做「Aggregation-Learning Models」</strong>。</p>
@@ -190,7 +190,7 @@
 <p>第十一堂課「Gradient Boosted Decision Tree」中，會介紹AdaBoost的Regression版本稱為GradientBoost，並且運用AdaBoost和GradientBoost在Decision Tree上面。</p>
 <p><strong>這5堂課，我們將會介紹Aggregation Models，引入綜合、集合Predictive Feature的概念來使我們造出更好的Model。</strong></p>
 <p><br/></p>
-<h3>Distilling Implicit Features：Extraction Models</h3>
+<h3 id="distilling-implicit-featuresextraction-models">Distilling Implicit Features：Extraction Models</h3>
 <p>那最後這個部分則是介紹現今很流行的「類神經網路」(Neural Network) 和「深度學習」(Deep Learning)，在這裡我們通稱Extraction Models。</p>
 <p><strong>Extraction Models的特色在於它「特徵轉換」的方法，使用一層一層神經元來做非線性的特徵轉換，如果具有多層神經元，那就是做了多次的非線性特徵轉換，這就是「深度學習」，藉由Data機器會自行學習出這每一層的特徵轉換，找出隱含的Features。</strong></p>
 <p>第十二堂課「Neural Network」中，介紹Neural Network，並介紹Neural Network的演算法—Back-Propagation（反向傳遞法），在概念上Gradient Descent就是Back-Propagation的源頭，另外介紹避免Overfitting的方法—Early Stopping。</p>
@@ -199,7 +199,7 @@
 <p>第十五堂課「Matrix Factorization」中，我們會探討類別的匹配問題，例如：我想要知道用戶喜歡看什麼電影，而我的Data只有用戶的ID和電影的編號。</p>
 <p><strong>這4堂課，我們將會介紹Extraction Model，使用神經元的概念來萃取出Data中的Features。</strong></p>
 <p><br/></p>
-<h3>後話</h3>
+<h3 id="_2">後話</h3>
 <p>最後總結一下《機器學習技法》會講哪些東西？我們會講具有三種不同「特徵轉換」方式的Models。<strong>Kernel Model的「特徵轉換」是將非線性Features擴張到無窮多個；Aggregation Model的「特徵轉換」是產生出有預測能力的Features；Extraction Model的「特徵轉換」是利用神經元的方式來做到萃取出隱含的資訊。</strong></p>
 <p><strong>跟《機器學習基石》不一樣的地方，《機器學習技法》中介紹更厲害的「特徵轉換」來產生更厲害的Model，不過因為會有Overfitting的狀況，所以我們還需要介紹相應的配套措施。</strong></p>
 <p>在未來一系列的文章，我會帶大家一一的來看這些內容，不過和之前一樣，我不會以課堂當作單位來講，而是以單元式的方式，而且我主要的目的是去點出概念，並盡可能的不去牽涉太多的數學計算，但是數學計算的部分是很重要的，這會影響到你真正的實作，數學的部份可以去看林軒田老師的影片或投影片，裡頭都有很詳細的介紹。</p>

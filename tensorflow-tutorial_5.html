@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -140,12 +140,12 @@
 <div class="main-contents">
 <p>機器有辦法自行從文本中觀察出詞彙間的相似度嗎？是可以的，word2vec是"word to vector"的縮寫，代表的正是將每個字轉換成向量，而一旦兩個字的向量越是靠近，就代表它的相似度越高，我們究竟要如何得到這些向量呢？方法簡單但出奇有效，文章的最後會向大家呈現它的精彩的結果。</p>
 <p>本單元程式碼Skip-Gram Word2Vec部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_1_word2vec_SkipGram.py">Github</a>下載，CBOW Word2Vec部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_2_word2vec_CBOW.py">Github</a>下載。</p>
-<h3>Word2Vec觀念解析</h3>
+<h3 id="word2vec">Word2Vec觀念解析</h3>
 <p>Word2Vec的形式和Autoencoder有點像，一樣是從高維度的空間轉換到低維度的空間，再轉換回去原本的維度，只是這一次轉回去的東西不再是原本一模一樣的東西了。</p>
 <p>Word2Vec的Input和Output這次變成是上下文的文字組合，舉個例子，"by the way"這個用法如果多次被機器看過的話，機器是有辦法去學習到這樣的規律的，此時"by"與"the"和"way"便會產生一個上下文的關聯性，為了將這樣的關聯性建立起來，我們希望當我輸入"by"時，機器有辦法預測並輸出"the"或"way"，這代表在機器內部它已經學習到了上下文的關聯性。</p>
 <p>那如果今天這個機器也同時看到很多次的"on the way"這種用法，所以當我輸入"on"時，機器要有辦法預測並輸出"the"或"way"，但是我們不希望"on"和"by"兩個詞在學習時是分開學習的，我們希望機器可以因為"by the way"和"on the way"的結構很相似，所以有辦法抓出"on"和"by"是彼此相似的結論。</p>
 <p>如何做到呢？答案就是限縮這個上下文的關聯性的儲存維度，如果我的字彙量有1000個，這1000個字彙彼此有上下文的關聯性，最完整表示上下文關聯性的方法就是設置一個1000x1000或者更大的表格，把所有字彙間的上下文關聯性全部存起來，但我們不想要這麼做，我要求機器用更小的表格來儲存上下文的關聯性，此時機器被迫將一些詞彙使用同樣的表格位置，同樣的轉換。一旦限縮了上下文關聯性的儲存維度，"on the way"和"by the way"中的"on"和"by"就會被迫分為同一類，因此我們成功的建立了字詞間的相似性關係。</p>
-<h3>Word2Vec的架構</h3>
+<h3 id="word2vec_1">Word2Vec的架構</h3>
 <p><img alt="word2vec" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.008.jpeg"/></p>
 <p>實作上如上圖所示，我們輸入一個字詞，譬如"cat"，通常會將他轉成One-hot encoding表示，但要注意喔！文本的字彙量是非常龐大的，所以當我們使用One-hot encoding表示時，將會出現一個非常長但Sparse的向量，相同的輸出層也同樣是一個很長的One-hot encoding，它的維度會和輸入層一樣大，因為我們要分析的字彙在輸入和輸出是一樣多的。</p>
 <p>然後，和Autoencoder使用一樣的手法，中間的Hidden Layer放置低維度、少神經元的一層，但不同於Autoencoder，Word2Vec所有的轉換都是線性的，沒有非線性的Activation Function夾在其中，為什麼呢？因為我們的輸入是Sparse的而且只有0和1的差別，所以每一條通路就變成只有導通或不導通的差別，Activation Function有加等於沒加，使用線性就足夠了。</p>
@@ -155,12 +155,12 @@
 <p>再接下來最後的Cross-Entropy Loss計算也非常龐大，因為有幾個字彙就需要累加幾組數字，我們有一招偷吃步的方法叫做「Sampled Softmax」，作法是這樣的，我們不去計算全部詞彙的Cross-Entropy，而是選擇幾組詞彙來評估Cross-Entropy，在選擇上我們會隨機挑選一些Labels和預測結果差異度很大的詞彙(稱為Negative Examples)來算Cross-Entropy，我們在Tensorflow可以使用<code>tf.nn.sampled_softmax_loss</code>來辦到「Sampled Softmax」。</p>
 <p>我們先不管輸入和輸出究竟怎麼取得，如果我們成功的建立了輸入和輸出的上下文關係，此時中間的Embedding空間正是精華的所在，經過剛剛推論，我們預期在這個空間當中，相似的詞彙會彼此靠近，我們評估兩個向量的相似性可以使用Cosine來評估，當兩向量的夾角越小代表它們越是相似，待會的實作當中我們將會利用Cosine來建立Similarity的大小，藉此來找到前幾個和它很靠近的詞彙。</p>
 <p>另外，經研究指出這個Embedding空間的效果不只是可以算出詞彙間的相似性，還可以顯示詞彙間的比較關係，例如：北京之於中國，等同於台北之於台灣，這樣的比較關係也顯示在這個Embedding空間裡頭，所以在這空間裡會有以下的向量關係式：<span class="math">\(V_{北京} - V_{中國}+V_{台灣}=V_{台北}\)</span>，是不是很神奇啊！</p>
-<h3>Word2Vec的兩種常用方法：Skip-Gram和CBOW</h3>
+<h3 id="word2vecskip-gramcbow">Word2Vec的兩種常用方法：Skip-Gram和CBOW</h3>
 <p><img alt="Skip-Gram和CBOW" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.009.jpeg"/></p>
 <p>剛剛一直在講的是中間的結構應該怎麼建立，現在來看看我們可以輸入和輸出哪些詞彙來建立起上下文的關係，有兩種常用的類別：Skip-Gram和CBOW。</p>
 <p>Skip-Gram如上圖所示，當我輸入一個<span class="math">\(word(t)\)</span>時，我希望它能輸出它的前文和後文，這是相當直覺的建立上下文的方法，所以如果我希望用前一個字和後一個字來訓練我的Word2Vec，我就會有兩組數據：<span class="math">\((w(t),w(t-1))\)</span>和<span class="math">\((w(t),w(t+1))\)</span>，相當好理解。</p>
 <p>而CBOW(Continuous Bag of Words)使用另外一種方法來建立上下文關係，它將一排字挖掉中間一個字，然後希望由上下文的關係有辦法猜出中間那個字，就像是填空題，此時輸入層就變成會有多於1個字，那該怎麼處理，答案是轉換到Embedding空間後再相加平均，因為是線性轉換，所以直接線性累加就可以了。</p>
-<h3>準備文本語料庫</h3>
+<h3 id="_1">準備文本語料庫</h3>
 <p>先帶入一些待會會用到的函式庫，並且決定我們要取用多少<code>VOCABULARY_SIZE</code>個詞彙量來做訓練。</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -248,7 +248,7 @@
 </code></pre></div>
 <p>我們取用<code>VOCABULARY_SIZE = 100000</code>，也是說我們將文本中的詞彙按出現次數的多寡來排列，取前面<code>VOCABULARY_SIZE</code>個保留，其餘詞彙皆歸類到「UNK Token」裡頭，UNK代表UNKnown的縮寫。</p>
 <p>我們文本的字詞數量總共有17005207個字，開頭前十個字的句子是'anarchism originated as a term of abuse first used against'。所有的這17005207個字會依照<code>dictionary</code>給予每個字Index，而文本會被表示為一個由整數所構成的List，這會放在<code>data</code>裡頭，而這個Index也就直接當作One-hot Encoding中代表這個詞彙的維度位置。當我想要把Index轉換回去我們看得懂的字的時候，就需要<code>reverse_dictionary</code>的幫忙，有了這些，我們的語料庫就已經建立完成了。</p>
-<h3>實作Skip-Gram</h3>
+<h3 id="skip-gram">實作Skip-Gram</h3>
 <p>有了語料庫，我們就可以產生出我想要的輸入和輸出，在Skip-Gram方法，如果我的輸入是<code>target word</code>，我會先從<code>target word</code>向前、向後看出去<code>skip_window</code>的大小，所以可以選擇當作輸出的字有<code>skip_window*2</code>個，接下來我從這<code>skip_window*2</code>個中選擇<code>num_skips</code>個當作輸出，所以一個<code>target word</code>會產生<code>num_skips</code>筆數據，如果我一個batch需要<code>batch_size</code>筆數據，我就必須有<code>batch_size//num_skips</code>個<code>target word</code>，依照這樣的規則下面建立一個Generator來掃描文本，並輸出要訓練使用的Batch Data。</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">skip_gram_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_skips</span><span class="p">,</span> <span class="n">skip_window</span><span class="p">):</span>
     <span class="k">assert</span> <span class="n">batch_size</span> <span class="o">%</span> <span class="n">num_skips</span> <span class="o">==</span> <span class="mi">0</span>
@@ -571,7 +571,7 @@
 </code></pre></div>
 <p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/05_output_13_0.png"/></p>
 <p>如此一來你將可以簡單的看出，哪些詞彙彼此相似而靠近。</p>
-<h3>實作CBOW (Continuous Bag of Words)</h3>
+<h3 id="cbow-continuous-bag-of-words">實作CBOW (Continuous Bag of Words)</h3>
 <p>接著看CBOW的方法，如果我預期輸出的字是<code>target word</code>，從<code>target word</code>向前向後看出去<code>context_window</code>的大小，看到的字都當作我的輸入，所以我輸入的字總共需要<code>context_window*2</code>個，一個<code>target word</code>只會產生一筆數據，如果我一個batch需要<code>batch_size</code>筆數據，我就必須有<code>batch_size</code>個<code>target word</code>，依照這樣的規則下面建立一個Generator來掃描文本，並輸出要訓練使用的Batch Data。</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">cbow_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">context_window</span><span class="p">):</span>
     <span class="n">span</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">context_window</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># [ context_window target context_window ]</span>
@@ -900,7 +900,7 @@
 <span class="n">plot</span><span class="p">(</span><span class="n">two_d_embed</span><span class="p">,</span> <span class="n">words</span><span class="p">)</span>
 </code></pre></div>
 <p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/05_output_20_0.png"/></p>
-<h3>Reference</h3>
+<h3 id="reference">Reference</h3>
 <ul>
 <li>https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/5_word2vec.ipynb</li>
 </ul>
@@ -1008,8 +1008,8 @@
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

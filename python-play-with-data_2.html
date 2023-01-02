@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -139,7 +139,7 @@
     </script>
 <div class="main-contents">
 <p>在上一次我們已經成功了安裝了IPython，這將會是我們這系列教學的主要舞台，而今天我要教大家在這個舞台上利用Numpy來做一些簡單的科學計算。</p>
-<h3>IPython</h3>
+<h3 id="ipython">IPython</h3>
 <p>像上次一樣，打開IPython，緊接著把numpy和pandas載入，載入numpy之後我們習慣用<code>as</code>將它縮寫為<code>np</code>，pandas則縮寫為<code>pd</code>。</p>
 <p><img alt="ipython" src="http://www.ycc.idv.tw/media/PlayDataWithPython/ipython.jpeg"/></p>
 <p>IPython是一個具有互動式介面的python執行介面，你可以一邊寫一邊理解目前的狀況，舉個例子</p>
@@ -148,7 +148,7 @@
 <span class="mi">12</span>
 </code></pre></div>
 <p>在第一行中，我令變數a為12，而第二行只要把變數a直接key出來，我們就可以立刻查看變數裡頭有什麼內容，注意喔！在一般的python語言中，直接把變數key出來這件事是沒有意義的，這只有在IPython上才有的方便功能，<strong>有了這樣一個互動式的介面，讓我們在處理數據的時候可以隨時查看，目前數據的狀況</strong>。</p>
-<h3>Python常見的資料型別</h3>
+<h3 id="python">Python常見的資料型別</h3>
 <p>Python常見的資料型別有整數(integer)、浮點數(floating-point number)、字串(string)、串列(list)、序對(tuple)、字典(dictionary)，可以使用<code>type()</code>來查詢資料型別。</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># integer</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="mf">40.0</span> <span class="c1"># float, 必須有'.'</span>
@@ -215,7 +215,7 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">h</span>
 <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 </code></pre></div>
-<h3>Numpy的數學運算</h3>
+<h3 id="numpy">Numpy的數學運算</h3>
 <p>在上一段我簡單介紹了python內建的運算，在大多數情況，內建的運算就已經足夠應付了，不過如果遇到複雜的運算，例如：三角函數、取最大最小值、exp、log、開根號、矩陣運算，我們就需要用到 Numpy    。</p>
 <p>首先先介紹Numpy的一些數學運算，Numpy的數學運算詳細<a href="https://docs.scipy.org/doc/numpy/reference/routines.math.html">參考這</a>。</p>
 <p>我這邊舉幾個比較常見的例子。</p>
@@ -232,7 +232,7 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="c1"># ln 和 e</span>
 <span class="mf">1.0</span>
 </code></pre></div>
-<h3>Numpy基礎元素：ndarray</h3>
+<h3 id="numpyndarray">Numpy基礎元素：ndarray</h3>
 <p>Numpy最重要的元素就是ndarray，它是N-Dimensional Array的縮寫，在Numpy裡，dimesions被稱為axes，而axes的數量被稱為rank，axes是一個重要的概念，了解這個概念基本上就把Numpy搞懂一半以上了。</p>
 <p>先來建立一個簡單1D的ndarray</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
@@ -335,7 +335,7 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">t2</span><span class="o">.</span><span class="n">dtype</span>
 <span class="n">dtype</span><span class="p">(</span><span class="s1">'float64'</span><span class="p">)</span>
 </code></pre></div>
-<h3>Numpy的矩陣運算</h3>
+<h3 id="numpy_1">Numpy的矩陣運算</h3>
 <p>有了ndarray就可以作矩陣的運算了，矩陣運算有兩種系統，一種是element-wise(元素方面) operation，一種是matrix operation。</p>
 <p>這樣講好像很抽象，我來解釋一下，element-wise operation就是每個元素獨立運算，例如，以下例子就是element-wise的相加。</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="s1">'float64'</span><span class="p">)</span>
@@ -413,7 +413,7 @@
         <span class="p">[</span> <span class="mf">0.</span><span class="p">]]),</span> <span class="n">array</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">],</span>
         <span class="p">[</span> <span class="mf">0.</span><span class="p">]])]</span>
 </code></pre></div>
-<h3>子彈總結</h3>
+<h3 id="_1">子彈總結</h3>
 <ul>
 <li>Python常見的資料型別：整數(integer)、浮點數(floating-point number)、字串(string)、串列(list)、序對(tuple)、字典(dictionary)</li>
 <li>ndarray的axes概念很重要，這會決定函數操作的方式，例如：np.sum</li>
@@ -460,8 +460,8 @@
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -138,10 +138,10 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 <div class="main-contents">
-<h3>前言</h3>
+<h3 id="_1">前言</h3>
 <p>在上一回中，我們已經了解了機器學習基本的操作該怎麼做。而這一篇中，我們來看<strong>機器可以怎麼學得更好?</strong> 基本上有三招：Feature Transformation（特徵轉換）、Regularization（正規化）和Validation（驗證），我們來看看。</p>
 <p><br/></p>
-<h3>Feature Transformation（特徵轉換）</h3>
+<h3 id="feature-transformation">Feature Transformation（特徵轉換）</h3>
 <p><img alt="ML" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.013.jpeg"/></p>
 <p>在上一回當中我們講了很多的線性模型，大家有沒有懷疑說，數據呈現的方式一定可以用線性描述嗎？我的答案是通常線性描述會表現不錯，但不是絕對，<strong>那我們怎麼用非線性的方法來描述我們的數據，這邊提供一個方法叫做「非線性轉換」，或者又稱為「特徵轉換」（還記得變數<span class="math">\(x\)</span>又可以稱為特徵Features）</strong>，聽起來有點困難齁～其實不會啦！</p>
 <p>假設今天你的Data分布是圓圈狀的分布，顯而易見的你很難用一條線去區分他們，那我們應該怎麼做呢？假設今天有一個轉換可以把這個圓圈狀分布的空間轉換到另外一個空間，而且在這個新的空間，我們可以做到線性可分，這樣問題就解決了，我們非常擅長做線性可分啊！怎麼做呢？我們知道這個空間分布是圓圈分布，所以套用以前學過的公式：
@@ -160,7 +160,7 @@ $$</div>
 <p><strong>機器自己學習特徵轉換的這個概念應該是現今ML最重要的概念之一，最近很夯的深度學習就擁有強大的特徵轉換功能，這些轉換都是機器從Data自行學來的。</strong></p>
 <p><strong>特徵轉換讓ML變得很強大，但要特別注意，因為我們增加了非線性項，所以等於是增加了模型的複雜度，這麼做的確可以壓低<span class="math">\(E_{in}\)</span>沒有錯，但也可能使得<span class="math">\(E_{in} \approx E_{out}\)</span>不再成立，也就是Overfitting，所以建議要逐步的增加非線性項，從低次方的項開始加起，避免Overfitting。</strong></p>
 <p><br/></p>
-<h3>Overfitting</h3>
+<h3 id="overfitting">Overfitting</h3>
 <p>Overfitting是一個大怪獸，在學習怎麼對付牠之前，我們先來好好的了解牠！</p>
 <p><img alt="Overfitting" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.03.png"/></p>
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf</a></p>
@@ -186,7 +186,7 @@ $$</div>
 <li><strong>Validation（驗證）：將部分Data保留不進去Fitting，然後用這個Validation Data來檢驗Overfitting的程度。</strong>（接下來會詳述...）</li>
 </ol>
 <p><br/></p>
-<h3>Regularization（正規化）</h3>
+<h3 id="regularization">Regularization（正規化）</h3>
 <p><img alt="regularation" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.014.jpeg"/></p>
 <p>剛剛我們提到了Overfitting所造成的影響很大一部分是因為Model複雜度所造成的，但是為了可以把<span class="math">\(E_{in}\)</span>給壓下去，我們又的確需要去增加高次項，所以依照建議需要從低次項開始慢慢的加，這樣感覺很麻煩啊！<strong>有沒有辦法讓機器自己去限制高次項的出現呢？有的，這就是Regularization（正規化）</strong>。</p>
 <p>還記得剛剛在講「特徵轉換」時，有提到一點，ML有辦法自行學習「特徵轉換」的關鍵是因為高次項前面有一個可調控的權重，而機器會針對Data來調整權重大小，那其實就是等價於機器自己學習到了「特徵轉換」，同理可知，<strong>我們只要限制權重<span class="math">\(W\)</span>的大小就等同於限制了機器無所忌憚的使用高次項</strong>。</p>
@@ -198,7 +198,7 @@ $$</div>
 <p>當Linear Regression使用Regularization限制，統計上有一個名稱稱為Ridge Regression，你可以使用Gradient Descent來做，又或者使用解析解的方法。</p>
 <p>最後提一個Regularization的細節，你會發現因為高次項是彼此兩兩相乘的結果，所以項目的個數會隨著次方增加而增加，這麼一來在做Regularization時可能會過度懲罰高次項，因此，我們可以將Feature轉換成Legendre Polynomials來避免這個問題。</p>
 <p><br/></p>
-<h3>Validation（驗證）</h3>
+<h3 id="validation">Validation（驗證）</h3>
 <p><img alt="validation" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.015.jpeg"/></p>
 <p>講了這麼多Overfitting，但到底要怎麼去量化Overfitting呢？Overfitting就是<span class="math">\(E_{in} \approx E_{out}\)</span>不成立，但是<span class="math">\(E_{out}\)</span>我們不會知道啊！因為我們不會知道Target Function是什麼，那該怎麼得到量化Overfitting的值呢？</p>
 <p><strong>有一個方法叫做Validation可以拿來量化Overfitting的值，這個方法是先將採樣的數據做分離，一部分將會拿來做Model Fitting（Model Training），另外一部分保留起來評估訓練完畢的Model，因為保留的這一部分源自於母群體，而且又沒有被Model給看過，所以它可以很客觀的反應出<span class="math">\(E_{out}\)</span>的大小。</strong></p>
@@ -206,7 +206,7 @@ $$</div>
 <p>這些條件彼此交互搭配會產生很多組的Model，那該如何挑選Model呢？我們就可以使用Validation來當作一個依據來選擇Model，選擇出<span class="math">\(E_{val}\)</span>最小的Model，如上圖所示。</p>
 <p>另外實作上有一些方法：Leave-One-Out Cross Validation和V-Fold Cross Validation，他們的精髓就是保留<span class="math">\(k\)</span>筆Data當作未來Validation用，另外一些拿下去Train Model，然後再用這k筆去評估並得到<span class="math">\(E_{val,1}\)</span>，還沒結束，為了讓<span class="math">\(E_{val}\)</span>盡可能的正確，所以我們會在把Data作一個迴轉，這次使用另外一組k組Data來Validation，其餘的再拿去Train Model，然後在評估出，<span class="math">\(E_{val,2}\)</span> … 以此類推，當轉完一輪之後，在把這些<span class="math">\(E_{val,1}\)</span>, <span class="math">\(E_{val,2}\)</span>, ...做平均得到一個較為精確<span class="math">\(E_{val}\)</span>。那Leave-One-Out Cross Validation顧名思義就是<span class="math">\(k=1\)</span>，但這樣做要付出的代價就是計算量太大了，所以V-Fold Cross Validation則使用<span class="math">\(k=V\)</span>來做。實務上，我常常做Validation時根本不會去Cross它們，我大都只是保留一部分的Data來驗證而已，給大家參考。</p>
 <p><br/></p>
-<h3>總結</h3>
+<h3 id="_2">總結</h3>
 <p>來到了這四篇有關於林軒田教授機器學習基石學習筆記的尾聲了，讓我們重溫看看我們學會了什麼？</p>
 <p>一開始我帶大家初探ML的基本架構，建立Model、使用Data訓練、最後達到描述Target Function的目的，也帶大家認識各種機器學習的類型。</p>
 <p>接下來，我們用理論告訴大家，ML是不是真的可以做到，那在什麼時候可以做到？要符合哪些條件？我們知道要有好的Model，VC Dimension越小越好，也就是可調控的參數越少越好，才會使得<span class="math">\(E_{in} \approx E_{out}\)</span>成立；要有足夠的Data；要有好的Learning Algorithm能把<span class="math">\(E_{in}\)</span>壓低，這三種條件成立後，如此一來Model在描述訓練數據很好的同時也可以很好的去預測母群體，但我們發現<span class="math">\(E_{in}\)</span>壓低和可調控的參數越少越好兩者是Trade-off，所以我們必須取適當的VC Dimension。</p>
@@ -316,8 +316,8 @@ $$</div>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

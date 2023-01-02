@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -138,7 +138,7 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 <div class="main-contents">
-<h3>物件導向怎麼用才能成就好的程式碼？</h3>
+<h3 id="_1">物件導向怎麼用才能成就好的程式碼？</h3>
 <p>一個好的工具，也要配合對於工具的理解，才能發揮效用。<a href="http://www.ycc.idv.tw/introduction-object-oriented-programming_2.html">在上一回中</a>，我們完整介紹了Java和Python的物件導向實現方式，我們講到了「封裝」、「繼承」、「多型」等等物件導向的特色，也講了「抽象類別」、「接口」等抽象化的方法，不過我並沒有告訴大家該怎麼用這些工具？使用這些工具是不是有什麼樣的法則？</p>
 <p>在接下來的這一篇，我將會介紹物件導向的使用方式，我會提到物件導向著名的六大法則：</p>
 <ol>
@@ -150,7 +150,7 @@
 <li>接口分隔原則</li>
 </ol>
 <p>在這之前我們先來介紹描述類別關係的UML類別圖。</p>
-<h3>UML類別圖</h3>
+<h3 id="uml">UML類別圖</h3>
 <p>開始介紹各種原則之前，先來介紹UML類別圖，UML全名稱為Unified Modeling Language，是一種使用圖形來描繪軟體工程架構的方法，這邊準備介紹的是它的類別圖，這個工具有助於我們快速的了解物件與物件之間的關係。</p>
 <ul>
 <li>類別(Class): -代表<code>private</code>，+代表<code>public</code>，#代表<code>protected</code></li>
@@ -184,7 +184,7 @@
 <li>依賴關係(Dependency)：A類中使用到B類，但僅僅是弱連結，譬如：B類作為A類方法的參數、B類作為A類的局域變數、A類調用B類的靜態方法、B類作為A類方法的回傳值，就稱為：A依賴B，英文為"uses-a"的關係。</li>
 </ul>
 <p><img alt="Dependency" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Dependency.png"/></p>
-<h3>單一職責原則(Single Responsibility Principle, SRP)</h3>
+<h3 id="single-responsibility-principle-srp">單一職責原則(Single Responsibility Principle, SRP)</h3>
 <ul>
 <li>
 <p>定義：There should never be more than one reason for a class to change.（一個類別中不要有多於一個以上的變化理由）</p>
@@ -202,7 +202,7 @@
 <ul>
 <li>「單一職責原則」原文指的是類別的單一職責，但是務實上，類別如果切分到如此程度，程式碼會變得細碎不堪，這違反了程式碼的「可讀性」，所以我們一般只要求「接口必須保持單一原則」，而類別去套用接口，類別就盡量達成少的職責就好。</li>
 </ul>
-<h3>開閉原則(Open-Closed Principle, OCP)</h3>
+<h3 id="open-closed-principle-ocp">開閉原則(Open-Closed Principle, OCP)</h3>
 <ul>
 <li>
 <p>定義：Software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification.（軟體中的實體，例如：類、模組、函數等等，都必須對延伸開放，但對修改封閉）</p>
@@ -217,7 +217,7 @@
 <p>綜合以上兩點，我們可以總結出：實體本身的內聚性要高，可以讓我們未來不需要再做修改，單一職責可以做到增強內聚性；實體間的耦合性要低，所以實體像是積木一樣可以因應各種需求去任意組合、擴充。所以「開閉原則」只是進一步的把「低耦合高內聚」再說的更清楚一點，實現「開閉原則」將有利於單元測試、提高維護和擴充能力。</p>
 </li>
 </ul>
-<h3>里氏替換原則(Liskov Subsititution Principle, LSP)</h3>
+<h3 id="liskov-subsititution-principle-lsp">里氏替換原則(Liskov Subsititution Principle, LSP)</h3>
 <ul>
 <li>
 <p>定義：What is wanted here is something like the following substitution property: If for each object o1 of type S there is an object o2 of type T such that for all programs P defined in terms of T, the behavior of P is unchanged when o1 is substituted for o2 then S is a subtype of T.（簡言之：子類對象能夠替換其父類對象，使用父類方法而不會有問題）</p>
@@ -242,7 +242,7 @@
 <li>下面這一張集合圖是我自創的，圖中清楚的指出「繼承」中的父類和子類應該是什麼樣的關係。</li>
 </ul>
 <p><img alt="Inheritance Principle.jpeg" src="https://www.ycc.idv.tw/media/SOLID_Introduction/inheritance_principle.jpeg"/></p>
-<h3>迪米特法則(Law of Demeter, LoD)</h3>
+<h3 id="law-of-demeter-lod">迪米特法則(Law of Demeter, LoD)</h3>
 <ul>
 <li>
 <p>又稱為「最少知識原則」</p>
@@ -373,7 +373,7 @@
     <span class="k">def</span> <span class="nf">install</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wizard</span><span class="p">,</span><span class="n">mode</span><span class="p">):</span>
         <span class="n">wizard</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
 </code></pre></div>
-<h3>依賴倒置原則(Dependence Inversion Principle, DIP)</h3>
+<h3 id="dependence-inversion-principle-dip">依賴倒置原則(Dependence Inversion Principle, DIP)</h3>
 <ul>
 <li>
 <p>定義：High level modules should not depend upon low level modules. Both should depend upon abstractions. Abstractions should not depend upon details. Details should depend upon abstractions.（高層次模組不應該依賴低層次模組，兩者都應該依賴抽象。而抽象不應該依賴細節，反之細節應該要依賴抽象。）</p>
@@ -401,7 +401,7 @@
 <li>定義行為的interface</li>
 </ul>
 <p>我們不讓作為實現的類別彼此依賴，而是使用接口將抽象架構擬定好，再讓類別去依賴接口實現目標。</p>
-<h3>接口分隔原則(Interface Segregation Principle, ISP)</h3>
+<h3 id="interface-segregation-principle-isp">接口分隔原則(Interface Segregation Principle, ISP)</h3>
 <ul>
 <li>
 <p>定義：Clients should not be forced to depend uponn interfaces that they don't use. The dependency of one class to another one should depend on the smallest possible interface.（客戶類不應該被強迫依賴那些它不需要的接口，類別間的彼此依賴應該建立在盡可能小的接口上）</p>
@@ -419,7 +419,7 @@
 <p><img alt="toycar_3" src="https://www.ycc.idv.tw/media/SOLID_Introduction/toycar_3.png"/></p>
 <p>如此一來，當我們想要開發新的車款C，添加新「方向盤」的功能，也能輕鬆的擴充，如下所示。<code>ToyCarPlus</code>、<code>VirtualCarPlus</code>、<code>ControllerPlus</code>是我們實作C車款的抽象類別，它現在可以直接套用<code>IMotor</code>、<code>ISpeed</code>、<code>IControlBar</code>的Interface。</p>
 <p><img alt="toycar_4" src="https://www.ycc.idv.tw/media/SOLID_Introduction/toycar_4.png"/></p>
-<h3>總結：物件導向的指導原則—SOLID</h3>
+<h3 id="solid">總結：物件導向的指導原則—SOLID</h3>
 <p>上面介紹的六大原理：</p>
 <ol>
 <li>Single Responsibility Principl</li>
@@ -441,7 +441,7 @@
 </ol>
 <p>如此一來，我們心中就有一個準則去使用物件導向。</p>
 <p>在一般情形下，這三篇的內容應該就足夠讓你寫出好的程式碼，但是實際面上使用仍然會碰到許多問題，於是乎有人將問題整理並總結出一些套路，這就是「設計模式」，我們以後再來談談吧！今天就先到這。</p>
-<h3>Reference</h3>
+<h3 id="reference">Reference</h3>
 <ol>
 <li><a href="https://www.tenlong.com.tw/products/9789866761799">大話設計模式</a></li>
 <li><a href="https://www.tenlong.com.tw/products/9787111437871">設計模式之禪</a></li>
@@ -485,8 +485,8 @@
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

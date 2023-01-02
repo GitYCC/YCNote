@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -142,7 +142,7 @@
 <p>深度學習發展至今已經有相當多好用的套件，使得進入的門檻大大的降低，因此如果想要快速的實作一些深度學習或機器學習，通常是幾行程式碼可以解決的事。但是，如果想要將深度學習或機器學習當作一份工作，深入了解它背後的原理和數學是必要的，才有可能因地制宜的靈活運用，YC準備在這一系列當中帶大家深入剖析深度學習。</p>
 </blockquote>
 <p>本講主要探討統計的兩大學派（頻率學派和貝氏學派）對於機器如何學習的觀點。頻率學派主張Maximum Likelihood Estimation (MLE)，會提到這等同於最小化data與model之間的Cross Entropy或KL Divergence。而貝氏學派則主張Maximum A Posterior (MAP) ，會提到這會等同於極大化Likelihood並同時考慮Regularization Term，我們也可以在本講看到L1和L2 Regularation Term是怎麼被導出的。</p>
-<h3>條件機率</h3>
+<h3 id="_1">條件機率</h3>
 <p>因為本講會牽涉到許多條件機率的計算，所以把條件機率常用的公式先列下來，讓大家溫習一下。</p>
 <ul>
 <li>
@@ -179,7 +179,7 @@
 <p><center><small>
 碰到條件機率，心中應該要有這張圖，如果公式忘記了也可以輕易的推出來
 </small></center><br/></p>
-<h3>頻率學派 v.s. 貝氏學派</h3>
+<h3 id="vs">頻率學派 v.s. 貝氏學派</h3>
 <p><strong>頻率學派和貝氏學派為統計上面重要的兩大觀點，透徹的了解這兩個學派的觀點，可以幫助你在做機器學習或深度學習時選擇模型有所幫助。</strong></p>
 <p>舉個例子，如果你在做詞性標記（POS tagging）的任務，你採用隱馬爾科夫模型 (HMM)，那麼你採用的是類似貝氏學派的觀點；但如果你採用 Conditional Random Field (CRF)，那麼你就是採用類似頻率學派的觀點。</p>
 <p>再舉個平易近人一點的例子，Loss Function中的Regularization Term其實可以看作是從先驗機率 (Prior Probability) 來的，這也有貝氏學派的味道，待會會再仔細的介紹。</p>
@@ -187,7 +187,7 @@
 <p>但是貝氏學派不這麼認為，他們認為至少有一些現象是不穩定的，例如：北極的冰是否會在本世紀溶解殆盡，這種問題不存在穩定的母群體讓你可以在短時間內「大量」的量測，因為系統不斷的在演進，因此我們需要有一個具有演進特性的統計模型，那就是貝氏機率，<strong>貝氏機率的精髓是演進，手中先握著一個先驗機率 (Prior Probability) ，再透過不斷觀察新的證據來更新手上的機率</strong>。</p>
 <p>在機器學習上，<strong>頻率學派的優點是無額外的假設</strong>，相反的貝氏學派需要假設先驗機率 (Prior Probability) ，錯誤的先驗機率可能會去誤導模型，讓它反而忽視甚至曲解數據帶來的信息。另外，<strong>貝氏學派的優點也正是因為它有先驗機率，所以在資料筆數不多的情況下較不容易出錯</strong>，如果你使用頻率學派的觀點在小樣本上，由於統計量不足可能導致你的估計也不準確。</p>
 <p>所以說，先驗機率的使用是把雙面刃，水可載舟亦可覆舟。</p>
-<h3>Maximum Likelihood Estimation (MLE)</h3>
+<h3 id="maximum-likelihood-estimation-mle">Maximum Likelihood Estimation (MLE)</h3>
 <p>首先我們來看頻率學派，也就是傳統學派，究竟用什麼什麼觀點讓機器學習的，我們從頭到腳來理一遍。</p>
 <p>給定一個Dataset <span class="math">\(\mathcal{D}\)</span> ，並且決定好Model的Hyperparameters <span class="math">\(m\)</span>，此時我只需要尋找Model權重參數 <span class="math">\(\theta\)</span> ，就可以決定好一個Model。</p>
 <p>那怎麼決定 <span class="math">\(\theta\)</span> 呢？頻率學派認為只要先決定好Model (決定<span class="math">\(m\)</span>和<span class="math">\(\theta\)</span>)，再算算看這個Model產生Dataset <span class="math">\(\mathcal{D}\)</span> 的機率，這就是Likelihood，我們希望這個Likelihood可以越高越好，也就是Maximum Likelihood。化成數學式子： ⚠️
@@ -271,7 +271,7 @@ $$</div>
 <p>
 但是因為 <span class="math">\(\operatorname{ln}p_{data}(x)\)</span> 與 <span class="math">\(\theta\)</span> 無關，所以計算還是只剩下第二項的Cross Entropy。</p>
 <p>特別注意，<strong>剛剛的所有推論並沒有提到我們的問題是Regression問題還是Classification問題，再次強調Cross Entropy並不專屬於Sigmoid或Softmax</strong>，甚至<a href="https://www.ycc.idv.tw/deep-dl_4.html">下一講</a>我還會提到Mean Squared Error是源於Data分布與Normal Distribution的Cross Entropy。</p>
-<h3>Maximum A Posterior (MAP)</h3>
+<h3 id="maximum-a-posterior-map">Maximum A Posterior (MAP)</h3>
 <p>再來我們聊聊貝氏學派，我們好奇頻率學派究竟有什麼不足？MLE有什麼不足？為什麼我們需要一個新的觀點。</p>
 <p>最重要的一點是<strong>MLE認為所有 <span class="math">\(\theta\)</span> 出現的機率是均等的</strong>，我們優化的目標是 <span class="math">\(p(\mathcal{D}\mid m,\theta)\)</span> [from 【5】]，式子中是直接「給定」一組 <span class="math">\(\theta\)</span> ，所以這個 <span class="math">\(\theta\)</span> 怎麼來的、 <span class="math">\(\theta\)</span> 出現的機率，這些都不在MLE的考量當中。</p>
 <p>我們知道這樣並不好，假設以下有兩組 <span class="math">\(\theta\)</span> 都可以得到一樣的Likelihood，依照你學機器學習和深度學習的經驗，你會喜歡哪組？</p>
@@ -390,7 +390,7 @@ $$</div>
 <p><center><small>
   Courtesy <a href="https://www.researchgate.net/figure/Gaussian-distribution-and-Laplace-distribution_fig7_321825093">Youngjoo Kim</a>
 </small></center><br/></p>
-<h3>結語</h3>
+<h3 id="_2">結語</h3>
 <p>這一講我們清楚的了解了頻率學派和貝氏學派各自的觀點，並且從兩者觀點出發去探討機器學習問題。</p>
 <p>頻率學派使用Maximum Likelihood Estimation (MLE) 來優化，優化關係式如下：
 </p>
@@ -407,7 +407,7 @@ $$</div>
 <p>
 除了第一項與MLE一樣之外，此時我們還需考慮了參數可能的分布，當參數分布是均等時，MAP和MLE是等價的。但是我們希望 <span class="math">\(\theta\)</span> 可以接近0，所以一般會去假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Variance有限且平均值為0的分布，如果選擇使用Normal Distribution，則會得到L2 Regularization Term；如果選擇用Laplace Distribution，則會得到L1 Regularization Term。</p>
 <p>本講已經給出了兩個觀點的機率優化式，但是要怎麼變換成擬合問題呢？這需要一大篇幅來介紹，我們會在<a href="https://www.ycc.idv.tw/deep-dl_4.html">下一講</a>來仔細討論這個問題，敬請期待囉！</p>
-<h3>Reference</h3>
+<h3 id="reference">Reference</h3>
 <ul>
 <li><a href="https://www.deeplearningbook.org">Ian Goodfellow and Yoshua Bengio and Aaron Courville. Deep Learning. 2016.</a></li>
 <li>Christopher Bishop. Pattern Recognition and Machine Learning. 2006.</li>
@@ -530,8 +530,8 @@ $$</div>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

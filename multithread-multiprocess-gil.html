@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="multithread-multiprocess-gil">極簡說明Multi-thread/Multi-process、CPU-bound/IO-bound和GIL</h1>
 <p>
-      Posted on November 26, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 1,636
+      Posted on November 26, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 1,637
 
     </p>
 </header>
@@ -138,7 +138,14 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 <div class="main-contents">
-<h2>TL;DR</h2>
+<div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#tldr">TL;DR</a></li>
+<li><a href="#multi-thread-and-multi-process">Multi-Thread and Multi-Process</a></li>
+<li><a href="#cpu-bound-and-io-bound">CPU-bound and IO-bound</a></li>
+<li><a href="#gil-global-interpreter-lock">GIL (Global Interpreter Lock)</a></li>
+</ul>
+</div>
+<h2 id="tldr">TL;DR</h2>
 <ul>
 <li>Multi-Thread中每個Thread會共享資源，因此其優點是：資源利用較有效率、共享資源存取較快速</li>
 <li>Multi-process將這些資源複製且隔離，其優點是：Process間不共享記憶體、程式碼比較好寫</li>
@@ -147,7 +154,7 @@
 <li>Python 在原始 default 的編譯器是採用CPython，而 CPython 採用了GIL，這導致了一個Python Job（一個Process）同一時間只能跑一個Thread。最終導致，CPython 的 Multi-thread 不能同時吃到多顆CPU，因此無法解決CPU-bound Task的問題。</li>
 <li>粗略的原則：在CPython的情況下，遇到CPU-bound Task使用Multi-process，遇到 IO-bound Task使用Multi-thread。</li>
 </ul>
-<h2>Multi-Thread and Multi-Process</h2>
+<h2 id="multi-thread-and-multi-process">Multi-Thread and Multi-Process</h2>
 <p><img alt="" src="http://www.ycc.idv.tw/media/CS/thread_and_process.png"/></p>
 <ul>
 <li>Single Process Single Thread<ul>
@@ -182,7 +189,7 @@
 </li>
 <li>特別注意：不管在 Multi-Thread 和 Multi-process 都可以吃到完整的多顆CPU，因為所有工作都會丟到OS Thread Scheduler，Scheduler會管控CPU的使用，但是Python情況特殊我們待會討論。</li>
 </ul>
-<h2>CPU-bound and IO-bound</h2>
+<h2 id="cpu-bound-and-io-bound">CPU-bound and IO-bound</h2>
 <ul>
 <li>CPU-bound<ul>
 <li>當某個工作高度仰賴CPU計算，我們會稱之為CPU-bound Task</li>
@@ -195,7 +202,7 @@
 </ul>
 </li>
 </ul>
-<h2>GIL (Global Interpreter Lock)</h2>
+<h2 id="gil-global-interpreter-lock">GIL (Global Interpreter Lock)</h2>
 <p><img alt="" src="http://www.ycc.idv.tw/media/CS/cpython_thread_and_process.png"/></p>
 <ul>
 <li>Python 在原始 default 的編譯器是採用CPython，而 CPython 採用了GIL，這導致了一個Python Job（一個Process）同一時間只能跑一個Thread，這意味著就算有多顆CPU的存在，同時間還是沒辦法吃一顆以上的CPU，也因此會有以下情況。</li>
@@ -234,8 +241,8 @@
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

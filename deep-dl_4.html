@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -155,7 +155,7 @@
 <p>如果你仔細google一下就會發現有一個相關名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。</p>
 <p>在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。</p>
 <p>這一篇我可以非常自豪的說，網路上的資料在這個議題上找不到寫的比我更詳細的，這是我看過很多書和教材融會貫通而成的，請大家一定要看到最後，必定收穫滿滿。</p>
-<h3>前情提要</h3>
+<h3 id="_1">前情提要</h3>
 <p><a href="https://www.ycc.idv.tw/deep-dl_3.html">上一講</a>中我們清楚的了解頻率學派和貝氏學派各自的觀點，並且從兩者觀點出發去探討機器學習問題。</p>
 <p>頻率學派使用Maximum Likelihood Estimation (MLE) 來優化，優化關係式如下：
 </p>
@@ -173,7 +173,7 @@ $$</div>
 除了第一項與MLE一樣之外，我們還需要考慮第二項，此項考慮了參數的出現分布，當參數分布是均等時，MAP和MLE是等價的。但是我們希望 <span class="math">\(\theta\)</span> 可以接近0，所以一般會去假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Variance有限且平均值為0的分布，如果選擇使用Normal Distribution，則會得到L2 Regularization Term；如果選擇用Laplace Distribution，則會得到L1 Regularization Term。</p>
 <p>所以接下來要讓機器可以學習只剩下最後一哩路，如何將【1】或【2】變換成擬合問題呢？</p>
 <p>其實只需要找到合適的分布代入 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 就可以了。</p>
-<h3>充分統計量 (sufficient statistic)</h3>
+<h3 id="sufficient-statistic">充分統計量 (sufficient statistic)</h3>
 <p>在這之前要引入一個重要的統計工具，那就是「充分統計量」。</p>
 <p>什麼「充分統計量」呢？Wiki的定義是</p>
 <blockquote>
@@ -256,7 +256,7 @@ $$</div>
 <hr/>
 <p>現在你知道我不得不提「充分統計量」這個概念的原因了吧！</p>
 <p><strong>有了「充分統計量」的概念，拿到一個分布你可以清楚的知道：我需要哪些必要的統計量才可以擬合這個分布，並且可以透過Maximun Log Probability輕易的找到這些充分統計量對應的Model變數。</strong></p>
-<h3>廣義線性模型（Generalized Linear Models, GLM）</h3>
+<h3 id="generalized-linear-models-glm">廣義線性模型（Generalized Linear Models, GLM）</h3>
 <p>如果你看其他的介紹文章，通常會先講古典線性模型，再講廣義線性模型，我這邊會反過來講，因為古典線性模型只是廣義線性模型的特例 — 當假設Normal Distribution時，所以只要真正搞懂廣義線性模型，古典線性模型也就懂了。</p>
 <p>我們手上現在會有兩個東西：分布模型和線性擬合模型</p>
 <ul>
@@ -284,7 +284,7 @@ $$</div>
 <li>用上面的關係式將 <span class="math">\(h(x_i,m,\theta)\)</span> 代換到 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 裡</li>
 <li>利用MLE和MAP來找尋最佳參數 <span class="math">\(\theta\)</span></li>
 </ol>
-<h3>古典線性模型</h3>
+<h3 id="_2">古典線性模型</h3>
 <p>接下來我們就來演示一下廣義線性模型的特例—古典線性模型，<strong>古典線性模型使用Normal Distribution當分布模型 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span>，並且使用Identity Function當作 Link Function <span class="math">\(g(.)\)</span> </strong>。</p>
 <ol>
 <li>使用Normal Distribution和Identity Link Function
@@ -347,7 +347,7 @@ $$</div>
 這樣對嗎？其實是錯誤的。Link Function沒有對應到正確的值域，所以 <span class="math">\(h(x_i,m,\theta)\)</span> 可以是整個實數空間，而 <span class="math">\(\pi\)</span> 卻只能是落在0到1之間，等式不能成立。</p>
 <p>所以古典線性模型並不能適用於非Normal Distribution，我們必須找其他合適的Link Function。</p>
 <p><strong>事實上，認真找可以找到若干個正確符合的 Link Function，但是只有唯一一種Link Function符合讓Mean符合「充分統計」，這就是 Canonical Link Function。而其他符合的 Link Function 則稱為 Non-Canonical Link Function。</strong></p>
-<h3>指數族分布（Exponential Family）與 Canonical Link Function</h3>
+<h3 id="exponential-family-canonical-link-function">指數族分布（Exponential Family）與 Canonical Link Function</h3>
 <p>要談Canonical Link Function就必須要談「指數族分布」，指數族分布很好的囊括了常見的分布，包括：Normal Distribution、Bernoulli Distribution、Poisson Distribution、...等等，而且還具備了許多良好的性質。</p>
 <p>指數族分布定義如下：
 </p>
@@ -463,7 +463,7 @@ $$</div>
 \mu=g^{-1}(\eta) \Rightarrow g(\mu)=\mu  \ \ ↪︎【36】
 $$</div>
 <p>得證，確實古典模型在使用Normal Distribution時選擇的 Identity Link Function 是Canonical Link Function。</p>
-<h3>Binary Classification：從GLM推出Sigmoid和(狹義的)Cross Entropy</h3>
+<h3 id="binary-classificationglmsigmoidcross-entropy">Binary Classification：從GLM推出Sigmoid和(狹義的)Cross Entropy</h3>
 <p>再重新來看Bernoulli Distribution。</p>
 <p>再寫一次【19】式：
 </p>
@@ -529,7 +529,7 @@ $$</div>
    其中： <span class="math">\(p_i=\sigma (h(x_i,m,\theta))\)</span>。沒錯！我們推出了(狹義的)Cross Entropy。</p>
 </li>
 </ol>
-<h3>Multi-class Classification：從GLM推出Softmax和(狹義的)Cross Entropy</h3>
+<h3 id="multi-class-classificationglmsoftmaxcross-entropy">Multi-class Classification：從GLM推出Softmax和(狹義的)Cross Entropy</h3>
 <p>Categorical Distribution的分布：
 </p>
 <div class="math">$$
@@ -626,7 +626,7 @@ $$</div>
    其中： <span class="math">\(p_{i,j}=softmax\{h_j(x_i,m,\theta)\}\)</span>。我們也推出了Multi-class Cross Entropy。</p>
 </li>
 </ol>
-<h3>結論</h3>
+<h3 id="_3">結論</h3>
 <p>恭喜大家堅持到這裡，應該會收穫不少。以後別人問你為什麼使用Mean Square Error？為什麼這裡要加Sigmoid？為什麼這裡要用 (狹義的) Cross Entropy？為什麼這裡卻要用Softmax？你都可以輕易的回答，甚至給你另外一個Distribution，例如：Possion Distribution，你也可以推出它的Canonical Link Function，也可以知道應該要用什麼樣的Loss去優化，你已經融會貫通了！</p>
 <p>再複習一下！</p>
 <p>為了將上章節提到的MLE和MAP化作擬合問題實際用數據去訓練Model，我們需要廣義線性定理，廣義線性定理必須藉由 Link Function 來連接擬合模型和分布模型，這樣就可以藉由MLE和MAP來優化擬合模型內的參數， Link Function 的限制只有兩條：單調遞增和值域覆蓋。</p>
@@ -643,7 +643,7 @@ $$</div>
 <li>Multi-class Classification問題時，使用 Multi-class Cross Entropy</li>
 </ul>
 <p>所有這些以前不加解釋的東西，都可以由廣義線性定理推導出來。</p>
-<h3>Reference</h3>
+<h3 id="reference">Reference</h3>
 <ul>
 <li><a href="https://www.deeplearningbook.org">Ian Goodfellow and Yoshua Bengio and Aaron Courville. Deep Learning. 2016.</a></li>
 <li>Christopher Bishop. Pattern Recognition and Machine Learning. 2006.</li>

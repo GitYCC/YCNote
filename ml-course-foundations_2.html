@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -138,10 +138,10 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 <div class="main-contents">
-<h3>前言</h3>
+<h3 id="_1">前言</h3>
 <p>在上一回當中，我們初探了機器學習，了解了什麼時候適合使用機器學習，而不是一般的Hard Coding，那今天這篇文章要繼續問下去。</p>
 <p><strong>為什麼機器可以學習(Why Can Machines Learn?)</strong>，本篇會介紹學理上機器學習（ML）必須要有哪些條件才可行，這些理論有非常多的數學，但卻是了解機器學習非常重要的內功，我會盡量避開繁複的數學運算，而帶大家直接的了解式子所要告訴我們的觀念。</p>
-<h3>機器可以學習嗎?</h3>
+<h3 id="_2">機器可以學習嗎?</h3>
 <p><img alt="MachineLearningFoundations.001" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.001.jpeg"/></p>
 <p>還記得上面這張圖嗎? 上次帶大家初探了Machine Learning(ML)的基本架構，可以把整個概念總結成上面這張圖。</p>
 <p>我們來複習一下，先從最上面的盆子開始看起，我們用Target Function代表你想要學習的技能，在非常理想的情況下，也就是沒有noise的情況，每組輸入變數 <span class="math">\(X_n\)</span>都會找到一組精確的輸出 <span class="math">\(y_n\)</span>，而這個Target Function能產生多個Data，圖中那些小球就是代表由Target Function產生的Data，今天我從中隨機抽取出<span class="math">\(N\)</span>組Data來做機器學習，接下來Learning Algorithm會利用這些取出的Data去找出最吻合的Hypothesis，那這組Hypothesis就成了我們學習出來的結果，我們可以利用這個結果來預測新的問題。</p>
@@ -153,7 +153,7 @@
 <p>我們會稱<strong>未被取樣的Data為Out-of-sample Data</strong>，並且稱<strong>Hypothesis預測Out-of-sample Data的誤差為Out-of-sample Error，記作<span class="math">\(E_{out}\)</span>，我們最終目的就是把<span class="math">\(E_{out}\)</span>壓下來，也就代表可以預測新的問題</strong>。</p>
 <p>但遺憾的是我們不會真正知道<span class="math">\(E_{out}\)</span>，除非我們知道Target Function，所以我們只能評估<span class="math">\(E_{in}\)</span>來選取Model參數，因此重要的是需要<span class="math">\(E_{in} \approx E_{out}\)</span>這個條件要成立，否則一切的學習都是無效的。</p>
 <p><strong>總結一下機器學習的條件，我們必須建立一個 Learning Model可以確保<span class="math">\(E_{in}\approx E_{out}\)</span>，所以在Learning Algorithm選出最小<span class="math">\(E_{in}\)</span>的Hypothesis，同時這組Hypothesis也可以很好的預測Out-sample，我們就可以說機器已經會學習了。</strong></p>
-<h3><span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異</h3>
+<h3 id="e_ine_out"><span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異</h3>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.005.jpeg"/></p>
 <p>剛剛我們已經提到了如果機器能學習，那就必須先確保<span class="math">\(E_{in} \approx E_{out}\)</span>，下面我會引入Hoeffding不等式來說明這個條件怎麼成立。</p>
 <p>先想像一下我有一個桶子，這個桶子裝了兩種顏色的小球，分別為橘色和綠色，今天如果桶子內橘色球佔的比例為<span class="math">\(μ\)</span>，而今天我們從中隨機抽樣出<span class="math">\(N\)</span>顆小球，並且計算出這<span class="math">\(N\)</span>顆小球中橘色佔的比例為<span class="math">\(ν\)</span>，此時我們可以想像的到，<span class="math">\(μ=ν\)</span>不一定會成立，但<span class="math">\(μ\)</span>也不至於離<span class="math">\(ν\)</span>太遠，所以Hoeffding不等式就告訴我們<span class="math">\(|μ-ν|\)</span>會被限制在一個範圍內，表示為：
@@ -192,7 +192,7 @@ $$</div>
 $$</div>
 <p>
 大家現在回想一下上一篇所提到的Perceptron Hypothesis Set就會發現，糟糕了! Perceptron Hypothesis Set 裡有無限多組的Hypotheses，也就是<span class="math">\(M→∞\)</span>，那我們不就需要無限多的Data才能做到<span class="math">\(E_{in} \approx E_{out}\)</span>，否則機器根本不會學習，所以前一篇的內容都在亂講，PLA根本無法學習，因為<span class="math">\(E_{in} \approx E_{out}\)</span>，就算<span class="math">\(E_{in}\)</span>很小也不代表學習成立，機器學習是不可能的。等一下！先沉住氣，聽我接下來慢慢解釋，你就會發現還有一線生機。</p>
-<h3>VC Generalization Bound</h3>
+<h3 id="vc-generalization-bound">VC Generalization Bound</h3>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.007.jpeg"/></p>
 <p>問題出在這裡，我們在Multi-Bin Hoeffding’s Inequality中採用了一個假設，就是假設每組Hypotheses的Bad Data彼此間都沒有重疊，所以在<span class="math">\(M→∞\)</span>的情況下，當然會有一個無限大的上限值，但如果考慮了Bad Data重疊的情形，縱使<span class="math">\(M→∞\)</span>的情況下還是有機會把Bad Data的出現機率壓在一個有限的定值之下。</p>
 <p>我們回到二元分類問題，看一下上圖中左側的圖例，如果今天在二維平面上做二元分類，當數據量只有1個<span class="math">\(n=1\)</span>時，就算你的切法有無窮多種，但對於一組Data來說就只有兩類Hypotheses而已，再來看<span class="math">\(n=2\)</span>的情況，一樣的無限多組的切法但Hypotheses也只能歸類成4類。</p>
@@ -216,7 +216,7 @@ $$</div>
 <p>
 所以我們就知道啦！<strong>只要有Break Point存在，VC Dimension就是一個有限的值，也因此Growth Function是一個有限的值，VC Bound就產生了，就可以確保Bad Data出現的機率被壓在一個定值之下，所以一樣的只要資料量<span class="math">\(N\)</span>夠多就可以確保<span class="math">\(E_{in} \approx E_{out}\)</span>，機器將可以學習。</strong></p>
 <p>另外一件重要的事，VC Dimension在數學上是有意義的，<strong><span class="math">\(d_{VC} \approx 可調控變數的個數\)</span></strong>，像是上述的二維二元分類問題，它的可調控變數有<span class="math">\(w_0\)</span>, <span class="math">\(w_1\)</span> 和 <span class="math">\(w_2\)</span>，總共3個，所以<span class="math">\(d_{VC}=3\)</span>。<strong>也就是說Hypothesis Set的可調變參數如果是有限，大部分都可以做機器學習。</strong></p>
-<h3>機器要能學習的三要素</h3>
+<h3 id="_3">機器要能學習的三要素</h3>
 <p>前面拉哩拉雜的講了一堆，終於要推出我們的結論了! 所以如果剛剛的數學讓你感到很挫敗，沒關係，讀懂這段那就足夠了。</p>
 <p>從VC Generalization Bound，我們可以知道機器學習是可能的，只要它具備三點要素：</p>
 <ol>
@@ -229,7 +229,7 @@ $$</div>
 <p>from: <a href="https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf">https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf</a></p>
 <p>上圖中，我們把VC Generalization Bound公式帶入Growth Function和<span class="math">\(d_{VC}\)</span>的關係式，並且設<span class="math">\(δ\)</span> 為最大可以容忍的Bad Data出現機率，把它帶入取代掉<span class="math">\(ε\)</span>，整理一下，就可以推出上圖的公式，<span class="math">\(\Omega (N,\mathbb{H},δ)\)</span>稱為Model Complexity，這一項代表的是Hypothesis Set的大小造成的模型複雜度，它隨著<span class="math">\(d_{VC}\)</span>增加而增加。Model Complexity越大代表Bad Data更容易出現，所以<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>開始被帶開了。</p>
 <p><strong>這個現象有一個很常見的名字叫做Overfitting，指的是使用非常複雜的Model來Fitting，雖然可以把手頭上的數據Fit的很漂亮，但是拿到其他的數據來看就會發現這Model的預測性非常的差，原因就是因為Model Complexity造成<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>脫鉤了，所以選擇一個複雜度適中的Model是很重要的。</strong></p>
-<h3>機器學習架構一般化</h3>
+<h3 id="_4">機器學習架構一般化</h3>
 <p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.008.jpeg"/></p>
 <p>最後我們來總結一下機器學習的流程，上圖中是之前提到的機器學習的架構並額外考慮一些真實情形，</p>
 <ol>
@@ -347,8 +347,8 @@ $$</div>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

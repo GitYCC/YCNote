@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -139,7 +139,7 @@
     </script>
 <div class="main-contents">
 <p>在上一章節的討論，我們已經有了Numpy的基礎概念，在這一篇當中，我們會更深入的了解Numpy還有什麼進階的功能，包括：產生ndarray的多種方法、broadcast的概念以及ndarray的進階操作手法。</p>
-<h3>產生ndarray的其他方法</h3>
+<h3 id="ndarray">產生ndarray的其他方法</h3>
 <p>在上一章，ndarray的產生方法是由list產生的。</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="s1">'float64'</span><span class="p">)</span>
 </code></pre></div>
@@ -211,7 +211,7 @@
     <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span>
 </code></pre></div>
 <p>上面這兩個函式是等價的，差異只在於，第一個函式是沒有名稱的，稱為匿名函數，第二種就是一般的函式，具有名稱。</p>
-<h3>Broadcasting</h3>
+<h3 id="broadcasting">Broadcasting</h3>
 <p>在上一章，我有提到一般的矩陣運算，在Numpy中是採用element-wise operation，也就是每個相應元素做運算，然後產生新的ndarray，這個前題是兩組要運算的ndarray他們的shape是相同的，那如果遇到shape不一致，Numpy會怎麼處理呢？實際上，Numpy會幫你把陣列給延伸展開，就像廣播(broadcasting)一樣的傳遞出去，這遵照所謂的broadcasting rules。</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="s1">'float64'</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="s1">'float64'</span><span class="p">)</span>
@@ -359,7 +359,7 @@ H = F + G"
 <span class="o">&gt;&gt;&gt;</span> <span class="n">nearest</span>
 <span class="mi">0</span>   <span class="c1"># ANS is (102.0, 203.0)</span>
 </code></pre></div>
-<h3>Slice and Fancy Indexing</h3>
+<h3 id="slice-and-fancy-indexing">Slice and Fancy Indexing</h3>
 <p>最後，來看一下我們可以怎麼去切ndarray。在python內建語言中，常見的slice是這個樣子</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -413,7 +413,7 @@ H = F + G"
        <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 </code></pre></div>
 <p>上面我將取出來的值加倍，這樣的手法來取值改值會直接影響到原陣列，這是一個很重要的手法。</p>
-<h3>子彈總結</h3>
+<h3 id="_1">子彈總結</h3>
 <ul>
 <li>產生ndarray的其他方法：np.arange, np.linspace, np.zeros, np.ones, np.eye, np.random.random 和 np.fromfunction</li>
 <li>Broadcasting的前題：所有矩陣的shape由axis＝-1開始對齊去比較彼此間的rank，所有矩陣的在每個axis下的rank必須符合以下兩種規則其中之一：</li>

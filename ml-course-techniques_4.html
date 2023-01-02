@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -138,7 +138,7 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 <div class="main-contents">
-<h3>綜觀Aggregation Models</h3>
+<h3 id="aggregation-models">綜觀Aggregation Models</h3>
 <p>如果今天我有很多支的Model，我有辦法融合他們得到更好的效果嗎？</p>
 <p>這就是Aggregation Models的精髓，Aggregation Models藉由類似於投票的方法綜合各個子Models的結果得到效果更好的Model。換個角度看，你可以把整個體系看成一個新的Model，而原本這些子Models當作轉換過後的新Features，<strong>所以Aggregation Model裡頭做了「特徵轉換」，這個特徵轉換產生出許多有預測答案能力的Features，稱為Predictive Features，然後再綜合它們得到最後的Model</strong>。</p>
 <p><img alt="Aggregation Models" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.007.jpeg"/></p>
@@ -147,17 +147,17 @@
 <p>所以兩種類型、三種Aggregation Type，交互產生各類的Aggregation Models。有Blending的三種Aggregation Type，Aggregation-Learning的Uniform Type—Bagging，再加上Aggregation-Learning的Linear Type兩種—AdaBoost和GradientBoost，這兩種也亦是Boost的方法，AdaBoost負責處理Classification的問題，而GradientBoost則負責處理Regression的問題，最後介紹Aggregation-Learning的Non-Linear Type—Decision Tree。然後接著，使用Decision Tree結合其他方法再進一步的產生Random Forest、AdaBoost Decision Tree和GradientBoost Decision Tree。</p>
 <p>我將會分兩篇來介紹Aggregation Models，一篇介紹沒Boost的部分，就是今天這一篇，另外一篇則是來專攻有Boost的部分。</p>
 <p><br/></p>
-<h3>Blending</h3>
+<h3 id="blending">Blending</h3>
 <p><strong>Blending是泛指在Training結束之後得到幾個Predictive Features，然後再對這些Predictive Features做集合的方法</strong>。</p>
 <p><img alt="Blending" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.008.jpeg"/></p>
 <p>如上圖，基本流程是這樣的，一開始先把Data切成一部分拿來Training，另外一部分拿來Validation，這部份很重要，因為我們待會要利用Validation的Error來決定每筆Predictive Feature對Model的貢獻分配比重；接下來使用不同的方法來產生不同的Predictive Features <span class="math">\(g_{t}\)</span>，來源可能是不同的Model形式、不同的參數變化、不同的隨機情形等等；有了各類的<span class="math">\(g_{t}\)</span>之後，我們就可以選擇使用怎樣的方式來結合它們，如果是Uniform Combination，就直接平均所有<span class="math">\(g_{t}\)</span>就可以了，那如果是Linear Combination，想當然爾就是使用線性模型來結合，那如果是Non-Linear Combination，你可以使用任意Model來描述也行；決定好結合方式了，也就同時決定了「特徵轉換」的方法，接下來出動Validation Data，使用這個「特徵轉換」來轉化Validation Data並且做Fitting，最後我們會找到一組解最佳的參數來確定結合的方法，如果是Uniform Combination是不需要這一步的，基本上你得到<span class="math">\(g_{t}\)</span>就直接平均就得到結果了，而Linear Combination則是需要去找出<span class="math">\(α_{t}\)</span>。</p>
 <p><strong>在數學上可以證明Aggregation的效果會比單一一個<span class="math">\(g_{t}\)</span>的描述的結果還好</strong>，這很像是在做投票選舉，不同方法可能帶有不一樣的偏見，但是綜合所有意見之後可以找到共識，這個共識是具有較少偏見的，你可以想像偏見就像是Overfitting，<strong>所以Aggregation是具有像Regularizaiton一般抑制Overfitting的效果的</strong>，但有些時候特別的看法不一定是偏見，也許這一個方法可以看出其他方法看不出來的規律，此時這個部分也不會被完全忽略掉，<strong>所以Aggregation也可以同時擁有像Feature Transform一樣的複雜度。因此Aggregation的方法可以同時增加Model複雜度又同時防止它Overfitting，這個效果是我們以前沒看過的，所以我們會說Aggregation具有截長補短的效果</strong>。</p>
 <p><br/></p>
-<h3>Bagging</h3>
+<h3 id="bagging">Bagging</h3>
 <p><img alt="Bagging" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.009.jpeg"/></p>
 <p><strong>Bagging是一種利用變換原本Data來造出不同<span class="math">\(g_{t}\)</span>的簡單方法</strong>，Bagging的全名稱為Bootstrap Aggregation，其中<strong>Bootstrap指的是「重新取樣原有Data產生新的Data，取樣的過程是均勻且可以重複取樣的」</strong>，使用Bootstrap我們就可以從一組Data中生出多組Dataset，然後就可以使用這些Dataset來產生多組<span class="math">\(g_{t}\)</span>，最後再Uniform Combination這些<span class="math">\(g_{t}\)</span>，就完成了Bagging。</p>
 <p><br/></p>
-<h3>Decision Tree（決策樹）</h3>
+<h3 id="decision-tree">Decision Tree（決策樹）</h3>
 <p>接下來談Decision Tree這個重要的概念，Decision Tree其實就像是一個多層次的分類，每一次的分類會根據某一個Feature來當作依據判斷它應該繼續往哪一條路走，然後繼續使用可能是另外一個Feature來繼續細分下去。舉個例子好了，假設今天有一個自由式摔跤重量63公斤的女選手Ms. D要參加奧運，所以得透過奧運的分級制度分級，一開始可能根據比賽模式這個Feature下去分類，我查了一下有自由式和古典式兩種，所以Ms. D會被歸類到自由式，再來根據性別這個Feature下去分類，Ms. D是女選手所以分到女選手這一類，再繼續可能會根據體重來細分，體重在奧運分級共有8級，Ms. D可能就被分到62公斤级的那類，這樣的分類精神就是Decision Tree。</p>
 <p>所以，Decision Tree的優點是結果所提供的結構非常容易讓人了解，另外在演算法部分也很容易實現，而且因為具有以條件篩選的結構，所以其實很容易可以做到多類別分類。但是Decision Tree也有一些為人詬病的缺點，Decision Tree整體理論是缺乏基礎的，存在很多是前人的巧思，很多作法都是使用起來感覺效果不錯就延續下去了，目前並不了解背後的原因，也因此沒有一個代表性的演算法存在。</p>
 <p>在講Decision Tree操作方法之前應該要先來講一下Decision Stump，Decision Stump做的事其實就是上述中提到的對某個Feature做切分的這件事，<strong>可以想知Decision Stump是一個預測效果很差的Model，而Aggregation這些Decision Stump形成Decision Tree卻有很好的效果</strong>，這就是Aggregation的威力。</p>
@@ -185,7 +185,7 @@
 <p>如果我們讓一棵樹完整的長成了，可以想到的後果想當然爾就是Overfitting，所以我們必須要做Regularization，<strong>Decision Tree常用的Regularization的方法是Pruning</strong>，就是砍樹，我們將分支的數量<span class="math">\(Ω(G)\)</span>加進去<span class="math">\(E_{in}\)</span>中做為Regularization，所以我們問題變成是去找到 <span class="math">\(argmin\ E_{in}(G)+λΩ(G)\)</span>，其中的λ可以利用Validation Data來做選擇，你會發現如果真正的要去找到<span class="math">\(argmin\ E_{in}(G)+λΩ(G)\)</span>的最佳解，這問題會非常的困難，因為你必須要把所有的可能的樹都考慮進去，所以有一個替代方案，<strong>我們可以先將樹整棵長完，然後在一一的去合併分支，看哪兩個分支合併之後可以使<span class="math">\(E_{in}\)</span>最小就先合併，使用這樣的作法逐步減少分支的數量</strong>。</p>
 <p>順道一提，C&amp;RT可以產生許多替代方案，這些替代方案稱為Surrogate Branch，當有一筆Data缺乏某個Feature，我們仍然有辦法使用替代方案來做決策，這是C&amp;RT的一個大大的優點。</p>
 <p><br/></p>
-<h3>Random Forest（隨機森林）</h3>
+<h3 id="random-forest">Random Forest（隨機森林）</h3>
 <p>如果我拿Decision Tree來做Bagging這樣可以嗎？當然OK，Aggregation Model的精髓就是可以綜合子Model，那Decision Tree也可以是看成一個子Model，所以我們在做的就是Aggregation of Aggregation，<strong>這種拿Decision Tree來做Bagging的Model叫做Random Forest</strong>，這個名字取的很生動，有很多棵數的地方就是森林啦！</p>
 <p><strong>Decision Tree和Bagging其實是有互補的作用</strong>，Decision Tree這種演算法是「變異度」很高的，因為它不像SVM這類的演算法，會去評估與Data之間的距離，空出最大的距離來避免Overfitting，而Bagging正可以拿來減少「變異度」，消除雜訊，所以<strong>Random Forest會比Decision Tree更不易Overfitting</strong>。</p>
 <p><img alt="Random Forest" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.011.jpeg"/></p>
@@ -203,7 +203,7 @@ important(i) = E_{oob}(G) - E_{oob}(G with random-subspace at i)
 $$</div>
 <p>
 <br/></p>
-<h3>結語</h3>
+<h3 id="_1">結語</h3>
 <p>在這一篇我們提了幾個基礎的Aggregation Models，從最簡單的Blending，Blending的方法本身不去產生子Model，而是使用兩階段學習，先自行挑選和訓練來產生很多的子Model，而Blending只在這些結果上做不同方式的結合。</p>
 <p>接下來，Learning-Aggregation的方法則化被動為主動，我們先提了Bagging，裡頭使用Bootstrap的技巧來造成資料的隨機性，利用這樣的變異來產生多個<span class="math">\(g_{t}\)</span>，再接下來我講了Decision Tree，Decision Tree由多個Decision Stump組合而成，每個Decision Stump就是<span class="math">\(g_{t}\)</span>，Decision Tree做的事就是，產生Decision Stump、切分Dataset、再產生Decision Stump...接續下去，最後綜合全部的Decision Stump成為Decision Tree。</p>
 <p>最後，我們結合Decision Tree和Bagging產生了Random Forest，利用彼此的互補，讓效果變得更好可以比單純Decision Tree更好。</p>
@@ -310,8 +310,8 @@ $$</div>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

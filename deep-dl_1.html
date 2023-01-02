@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -154,7 +154,7 @@
 <p><center><small>
   Courtesy <a href="https://www.facebook.com/nas.mooty">Nas Mouti</a>
 </small></center><br/></p>
-<h3>認識Normal Distribution</h3>
+<h3 id="normal-distribution">認識Normal Distribution</h3>
 <p>首先來看看Normal Distribution的數學表示式
 </p>
 <div class="math">$$
@@ -298,7 +298,7 @@ $$</div>
 <hr/>
 <p>所以未來當你看到Normal Distribution的公式時，應該能夠馬上看出他的Mean和Variance。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/IMG_gaussian_distribution.png"/></p>
-<h3>隨機誤差大都呈現Normal Distribution</h3>
+<h3 id="normal-distribution_1">隨機誤差大都呈現Normal Distribution</h3>
 <p>雖然說並非所有的隨機分布都是Normal Distribution。例如有：適用於二元系統的Bernoulli Distribution；適用於計數系統的Poisson Distribution；適用於時間間隔的Gamma Distribution；...等等。</p>
 <p>但是大多數情況下，沒有特別的理由，隨機誤差會遵循Normal Distribution。</p>
 <p>接下來我要試著用中央極限定理來解釋這個現象。</p>
@@ -332,7 +332,7 @@ $$</div>
 <p><strong>而自然界的巨觀現象往往是源自於微觀現象的累積，我們量測的物理量常常來自於多個微小貢獻疊加而成，而不管這些微小貢獻本身的分布狀況如何，其巨觀的物理量因為中央極限定理而成為Normal Distribution，這也是為什麼「隨機誤差大都呈現Normal Distribution」的原因。</strong></p>
 <p>舉例，電壓就是反應電荷疊加的物理量，用普通方法我們是很難量到單一電荷的，所以我們能量到的已經是疊加過後的結果，也因此電壓的隨機分布才呈現Normal Distribution。</p>
 <p>所以，如果今天你沒有特別的理由，假設Normal Distribution往往是最接近真實的，這是第一個理由能讓你無腦使用Normal Distribution，還有第二個理由我們接下去討論。</p>
-<h3>Normal Distribution是所有機率分布當中假設最少的</h3>
+<h3 id="normal-distribution_2">Normal Distribution是所有機率分布當中假設最少的</h3>
 <p>首先來看一段從<a href="https://www.deeplearningbook.org">Goodfellow的書</a>中的一段話，這段話清楚的告訴我們選擇用Normal Distribution的理由</p>
 <blockquote>
 <p>First, many distributions we wish to model are truly close to being normal distributions. The central limit theorem shows that the sum of many independent random variables is approximately normally distributed. This means that in practice, many complicated systems can be modeled successfully as normally distributed noise, even if the system can be decomposed into parts with more structured behavior.</p>
@@ -423,7 +423,7 @@ $$</div>
 <p>
 最後將【26】回代【25】就會得到剛剛好是Normal Distribution，🥳</p>
 <p>因此這邊我們證明了：<strong>在給定Mean和Variance下，Normal Distribution為所有分布當中Entropy最大的。這也同時意味著，Normal Distribution是隨機性最大的，Normal Distribution是額外假設最少的。</strong></p>
-<h3>Back to the Question</h3>
+<h3 id="back-to-the-question">Back to the Question</h3>
 <p>這一講也走到尾聲了，接下來我們已經有能力回答一開始問的問題，在回答問題之前我們複習一下剛剛學到了什麼。</p>
 <ul>
 <li>中央極限定理告訴我們：如果今天採樣數量 <span class="math">\(n\)</span> 增加到一定的量，<span class="math">\(S_n\)</span>的分布會趨近於Normal Distribution</li>
@@ -455,7 +455,7 @@ $$</div>
 </ul>
 </li>
 </ul>
-<h3>Reference</h3>
+<h3 id="reference">Reference</h3>
 <ul>
 <li><a href="https://seeing-theory.brown.edu/probability-distributions/index.html">Seeing Theory</a></li>
 <li><a href="https://www.deeplearningbook.org">Ian Goodfellow and Yoshua Bengio and Aaron Courville. Deep Learning. 2016.</a></li>
@@ -573,8 +573,8 @@ $$</div>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

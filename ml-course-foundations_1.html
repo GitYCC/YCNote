@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -138,10 +138,10 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 <div class="main-contents">
-<h3>前言</h3>
+<h3 id="_1">前言</h3>
 <p>經過幾個月的努力，終於完成田神在Coursera上machine learning的兩門課中的第一門課—<a href="https://www.coursera.org/course/ntumlone">機器學習基石</a>，田神不愧為田神的名號，整門課上起來非常流暢，每個觀念講得非常得清晰，考究學理，但是又不會單單只有理論而已，課程中會舉很多實用的例子，讓你了解每個觀念如何實踐。因此，非常推薦大家去把Coursera上面的課程完整聽一次，應該會收益良多，接下來一系列的文章，我會摘要出《機器學習基石》之中主要的概念，適合對Machine Learning（ML）有興趣的初學者來一窺它的脈絡。</p>
 <p>《機器學習基石》一共有16堂課，主要分為四個方向，第一個方向，<strong>何時可以使用機器學習(When Can Machines Learn? )</strong>，點出什麼是機器學習，適合在哪些情形下使用，並引入貫穿整個課程的二元分類問題，第二個方向，<strong>為什麼機器可以學習(Why Can Machines Learn?)</strong>，介紹學理上機器學習必須要有哪些條件才可行，這些理論是了解機器學習非常重要的內功，第三個方向，<strong>機器可以怎麼樣學習(How Can Machines Learn?)</strong>，學習完了學理，我們來看機器學習有哪些的使用方法，最後一個方向，<strong>機器可以怎麼樣學得更好(How Can Machines Learn Better?)</strong>，探討哪些問題會造成機器學不好，然後怎麼去改善。</p>
-<h3>什麼是Machine Learning (ML)</h3>
+<h3 id="machine-learning-ml">什麼是Machine Learning (ML)</h3>
 <p>在了解機器學習之前，我們不妨來想想「你」從小是怎麼學習的，有人會說學習就是一個不斷記憶的過程，但這樣的說法顯然不夠全面，你總不會認為把考題的所有答案都背起來的學生就已經學會一門知識了吧！所以，考題只是表象，我們真正要學習的是它背後的觀念，可以拿來推敲未知的知識。</p>
 <p>同樣的，ML的學習方式也有點類似於人類的學習，機器從Data中開始學習起，這些Data就像是一道一道的考題，而ML做的事正是去學習Data後面的觀念，而不是單純把Data給儲存起來，有了Data背後的觀念才能舉一反三，才算是真正的學會了。</p>
 <p>所以，做ML有點像是手把手的造一顆大腦，並且訓練它學會Data背後的知識。那這個大腦要怎麼設計呢？這個大腦用我們學物理的人的說法就是建一個Model，而餵給它Data的過程就是Model Fitting。</p>
@@ -153,7 +153,7 @@
 <p>Model就是上圖中的Hypothesis Set，在Model參數還沒被決定之前，你可以想像它就像一個集合包含很多可以選擇的函數，而使用數據Model Fitting以後，選出一組最佳化的參數，就好像從這個集合中挑選一組函數一樣。</p>
 <p>在這個找最佳化參數的過程，我們需要一個機制，這個機制可以評估Hypothesis Set中每組函數描述Data的好壞，並且找出描述Data最好的那組參數，這個機制就是上圖中的Learning Algorithm。</p>
 <p><strong>建立Model，使用Data加上Learning Algorithm找出最佳參數，這就是ML的架構輪廓</strong>。當然這邊要補充一下，物理上的Model通常是建基在已知的知識之上，而常見的ML強大之處是不需要太多的人為的智慧，機器可以自行學習，所以我這裡指的Model是比物理上的Model更加廣義的。</p>
-<h3>Machine Learning (ML)的使用時機</h3>
+<h3 id="machine-learning-ml_1">Machine Learning (ML)的使用時機</h3>
 <p>剛剛帶大家初探了ML的架構，接下來帶大家了解什麼時候我們適合使用ML。</p>
 <p>舉幾個例子，大家可能比較有感覺，譬如說Netflix曾辦過一場競賽，競賽的內容是利用客戶的影片評分紀錄，來預測未評分影片的得分，如果可以增進預測率10%，就可以獨得100萬美元獎金，這個問題就可以使用ML，Data是過去得評分紀錄，Target Function是用戶評分的規律，如此一來，機器學到了這個技術，未來就可以舉一反三的推出未評分影片的分數，和用戶喜歡的影片可能有哪些。</p>
 <p>再多看幾個例子，例如設計火星勘查機，人類目前對火星的了解仍相當有限，所以我們沒辦法完全猜測勘查機在火星會遇到什麼問題，所以必須讓勘查機有ML的能力去學習各種問題的解決方法。</p>
@@ -166,7 +166,7 @@
 <li><strong>要學習的技術不容易簡單的列出規則</strong></li>
 <li><strong>存在可以代表這個要學習的模式的Data</strong></li>
 </ol>
-<h3>二元分類問題</h3>
+<h3 id="_2">二元分類問題</h3>
 <p><img alt="img" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.01.jpeg"/></p>
 <p>from: <a href="https://class.coursera.org/ntumlone-003/lecture/17">https://class.coursera.org/ntumlone-003/lecture/17</a></p>
 <p>好! 大家現在應該對於機器學習有一些認識了，那接下來我們來實作一些例子來了解機器學習架構怎麼運作。像個小學生一樣，我們先從簡單的是非題來學起，是非題學究一點的講法就是「二元分類問題」。</p>
@@ -195,7 +195,7 @@
 </ul>
 <p><strong>如果資料線性可分的話，PLA在迭代多次後，是可以用一條線完全區分兩種數據</strong>。但如果數據不是線性可分，不存在一條線來區分數據，此時最佳解就必須評估整體犯錯有多少，找出犯錯最少的那條直線就是最佳解，但可惜的是PLA方法並不會在迭代中趨向於犯錯最少的那條線，什麼時候該停止迭代是個世紀難解的NP-Hard問題（如果不了解這個名詞，<a href="http://www.ycc.idv.tw/algorithm-complexity-theory.html">詳見</a>）。</p>
 <p>因此要改變一下PLA，這個方法我們稱之為Pocket，當每次得到一組weight的時候，都拿它來評估它對所有Data的區分能力好或壞，而只留下一組最好的放進口袋裡，所以當迭代次數做多了，保留在口袋的這組解就可以看成是最佳解，就這麼簡單。</p>
-<h3>多元學習</h3>
+<h3 id="_3">多元學習</h3>
 <p>機器學習和人類學習一樣，有各式各樣的學習型態。剛剛的<strong>「二元分類問題」</strong>就像考「是非題」一樣，答案要嘛是Yes不然就是No，表示為 <strong><span class="math">\(y=\{-1, 1\}\)</span></strong>，這就像是機器在小學時代的問題，較為簡單。</p>
 <p>現在機器脫離國小來到了國中，考試題目開始出現「選擇題」，這和機器學習中的<strong>「多元分類問題」</strong>一樣，必須從兩個以上有限的答案中作選擇，表示為 <strong><span class="math">\(y=\{1, 2, ... , k\}\)</span></strong>。</p>
 <p>另外機器還可能遇到傷透腦筋的「計算題」，在機器學習裏頭稱為<strong>「Regression 問題」</strong>，這個時候答案已經放寬到整個實數系了，表示為 <strong><span class="math">\(y∈R\)</span></strong>，舉個例子，譬如利用過去天氣的數據去預測明日氣溫，或者利用歷史股價資料預測未來股價，都是Regression的應用。</p>
@@ -212,7 +212,7 @@
 <p>而使用工人智慧由人力從Raw Features中萃取出Concrete Features，這叫做Feature Engineering。相反的，現在很夯的Deep Learning厲害的地方是他可以自行從Data中學習 Features。</p>
 <p><strong>總結一下，機器學習有很多種型態，從Data的給予方式可分為Batch Learning、Online Learning和Active Learning。Data的表達形式由輸入變數<span class="math">\(X_n\)</span>和輸出值<span class="math">\(y_n\)</span>所決定，從輸入變數<span class="math">\(X_n\)</span>的來源可分為Concrete Features、Raw Features和Abstract Features，從輸出值<span class="math">\(y_n\)</span>的種類上可以分為二元分類、多元分類、Regression和Structured Learning 問題，從輸出值<span class="math">\(y_n\)</span>的Label給予情況可分為Supervised Learning、Unsupervised Learning、Semi-supervised Learning 和 Reinforcement Learning。</strong></p>
 <p>順道一提，這16堂課裡頭主要聚焦在探討Batch Supervised Learning with Concrete Features。</p>
-<h3>後話</h3>
+<h3 id="_4">後話</h3>
 <p>這篇文章帶大家初探了一眼機器學習，介紹了機器學習的架構和種類，以及它的使用時機，還有介紹了整門課非常重要的二元分類問題。但是講這麼多，機器學習真的可能嗎? 那如果可以做到，會需要哪一些要素呢? 這就必須深入理論之中，才能找到答案，在下一篇文章裡，我將介紹這門課的第二個部分：Why Can Machines Learn? </p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "left",
@@ -313,8 +313,8 @@
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

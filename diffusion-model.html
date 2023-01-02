@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="diffusion-model">擴散模型（Diffusion Model）：生成模型的新成員</h1>
 <p>
-      Posted on May 20, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 4,036
+      Posted on May 20, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 4,039
 
     </p>
 </header>
@@ -138,7 +138,15 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 <div class="main-contents">
-<h2>生成模型 (Generative Model) 家族</h2>
+<div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#generative-model">生成模型 (Generative Model) 家族</a></li>
+<li><a href="#variational-inference-evidence-lower-bound-elbo">從 Variational Inference 到 Evidence Lower Bound (ELBO)</a></li>
+<li><a href="#loss-function">擴散模型的Loss Function</a></li>
+<li><a href="#appendix-a-kl-divergence-between-two-gaussians">Appendix A: KL Divergence between two Gaussians</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+</div>
+<h2 id="generative-model">生成模型 (Generative Model) 家族</h2>
 <p>在過去，作為生成模型的 GAN (Generative Adversarial Network) 最廣為人使用，GAN是在2014年由 Goodfellow 所提出來的方法，其結構由兩個網路所組成：生成器網路和鑑別器網路，生成器網路負責生成以假亂真的合成樣本，而鑑別器網路負責仔細區分出真實樣本和合成樣本，經由兩者交替對抗學習，最終我們可以得到一個好的生成器。這個生成器網路通常輸入為一組取樣自高斯分布的亂數，而輸出就是合成樣本。</p>
 <p><strong>為何我們需要取樣於一個「分布」？</strong>以圖片為例，假設是長32寬32的一張圖片可以由一組長度為32x32x3的向量來表示，這並不意味著一組長度為32x32x3的隨機向量就能產生一張「有意義的」圖片，所以在32x32x3的空間中存在著能產生有意義圖片的不同機率分布，我們只要能把這個機率分布估準了，就可以從這個機率分布抽樣出有意義的圖片，這就是為何生成模型往往需要抽樣至某個分布，可想而知要用簡單的數學式來表示這樣的分布是多們困難的一件事，因此科學家們設計了一個簡單分布—高斯分布，並希望透過若干複雜的轉換（通常使用深度網路）後可以得到這個複雜的分布，通常我們會稱這個高斯分布為Hidden Space，因此「從樣本空間抽樣」等效於「從Hidden Space抽樣再轉換」。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Generative/hidden-to-sample-space.jpeg"/></p>
@@ -152,7 +160,7 @@ $$</div>
 <p>
 (詳見【2.22】)，因此只要能成功預測隨機數 <span class="math">\(\pmb{z}_\theta(\pmb{x}_t ,t)\)</span> 就可以得到逆推模糊化的反轉換。</p>
 <p>閱讀到這裡的你已經把它的概念弄懂八成了，接下來要進入到可怕的數學時間，Are you ready?</p>
-<h2>從 Variational Inference 到 Evidence Lower Bound (ELBO)</h2>
+<h2 id="variational-inference-evidence-lower-bound-elbo">從 Variational Inference 到 Evidence Lower Bound (ELBO)</h2>
 <p>近年來面對極其複雜（e.g. NN）的機率模型，傳統的優化方式變得不可行，如： Expectation-Maximization Algorithm ，所以接下來要跟大家介紹的 Variational Inference (VI) 就變得開始廣為人使用。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Generative/variational_inference.png"/></p>
 <p>常見的生成模型可以表示成如上圖所示，<span class="math">\(\pmb{x}\)</span>  為生成之樣本，而 <span class="math">\(\pmb{z}\)</span> 座落於 latent space <span class="math">\(Z\)</span> 上的一個點，這個 latent space 可以具有各類可能的分布，為求方便通常會定義為一個 <a href="https://www.ycc.idv.tw/deep-dl_1.html">高斯分佈</a>，即 <span class="math">\(p (\pmb{z})\sim\mathcal{N}(\pmb{z}:\pmb{0};\pmb{I})\)</span> 。假設 <span class="math">\(p (\pmb{x}\mid \pmb{z})\)</span> (給定<span class="math">\(\pmb{z}\)</span> 之後求 <span class="math">\(\pmb{x}\)</span>  的分布) 是已知的，則聯合機率為
@@ -197,7 +205,7 @@ $$</div>
 <p>
 上式中的 <span class="math">\(p(\pmb{z})\)</span> 是定義好的分布，通常為高斯分布，<span class="math">\(p(\pmb{x}\mid\pmb{z})\)</span> 和 <span class="math">\(q(\pmb{z}\mid \pmb{x})\)</span> 也是兩個已知的函式，所以【1.5】是可求得的。</p>
 <p>回過頭來看Diffusion Model，每一個 Step 中模糊化 <span class="math">\(q(\pmb{x}_{t}\mid \pmb{x}_{t-1})\)</span> 與逆模糊化 <span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 應該存在ELBO的限制，在待會的推倒中我們會看到這一點。</p>
-<h2>擴散模型的Loss Function</h2>
+<h2 id="loss-function">擴散模型的Loss Function</h2>
 <p>接著我們來完整推導Diffusion Model 吧！每一次的模糊化我們可以定義為
 </p>
 <div class="math">$$
@@ -371,7 +379,7 @@ $$</div>
 因此DDPM的訓練和取樣示例代碼如下：</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/Generative/DDPM-algo.png"/></p>
 <p>其中應用到【2.24】和【2.22】。</p>
-<h2>Appendix A: KL Divergence between two Gaussians</h2>
+<h2 id="appendix-a-kl-divergence-between-two-gaussians">Appendix A: KL Divergence between two Gaussians</h2>
 <div class="math">$$
 D_{KL}[\mathcal{N}(z:\mu_1;\sigma^2_1)\mid\mid\mathcal{N}(z:\mu_2;\sigma^2_2)]\\
 =\int \mathcal{N}(z:\mu_1;\sigma^2_1)[log\ \mathcal{N}(z:\mu_1;\sigma^2_1)-log\ \mathcal{N}(z:\mu_2;\sigma^2_2)]dz\\
@@ -381,7 +389,7 @@ D_{KL}[\mathcal{N}(z:\mu_1;\sigma^2_1)\mid\mid\mathcal{N}(z:\mu_2;\sigma^2_2)]\\
 \text{;因為 }\int z\cdot\mathcal{N}(\mu;\sigma^2)dz=\mu\text{ 且 }\int z^2\cdot\mathcal{N}(\mu;\sigma^2)dz=\sigma^2+\mu^2\\
 =log\frac{\sigma_2}{\sigma_1}+\frac{\sigma_1^2+(\mu_1-\mu_2)^2}{2\sigma_2^2}-\frac{1}{2} \ \ 【A.1】
 $$</div>
-<h2>Reference</h2>
+<h2 id="reference">Reference</h2>
 <ul>
 <li>Auto-Encoding Variational Bayes: https://arxiv.org/pdf/1312.6114.pdf</li>
 <li>An Introduction to Variational Inference: https://arxiv.org/pdf/2108.13083.pdf</li>
@@ -483,8 +491,8 @@ $$</div>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

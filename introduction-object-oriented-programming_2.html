@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -138,12 +138,12 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 <div class="main-contents">
-<h3>物件導向編程</h3>
+<h3 id="_1">物件導向編程</h3>
 <p><a href="http://www.ycc.idv.tw/introduction-object-oriented-programming_1.html">在上一章當中</a>，我們藉由好的程式碼的特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，自然而然引出物件導向的概念。在這一章當中YC會接續介紹完整的物件導向要如何實現，包括物件導向三大特性：封裝、繼承和多型。</p>
 <p>在本章我會採用兩種語言交叉作說明，一種是靜態型別的語言Java，另一種是動態型別的語言Python，這兩種語言都是可以實現物件導向的語言，而所謂型別的動態與靜態可以用一個簡單的方法來區分：型別檢查(Type Checking)發生在什麼時候？像Java這類的靜態型別語言，它的型別檢查是在編譯時期(Compile Time)完成的，而像是Python這類的動態型別語言，它的型別檢查則是在執行時期(Runtime)才去做，所以Python可以不事先宣告變數型別，這點使得Python在開發上方便許多。</p>
 <p>雖然Python和Java都是支援物件導向的語言，但在使用上有很大的差異，首先，因為Python的動態型別，所以有些物件導向的性質對它來說就不是那麼重要，另外，因為Python追求簡潔，簡化了相當多的東西，所以很多的使用方法不同於傳統的物件導向，需要認識到這些差異才可以讓你使用Python的物件導向不會顯得很彆扭。Java是一套對物件導向支援非常完整的語言，而Python是一套易於快速開發的語言，使用兩種語言說明物件導向是為了讓讀者更能了解物件導向的本質，而非語言本身。</p>
 <p>本篇採用『<a href="https://www.tenlong.com.tw/products/9789866761799">大話設計模式</a>』書中的物件導向篇範例。</p>
-<h3>類別(Class)與物件(Object)</h3>
+<h3 id="classobject">類別(Class)與物件(Object)</h3>
 <p>首先來看物件導向的基本組成，類別(Class)與物件(Object)。
 * 類別：建立物件的藍圖，描述所建立的物件共同的屬性和方法。
 * 物件：一個自我包含的實體，物件包括屬性（Properties）和方法（Methods），屬性就是需要記憶的資訊，方法就是物件能夠提供的服務。</p>
@@ -208,7 +208,7 @@
 <p>{6} 創造一個物件，在創造的過程會執行初始化，所以必須放入初始化需要的參數<code>name</code>，所以上面的新的物件有了<code>"May"</code>的名字。</p>
 <p>{7} 接下來使用<code>cat.shout()</code>去執行喵喵叫的動作，這個方法會回傳字串，再利用<code>print</code>的方法將字串顯示出來。注意！在物件導向的習慣中，會用<code>.</code>來表示在那物件中的方法或屬性，所以<code>cat.shout()</code>就是執行在物件<code>cat</code>中的方法<code>shout()</code>。</p>
 <p>{8} 在Python程式執行時，它的<code>__name__</code>會是<code>"__main__"</code>，也就是說會去執行這個<code>if</code>判斷式下面的程式。</p>
-<h3>方法多載（Method Overloading）</h3>
+<h3 id="method-overloading">方法多載（Method Overloading）</h3>
 <p>物件導向允許「使用不同的參數形式去實現同一個方法」，這就稱之為方法多載，這個方法涵蓋一般方法和構造初始化方法。</p>
 <p>來延伸剛剛的貓的例子，假設今天我們允許用戶不去設定貓咪的名字，而程式會預先給貓咪No-Name的預設值，所以我們需要另外一個初始化方法是不用貓咪名字的參數形式。</p>
 <p>Java的實現程式碼如下所示，如此一來只要碰到沒有參數的形式，程式會給予<code>"No-Name"</code>的名字去當作貓咪的名字，並進行初始化。</p>
@@ -259,7 +259,7 @@
 <span class="c1"># output:</span>
 <span class="c1"># My name is No-Name. meow~</span>
 </code></pre></div>
-<h3>物件導向三大特性—封裝(Encapsulation)</h3>
+<h3 id="encapsulation">物件導向三大特性—封裝(Encapsulation)</h3>
 <p>還記得「低耦合，高內聚」的原則嗎？為了符合這原則，每個物件都要盡可能的去包含需要用到的屬性和方法，並且使得外部不能以不合理的方法去影響物件，這就稱之為「封裝」。</p>
 <p>我們來看看上次的成果，我們就用這個例子來說明「封裝」。</p>
 <div class="highlight"><pre><span></span><code><span class="c1">### Python3.4</span>
@@ -394,7 +394,7 @@
 <p>{1} Python使用Decorator<code>@property</code>來創造Getter，一旦加上了<code>@property</code>，當下的函數方法就會變成一種性質。</p>
 <p>{2} 再使用<code>shout_num.setter</code>來替<code>shout_num</code>這個特性加上Setter。</p>
 <p>{3} 然後我們就可以以像是修改一般變數的方式來修改<code>shout_num</code>，但實際上<code>shout_num</code>是有被封裝的，如此一來就可以更為簡潔，不用去寫<code>getXX</code>和<code>setXXX</code>等囉唆的寫法。</p>
-<h3>物件導向三大特性—繼承(Inheritance)</h3>
+<h3 id="inheritance">物件導向三大特性—繼承(Inheritance)</h3>
 <p>還記得「Don't Repeat Yourself」原則嗎？物件導向同樣提供了這個選項，「繼承」可以讓子類擁有父類的屬性和方法，避免不必要的重寫，但同時也會增加父類和子類之間的耦合，所以使用時要去評估它影響了多少耦合性。</p>
 <p>子類可以先繼承父類的屬性和方法，再去新增屬於子類自己的屬性和方法，甚至還可以去覆寫父類的方法，這稱之為方法覆寫(Method Overriding)，有了這些方法，子類可以在不重複撰寫父類方法的情況下，去增加自己的特色和自己的功能。</p>
 <p>依循著剛剛的例子，如果我們今天想要增加狗的類別，但是又不想重複撰寫相同的部分，所以我們可以選擇創造動物的類別，再讓貓和狗繼承自動物。</p>
@@ -481,7 +481,7 @@
 </code></pre></div>
 <p>{1} Python的<code>protected</code>使用單底線<code>_</code>開頭表示。</p>
 <p>{2} <code>super</code>指的是父類，這裡我們使用父類來做初始化，事實上這邊可以不用再初始化一次，子類本身就會繼承父類的初始化方法，所以可以像<code>Dog</code>一樣省略不寫。</p>
-<h3>抽象化：抽象類別(Abstract Class)、抽象方法(Abstract Method)和接口(Interface)</h3>
+<h3 id="abstract-classabstract-methodinterface">抽象化：抽象類別(Abstract Class)、抽象方法(Abstract Method)和接口(Interface)</h3>
 <p>事實上，剛剛使用<code>Animal</code>的方法並不是很正確，我們將<code>Animal</code>當作一個類別處理，所以<code>Animal</code>其實是可以被實例化的，但是<code>Animal</code>根本沒有什麼有用的方法，它必須被繼承後再添加方法才有用處，所以我們其實可以把<code>Animal</code>抽象化，將<code>Animal</code>視為抽象類別，其中擁有一些方法需要在子類實現的，稱為抽象方法，我們直接看怎麼做。</p>
 <div class="highlight"><pre><span></span><code><span class="cm">/* Java */</span><span class="w"></span>
 
@@ -617,7 +617,7 @@
 <p>{1} 使用抽象類別來創造「接口」。</p>
 <p>{2} 要注意！「接口」裡頭不能有具體方法。</p>
 <p>{3} 直接使用多重繼承，將<code>IFly</code>安裝上去。</p>
-<h3>物件導向三大特性—多型(Polymorphism)</h3>
+<h3 id="polymorphism">物件導向三大特性—多型(Polymorphism)</h3>
 <p>最後，來講講物件導向的最後一個特性，那就是「多型」。「多型」的涵義是指「子類可以以父類的身分出現」，而因為是以父類的角色出現，所以只能執行父類擁有的方法，也就是只能執行這些子類共同泛化分享的方法，當然不同的子類實現後的效果會不一樣，不然使用「多型」的意義就不大了，至於子類自己的特殊方法則不可以使用「多型」去執行。</p>
 <p>直接來看範例，假設今天我要邀請三隻貓貓狗狗來參加叫聲比賽，分別請他們叫個幾聲來聽聽，此時就需要使用到「多型」的方法。</p>
 <div class="highlight"><pre><span></span><code><span class="cm">/* Java */</span><span class="w"></span>
@@ -734,7 +734,7 @@
 </code></pre></div>
 <p>{1} 要存入多型的List不需要特別處理。</p>
 <p>{2} 可以檢查是不是繼承自<code>Animal</code>，以確保多型的嚴格定義，但這個過程是非必要的。</p>
-<h3>總結：物件導向使用方法</h3>
+<h3 id="_2">總結：物件導向使用方法</h3>
 <p>好！我們花了好大的力氣，終於了解如何在Java和Python中使用物件導向。從一開始的「類別」和「物件」講起，再來談到物件導向的三大特性：「封裝」、「繼承」和「多型」，還談到方法可以「多載」也可以「覆寫」，以及一些抽象化的東西，包括「抽象類別」、「抽象方法」和「接口」。</p>
 <p>但是等等！你知道該怎麼運用這些技巧嗎？沒錯，僅僅是了解這些招式不足以讓你寫出卓越的程式碼，你還需要了解如何使用，就像是外功招式還得配合內功才可以是一套完整的功夫，否則只是半吊子而已，我們將在下一章節中來帶大家了解如何去使用這些招式。</p>
 </div>

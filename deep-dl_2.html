@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="deep-dl_2">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</h1>
 <p>
-      Posted on February 25, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 30,905
+      Posted on February 25, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 30,908
 
     </p>
 </header>
@@ -146,7 +146,7 @@
 <p>還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。</p>
 <p>這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。</p>
 <p>這一切都要先從Entropy開始講起。</p>
-<h3>資訊熵（Information Entropy）</h3>
+<h3 id="information-entropy">資訊熵（Information Entropy）</h3>
 <p>資訊理論是應用數學的一個分支，主要是對訊號中存在的資訊多寡做量化。最初研究目的是為了數據傳輸的編碼，探討要怎麼編碼資料傳輸才有效率。</p>
 <p>資訊理論背後的直覺是，越是不容易發生的事件帶給我們的資訊量越大，資訊量的大小可以看作是事件給我們的驚訝程度。舉個例子，「今天早上太陽升起」這樣幾乎永遠都是對的事件，能帶給我們的資訊量可以說是零（你不用告訴我，我也知道）；相反的「今天早上有日蝕」的事件則含有相對多的資訊量。</p>
 <blockquote>
@@ -238,7 +238,7 @@ $$</div>
 p^*(x)=exp\{\lambda-1\}  \ \ ↪︎【13】
 $$</div>
 <p>此時的分布是一個與 <span class="math">\(x\)</span> 無關的常數，所以 <span class="math">\(p^*(x)\)</span> 是一個Uniform Distribution。所以<strong>平均分配會使得系統得到最大的Entropy，也就是Uniform Distribution是隨機性最大的分布，也是資訊量最大的分布</strong> ，這與我們剛剛的討論是自恰的。（注意：<a href="https://www.ycc.idv.tw/deep-dl_1.html#anchor2">在有限Variance的情況下是Normal Distribution有最大Entropy</a>）</p>
-<h3>Cross Entropy</h3>
+<h3 id="cross-entropy">Cross Entropy</h3>
 <p>接下來聊聊學過機器學習和深度學習都知道的Cross Entropy，在分類問題當中Cross Entropy被定義成：
 </p>
 <div class="math">$$
@@ -281,7 +281,7 @@ H(p,q)=-y\cdot \operatorname{ln}(q)-(1-y)\cdot \operatorname{ln}(1-q)
 $$</div>
 <p>
 就跟【14】式一模一樣了，<strong>這裡注意一點，在推導的過程當中我都不需要去假設模型的長相，我不需要假設模型為Sigmoid，推出Cross Entropy的過程是和模型的選擇無關的，所以千萬不要認為選擇使用Cross Entropy是因為Sigmoid的緣故。進一步說Cross Entropy其實可以用在各種問題（或分布），包括：Regression問題，我們會在<a href="https://www.ycc.idv.tw/deep-dl_3.html">接下來的文章</a>裡讓大家真正了解這一點。</strong></p>
-<h3>KL Divergence (Kullback-Leibler Divergence)</h3>
+<h3 id="kl-divergence-kullback-leibler-divergence">KL Divergence (Kullback-Leibler Divergence)</h3>
 <p>KL Divergence對碰過深度學習一段時間的大家應該是一個既熟悉又陌生的東西吧！我們就在這邊把它搞懂吧！</p>
 <p>如果有兩個獨立的機率分布<span class="math">\(p(x)\)</span>和<span class="math">\(q(x)\)</span>同時對應到同一個隨機變數<span class="math">\(x\)</span>，也就是它們所在的空間是一樣的，則可以使用KL Divergence來測量這兩個分布的差異程度：
 </p>
@@ -309,7 +309,7 @@ $$</div>
 <p>
 【21】式意味著從<span class="math">\(p(x)\)</span>到<span class="math">\(q(x)\)</span>所降低的nats期望值與從<span class="math">\(q(x)\)</span>到<span class="math">\(p(x)\)</span>所降低的nats期望值不相等。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/KL-Gauss-Example.png"/></p>
-<h3>f-Divergence</h3>
+<h3 id="f-divergence">f-Divergence</h3>
 <p>Divergence其實有多個形式，定義如下：
 當有兩個獨立的機率分布<span class="math">\(p(x)\)</span>和<span class="math">\(q(x)\)</span>同時對應到同一個隨機變數<span class="math">\(x\)</span>，
 </p>
@@ -341,7 +341,7 @@ $$</div>
   ，為 JS Divergence (用在GAN)</li>
 </ul>
 <p>f-divergence在意義上代表：我在model的分布 <span class="math">\(q(x)\)</span> 上估計 <span class="math">\(f(\frac{p(x)}{q(x)})\)</span> ，<span class="math">\(f(.)\)</span>是用來評估分布間距離的函數，當<span class="math">\(p(x)=q(x)\)</span>時距離為0 — <span class="math">\(f(\frac{p(x)}{q(x)})=0\)</span>，當<span class="math">\(p(x)\neq q(x)\)</span>時距離為正 — <span class="math">\(f(\frac{p(x)}{q(x)})&gt; 0\)</span>。</p>
-<h3>結論</h3>
+<h3 id="_1">結論</h3>
 <p>機器學習和深度學習充分的借用了資訊理論裡對資訊量的衡量技術，包括：Entropy、Cross Entropy和KL Divergence。因為機器學習中充斥著統計分布，而這些衡量方法可以幫助我們度量種種分布的資訊量，有了這把尺我們才可以進行各類優化來讓機器學習。</p>
 <ul>
 <li>Entropy:  <span class="math">\(H(p)=E_{x\sim p}[-\operatorname{ln}p(x)]\)</span> ，為最小可得的nats期望值</li>
@@ -349,7 +349,7 @@ $$</div>
 <li>KL Divergence: <span class="math">\(D_{KL}(p\|q)=H(p,q)-H(p)\)</span> ，表示的是目前的編碼方法最多還可以下降多少nats期望值</li>
 </ul>
 <p>其實，這一講的內容可以說是為了接下來幾講而生，<a href="https://www.ycc.idv.tw/deep-dl_3.html">下一講</a>我們會開始套用資訊理論的這些概念，帶大家重新了解優化和擬合是怎麼一回事，敬請期待！</p>
-<h3>Reference</h3>
+<h3 id="reference">Reference</h3>
 <ul>
 <li><a href="https://www.deeplearningbook.org">Ian Goodfellow and Yoshua Bengio and Aaron Courville. Deep Learning. 2016.</a></li>
 <li>Christopher Bishop. Pattern Recognition and Machine Learning. 2006.</li>
@@ -474,8 +474,8 @@ $$</div>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

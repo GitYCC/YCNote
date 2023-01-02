@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -141,11 +141,11 @@
 <p><strong>相較於R，我比較喜歡在工作上使用python來作數據處理</strong>，主要原因有四個，<strong>第一點，python是一個簡潔的語言</strong>，讓我們可以在不寫註解的情況下還可以很容易的看出每一行code在做哪些事，這可以省去了不少時間在；<strong>第二點，python可以更容易的寫成物件導向編程</strong>，物件導向編程可以讓code看起來更為直覺，而且更易於修改、重構或套用，如果是大型軟體開發的話，需要多人協作，此時物件導向便是絕對必要的；<strong>第三點，python是一個通用語言</strong>，不僅僅只可以作資料處理而已，你可以用python寫一套視窗程式，或者當作網站的後台（這個網站就是建基在python上），如果要做一些平行運算也很容易，<strong>最後一點，也是相當重要的一點，目前常見的deep learning套件TensorFlow或Keras都是架構在python上面</strong>，所以如果你的數據處理結束要作deep learning的話，直接用python處理是相當理想的。講了python這麼多優點，其實它是有一項缺點是不如R的，R是一個專為資料科學設計的語言，所以背後有強大的社群，也就是說能直接取得資料分析方法的套件會比python來的多，不過這方面在這幾年已經漸漸的改善了。</p>
 <p>講了這麼多python的強大，不過在這個系列我並不會著墨太多在python上，這個部分我會在其他的文章中分享，這系列文章主要聚焦在python的資料處理這部份，我會從基礎講起，讓不懂python的人也可以聽懂。  </p>
 <p><br/></p>
-<h3>最困難的第一步：安裝</h3>
+<h3 id="_1">最困難的第一步：安裝</h3>
 <p>不要以為我在開玩笑，安裝往往是最困難的一步，有些時候安裝一些套件的時候，你必須要先行安裝另外幾個相依套件，如果程式在安裝的過程無法自己補足這些相依套件的話，你就得自己安裝，一般來說如果是python的套件的話，你可以先用待會要介紹的<code>pip install</code>來安裝，如果不幸在上面找不到的話，就只好上網Google了，另外有些時候安裝還會遇到bug，這個時候Google也同樣是你的好朋友，或者到<a href="https://stackoverflow.com">Stack Overflow</a> 上找答案（一個好的coder要培養自己上網找答案的能力），不過大家先不用擔心，以下我會帶大家一步一步的安裝。</p>
 <p>我們將會用到python 2.7版（你也可以選擇更新的版本，不會差距太大），以及他的套件IPython, Numpy和Pandas。</p>
 <p><br/></p>
-<h3>Python2.7</h3>
+<h3 id="python27">Python2.7</h3>
 <ul>
 <li>Mac</li>
 </ul>
@@ -246,7 +246,7 @@ $ sudo make altinstall
 <p>打開 控制台 &gt; 系統及安全性 &gt; 系統 &gt; 進階系統設定 &gt; 環境變數</p>
 <p>選Path，並按下 編輯，將<code>C:\Python27;C:\Python27＼Scripts</code> 加到後面，並儲存。環境變數的說明請參考上面Mac安裝的第四步，原理是一樣的，不過在windows裡的區分的符號是<code>;</code>不是<code>:</code>。</p>
 <p><br/></p>
-<h3>IPython, Numpy, Pandas</h3>
+<h3 id="ipython-numpy-pandas">IPython, Numpy, Pandas</h3>
 <ul>
 <li>Mac ＆Ubuntu</li>
 </ul>
@@ -273,7 +273,7 @@ $ pip2.7 install pandas
 $ conda install pandas
 </code></pre></div>
 <p><br/></p>
-<h3>開啟IPython</h3>
+<h3 id="ipython">開啟IPython</h3>
 <p>IPython將會是未來我們這系列會用的一個介面，只要能夠開啟它，我們今天就大功告成了。</p>
 <ul>
 <li>
@@ -325,8 +325,8 @@ $ conda install pandas
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {

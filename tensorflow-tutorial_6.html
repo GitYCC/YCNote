@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,567) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,582) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -140,7 +140,7 @@
 <div class="main-contents">
 <p>如果我們想要處理的問題是具有時序性的，該怎麼辦呢？本章將會介紹有時序性的Neurel Network。</p>
 <p>本單元程式碼LSTM部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/06_LSTM.py">Github</a>下載。</p>
-<h3>概論RNN</h3>
+<h3 id="rnn">概論RNN</h3>
 <p>當我們想使得Neurel Network具有時序性，我們的Neurel Network就必須有記憶的功能，然後在我不斷的輸入新資訊時，也能同時保有歷史資訊的影響，最簡單的作法就是將Output的結果保留，等到新資訊進來時，將新的資訊和舊的Output一起考量來訓練Neurel Network。</p>
 <p><img alt="unrolling" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.010.jpeg"/></p>
 <p>這種將舊有資訊保留的Neurel Network統稱為Recurrent Neural Networks (RNN)，這種不斷回饋的網路可以攤開來處理，如上圖，如果我有5筆數據，拿訓練一個RNN 5個回合並做了5次更新，其實就等效於攤開來一次處理5筆數據並做1次更新，這樣的手法叫做Unrolling，我們實作上會使用Unrolling的手法來增加計算效率。</p>
@@ -150,12 +150,12 @@
 o_{new}=tanh(i \times W_i + o \times W_o + B)
 $$</div>
 <p>如此一來RNN就具有時序性了，舊的歷史資料將可以被「記憶」起來，你可以把RNN的「記憶」看成是「短期記憶」，因為它只會記得上一回的Output而已。</p>
-<h3>梯度消失與梯度爆炸</h3>
+<h3 id="_1">梯度消失與梯度爆炸</h3>
 <p>但這種形式的RNN在實作上會遇到很大的問題，還記得第二章當中，我們有講過像是tanh這類有飽和區的函數，會造成梯度消失的問題，而我們如果使用Unrolling的觀點來看RNN，將會發現這是一個超級深的網路，Backpapagation必須一路通到t0的RNN，想當然爾，有些梯度將會消失，部分權重就更新不到了，那有一些聰明的讀者一定會想到，那就使用Relu就好啦！不過其實還有一個重要的因素造成梯度消失，同時也造成梯度爆炸。</p>
 <p>注意喔！雖然我們使用Unrolling的觀點，把網路看成是一個Deep網路的連接，但是和之前DNN不同之處，這些RNN彼此間是共享同一組權重的，這會造成梯度消失和梯度爆炸兩個問題，在RNN的結構裡頭，一個權重會隨著時間不斷的加強影響一個單一特徵，因為不同時間之下的RNN Cell共用同一個權重，這麼一來若是權重大於1，影響將會隨時間放大到梯度爆炸，若是權重小於1，影響將會隨時間縮小到梯度消失，就像是蝴蝶效應一般，微小的差異因為回饋的機制，而不合理的放大或是消失，因此RNN的Error Surface將會崎嶇不平，這會造成我們無法穩定的找到最佳解，難以收斂。這才是RNN難以使用的重要原因，把Activation Function換成Relu不會解決問題，文獻上反而告訴我們會變更差。</p>
 <p>解決梯度爆炸有一個聽起來很廢但廣為人們使用的方法，叫做Gradient Clipping，也就是只要在更新過程梯度超過一個值，我就切掉讓梯度維持在這個上限，這樣就不會爆炸啦，待會會講到的LSTM只能夠解決梯度消失問題，但不能解決梯度爆炸問題，因此我們還是需要Gradient Clipping方法的幫忙。</p>
 <p>在Tensorflow怎麼做到Gradient Clipping呢？作法是這樣的，以往我們使用<code>optimizer.minimize(loss)</code>來進行更新，事實上我們可以把這一步驟拆成兩部分，第一部分計算所有參數的梯度，第二部分使用這些梯度進行更新。因此我們可以從中作梗，把gradients偷天換日一番，一開始使用<code>optimizer.compute_gradients(loss)</code>來計算出個別的梯度，然後使用<code>tf.clip_by_global_norm(gradients, clip_norm)</code>來切梯度，最後再使用<code>optimizer.apply_gradients</code>把新的梯度餵入進行更新。</p>
-<h3>Long Short-Term Memory (LSTM)</h3>
+<h3 id="long-short-term-memory-lstm">Long Short-Term Memory (LSTM)</h3>
 <p>LSTM是現今RNN的主流，它可以解決梯度消失的問題，我們先來看看結構，先預告一下，LSTM是迄今為止這系列課程當中看過最複雜的Neurel Network。</p>
 <p><img alt="LSTM" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.012.jpeg"/></p>
 <p>最一開始和RNN一樣，Input會和上一回的Output一起評估一個「短期記憶」，</p>
@@ -180,7 +180,7 @@ $$</div>
 G_o = Sigmoid(i \times W_{oi} + o \times W_{oo} + B_o)
 $$</div>
 <p>這就是LSTM，「長期記憶」的出現可以解決掉梯度消失的問題，RNN只有「短期記憶」，所以一旦認為一個特徵不重要，經過幾回連乘，這個特徵的梯度就會消失殆盡，但是LSTM保留State，並且使用「加」的方法更新State，所以有一些重要的State得以留下來持續影響著Output，解決了梯度消失的問題。但是，不幸的LSTM還是免不了梯度爆炸，為什麼呢？如果一個特徵真的很重要，State會記住，Input也會強調，所以幾輪下來還是有可能出現爆炸的情況，這時候我們就需要Gradient Clipping的幫忙。</p>
-<h3>使用LSTM實作文章產生器</h3>
+<h3 id="lstm">使用LSTM實作文章產生器</h3>
 <p>接下來我們來實作LSTM，目標是做一個文章產生器，我們希望機器可以不斷的根據前文猜測下一個「字母」(Letters)應該要下什麼，如此一來我只要給個開頭字母，LSTM就可以幫我腦補成一篇文章。</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">random</span>
@@ -701,7 +701,7 @@ $$</div>
 <div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">th the oppose asia college on all of indirect i suicide upse angence and including khazool cashle with jeremp of the case hasway was catiline tribui s law can be wounds to free from an eventually locations university colid for admirum syn semition goths display the might the official up it alder stowinity name like or day elenth names and lesk external links a loons for have the genione e elevang cress leven isbn effects on cultural leave to oldincil he hokerzon blacklomen with the known resolvement of literated by college founded to families in ak urke player jain of highling fake state a first o al reason into the son then mmpt one nine three three npunt university unexal and currently amnyanipation behavion from ber and ii variety of the gupife number topan has one three zero z capital prime genary brown one nine five nine so universities country recipient the vegetables bether form the distinct de plus out as a first a johnson quicky s remain which an death to anti in panibus series</span><span class="w"></span>
 </code></pre></div>
 <p>看得出來LSTM想表達什麼嗎，哈哈！</p>
-<h3>Reference</h3>
+<h3 id="reference">Reference</h3>
 <ul>
 <li><a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/6_lstm.ipynb">https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/udacity/6_lstm.ipynb</a></li>
 <li><a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">http://colah.github.io/posts/2015-08-Understanding-LSTMs/</a></li>
@@ -810,8 +810,8 @@ $$</div>
 Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
 </p><p>
 <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
-<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
-</img></a>
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
 </p></footer> </main>
 <script type="application/ld+json">
 {
