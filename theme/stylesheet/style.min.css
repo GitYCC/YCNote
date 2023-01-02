@@ -247,10 +247,10 @@ main article table thead:first-child tr:first-child th {
 
 main article table td,
 main article table th {
-    padding: 8px;
+    /* padding: 8px;
     line-height: 20px;
     vertical-align: top;
-    border-top: 1px solid #ddd
+    border-top: 1px solid #ddd */
 }
 
 main article table.highlighttable {
