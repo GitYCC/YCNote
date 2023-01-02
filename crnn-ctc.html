@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,668) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,740) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="crnn-ctc">OCR：CRNN+CTC開源加詳細解析</h1>
 <p>
-      Posted on October 12, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 7,846
+      Posted on October 12, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 7,847
 
     </p>
 </header>
@@ -167,11 +167,11 @@
 <p><img alt="crnn_structure" src="http://www.ycc.idv.tw/media/CV/crnn_structure.png"/></p>
 <p><img alt="crnn_structure_detail" src="http://www.ycc.idv.tw/media/CV/crnn_structure_detail.png"/></p>
 <p>首先，將圖片轉成灰階並且伸縮至高度32，通過多層的Conv2D、MaxPool和BatchNormalization抽取圖片相關的特徵。</p>
-<script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js"></script>
+<script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_01.py"></script>
 <p>接下來藉由一個 DenseLayer 去將圖片轉成維度為 <code>map_to_seq_hidden</code> 的序列，這樣就可以接續的使用 RNN 來萃取序列的特徵。</p>
-<script src="https://gist.github.com/GitYCC/23ef2091b406247b710a62cff2859ecd.js"></script>
+<script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_02.py"></script>
 <p>這邊特別注意一下，當你經過 CNN Backbone 之後的維度是：<code>(batch, channel, new_height, new_width)</code> ，但是你希望進RNN前的維度是：<code>(seq_len, batch, map_to_seq_hidden)</code> ，所以需要將 <code>channel, new_height</code> 攤平再過 DenseLayer，如下：</p>
-<script src="https://gist.github.com/GitYCC/4698c6e7fddd9ce16126a662e94e47d9.js"></script>
+<script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_03.py"></script>
 <p><img alt="map_to_seq" src="http://www.ycc.idv.tw/media/CV/map_to_seq.png"/></p>
 <p>最後再過兩層 Bi-directional LSTM 萃取序列相關的特徵，並且過 DenseLayer 來將維度轉成與分類的數量相同，再過 Softmax 就大功告成！注意：分類的類別是所有要預測的字元再加上 blank ε ，一般我們會讓 blank ε 在Onehot Encoding 時放在 index=0 的位置。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/CV/biLSTM.png"/></p>
@@ -362,14 +362,14 @@ $$</div>
 <p><center><small>
   圖四：Greedy Decode
 </small></center><br/></p>
-<script src="https://gist.github.com/GitYCC/3bee1eb3bddc9111e43668c80f5d6282.js"></script>
+<script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_04.py"></script>
 <h3 id="beam-search-decode">Beam Search Decode</h3>
 <p>既然只選一條機率最大的路徑不那麼精確，那麼我就選最大的前 <span class="math">\(k\)</span> 條路徑再將其機率相加，這個就是 Beam Search 的近似方法。為了達到這個目的，我們在每一個時間點 <span class="math">\(t\)</span> 都會保留前 <span class="math">\(k\)</span> 條累積相乘機率最大的可能路徑，如下圖所示。</p>
 <p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_beam_search.png"/></p>
 <p><center><small>
   圖五：Beam Search Decode (beam size = 2)
 </small></center><br/></p>
-<script src="https://gist.github.com/GitYCC/6b92bc9b6b352c2996af57b6faa6f0ee.js"></script>
+<script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_05.py"></script>
 <p>其中用到 <code>logsumexp</code> 的用意是因為我們操作在 Log Probability 上面，雖然機率相乘即是 Log Probability 相加，很方便操作。但是如果碰到需要機率相加時，就需要先取 <span class="math">\(exp\)</span> 還原後再相加再取 <span class="math">\(log\)</span> ，即：<span class="math">\(log(p1 + p2) = logsumexp([log(p1), log(p2)])\)</span>。</p>
 <h3 id="prefix-beam-search-decode">Prefix Beam Search Decode</h3>
 <p>我們可以再進一步讓它更精確一點，剛剛的 Beam Search 是在映射函數 <span class="math">\(B\)</span> 之前找 <span class="math">\(k\)</span> 條路徑，Prefix Beam Search 更進一步拿前 <span class="math">\(k\)</span> 條經過映射函數 <span class="math">\(B\)</span> 後的 Prefix 當作評估的方式 ，如此會更接近我們想要找到映射後的最高機率的 Sequence。</p>
@@ -382,10 +382,10 @@ $$</div>
 <p><center><small>
   圖六：Prefix Beam Search Decode (beam size = 2)
 </small></center><br/></p>
-<script src="https://gist.github.com/GitYCC/3ed83774fc9486d7293afc1957b371ad.js"></script>
+<script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_06.py"></script>
 <h2 id="_2">結語</h2>
 <p>我們在這篇文章當中清楚的了解到 CRNN 的架構，以及 CTC 的架構、訓練的參數優化和其三種 Inference 方法。看完了這些原理，也該動手試玩看看，在 <a href="https://github.com/GitYCC/crnn-pytorch">GitYCC/crnn-pytorch</a> 中已經有已經 pretrained 的模型可以使用，不妨跟著以下步驟實際動手玩玩看 OCR 場景辨識吧！</p>
-<script src="https://gist.github.com/GitYCC/0c3740aeda027c1e64923c3b81de1963.js"></script>
+<script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_07.bash"></script>
 <h2 id="reference">Reference</h2>
 <ul>
 <li><a href="https://arxiv.org/pdf/1507.05717.pdf">An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition (2015), Baoguang Shi et al.</a></li>

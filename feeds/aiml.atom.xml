@@ -741,13 +741,13 @@ $$&lt;/div&gt;
 &lt;p&gt;&lt;img alt="crnn_structure" src="http://www.ycc.idv.tw/media/CV/crnn_structure.png" /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="crnn_structure_detail" src="http://www.ycc.idv.tw/media/CV/crnn_structure_detail.png" /&gt;&lt;/p&gt;
 &lt;p&gt;首先，將圖片轉成灰階並且伸縮至高度32，通過多層的Conv2D、MaxPool和BatchNormalization抽取圖片相關的特徵。&lt;/p&gt;
-&lt;script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js"&gt;&lt;/script&gt;
+&lt;script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_01.py"&gt;&lt;/script&gt;
 
 &lt;p&gt;接下來藉由一個 DenseLayer 去將圖片轉成維度為 &lt;code&gt;map_to_seq_hidden&lt;/code&gt; 的序列，這樣就可以接續的使用 RNN 來萃取序列的特徵。&lt;/p&gt;
-&lt;script src="https://gist.github.com/GitYCC/23ef2091b406247b710a62cff2859ecd.js"&gt;&lt;/script&gt;
+&lt;script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_02.py"&gt;&lt;/script&gt;
 
 &lt;p&gt;這邊特別注意一下，當你經過 CNN Backbone 之後的維度是：&lt;code&gt;(batch, channel, new_height, new_width)&lt;/code&gt; ，但是你希望進RNN前的維度是：&lt;code&gt;(seq_len, batch, map_to_seq_hidden)&lt;/code&gt; ，所以需要將 &lt;code&gt;channel, new_height&lt;/code&gt; 攤平再過 DenseLayer，如下：&lt;/p&gt;
-&lt;script src="https://gist.github.com/GitYCC/4698c6e7fddd9ce16126a662e94e47d9.js"&gt;&lt;/script&gt;
+&lt;script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_03.py"&gt;&lt;/script&gt;
 
 &lt;p&gt;&lt;img alt="map_to_seq" src="http://www.ycc.idv.tw/media/CV/map_to_seq.png" /&gt;&lt;/p&gt;
 &lt;p&gt;最後再過兩層 Bi-directional LSTM 萃取序列相關的特徵，並且過 DenseLayer 來將維度轉成與分類的數量相同，再過 Softmax 就大功告成！注意：分類的類別是所有要預測的字元再加上 blank ε ，一般我們會讓 blank ε 在Onehot Encoding 時放在 index=0 的位置。&lt;/p&gt;
@@ -939,7 +939,7 @@ $$&lt;/div&gt;
 &lt;p&gt;&lt;center&gt;&lt;small&gt;
   圖四：Greedy Decode
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;script src="https://gist.github.com/GitYCC/3bee1eb3bddc9111e43668c80f5d6282.js"&gt;&lt;/script&gt;
+&lt;script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_04.py"&gt;&lt;/script&gt;
 
 &lt;h3 id="beam-search-decode"&gt;Beam Search Decode&lt;/h3&gt;
 &lt;p&gt;既然只選一條機率最大的路徑不那麼精確，那麼我就選最大的前 &lt;span class="math"&gt;\(k\)&lt;/span&gt; 條路徑再將其機率相加，這個就是 Beam Search 的近似方法。為了達到這個目的，我們在每一個時間點 &lt;span class="math"&gt;\(t\)&lt;/span&gt; 都會保留前 &lt;span class="math"&gt;\(k\)&lt;/span&gt; 條累積相乘機率最大的可能路徑，如下圖所示。&lt;/p&gt;
@@ -947,7 +947,7 @@ $$&lt;/div&gt;
 &lt;p&gt;&lt;center&gt;&lt;small&gt;
   圖五：Beam Search Decode (beam size = 2)
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;script src="https://gist.github.com/GitYCC/6b92bc9b6b352c2996af57b6faa6f0ee.js"&gt;&lt;/script&gt;
+&lt;script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_05.py"&gt;&lt;/script&gt;
 
 &lt;p&gt;其中用到 &lt;code&gt;logsumexp&lt;/code&gt; 的用意是因為我們操作在 Log Probability 上面，雖然機率相乘即是 Log Probability 相加，很方便操作。但是如果碰到需要機率相加時，就需要先取 &lt;span class="math"&gt;\(exp\)&lt;/span&gt; 還原後再相加再取 &lt;span class="math"&gt;\(log\)&lt;/span&gt; ，即：&lt;span class="math"&gt;\(log(p1 + p2) = logsumexp([log(p1), log(p2)])\)&lt;/span&gt;。&lt;/p&gt;
 &lt;h3 id="prefix-beam-search-decode"&gt;Prefix Beam Search Decode&lt;/h3&gt;
@@ -961,11 +961,11 @@ $$&lt;/div&gt;
 &lt;p&gt;&lt;center&gt;&lt;small&gt;
   圖六：Prefix Beam Search Decode (beam size = 2)
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;script src="https://gist.github.com/GitYCC/3ed83774fc9486d7293afc1957b371ad.js"&gt;&lt;/script&gt;
+&lt;script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_06.py"&gt;&lt;/script&gt;
 
 &lt;h2 id="_2"&gt;結語&lt;/h2&gt;
 &lt;p&gt;我們在這篇文章當中清楚的了解到 CRNN 的架構，以及 CTC 的架構、訓練的參數優化和其三種 Inference 方法。看完了這些原理，也該動手試玩看看，在 &lt;a href="https://github.com/GitYCC/crnn-pytorch"&gt;GitYCC/crnn-pytorch&lt;/a&gt; 中已經有已經 pretrained 的模型可以使用，不妨跟著以下步驟實際動手玩玩看 OCR 場景辨識吧！&lt;/p&gt;
-&lt;script src="https://gist.github.com/GitYCC/0c3740aeda027c1e64923c3b81de1963.js"&gt;&lt;/script&gt;
+&lt;script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_07.bash"&gt;&lt;/script&gt;
 
 &lt;h2 id="reference"&gt;Reference&lt;/h2&gt;
 &lt;ul&gt;
