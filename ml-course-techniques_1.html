@@ -1,239 +1,144 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹 - YC Note</title>
-    <meta name="description" content="有什麼特徵可以使用？ / Embedding Numerous Features ：Kernel Models / Combining Predictive Features：Aggregation Models / Distilling Implicit Features：Extraction Models">
-    <meta name="author" content="YC Chen">
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹" />
-    <meta property="og:description" content="有什麼特徵可以使用？ / Embedding Numerous Features ：Kernel Models / Combining Predictive Features：Aggregation Models / Distilling Implicit Features：Extraction Models" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/ml-course-techniques_1.html" />
-    <meta property="og:site_name" content="YC Note" />
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="有什麼特徵可以使用？ / Embedding Numerous Features ：Kernel Models / Combining Predictive Features：Aggregation Models / Distilling Implicit Features：Extraction Models" name="description">
+<meta content="機器學習技法" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹" property="og:title">
+<meta content="有什麼特徵可以使用？ / Embedding Numerous Features ：Kernel Models / Combining Predictive Features：Aggregation Models / Distilling Implicit Features：Extraction Models" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/ml-course-techniques_1.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2017-01-12 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="AI.ML" property="article:section">
+<meta content="機器學習技法" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – 機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/ml-course-techniques_1.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Ml course techniques_1", "item": "https://ycc.idv.tw/ml-course-techniques_1.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹", "about": "AI.ML", "datePublished": "2017-01-12 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="ml-course-techniques_1">機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹</h1>
+<p>
+      Posted on January 12, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 10,291
 
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "AI.ML",
-            "item": "https://www.ycc.idv.tw/category/aiml.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹",
-            "item": "https://www.ycc.idv.tw/ml-course-techniques_1.html"
-          }]
-        }
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹 - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2017-01-12",
-          "image" : "https://www.ycc.idv.tw/images/ml-course-techniques.jpeg",
-          "articleSection" : "AI.ML",
-          "articleBody" : "有什麼特徵可以使用？ / Embedding Numerous Features ：Kernel Models / Combining Predictive Features：Aggregation Models / Distilling Implicit Features：Extraction Models",
-          "url" : "https://www.ycc.idv.tw/ml-course-techniques_1.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" 
-                                 srcset="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 2000w, 
-                                 https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 1000w, 
-                                 https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2017-01-12</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a>                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            有什麼特徵可以使用？ / Embedding Numerous Features ：Kernel Models / Combining Predictive Features：Aggregation Models / Distilling Implicit Features：Extraction Models
-                        </div>
-
-                        <p>在之前四篇文章中，我總結了台大教授林軒田在Coursera上的《機器學習基石》16堂課程，我覺得這是機器學習初學很重要的基礎課程，接下來我要接續更進階的課程。</p>
+<div class="main-contents">
+<p>在之前四篇文章中，我總結了台大教授林軒田在Coursera上的《機器學習基石》16堂課程，我覺得這是機器學習初學很重要的基礎課程，接下來我要接續更進階的課程。</p>
 <p>林軒田教授的機器學習是兩學期的課，第一學期是《機器學習基石》，第二學期就是接下來這個系列要講的《機器學習技法》，這兩堂課程是有相當大的銜接關係的，所以如果想看這系列的文章，請先看<a href="http://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">這四篇《機器學習基石》的介紹</a>或者<a href="https://www.coursera.org/learn/ntumlone-mathematicalfoundations">直接到Coursera上學習</a>。</p>
 <p>《機器學習技法》課程影片可以到老師的Youtube [ <a href="https://www.youtube.com/playlist?list=PLXVfgk9fNX2IQOYPmqjqWsNUFl2kpk1U2">https://www.youtube.com/playlist?list=PLXVfgk9fNX2IQOYPmqjqWsNUFl2kpk1U2</a> ]上收看，投影片可以到老師的個人網站上下載 [ <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/</a> ]。</p>
 <p>以前，我曾經和實驗室的英國學長聊英國的教育方法，然後我驚人的發現，他的學校在大一就已經學過量子場論（物理上很難的學科XDD）了，我就很好奇量子場論不是需要很深厚的數學基礎嗎？大一是要怎麼教啊？他告訴我，他們大一就會完整走過物理的各大領域，不過是用非常概念的方式來學習，不牽涉到太困難的數學，但這概念的一系列課程卻是四年大學中相當重要的基礎，讓他在開始學細節前就可以知道這些東西未來會用在哪裡？產生了連結讓學習更有效率。</p>
@@ -298,133 +203,64 @@
 <p>最後總結一下《機器學習技法》會講哪些東西？我們會講具有三種不同「特徵轉換」方式的Models。<strong>Kernel Model的「特徵轉換」是將非線性Features擴張到無窮多個；Aggregation Model的「特徵轉換」是產生出有預測能力的Features；Extraction Model的「特徵轉換」是利用神經元的方式來做到萃取出隱含的資訊。</strong></p>
 <p><strong>跟《機器學習基石》不一樣的地方，《機器學習技法》中介紹更厲害的「特徵轉換」來產生更厲害的Model，不過因為會有Overfitting的狀況，所以我們還需要介紹相應的配套措施。</strong></p>
 <p>在未來一系列的文章，我會帶大家一一的來看這些內容，不過和之前一樣，我不會以課堂當作單位來講，而是以單元式的方式，而且我主要的目的是去點出概念，並盡可能的不去牽涉太多的數學計算，但是數學計算的部分是很重要的，這會影響到你真正的實作，數學的部份可以去看林軒田老師的影片或投影片，裡頭都有很詳細的介紹。</p>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/ml-course-foundations_4.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_2.html" rel="next">
-                                    <span>Next Post</span>
-                                    機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                        <h3 class="h2">Related Articles</h3>
-                        <ul class="related">
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-foundations_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-foundations_4.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_2.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (3)：Kernel Regression</h5>
-                                </a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/ml-course-techniques_1.html";
-            this.page.identifier = "ml-course-techniques_1.html";
-            this.page.title = "機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/ml-course-foundations_4.html#anchor" title="機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/ml-course-techniques_2.html#anchor" title="機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<div class="related-posts">
+<h4>You might enjoy</h4>
+<ul class="related-posts">
+<li><a href="https://ycc.idv.tw/ml-course-foundations_3.html">機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?</a></li>
+<li><a href="https://ycc.idv.tw/ml-course-foundations_4.html">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</a></li>
+<li><a href="https://ycc.idv.tw/ml-course-techniques_2.html">機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)</a></li>
+<li><a href="https://ycc.idv.tw/ml-course-techniques_3.html">機器學習技法 學習筆記 (3)：Kernel Regression</a></li>
+</ul>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>

@@ -1,239 +1,144 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？ - YC Note</title>
-    <meta name="description" content="物件導向為何重要？ / 程式的好壞？ / 低耦合、高內聚 / 程式碼精練之旅 / 形塑出物件導向">
-    <meta name="author" content="YC Chen">
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？" />
-    <meta property="og:description" content="物件導向為何重要？ / 程式的好壞？ / 低耦合、高內聚 / 程式碼精練之旅 / 形塑出物件導向" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/coding_front_board.jpg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/introduction-object-oriented-programming_1.html" />
-    <meta property="og:site_name" content="YC Note" />
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="物件導向為何重要？ / 程式的好壞？ / 低耦合、高內聚 / 程式碼精練之旅 / 形塑出物件導向" name="description">
+<meta content="軟體設計" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？" property="og:title">
+<meta content="物件導向為何重要？ / 程式的好壞？ / 低耦合、高內聚 / 程式碼精練之旅 / 形塑出物件導向" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/introduction-object-oriented-programming_1.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2018-04-05 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="Coding" property="article:section">
+<meta content="軟體設計" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – 物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/introduction-object-oriented-programming_1.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Introduction object oriented programming_1", "item": "https://ycc.idv.tw/introduction-object-oriented-programming_1.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？", "about": "Coding", "datePublished": "2018-04-05 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="introduction-object-oriented-programming_1">物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？</h1>
+<p>
+      Posted on April 05, 2018 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 5,227
 
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Coding",
-            "item": "https://www.ycc.idv.tw/category/coding.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？",
-            "item": "https://www.ycc.idv.tw/introduction-object-oriented-programming_1.html"
-          }]
-        }
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？ - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2018-04-05",
-          "image" : "https://www.ycc.idv.tw/images/coding_front_board.jpg",
-          "articleSection" : "Coding",
-          "articleBody" : "物件導向為何重要？ / 程式的好壞？ / 低耦合、高內聚 / 程式碼精練之旅 / 形塑出物件導向",
-          "url" : "https://www.ycc.idv.tw/introduction-object-oriented-programming_1.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/coding_front_board.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/coding_front_board.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/coding_front_board.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2018-04-05</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a>                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            物件導向為何重要？ / 程式的好壞？ / 低耦合、高內聚 / 程式碼精練之旅 / 形塑出物件導向
-                        </div>
-
-                        <h3>物件導向為何重要？</h3>
+<div class="main-contents">
+<h3>物件導向為何重要？</h3>
 <p>我相信很多朋友一定像YC我一樣，想要學某個程式語言，就去買那個程式語言的簡介書籍，然後一章一章的唸下去，這種書通常會先教變數怎麼設定？然後再教if、while、for、function等程式邏輯。</p>
 <p>那如果你學的是「物件導向」的語言，譬如：Java、C++、Python，接下來的章節就會開始介紹「類別」、「物件」等等難懂的東西，然後就會陷入一種霧煞煞的狀態，然後心中就會出現一種聲音：為什麼寫個程式你跟我扯什麼「物件」？我原本用前面所學的方法就可以完成所有事情啦！為何要把事情弄的這麼複雜？這東西到底有什麼好處啊？</p>
 <p>YC一開始也是充滿著疑惑，然後一知半解的就把這些定義記在心中，然後天真的認為「物件導向」只是讓程式比較整齊的方法罷了！直到後來學了資料結構與演算法，然後又學了一點設計模式，然後又有過幾個大型軟體開發的經驗，一路走過才漸漸的了解「物件導向」是怎麼一回事？</p>
@@ -253,9 +158,9 @@
 <p>有關「單元」的相依性有兩個重要術語—耦合性(Coupling)和聚合性(Cohesion)，耦合性指的是「單元」和「單元」之間資訊或參數依賴的程度，所以我們要追求「低耦合」。聚合性指的是「單元」內使用到自身資訊或參數的程度，所以我們要追求「高內聚」，通常「低耦合」都會伴隨著「高內聚」。</p>
 <h3>程式碼精練之旅</h3>
 <p>來看個例子，假設今天我想要實現一個求最大公因數的計算機，使用<strong>Python</strong>隨便寫一段程式碼可能是這樣的。</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">&quot;Positive Integer A: &quot;</span><span class="p">)</span>
-    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">&quot;Positive Integer B: &quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer A: "</span><span class="p">)</span>
+    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer B: "</span><span class="p">)</span>
 
     <span class="n">numA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numA</span><span class="p">)</span>
     <span class="n">numB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numB</span><span class="p">)</span>
@@ -285,19 +190,17 @@
         <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">prime_factorize_A</span><span class="p">[</span><span class="n">prime</span><span class="p">],</span><span class="n">prime_factorize_B</span><span class="p">[</span><span class="n">prime</span><span class="p">])</span>
         <span class="n">gcf</span> <span class="o">=</span> <span class="n">gcf</span> <span class="o">*</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">m</span><span class="p">)</span>
 
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Greatest Common Factor: &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
-</pre></div>
-
-
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Greatest Common Factor: "</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
+</code></pre></div>
 <p>好！那接下來用剛剛的規則來檢視看看這個程式，第一點，有沒有「可正常執行」？上述的例子，沒有考慮到一些Edge Case，當輸入的值不是正整數，必須要報錯，所以我們將程式修改一下。</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">&quot;Positive Integer A: &quot;</span><span class="p">)</span>
-    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">&quot;Positive Integer B: &quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer A: "</span><span class="p">)</span>
+    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer B: "</span><span class="p">)</span>
 
     <span class="n">numA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numA</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">numA</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;invalid positive integer: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">numA</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">numA</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">numA</span><span class="p">))</span>
     <span class="n">numB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numB</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">numB</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;invalid positive integer: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">numB</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">numB</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">numB</span><span class="p">))</span>
 
     <span class="n">prime_factorize_A</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
@@ -324,14 +227,12 @@
         <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">prime_factorize_A</span><span class="p">[</span><span class="n">prime</span><span class="p">],</span><span class="n">prime_factorize_B</span><span class="p">[</span><span class="n">prime</span><span class="p">])</span>
         <span class="n">gcf</span> <span class="o">=</span> <span class="n">gcf</span> <span class="o">*</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">m</span><span class="p">)</span>
 
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Greatest Common Factor: &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
-</pre></div>
-
-
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Greatest Common Factor: "</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
+</code></pre></div>
 <p>再來檢查一下是不是具有「不重複撰寫」的特性？也就是Don't Repeat Yourself，顯然是沒有遵守，<code>numA</code>和<code>numB</code>處理方法幾乎一模一樣，這會造成程式碼很冗長，來稍做修改。</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="nb">int</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">num</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;invalid positive integer: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
 
 <span class="k">def</span> <span class="nf">primeFactorize</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
     <span class="n">checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
@@ -347,8 +248,8 @@
     <span class="k">return</span> <span class="n">prime_factorize</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">&quot;Positive Integer A: &quot;</span><span class="p">)</span>
-    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">&quot;Positive Integer B: &quot;</span><span class="p">)</span>
+    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer A: "</span><span class="p">)</span>
+    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer B: "</span><span class="p">)</span>
 
     <span class="n">numA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numA</span><span class="p">)</span>
     <span class="n">numB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numB</span><span class="p">)</span>
@@ -363,15 +264,13 @@
         <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">prime_factorize_A</span><span class="p">[</span><span class="n">prime</span><span class="p">],</span><span class="n">prime_factorize_B</span><span class="p">[</span><span class="n">prime</span><span class="p">])</span>
         <span class="n">gcf</span> <span class="o">=</span> <span class="n">gcf</span> <span class="o">*</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">m</span><span class="p">)</span>
 
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Greatest Common Factor: &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
-</pre></div>
-
-
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Greatest Common Factor: "</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
+</code></pre></div>
 <p>接下來來檢查一下「穩健度」和「可擴展」，也就是程式是否符合：低耦合、高內聚，其實上面的程式碼有一個大問題，客戶端邏輯和業務邏輯混為一談，客戶端邏輯就是實現功能的部分，而業務邏輯就是實作的細節，所以上面的程式碼把所有的實作的細節全部攤在客戶端，這是相當不好的，這會造成不易更改，因此我們將程式作單元的拆分，讓業務邏輯和客戶端邏輯相分離，讓不直接實現客戶端的程式碼可以隱藏起來，減少客戶端和業務邏輯的耦合。然後順道加入求取最小公倍數的功能。</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">sys</span>
 <span class="k">def</span> <span class="nf">checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="nb">int</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">num</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;invalid positive integer: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
 
 <span class="k">def</span> <span class="nf">primeFactorize</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
     <span class="n">checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
@@ -412,8 +311,8 @@
     <span class="k">return</span> <span class="n">lcm</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">&quot;Positive Integer A: &quot;</span><span class="p">)</span>
-    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">&quot;Positive Integer B: &quot;</span><span class="p">)</span>
+    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer A: "</span><span class="p">)</span>
+    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer B: "</span><span class="p">)</span>
 
     <span class="n">numA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numA</span><span class="p">)</span>
     <span class="n">numB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numB</span><span class="p">)</span>
@@ -422,11 +321,9 @@
     <span class="n">gcf</span> <span class="o">=</span> <span class="n">findGCF</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
     <span class="n">lcm</span> <span class="o">=</span> <span class="n">findLCM</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
 
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Greatest Common Factor: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Lowest Common Multiple: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lcm</span><span class="p">))</span>
-</pre></div>
-
-
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Greatest Common Factor: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Lowest Common Multiple: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lcm</span><span class="p">))</span>
+</code></pre></div>
 <p>如此一來程式碼就看起來乾淨很多，function和function之間的耦合性被降低了，而function本身的內聚性提高了，程式碼達到了低耦合、高內聚，但是似乎還可以更好。</p>
 <h3>形塑出物件導向</h3>
 <p>剛剛我們已經完成了一個看起來很乾淨的程式碼了，但是其實還可以更好，在這裡我們就必須形塑出物件導向，才有辦法再前進一步。</p>
@@ -437,16 +334,16 @@
 <code>checkPositiveInteger(num)</code>, <code>primeFactorize(num)</code>。我們使用「藍圖」去建構「物件」的模版，再由「藍圖」配合不同的輸入參數去生成一個一個獨立的「物件」，以因應不同的狀況。</p>
 <p>這就是物件導向！</p>
 <p>接下來，我將上面程式碼引入物件導向改寫如下。（看不懂～沒關係！未來會詳述）</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">sys</span>
 <span class="k">class</span> <span class="nc">Calculation</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nums</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nums</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span> <span class="o">=</span> <span class="n">nums</span>
         <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__checkPositiveInteger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="nb">int</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">num</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;invalid positive integer: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">__primeFactorize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
         <span class="n">prime_factorize</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -485,8 +382,8 @@
         <span class="k">return</span> <span class="n">lcm</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">&quot;Positive Integer A: &quot;</span><span class="p">)</span>
-    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">&quot;Positive Integer B: &quot;</span><span class="p">)</span>
+    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer A: "</span><span class="p">)</span>
+    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer B: "</span><span class="p">)</span>
 
     <span class="n">numA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numA</span><span class="p">)</span>
     <span class="n">numB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numB</span><span class="p">)</span>
@@ -496,128 +393,67 @@
     <span class="n">gcf</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">findGCF</span><span class="p">()</span>
     <span class="n">lcm</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">findLCM</span><span class="p">()</span>
 
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Greatest Common Factor: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Lowest Common Multiple: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lcm</span><span class="p">))</span>
-</pre></div>
-
-
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Greatest Common Factor: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Lowest Common Multiple: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lcm</span><span class="p">))</span>
+</code></pre></div>
 <h3>總結：程式碼鑑賞能力</h3>
 <p>本章YC帶大家建立一種品味，像是藝術評論家一樣，我們學會了如何鑑賞好的程式碼，我們提到了好的程式碼須要符合「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」的特性，並且提到我們要追求低耦合、高內聚，但是「不重複撰寫」的這個原則會和低耦合相互違和，所以工程師要小心拿捏！有了鑑賞能力，我們開始精練我們的程式，而自然而然就可以引出物件導向的概念。當然，物件導向不只如此啦！我們下章就會看到物件導向還有什麼花拳繡腿。</p>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/the-selfish-gene.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    自私的基因：基因觀點下的天擇
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_2.html" rel="next">
-                                    <span>Next Post</span>
-                                    物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                        <h3 class="h2">Related Articles</h3>
-                        <ul class="related">
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_2.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg" alt="">
-                                    <h5 class="related__post-title">物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg" alt="">
-                                    <h5 class="related__post-title">物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID</h5>
-                                </a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/introduction-object-oriented-programming_1.html";
-            this.page.identifier = "introduction-object-oriented-programming_1.html";
-            this.page.title = "物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/the-selfish-gene.html#anchor" title="自私的基因：基因觀點下的天擇">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/introduction-object-oriented-programming_2.html#anchor" title="物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<div class="related-posts">
+<h4>You might enjoy</h4>
+<ul class="related-posts">
+<li><a href="https://ycc.idv.tw/introduction-object-oriented-programming_2.html">物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹</a></li>
+<li><a href="https://ycc.idv.tw/introduction-object-oriented-programming_3.html">物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID</a></li>
+</ul>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>

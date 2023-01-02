@@ -1,244 +1,149 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization - YC Note</title>
-    <meta name="description" content="本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization">
-    <meta name="author" content="YC Chen">
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization" />
-    <meta property="og:description" content="本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/ml-course-techniques_7.html" />
-    <meta property="og:site_name" content="YC Note" />
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization" name="description">
+<meta content="機器學習技法" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization" property="og:title">
+<meta content="本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/ml-course-techniques_7.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2017-04-22 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="AI.ML" property="article:section">
+<meta content="機器學習技法" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – 機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/ml-course-techniques_7.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Ml course techniques_7", "item": "https://ycc.idv.tw/ml-course-techniques_7.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization", "about": "AI.ML", "datePublished": "2017-04-22 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="ml-course-techniques_7">機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization</h1>
+<p>
+      Posted on April 22, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 14,168
 
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "AI.ML",
-            "item": "https://www.ycc.idv.tw/category/aiml.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization",
-            "item": "https://www.ycc.idv.tw/ml-course-techniques_7.html"
-          }]
-        }
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2017-04-22",
-          "image" : "https://www.ycc.idv.tw/images/ml-course-techniques.jpeg",
-          "articleSection" : "AI.ML",
-          "articleBody" : "本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization",
-          "url" : "https://www.ycc.idv.tw/ml-course-techniques_7.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" 
-                                 srcset="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 2000w, 
-                                 https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 1000w, 
-                                 https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2017-04-22</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a>                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization
-                        </div>
-
-                        <p><br/></p>
+<div class="main-contents">
+<p><br/></p>
 <h3>Radial Basis Function (RBF) Network</h3>
 <p>回顧一下Gaussian Kernel SVM，</p>
 <blockquote>
 <p><span class="math">\(W = 𝚺_{n=sv}  α_n y_n Z_n\)</span></p>
-<p><span class="math">\(G_{SVM}\)</span>   <br/></p>
+<p><span class="math">\(G_{SVM}\)</span> <br/></p>
 <p><span class="math">\(= sign[WZ+b]\)</span> <br/></p>
 <p><span class="math">\(= sign{[𝚺_{n=sv} α_n y_n K(X_n,X)]+b}\)</span> <br/></p>
 <p><span class="math">\(⇒ G_{SVM} = sign{[𝚺_{n=sv} α_n y_n exp(-γ |X-X_n|^2)]+b}\)</span> <br/></p>
@@ -251,7 +156,7 @@
 <p>當<span class="math">\(Output\)</span>為<span class="math">\(sign\)</span> Function、<span class="math">\(β_m\)</span>為<span class="math">\(α_n y_n\)</span>就回到特例SVM了。</p>
 <p>我們來細看這個式子傳遞的概念，RBF Network的第一層是先產生<span class="math">\(M\)</span>組<span class="math">\(RBF(X,μ_m)\)</span>，意味著以這<span class="math">\(M\)</span>個位置<span class="math">\(μ_m\)</span>當作中心點來評估各個<span class="math">\(X\)</span>與它的相似程度，RBF是有評估相似度的味道，越接近<span class="math">\(μ_m\)</span>的點，RBF越大，並隨著與<span class="math">\(μ_m\)</span>距離變大，RBF的值也快速遞減，所以這<span class="math">\(M\)</span>個<span class="math">\(μ_m\)</span>是有象徵性的，越接近它你越受它的影響。</p>
 <p>決定了每一筆數據各是受哪些<span class="math">\(μ_m\)</span>影響，接下來第二層是由這M個代表性的位置來進行投票決定最後的結果，這意味的不同的地方對<span class="math">\(μ_m\)</span>最後結果也有不同的影響力，舉個例子，假設在SVM裡頭，某個<span class="math">\(μ_m\)</span>如果它的<span class="math">\(y_m =+1\)</span>，那它對最後的影響就會是正的；那如果某個<span class="math">\(μ_m\)</span>的<span class="math">\(y_m=-1\)</span>，那它對最後的影響就會是負的，所以一個點進來，先評估一下它和象徵性的幾個點<span class="math">\(μ_m\)</span>的距離，如果相鄰幾點都是正的，這個點最後的結果就會是正的。</p>
-<p><img alt="RBF Network" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_05.png"></p>
+<p><img alt="RBF Network" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_05.png"/></p>
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf</a></p>
 <p>RBF Network在歷史上是Neural Network的一個分支，不過從上面的介紹你就會發現，它們的結構是有差異的，演算法也就不一樣。</p>
 <p>通常最佳化RBF Network做法是這樣的，我們會先用一些方法將<span class="math">\(μ_m\)</span>決定，如果<span class="math">\(μ_m\)</span>很懶惰的就直接使用所有的Training Data，總共有<span class="math">\(N\)</span>個，這<span class="math">\(μ_m\)</span>就叫做<strong>「Full RBF Network」</strong>。<strong>我們也可以使用一些歸納的演算法找出代表資料群體的幾個象徵性的中心點，例如待會會介紹的K-Means的方法</strong>，找出k個<span class="math">\(μ_m\)</span>再做計算，這樣的RBF Network稱為<strong>「k Nearest Neighbor RBF Network」</strong>。</p>
@@ -259,7 +164,7 @@
 <p>而如果你使用「Full RBF Network」，你會發現做完Regression後<span class="math">\(E_{in}=0\)</span>，這是典型的Overfitting，那這時你可能就要採用有Regularization的Regression啦！譬如說Ridge Regression之類的。</p>
 <p><br/></p>
 <h3>K-Means</h3>
-<p><img alt="K-Means" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_06.png"></p>
+<p><img alt="K-Means" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_06.png"/></p>
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/214_handout.pdf</a></p>
 <p>接下來來看怎麼用K-Means找到代表資料群體的幾個象徵性的中心點。</p>
 <p>首先，先決定要有幾個「中心點」，這裡假設我要有<span class="math">\(k\)</span>個好了，接下來先隨機給這些「中心點」一個初始的位置，接下來根據數據的靠近程度開始歸類，如果一筆數據比較所有的「中心點」後發現離「中心點」A是最近的話，那這筆數據就歸「中心點」A了，就用這樣的規則把所有數據都做分類。</p>
@@ -280,7 +185,7 @@
 <p><strong>Matrix Factorization精神上有點像是Autoencoder，Autoencoder找出隱含在Data裡的特性，而Matrix Factorization則是找出隱含的匹配關係。</strong></p>
 <p>舉個例子，如果Netflix有了一堆用戶和他們曾看過的電影的資料，我們想要從中抽取出用戶與他愛看的電影之間的關係，所以這不單單只是匹配而已，單純匹配就只需要硬碟就做的到了，我們要做的是找出匹配的規律，並且用更少、更精簡的方式表示這個匹配關係，舉個例子，有可能有部分用戶會被歸納到愛看恐怖片的，並且同時這些客戶會被連結到具有恐怖元素的電影，我們預期Matrix Factorization會有自行歸納整理的能力。</p>
 <p>可以仿造Autoencoder來設計Matrix Factorization，而你會發現Activation Function只要使用線性就已經足夠了，因為對於One-Hot Encoding的類別來說，只有一條通道是有效的，這已經具有開關的味道了，所以我們不用在Activation Function上面再弄一道開關，所以採用Linear就足夠了。</p>
-<p><img alt="Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_07.png"></p>
+<p><img alt="Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_07.png"/></p>
 <p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf</a></p>
 <p>因為是線性模型的緣故，我們可以很簡單的使用矩陣來描述，</p>
 <p>Hypothesis: <span class="math">\(h(X) = W^TVX\)</span></p>
@@ -294,12 +199,12 @@
 <p>最佳化Matrix Factorization有兩個演算法，一個是Alternating Least Squares，另外一個是SGD。</p>
 <p><br/></p>
 <h3>Alternating Least Squares for Matrix Factorization</h3>
-<p><img alt="Alternating Least Squares for Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_08.png"></p>
+<p><img alt="Alternating Least Squares for Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_08.png"/></p>
 <p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf</a></p>
 <p>第一個方法是利用Linear Regression交互的優化<span class="math">\(W_m\)</span>和<span class="math">\(V_n\)</span>，我們的目標是使得<span class="math">\(W_m^T V_n =r_{nm}\)</span>，這式子可以用兩個角度看，如果固定<span class="math">\(W_m\)</span>，優化<span class="math">\(V_n\)</span>，那就是線性擬合<span class="math">\(\{V_n, r_{nm}\}\)</span>的問題；那如果固定<span class="math">\(V_n\)</span>，優化<span class="math">\(W_m\)</span>，這就是線性擬合<span class="math">\(\{W_{m}, r_{nm}\}\)</span>的問題。<strong>因此，交替優化<span class="math">\(W_m\)</span>和<span class="math">\(V_n\)</span>就可以使得<span class="math">\(W_m^T V_n\)</span>越來越接近<span class="math">\(r_{nm}\)</span>了</strong>。</p>
 <p><br/></p>
 <h3>SGD for Matrix Factorization</h3>
-<p><img alt="SGD for Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_09.png"></p>
+<p><img alt="SGD for Matrix Factorization" src="https://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.000_09.png"/></p>
 <p>from: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/215_handout.pdf</a></p>
 <p>第二個方法則是老招—Gradient Descent，這裡採用隨機的版本SGD，所以過程中我們會隨意的從<span class="math">\((n,m)\)</span>中挑點，然後根據Error Measure</p>
 <div class="math">$$
@@ -317,11 +222,11 @@ $$</div>
 <p><a href="https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/216_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mltech17spring/doc/216_handout.pdf</a></p>
 <p>這個投影片裡頭林軒田教授用心的彙整了一整個學期的內容，很值得一看。</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
+    var align = "left",
+        indent = "1em",
+        linebreak = "true";
 
-    if (false) {
+    if (true) {
         align = (screen.width < 768) ? "left" : align;
         indent = (screen.width < 768) ? "0em" : indent;
         linebreak = (screen.width < 768) ? 'true' : linebreak;
@@ -331,10 +236,13 @@ $$</div>
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
     mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
         "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
         "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
         "    displayAlign: '"+ align +"'," +
@@ -348,7 +256,9 @@ $$</div>
         "        preview: 'TeX'," +
         "    }, " +
         "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} }," +
         "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
         "    }, " +
         "}); " +
@@ -368,136 +278,69 @@ $$</div>
                 "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
             "});" +
         "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/python-play-with-data_2.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    Python玩數據 (2)：Numpy [1/2]
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/python-play-with-data_3.html" rel="next">
-                                    <span>Next Post</span>
-                                    Python玩數據 (3)：Numpy [2/2]
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                        <h3 class="h2">Related Articles</h3>
-                        <ul class="related">
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (3)：Kernel Regression</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_4.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (4)：Basic Aggregation Models</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_5.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (5)：Boost Aggregation Models</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_6.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</h5>
-                                </a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/ml-course-techniques_7.html";
-            this.page.identifier = "ml-course-techniques_7.html";
-            this.page.title = "機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/ml-course-techniques_6.html#anchor" title="機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/python-play-with-data_3.html#anchor" title="Python玩數據 (3)：Numpy [2/2]">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<div class="related-posts">
+<h4>You might enjoy</h4>
+<ul class="related-posts">
+<li><a href="https://ycc.idv.tw/ml-course-techniques_3.html">機器學習技法 學習筆記 (3)：Kernel Regression</a></li>
+<li><a href="https://ycc.idv.tw/ml-course-techniques_4.html">機器學習技法 學習筆記 (4)：Basic Aggregation Models</a></li>
+<li><a href="https://ycc.idv.tw/ml-course-techniques_5.html">機器學習技法 學習筆記 (5)：Boost Aggregation Models</a></li>
+<li><a href="https://ycc.idv.tw/ml-course-techniques_6.html">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</a></li>
+</ul>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>

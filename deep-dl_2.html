@@ -1,239 +1,144 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論 - YC Note</title>
-    <meta name="description" content="在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。">
-    <meta name="author" content="YC Chen">
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論" />
-    <meta property="og:description" content="在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/deep-dl_2.html" />
-    <meta property="og:site_name" content="YC Note" />
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。" name="description">
+<meta content="剖析深度學習" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論" property="og:title">
+<meta content="在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/deep-dl_2.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2020-02-25 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="AI.ML" property="article:section">
+<meta content="剖析深度學習" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – 剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/deep-dl_2.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Deep dl_2", "item": "https://ycc.idv.tw/deep-dl_2.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論", "about": "AI.ML", "datePublished": "2020-02-25 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="deep-dl_2">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</h1>
+<p>
+      Posted on February 25, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 30,904
 
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "AI.ML",
-            "item": "https://www.ycc.idv.tw/category/aiml.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論",
-            "item": "https://www.ycc.idv.tw/deep-dl_2.html"
-          }]
-        }
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論 - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2020-02-25",
-          "image" : "https://www.ycc.idv.tw/images/deep_dl_cover.jpg",
-          "articleSection" : "AI.ML",
-          "articleBody" : "在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。",
-          "url" : "https://www.ycc.idv.tw/deep-dl_2.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/deep_dl_cover.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2020-02-25</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。
-                        </div>
-
-                        <blockquote>
+<div class="main-contents">
+<blockquote>
 <p>深度學習發展至今已經有相當多好用的套件，使得進入的門檻大大的降低，因此如果想要快速的實作一些深度學習或機器學習，通常是幾行程式碼可以解決的事。但是，如果想要將深度學習或機器學習當作一份工作，深入了解它背後的原理和數學是必要的，才有可能因地制宜的靈活運用，YC準備在這一系列當中帶大家深入剖析深度學習。</p>
 </blockquote>
 <p><a href="https://www.ycc.idv.tw/deep-dl_1.html">在上一講當中</a>，我鉅細靡遺的介紹了Normal Distribution。其中我有稍微的提到Entropy的概念，並且說在未來會有一講專門來談機器學習裡面會用到的資訊理論，而那個未來就是現在！</p>
@@ -267,7 +172,7 @@ H(x)=E_{x\sim p}[I(x)]=-E_{x\sim p}[log_2p(x)]  \ \ ↪︎【2】
 $$</div>
 <p>
 上式所傳達的意思是：Shannon Entropy即是評估Self-Information的期望值。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/Entropy_flip_2_coins.jpg"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/Entropy_flip_2_coins.jpg"/></p>
 <p>為了進一步的了解Shannon Entropy的內涵，我們來舉個例子。假設你的系統是離散的，可以進一步表示成為
 </p>
 <div class="math">$$
@@ -298,7 +203,7 @@ $$</div>
 <p>The entropy is a lower bound on the number of bits needed to transmit the state of a random variable.</p>
 </blockquote>
 <p>來做個小結論，仔細回想剛剛的過程你會更能了解公式隱藏的意義。如果你仔細的去理解剛剛我舉的例子，你會發現： <strong><span class="math">\(I(x)\)</span>，或者Entropy中的<span class="math">\(-log\)</span> ，所扮演的角色是「編碼」，決定需要用幾個bits來傳輸事件，而Entropy的意義就是這套「編碼」運用到系統的bits期望值，並且Shannon的理論告訴我們<span class="math">\(-log\ p(x)\)</span>已經是最有效率的「編碼」，它可以得到最小的bits期望值，所以Entropy是bits期望值的下界</strong>。</p>
-<hr>
+<hr/>
 <p>在物理上或是機器學習上，我們常使用自然對數<span class="math">\(e\)</span>當作底，所以Entropy為：
 </p>
 <div class="math">$$
@@ -312,7 +217,7 @@ $$</div>
 <li>離散情境下， <span class="math">\(H=\sum_i -p_i\operatorname{ln}p_i  \ \ ↪︎【8】\)</span></li>
 <li>實驗情境下，<span class="math">\(H=\sum_k -(\frac{n_k}{N})\operatorname{ln}(\frac{n_k}{N})  \ \ ↪︎【9】\)</span></li>
 </ul>
-<hr>
+<hr/>
 <p>最後，來看看什麼分布的Entropy最大，在給定 <span class="math">\(\int p(x)dx=1\)</span> 的情況下試圖找到一個 <span class="math">\(p(x)\)</span> 可以使 Entropy <span class="math">\(H\)</span> 最大，引入<a href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Lagrange Multiplier</a>：
 </p>
 <div class="math">$$
@@ -355,7 +260,7 @@ $$</div>
 <p>
 所以當我們試圖減少Cross Entropy時，其實就是試圖調整<span class="math">\(q(x)\)</span>使其接近<span class="math">\(p(x)\)</span>，因為當<span class="math">\(q(x)=p(x)\)</span>時，<span class="math">\(H(p,q)=H(p)\)</span>有最小的Cross Entropy。</p>
 <p>延續剛剛「編碼」的概念套用在Cross Entropy，今天我雖然知道 <span class="math">\(-\operatorname{ln}p(x)\)</span>是最好的「編碼」，但是我不知道 <span class="math">\(p(x)\)</span> 長什麼樣子，所以退一步我們使用模型的 <span class="math">\(q(x)\)</span> 來做「編碼」，<strong>Cross Entropy的意義就是利用 <span class="math">\(-\operatorname{ln}q(x)\)</span> 這套「編碼」去算系統的nats期望值，並且想辦法改善編碼方法來降低Cross Entropy</strong>。</p>
-<hr>
+<hr/>
 <p>接下來我想要帶大家從式【15】到【14】導一遍式子。</p>
 <p>因為我們知道目標分布是Binary的離散系統，所以可以把【15】寫成：
 </p>
@@ -403,7 +308,7 @@ D_{KL}(q||p)＝-E_{x\sim q}[\operatorname{ln}p(x)-\operatorname{ln}q(x)]＝H(q,p
 $$</div>
 <p>
 【21】式意味著從<span class="math">\(p(x)\)</span>到<span class="math">\(q(x)\)</span>所降低的nats期望值與從<span class="math">\(q(x)\)</span>到<span class="math">\(p(x)\)</span>所降低的nats期望值不相等。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/KL-Gauss-Example.png"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/KL-Gauss-Example.png"/></p>
 <h3>f-Divergence</h3>
 <p>Divergence其實有多個形式，定義如下：
 當有兩個獨立的機率分布<span class="math">\(p(x)\)</span>和<span class="math">\(q(x)\)</span>同時對應到同一個隨機變數<span class="math">\(x\)</span>，
@@ -456,11 +361,11 @@ $$</div>
 </ul>
 <p><em>[此文章為原創文章，轉載前請註明文章來源]</em></p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
+    var align = "left",
+        indent = "1em",
+        linebreak = "true";
 
-    if (false) {
+    if (true) {
         align = (screen.width < 768) ? "left" : align;
         indent = (screen.width < 768) ? "0em" : indent;
         linebreak = (screen.width < 768) ? 'true' : linebreak;
@@ -470,10 +375,13 @@ $$</div>
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
     mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
         "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
         "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
         "    displayAlign: '"+ align +"'," +
@@ -487,7 +395,9 @@ $$</div>
         "        preview: 'TeX'," +
         "    }, " +
         "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} }," +
         "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
         "    }, " +
         "}); " +
@@ -507,130 +417,80 @@ $$</div>
                 "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
             "});" +
         "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    剖析深度學習 (1)：為什麼Normal Distribution這麼好用？
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/deep-dl_3.html" rel="next">
-                                    <span>Next Post</span>
-                                    剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                        <h3 class="h2">Related Articles</h3>
-                        <ul class="related">
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/deep-dl_4.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
-                                    <h5 class="related__post-title">剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
-                                    <h5 class="related__post-title">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/deep-dl_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
-                                    <h5 class="related__post-title">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</h5>
-                                </a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/deep-dl_2.html";
-            this.page.identifier = "deep-dl_2.html";
-            this.page.title = "剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/deep-dl_1.html#anchor" title="剖析深度學習 (1)：為什麼Normal Distribution這麼好用？">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/deep-dl_3.html#anchor" title="剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<div class="related-posts">
+<h4>You might enjoy</h4>
+<ul class="related-posts">
+<li><a href="https://ycc.idv.tw/deep-dl_4.html">剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型</a></li>
+<li><a href="https://ycc.idv.tw/deep-dl_3.html">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</a></li>
+<li><a href="https://ycc.idv.tw/deep-dl_1.html">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</a></li>
+</ul>
+</div>
+<div class="related-posts">
+<h4>Part 2 of the 剖析深度學習 series</h4>
+<h5>Previous articles</h5>
+<ul>
+<li><a href="https://ycc.idv.tw/deep-dl_1.html#anchor">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</a></li>
+</ul>
+<h5>Next articles</h5>
+<ul>
+<li><a href="https://ycc.idv.tw/deep-dl_3.html#anchor">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</a></li>
+<li><a href="https://ycc.idv.tw/deep-dl_4.html#anchor">剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型</a></li>
+</ul>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>

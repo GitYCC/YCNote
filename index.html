@@ -1,656 +1,779 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+<html lang="en">
 <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>YC Note</title>
-    <meta name="description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)">
-    <meta name="author" content="YC Chen">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="YC Note" />
-    <meta property="og:description" content="YC Note, 機器學習(Machine Learning)、深度學習(Deep Learning)、類神經網路(Neural Network)、資料科學(Date Science)、Python、演算法(Algorithm)" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/theme/images/favicon.png" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/" />
-    <meta property="og:site_name" content="YC Note" />
+    <link rel="stylesheet/less" type="text/css" href="https://ycc.idv.tw/theme/stylesheet/style.less">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
 
-    <script type="application/ld+json">
-        {
-            "@context": "http://schema.org",
-            "@type": "WebSite",
-            "url": "https://www.ycc.idv.tw/",
-            "publisher" : {
-                "@type" : "Organization",
-                "name" : "YC Note",
-                "logo" : {
-                    "@type" : "ImageObject",
-                    "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-                }
-              },
-            "author" : {
-                "@type" : "Person",
-                "name" : "YC Chen"
-              }
-        }
-    </script>
 
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://ycc.idv.tw/theme/pygments/monokai.min.css">
 
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/index_base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/index_vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/index_main.css">
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
 
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/index_modernizr.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/index_pace.min.js"></script>
+  <link rel="stylesheet"
+        type="text/css"
+        href="https://ycc.idv.tw/theme/stork/stork.css" />
 
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
+  <link rel="stylesheet" type="text/css" href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ycc.idv.tw/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ycc.idv.tw/theme/font-awesome/css/solid.css">
 
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
+  <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+  <link rel="icon" href="/images/favicon.png" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#FFFFFF">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#FFFFFF">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+
+  <link href="https://ycc.idv.tw/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Atom">
+
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+
+
+
+
+
+
+ 
+
+    <meta name="author" content="Yi-Chang Chen" />
+    <meta name="description" content="YC Note - ML/DL Tech Blog" />
+  <meta property="og:site_name" content="YC Note"/>
+  <meta property="og:type" content="blog"/>
+  <meta property="og:title" content="YC Note"/>
+  <meta property="og:description" content="YC Note - ML/DL Tech Blog"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://ycc.idv.tw"/>
+
+  <title>YC Note</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
 
 </head>
+<body class="light-theme">
 
-<body id="top">
+<aside>
+  <div>
+    <a href="https://ycc.idv.tw/">
+      <img src="https://ycc.idv.tw/theme/img/profile.png" alt="YC Note" title="YC Note">
+    </a>
 
-    <div id="preloader">
-        <div id="loader"></div>
+    <h1>
+      <a href="https://ycc.idv.tw/">YC Note</a>
+    </h1>
+
+    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+
+    
+
+    <div class="stork">
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(); this.onclick=null;"/>
+      <div class="stork-output" data-stork="sitesearch-output"></div>
     </div>
-
-    <!-- site header
-    ================================================== -->
-    <header class="s-header">
-
-        <div class="header-logo">
-            <a class="site-logo" href="https://www.ycc.idv.tw">
-                <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-            </a>
-        </div>
-
-        <nav class="header-nav-wrap">
-            <ul class="header-main-nav">
-                <li class="current"><a class="smoothscroll" href="#intro" title="intro">Intro</a></li>
-                <li><a class="smoothscroll" href="#about" title="about">About</a></li>
-                <li><a class="smoothscroll" href="#blog" title="blog">Blog</a></li>
-                <li><a class="smoothscroll" href="#contact" title="contact us">Contact Me</a></li>
-            </ul>
-
-            <ul class="header-social">
-                <li><a href="https://github.com/GitYCC" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a></li>
-                <li><a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
-                <li><a href="mailto:ycc.tw.email@gmail.com" target="_blank"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></li>
-            </ul>
-        </nav>
-
-        <a class="header-menu-toggle" href="#"><span>Menu</span></a>
-
-    </header> <!-- end s-header -->
-
-
-    <!-- intro
-    ================================================== -->
-    <section id="intro" class="s-intro target-section" style="background-image:url('https://www.ycc.idv.tw/images/welcome_front_board.jpg'); background-position: center; background-size: cover;">
-        <div class="row intro-content">
-
-            <div class="column large-9 mob-full intro-text">
-                <h1>
-                    Welcome to YC Note
-                </h1>
-                <h3>一個資料煉金術師的修煉之路</h3>
-            </div>
-
-            <div class="intro-scroll">
-                <a href="#about" class="intro-scroll-link smoothscroll">
-                    Scroll For More
-                </a>
-            </div>
-
-        </div> <!-- end row -->
-
-    </section> <!-- end intro -->
-
-
-    <!-- about
-    ================================================== -->
-    <section id="about" class="s-about target-section">
-
-        <div class="about-me">
-
-            <div class="row heading-block" data-aos="fade-up">
-                <div class="column large-full">
-                    <h2 class="section-heading">About Me</h2>
-                </div>
-            </div>
-
-            <div class="row about-me__content" data-aos="fade-up">
-                <div class="column large-full about-me__text">
-                    <p class="lead">
-                        大家好！我是YC，是一名資料科學家，熟悉機器學習和深度學習的各類技術，以及大數據分散式系統；
-                        同時，我也是一名街頭藝人和部落客。我總是嘗試各種生命的可能性，因為我深信：人生的意義在於體驗一切身為人的經驗。
-                    </p>
-                    <p>
-                        <ul>
-                            <li>Bridgewell, Data Scientist & Software Engineer (2018-2020)</li>
-                            <li>TSMC, Photo Lithography Software R&D Engineer (2015-2018)</li>
-                            <li>Ur Warm Pet Cafe, Resident Singer (2017-2018)</li>
-                            <li>National Taiwan University, Master of Physics (2012-2014)</li>
-                            <li>National Sun Yat-Sen University, Bachelor of Physics (2009-2012)</li>
-                        </ul>
-                    </p>
-                </div>
-
-            </div>
-
-            <div class="row about-me__buttons">
-                <div class="column large-half tab-full" data-aos="fade-up">
-                    <a href="https://github.com/GitYCC" class="btn btn--stroke full-width" target="_blank">My Github</a>
-                </div>
-                <div class="column large-half tab-full" data-aos="fade-up">
-                    <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" class="btn btn--stroke full-width" target="_blank">My Linkedin</a>
-                </div>
-            </div>
-
-        </div> <!-- end about-me -->
-
-<!--
-        <div class="about-experience">
-
-            <div class="row heading-block" data-aos="fade-up">
-                <div class="column large-full">
-                    <h2 class="section-heading">Work & Education</h2>
-                </div>
-            </div>
-
-            <div class="row about-experience__timeline">
-
-                <div class="column large-half tab-full" data-aos="fade-up">
-                    <div class="timeline">
-
-                        <div class="timeline__icon-wrap">
-                            <span class="timeline__icon timeline__icon--work"></span>
-                        </div>
-
-                        <div class="timeline__block">
-                            <div class="timeline__bullet"></div>
-                            <div class="timeline__header">
-                                <p class="timeline__timeframe">July 2018 - Present</p>
-                                <h3 class="item-title">Awesome Studio</h3>
-                                <h5>Lead Designer</h5>
-                            </div>
-                            <div class="timeline__desc">
-                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
-                            </div>
-                        </div>
-
-                        <div class="timeline__block">
-                            <div class="timeline__bullet"></div>
-                            <div class="timeline__header">
-                                <p class="timeline__timeframe">July 2017 - June 2018</p>
-                                <h3 class="item-title">Super Cool Agency</h3>
-                                <h5>Frontend Developer</h5>
-                            </div>
-                            <div class="timeline__desc">
-                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
-                            </div>
-                        </div>
-
-                        <div class="timeline__block">
-                            <div class="timeline__bullet"></div>
-                            <div class="timeline__header">
-                                <p class="timeline__timeframe">March 2016 - June 2017</p>
-                                <h3 class="item-title">Epic Design Studio</h3>
-                                <h5>Frontend Developer</h5>
-                            </div>
-                            <div class="timeline__desc">
-                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="column large-half tab-full" data-aos="fade-up">
-                    <div class="timeline">
-
-                        <div class="timeline__icon-wrap">
-                            <span class="timeline__icon timeline__icon--education"></span>
-                        </div>
-
-                        <div class="timeline__block">
-                            <div class="timeline__bullet"></div>
-                            <div class="timeline__header">
-                                <p class="timeline__timeframe">July 2011 - June 2015</p>
-                                <h3 class="item-title">University of Life</h3>
-                                <h5>Master Degree</h5>
-                            </div>
-                            <div class="timeline__desc">
-                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
-                            </div>
-                        </div>
-
-                        <div class="timeline__block">
-                            <div class="timeline__bullet"></div>
-                            <div class="timeline__header">
-                                <p class="timeline__timeframe">July 2009 - June 2011</p>
-                                <h3 class="item-title">State Design University</h3>
-                                <h5>Bachelor Degree</h5>
-                            </div>
-                            <div class="timeline__desc">
-                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
-                            </div>
-                        </div>
-
-                        <div class="timeline__block">
-                            <div class="timeline__bullet"></div>
-                            <div class="timeline__header">
-                                <p class="timeline__timeframe">July 2005 - June 2009</p>
-                                <h3 class="item-title">School of Hard Knocks</h3>
-                                <h5>Bachelor Degree</h5>
-                            </div>
-                            <div class="timeline__desc">
-                                <p>Lorem ipsum Occaecat do esse ex et dolor culpa nisi ex in magna consectetur nisi cupidatat laboris esse eiusmod deserunt aute do quis velit esse sed Ut proident cupidatat nulla esse cillum laborum occaecat nostrud sit dolor incididunt amet est occaecat nisi.</p>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
--->
-    </section> <!-- end s-about -->
-
-    <!-- works
-    ================================================== -->
-    <section id="blog" class="s-works target-section">
-
-        <div class="row heading-block heading-block--center" data-aos="fade-up">
-            <div class="column large-full">
-                <h2 class="section-heading section-heading--centerbottom">My Blog</h2>
-                <div class="column large-full">
-                    <a href="https://www.ycc.idv.tw/category/aiml.html" class="btn btn--stroke full-width" target="_blank">View All Articles</a>
-                </div>
-            </div>
-        </div> <!-- end heading-block -->
-
-        <div class="masonry-wrap">
-
-            <div class="masonry">
-                <div class="grid-sizer"></div>
-
-                <div class="masonry__brick" data-aos="fade-up">
-                    <div class="item-folio">
-                        <div class="item-folio__thumb">
-                            <a href="" class="thumb-link" title="極簡說明Multi-thread/Multi-process、CPU-bound/IO-bound和GIL" data-size="1x1"></a>
-                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <a href="https://www.ycc.idv.tw/multithread-multiprocess-gil.html" target="_blank">
-                                <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg">
-                            </a>
-                            <h4 class="item-folio__title">
-                                <a href="https://www.ycc.idv.tw/multithread-multiprocess-gil.html" target="_blank">極簡說明Multi-thread/Multi-process、CPU-bound/IO-bound和GIL</a>
-                            </h4>
-                            <p class="item-folio__cat">
-                                AI.ML
-                            </p>
-                        </div>
-
-                        <div class="item-folio__caption">
-                            <p>Python GIL 究竟怎麼影響我們應該採用Multi-thread或Multi-process？ Multi-thread和Multi-process又是什麼？什麼是CPU-bound和IO-bound呢？</p>
-                        </div>
-                    </div>
-                </div> <!-- end masonry__brick -->
-
-                <div class="masonry__brick" data-aos="fade-up">
-                    <div class="item-folio">
-                        <div class="item-folio__thumb">
-                            <a href="" class="thumb-link" title="Tesla AI Day 2022 筆記" data-size="1x1"></a>
-                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <a href="https://www.ycc.idv.tw/tesla-aiday2022.html" target="_blank">
-                                <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg">
-                            </a>
-                            <h4 class="item-folio__title">
-                                <a href="https://www.ycc.idv.tw/tesla-aiday2022.html" target="_blank">Tesla AI Day 2022 筆記</a>
-                            </h4>
-                            <p class="item-folio__cat">
-                                AI.ML
-                            </p>
-                        </div>
-
-                        <div class="item-folio__caption">
-                            <p>在2022年舉辦的Tesla AI Day上，他們推出了人形機器人Optimus，以及介紹他們在自動駕駛上的技術推進。這篇是YC觀賞完AI Day後的筆記，摘要了一些重點，並且在最後提出我的觀點。</p>
-                        </div>
-                    </div>
-                </div> <!-- end masonry__brick -->
-
-                <div class="masonry__brick" data-aos="fade-up">
-                    <div class="item-folio">
-                        <div class="item-folio__thumb">
-                            <a href="" class="thumb-link" title="Tesla AI Day 2021 筆記" data-size="1x1"></a>
-                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <a href="https://www.ycc.idv.tw/tesla-aiday2021.html" target="_blank">
-                                <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg">
-                            </a>
-                            <h4 class="item-folio__title">
-                                <a href="https://www.ycc.idv.tw/tesla-aiday2021.html" target="_blank">Tesla AI Day 2021 筆記</a>
-                            </h4>
-                            <p class="item-folio__cat">
-                                AI.ML
-                            </p>
-                        </div>
-
-                        <div class="item-folio__caption">
-                            <p>在2021年舉辦的Tesla AI Day上，Tesla 揭露了他們開發自動駕駛的技術，並且預告他們將開發人形機器人。這篇是YC觀賞完AI Day後的筆記，我摘要了一些重點，並且在最後提出我的觀點。</p>
-                        </div>
-                    </div>
-                </div> <!-- end masonry__brick -->
-
-                <div class="masonry__brick" data-aos="fade-up">
-                    <div class="item-folio">
-                        <div class="item-folio__thumb">
-                            <a href="" class="thumb-link" title="擴散模型（Diffusion Model）：生成模型的新成員" data-size="1x1"></a>
-                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <a href="https://www.ycc.idv.tw/diffusion-model.html" target="_blank">
-                                <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg">
-                            </a>
-                            <h4 class="item-folio__title">
-                                <a href="https://www.ycc.idv.tw/diffusion-model.html" target="_blank">擴散模型（Diffusion Model）：生成模型的新成員</a>
-                            </h4>
-                            <p class="item-folio__cat">
-                                AI.ML
-                            </p>
-                        </div>
-
-                        <div class="item-folio__caption">
-                            <p>本篇從概念到深入數學的介紹擴散模型（Diffusion Model）。</p>
-                        </div>
-                    </div>
-                </div> <!-- end masonry__brick -->
-
-                <div class="masonry__brick" data-aos="fade-up">
-                    <div class="item-folio">
-                        <div class="item-folio__thumb">
-                            <a href="" class="thumb-link" title="OCR：CRNN+CTC開源加詳細解析" data-size="1x1"></a>
-                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <a href="https://www.ycc.idv.tw/crnn-ctc.html" target="_blank">
-                                <img src="https://www.ycc.idv.tw/images/book-glass-read-study-learn-text-bible-see.jpg">
-                            </a>
-                            <h4 class="item-folio__title">
-                                <a href="https://www.ycc.idv.tw/crnn-ctc.html" target="_blank">OCR：CRNN+CTC開源加詳細解析</a>
-                            </h4>
-                            <p class="item-folio__cat">
-                                AI.ML
-                            </p>
-                        </div>
-
-                        <div class="item-folio__caption">
-                            <p>Pytorch CRNN+CTC 開源囉！並且在這篇中會仔細介紹 CRNN 的架構，以及 CTC 的架構、訓練的參數優化和其三種 Inference 方法（greedy decode, beam search decode, prefix beam search decode）</p>
-                        </div>
-                    </div>
-                </div> <!-- end masonry__brick -->
-
-                <div class="masonry__brick" data-aos="fade-up">
-                    <div class="item-folio">
-                        <div class="item-folio__thumb">
-                            <a href="" class="thumb-link" title="資源整理：跟上AI前沿知識" data-size="1x1"></a>
-                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <a href="https://www.ycc.idv.tw/latest_ai_info.html" target="_blank">
-                                <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg">
-                            </a>
-                            <h4 class="item-folio__title">
-                                <a href="https://www.ycc.idv.tw/latest_ai_info.html" target="_blank">資源整理：跟上AI前沿知識</a>
-                            </h4>
-                            <p class="item-folio__cat">
-                                AI.ML
-                            </p>
-                        </div>
-
-                        <div class="item-folio__caption">
-                            <p>AI領域日新月異，在這領域的玩家應該要持續的跟上最前沿的知識和技術，本篇文章整理了相關學術研討會、部落格，讓讀者可以輕易的接觸到可靠的新資源。（也歡迎讀者補充更多資訊）(持續更新)</p>
-                        </div>
-                    </div>
-                </div> <!-- end masonry__brick -->
-
-                <div class="masonry__brick" data-aos="fade-up">
-                    <div class="item-folio">
-                        <div class="item-folio__thumb">
-                            <a href="" class="thumb-link" title="剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型" data-size="1x1"></a>
-                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <a href="https://www.ycc.idv.tw/deep-dl_4.html" target="_blank">
-                                <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg">
-                            </a>
-                            <h4 class="item-folio__title">
-                                <a href="https://www.ycc.idv.tw/deep-dl_4.html" target="_blank">剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型</a>
-                            </h4>
-                            <p class="item-folio__cat">
-                                AI.ML
-                            </p>
-                        </div>
-
-                        <div class="item-folio__caption">
-                            <p>學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。</p>
-                        </div>
-                    </div>
-                </div> <!-- end masonry__brick -->
-
-                <div class="masonry__brick" data-aos="fade-up">
-                    <div class="item-folio">
-                        <div class="item-folio__thumb">
-                            <a href="" class="thumb-link" title="剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點" data-size="1x1"></a>
-                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <a href="https://www.ycc.idv.tw/deep-dl_3.html" target="_blank">
-                                <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg">
-                            </a>
-                            <h4 class="item-folio__title">
-                                <a href="https://www.ycc.idv.tw/deep-dl_3.html" target="_blank">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</a>
-                            </h4>
-                            <p class="item-folio__cat">
-                                AI.ML
-                            </p>
-                        </div>
-
-                        <div class="item-folio__caption">
-                            <p>本講主要探討統計的兩大學派（頻率學派和貝氏學派）對於機器如何學習的觀點。頻率學派主張Maximum Likelihood Estimation (MLE)，會提到這等同於最小化data與model之間的Cross Entropy或KL Divergence。而貝氏學派則主張Maximum A Posterior (MAP) ，會提到這會等同於極大化Likelihood並同時考慮Regularization Term，我們也可以在本講看到L1和L2 Regularation Term是怎麼被導出的。</p>
-                        </div>
-                    </div>
-                </div> <!-- end masonry__brick -->
-
-                <div class="masonry__brick" data-aos="fade-up">
-                    <div class="item-folio">
-                        <div class="item-folio__thumb">
-                            <a href="" class="thumb-link" title="剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論" data-size="1x1"></a>
-                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <a href="https://www.ycc.idv.tw/deep-dl_2.html" target="_blank">
-                                <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg">
-                            </a>
-                            <h4 class="item-folio__title">
-                                <a href="https://www.ycc.idv.tw/deep-dl_2.html" target="_blank">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</a>
-                            </h4>
-                            <p class="item-folio__cat">
-                                AI.ML
-                            </p>
-                        </div>
-
-                        <div class="item-folio__caption">
-                            <p>在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。</p>
-                        </div>
-                    </div>
-                </div> <!-- end masonry__brick -->
-
-                <div class="masonry__brick" data-aos="fade-up">
-                    <div class="item-folio">
-                        <div class="item-folio__thumb">
-                            <a href="" class="thumb-link" title="剖析深度學習 (1)：為什麼Normal Distribution這麼好用？" data-size="1x1"></a>
-                            <a href="" class="item-folio__project-link" title="Project link" target="_blank"></a>
-                        </div>
-
-                        <div class="item-folio__text">
-                            <a href="https://www.ycc.idv.tw/deep-dl_1.html" target="_blank">
-                                <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg">
-                            </a>
-                            <h4 class="item-folio__title">
-                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" target="_blank">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</a>
-                            </h4>
-                            <p class="item-folio__cat">
-                                AI.ML
-                            </p>
-                        </div>
-
-                        <div class="item-folio__caption">
-                            <p>如果你已經學了好一陣子的機器學習或深度學習，應該對於Normal Distribution不陌生，但是你真的懂Normal Distribution嗎？本講會詳細的探討Normal Distribution，並且引入中央極限定理（Central Limit Theorm）來解釋為何自然界的隨機誤差大都呈現Normal Distribution，再來介紹Entropy，並且利用Entropy揭示Normal Distribution具有最少先驗知識（Prior Knowledge）的特性。</p>
-                        </div>
-                    </div>
-                </div> <!-- end masonry__brick -->
-
-
-            </div> <!-- end masonry -->
-
-        </div> <!-- end masonry-wrap -->
-
-    </section> <!-- end s-work -->
-
-    <!-- contact
-    ================================================== -->
-    <section id="contact" class="s-contact ss-dark target-section">
-
-        <div class="row heading-block" data-aos="fade-up">
-            <div class="column large-full">
-                <h2 class="section-heading">Get In Touch</h2>
-            </div>
-        </div>
-
-        <div class="row contact-main" data-aos="fade-up">
-            <div class="column large-full">
-                <p class="section-desc">
-                想要隨時關注新文章，想要更多AI的資訊，請按讚加入本網站的粉絲專頁：
-                <a href="https://www.facebook.com/yc.note/" target="_blank">Facebook</a>
-                </p>
-            </div>
-        </div>
-
-        <div class="row contact-infos" data-aos="fade-up" data-aos-anchor=".contact-main">
-
-            <div class="column large-7 medium-full contact-social">
-                <h4>Social</h4>
-                <ul>
-                    <li><a href="https://www.facebook.com/yc.note/" title="Facebook" target="_blank">Facebook</a></li>
-                    <li><a href="https://github.com/GitYCC" title="Github" target="_blank">Github</a></li>
-                    <li><a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" title="Linkedin" target="_blank">Linkedin</a></li>
-                    <li><a href="mailto:ycc.tw.email@gmail.com" title="Email" target="_blank">Email</a></li>
-                </ul>
-            </div>
-
-        </div> <!-- end contact-infos -->
-
-    </section> <!-- end s-contact -->
-
-
-    <!-- footer
-    ================================================== -->
-    <footer>
-        <div class="row">
-            <div class="column large-full ss-copyright">
-                <span>© Copyright YC Note 2019</span> 
-                <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-            </div>
-
-            <div class="ss-go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </div>
-    </footer>
-
-
-    <!-- photoswipe background
-    ================================================== -->
-    <div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
-
-        <div class="pswp__bg"></div>
-        <div class="pswp__scroll-wrap">
-
-            <div class="pswp__container">
-                <div class="pswp__item"></div>
-                <div class="pswp__item"></div>
-                <div class="pswp__item"></div>
-            </div>
-
-            <div class="pswp__ui pswp__ui--hidden">
-                <div class="pswp__top-bar">
-                    <div class="pswp__counter"></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button> <button class="pswp__button pswp__button--share" title=
-                    "Share"></button> <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button> <button class="pswp__button pswp__button--zoom" title=
-                    "Zoom in/out"></button>
-                    <div class="pswp__preloader">
-                        <div class="pswp__preloader__icn">
-                            <div class="pswp__preloader__cut">
-                                <div class="pswp__preloader__donut"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                    <div class="pswp__share-tooltip"></div>
-                </div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button> <button class="pswp__button pswp__button--arrow--right" title=
-                "Next (arrow right)"></button>
-                <div class="pswp__caption">
-                    <div class="pswp__caption__center"></div>
-                </div>
-            </div>
-
-        </div>
-
-    </div><!-- end photoSwipe background -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/index_plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/index_main.js"></script>
+    <!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+
+    <p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+
+    <p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-facebook"
+           href="https://www.facebook.com/yc.note"
+           target="_blank">
+          <i class="fa-brands fa-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/GitYCC"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-linkedin"
+           href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/"
+           target="_blank">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav id="anchor">
+  <a href="https://ycc.idv.tw/">Home</a>
+
+  <a href="/about-me.html#anchor">About Me</a>
+  <a href="/categories.html#anchor">Categories</a>
+  <a href="/tags.html#anchor">Tags</a>
+
+  <a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+
+
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/about-me.html#anchor">About Me: Yi-Chang Chen</a></h2>
+    <p>
+      Posted on January 01, 2023 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 1,639
+
+
+    </p>
+  </header>
+  <div>
+      <div></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/about-me.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/multithread-multiprocess-gil.html#anchor">極簡說明Multi-thread/Multi-process、CPU-bound/IO-bound和GIL</a></h2>
+    <p>
+      Posted on November 26, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 1,628
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>Python GIL 究竟怎麼影響我們應該採用Multi-thread或Multi-process？ Multi-thread和Multi-process又是什麼？什麼是CPU-bound和IO-bound呢？</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/multithread-multiprocess-gil.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/tesla-aiday2022.html#anchor">Tesla AI Day 2022 筆記</a></h2>
+    <p>
+      Posted on October 15, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 293
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>在2022年舉辦的Tesla AI Day上，他們推出了人形機器人Optimus，以及介紹他們在自動駕駛上的技術推進。這篇是YC觀賞完AI Day後的筆記，摘要了一些重點，並且在最後提出我的觀點。</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/tesla-aiday2022.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/tesla-aiday2021.html#anchor">Tesla AI Day 2021 筆記</a></h2>
+    <p>
+      Posted on October 09, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 594
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>在2021年舉辦的Tesla AI Day上，Tesla 揭露了他們開發自動駕駛的技術，並且預告他們將開發人形機器人。這篇是YC觀賞完AI Day後的筆記，我摘要了一些重點，並且在最後提出我的觀點。</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/tesla-aiday2021.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/diffusion-model.html#anchor">擴散模型（Diffusion Model）：生成模型的新成員</a></h2>
+    <p>
+      Posted on May 20, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 4,033
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>本篇從概念到深入數學的介紹擴散模型（Diffusion Model）。</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/diffusion-model.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/crnn-ctc.html#anchor">OCR：CRNN+CTC開源加詳細解析</a></h2>
+    <p>
+      Posted on October 12, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 7,839
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>Pytorch CRNN+CTC 開源囉！並且在這篇中會仔細介紹 CRNN 的架構，以及 CTC 的架構、訓練的參數優化和其三種 Inference 方法（greedy decode, beam search decode, prefix beam search decode）</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/crnn-ctc.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/latest_ai_info.html#anchor">資源整理：跟上AI前沿知識</a></h2>
+    <p>
+      Posted on July 04, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 3,402
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>AI領域日新月異，在這領域的玩家應該要持續的跟上最前沿的知識和技術，本篇文章整理了相關學術研討會、部落格，讓讀者可以輕易的接觸到可靠的新資源。（也歡迎讀者補充更多資訊）(持續更新)</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/latest_ai_info.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/deep-dl_4.html#anchor">剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型</a></h2>
+    <p>
+      Posted on March 14, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 22,295
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/deep-dl_4.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/deep-dl_3.html#anchor">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</a></h2>
+    <p>
+      Posted on March 07, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 16,652
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>本講主要探討統計的兩大學派（頻率學派和貝氏學派）對於機器如何學習的觀點。頻率學派主張Maximum Likelihood Estimation (MLE)，會提到這等同於最小化data與model之間的Cross Entropy或KL Divergence。而貝氏學派則主張Maximum A Posterior (MAP) ，會提到這會等同於極大化Likelihood並同時考慮Regularization Term，我們也可以在本講看到L1和L2 Regularation Term是怎麼被導出的。</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/deep-dl_3.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/deep-dl_2.html#anchor">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</a></h2>
+    <p>
+      Posted on February 25, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 30,904
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>在深度學習裡面，尤其是分類問題，常常會用到Cross Entropy，教學上通常會從Maximum Likelihood推導而來，但是Cross Entropy其實具有更廣義的涵義，甚至不限於分類問題使用。還有學習過程也經常會出現KL Divergence這樣既熟悉又陌生的東西，甚至到了GAN會用到更多種類的Divergence，例如：JS Divergence。這全部都與資訊理論息息相關，這一講讓我們來搞清楚Entropy、Cross Entropy、KL Divergence和f-Divergence到底具有什麼涵義。</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/deep-dl_2.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/deep-dl_1.html#anchor">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</a></h2>
+    <p>
+      Posted on February 18, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 11,419
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>如果你已經學了好一陣子的機器學習或深度學習，應該對於Normal Distribution不陌生，但是你真的懂Normal Distribution嗎？本講會詳細的探討Normal Distribution，並且引入中央極限定理（Central Limit Theorm）來解釋為何自然界的隨機誤差大都呈現Normal Distribution，再來介紹Entropy，並且利用Entropy揭示Normal Distribution具有最少先驗知識（Prior Knowledge）的特性。</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/deep-dl_1.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/egypt-travel_8.html#anchor">[入埃及記] Day9-10: 開羅【埃及博物館、哈利利市集】</a></h2>
+    <p>
+      Posted on February 13, 2020 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 382
+
+
+    </p>
+  </header>
+  <div>
+      <div></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/egypt-travel_8.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/egypt-travel_7.html#anchor">[入埃及記] Day8: 開羅Cairo【吉薩金字塔群、人面獅身像、香精專賣店、紙莎草專賣店】</a></h2>
+    <p>
+      Posted on February 12, 2020 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 845
+
+
+    </p>
+  </header>
+  <div>
+      <div></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/egypt-travel_7.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/egypt-travel_6.html#anchor">[入埃及記] Day7: 虎加達Hurghada【紅海渡假勝地】</a></h2>
+    <p>
+      Posted on February 11, 2020 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 415
+
+
+    </p>
+  </header>
+  <div>
+      <div></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/egypt-travel_6.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/egypt-travel_5.html#anchor">[入埃及記] Day6: 路克索【帝王谷、曼儂巨像】、虎加達</a></h2>
+    <p>
+      Posted on February 10, 2020 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 357
+
+
+    </p>
+  </header>
+  <div>
+      <div></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/egypt-travel_5.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/egypt-travel_4.html#anchor">[入埃及記] Day5: 艾得夫 Edfu【艾得夫神殿】、伊斯納水匣門、路克索【路克索神殿、卡納克神殿】</a></h2>
+    <p>
+      Posted on February 09, 2020 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 365
+
+
+    </p>
+  </header>
+  <div>
+      <div></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/egypt-travel_4.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/egypt-travel_3.html#anchor">[入埃及記] Day4: 阿布辛貝Abu Simbel【阿布辛貝雙神殿】、康孟波Kom Ombo【康孟波雙神殿】</a></h2>
+    <p>
+      Posted on February 08, 2020 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 377
+
+
+    </p>
+  </header>
+  <div>
+      <div></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/egypt-travel_3.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/egypt-travel_2.html#anchor">[入埃及記] Day3: 亞斯文【亞斯文大水壩、騎駱駝拜訪努比亞人家、三角風帆船】</a></h2>
+    <p>
+      Posted on February 07, 2020 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 299
+
+
+    </p>
+  </header>
+  <div>
+      <div></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/egypt-travel_2.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/egypt-travel_1.html#anchor">[入埃及記] Day1-2: 開羅 穆罕默德阿里清真寺</a></h2>
+    <p>
+      Posted on February 05, 2020 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 413
+
+
+    </p>
+  </header>
+  <div>
+      <div></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/egypt-travel_1.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/wide-and-deep-learning.html#anchor">[Paper] Wide & Deep Learning for Recommender Systems</a></h2>
+    <p>
+      Posted on June 01, 2019 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 1,690
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>以往認為deep learning有辦法完全取代feature engineering，Google在2016年寫下的這篇paper，指出在數據相對稀疏（sparse）的情況下feature engineering仍然有其重要性</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/wide-and-deep-learning.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/sweet-child-oh-mine.html#anchor">尾牙表演 - Sweet Child Oh Mine</a></h2>
+    <p>
+      Posted on March 30, 2019 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 400
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>尾牙吼起來</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/sweet-child-oh-mine.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/introduction-object-oriented-programming_3.html#anchor">物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID</a></h2>
+    <p>
+      Posted on April 14, 2018 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 8,218
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>物件導向怎麼用才能成就好的程式碼？ / UML類別圖 / 單一職責原則(Single Responsibility Principle, SRP) / 開閉原則(Open-Closed Principle, OCP) / 里氏替換原則(Liskov Subsititution Principle, LSP) / 迪米特法則(Law of Demeter, LoD) / 依賴倒置原則(Dependence Inversion Principle, DIP) / 接口分隔原則(Interface Segregation Principle, ISP)</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/introduction-object-oriented-programming_3.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/introduction-object-oriented-programming_2.html#anchor">物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹</a></h2>
+    <p>
+      Posted on April 10, 2018 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 12,613
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>物件導向編程 / 類別(Class)與物件(Object) / 方法多載（Method Overloading） / 物件導向三大特性—封裝(Encapsulation) / 物件導向三大特性—繼承(Inheritance) / 抽象化：抽象類別(Abstract Class)、抽象方法(Abstract Method)和接口(Interface) / 物件導向三大特性—多型(Polymorphism) /</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/introduction-object-oriented-programming_2.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/introduction-object-oriented-programming_1.html#anchor">物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？</a></h2>
+    <p>
+      Posted on April 05, 2018 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 5,227
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>物件導向為何重要？ / 程式的好壞？ / 低耦合、高內聚 / 程式碼精練之旅 / 形塑出物件導向</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/introduction-object-oriented-programming_1.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/the-selfish-gene.html#anchor">自私的基因：基因觀點下的天擇</a></h2>
+    <p>
+      Posted on February 03, 2018 in <a href="https://ycc.idv.tw/category/reading.html">Reading</a>. View: 1,582
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>物競天擇？ / 生命源自於複製 / 基因的代理人—神經網絡 / 再談利他行為 / 文化的複製者—迷因（Meme）</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/the-selfish-gene.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/tensorflow-tutorial_6.html#anchor">實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)</a></h2>
+    <p>
+      Posted on November 25, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 12,344
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>概論RNN / 梯度消失與梯度爆炸 / Long Short-Term Memory (LSTM) / 使用LSTM實作文章產生器</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/tensorflow-tutorial_6.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/tensorflow-tutorial_5.html#anchor">實作Tensorflow (5)：Word2Vec</a></h2>
+    <p>
+      Posted on November 19, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 5,968
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>Word2Vec觀念解析 / Word2Vec的架構 / Word2Vec的兩種常用方法：Skip-Gram和CBOW / 準備文本語料庫 / 實作Skip-Gram / 實作CBOW (Continuous Bag of Words)</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/tensorflow-tutorial_5.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/tensorflow-tutorial_4.html#anchor">實作Tensorflow (4)：Autoencoder</a></h2>
+    <p>
+      Posted on November 18, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 13,129
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>Autoencoder觀念解析 / Autoencoder程式碼 / 測試Autoencoder / 壓縮碼Code與視覺化 / 去雜訊(De-noise) Autoencoder</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/tensorflow-tutorial_4.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/tensorflow-tutorial_3.html#anchor">實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)</a></h2>
+    <p>
+      Posted on November 12, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 7,810
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>影像有什麼特性 / DNN用在影像上的侷限 / Convolutional Neurel Network (CNN) / Convolution Layer / Pooling Layer / 最簡單的CNN架構：LeNet5 / 圖像化</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/tensorflow-tutorial_3.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/uwarn-performance_1.html#anchor">[吉他] 方大同-三人遊</a></h2>
+    <p>
+      Posted on November 09, 2017 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 141
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>有窩表演</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/uwarn-performance_1.html#anchor">
+          Continue reading
+        </a>
+  </div>
+</article>
+
+  <div class="pagination">
+    <a class="btn float-right" href="https://ycc.idv.tw/index2.html">
+      Older Posts <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+
+
+<footer>
+<p>
+  &copy; 2023  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script>  <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+  <script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 
 </body>
+</html>

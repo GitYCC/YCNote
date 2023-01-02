@@ -1,236 +1,142 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題 - YC Note</title>
-    <meta name="description" content="Turing Machine / 時間複雜度 / P＝NP？ / NP-Complete 問題">
-    <meta name="author" content="YC Chen">
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題" />
-    <meta property="og:description" content="Turing Machine / 時間複雜度 / P＝NP？ / NP-Complete 問題" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/coding_front_board.jpg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/algorithm-complexity-theory.html" />
-    <meta property="og:site_name" content="YC Note" />
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="Turing Machine / 時間複雜度 / P＝NP？ / NP-Complete 問題" name="description">
+<meta content="" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題" property="og:title">
+<meta content="Turing Machine / 時間複雜度 / P＝NP？ / NP-Complete 問題" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/algorithm-complexity-theory.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2017-03-30 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="Coding" property="article:section">
+<meta content="" property="og:image"/>
+<title>YC Note – 輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/algorithm-complexity-theory.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Algorithm complexity theory", "item": "https://ycc.idv.tw/algorithm-complexity-theory.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題", "about": "Coding", "datePublished": "2017-03-30 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="algorithm-complexity-theory">輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題</h1>
+<p>
+      Posted on March 30, 2017 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 59,508
 
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Coding",
-            "item": "https://www.ycc.idv.tw/category/coding.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題",
-            "item": "https://www.ycc.idv.tw/algorithm-complexity-theory.html"
-          }]
-        }
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題 - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2017-03-30",
-          "image" : "https://www.ycc.idv.tw/images/coding_front_board.jpg",
-          "articleSection" : "Coding",
-          "articleBody" : "Turing Machine / 時間複雜度 / P＝NP？ / NP-Complete 問題",
-          "url" : "https://www.ycc.idv.tw/algorithm-complexity-theory.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/coding_front_board.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/coding_front_board.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/coding_front_board.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/coding_front_board.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2017-03-30</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/coding.html">Coding</a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            Turing Machine / 時間複雜度 / P＝NP？ / NP-Complete 問題
-                        </div>
-
-                        <p>在寫程式的時候，會聽到有人說這些問題是NP-Complete問題，或說這些是P問題，那這到底是什麼東西？其實這就是一套定義演算法複雜度的方法，今天我就想帶大家來聊聊這個艱澀但有趣的話題。</p>
+<div class="main-contents">
+<p>在寫程式的時候，會聽到有人說這些問題是NP-Complete問題，或說這些是P問題，那這到底是什麼東西？其實這就是一套定義演算法複雜度的方法，今天我就想帶大家來聊聊這個艱澀但有趣的話題。</p>
 <h3>Turing Machine</h3>
 <p>我們先從 <a href="https://en.wikipedia.org/wiki/Turing_machine">Turing machine</a>（圖靈機）開始講起，Turing machine是現代電腦的基本雛型，是英國數學家圖靈（Alan Turing）於1936年提出的一種抽象計算模型，這個計算模型在猜想上可以「計算所有在演算法中可計算的問題」，也就是可以解決人類所有可解的問題，這個猜想稱之為 <a href="https://en.wikipedia.org/wiki/Church–Turing_thesis">Church–Turing thesis</a>（thesis代表假設或猜想），僅管目前還無法證明這個猜想，但是目前為止它幾乎是完全被接受的。</p>
 <p>簡單的談一下 Turing machine的基本架構，首先我們需要一個磁帶，這一條磁帶上面可以一格一格的填入一些 symbols，這可以是單純的 0/1 symbols 或者更多種類的 symbols，但這些 symbols 的數量必須是有限的，而這個symbols就可以當作我的輸入，接下來我需要一個讀寫頭，這個讀寫頭會在磁帶上讀取或寫入 symbol，或左右移動，另外這個讀寫頭存有一個 state，這個 state 會隨著狀況改變，然後我就利用 symbol 和 state 來建立一個規則表，舉個例子，譬如說：初始的 state 是 <span class="math">\(q_0\)</span>，如果讀寫頭在 <span class="math">\(q_0\)</span> 的情況下讀到 symbol 0，就寫入 symbol 1，並且向右移動3格，並且改變 state <span class="math">\(q_0\)</span> 為 <span class="math">\(q_1\)</span>，... 等等，藉由可操作的規則來完成我們想做的運算，最後最重要的是它必須有一個 halt state 讓機器知道已經計算完畢了。Turing machine 不僅僅在理論上可以做任何的計算，而更有價值的是 Turing machine 的架構是有辦法用物理的方式來製造的，所以才會有現代電腦這玩意兒。</p>
@@ -279,14 +185,14 @@
 <h3>後話</h3>
 <p>最後，以下面這張圖作個結尾，左圖是假設<span class="math">\(P\neq NP\)</span>被證明的情形，NP-Hard有兩個部分，一個部分它同時是個NP問題，另外一部分則不是，所謂的NP問題就是可以用NTM在 polynomial time內給解掉的問題，另外其解的驗證必定能用DTM在 polynomial time內完成，兩種定義是等價的，有一部分的NP問題是屬於P問題，這些問題大部分都是易解的，有另外一部分的NP問題為NP-Complete問題，這些問題被視為難解的問題，我們只能用逼進的方法盡量接近答案。</p>
 <p>右圖是假設P＝NP被證明的情形，此時NP-Complete問題已經被證明為P問題，利用NP-Complete問題的特性，我們可以化約所有NP問題為NP-Complete問題，在把這個NP-Complete問題用 polynomial time 解掉，所以P=NP=NP-Complete。</p>
-<p><img alt="P_np_np-complete_np-hard" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/P_np_np-complete_np-hard.svg/800px-P_np_np-complete_np-hard.svg.png"></p>
+<p><img alt="P_np_np-complete_np-hard" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/P_np_np-complete_np-hard.svg/800px-P_np_np-complete_np-hard.svg.png"/></p>
 <p>事實上，目前科學界普遍相信<span class="math">\(P\neq NP\)</span>，所以遇到NP-Complete的問題，就直接標註這是一道難題，使用近似解吧！這是一個不怎麼樂觀的看法，難道說我們真的無法把這樣的難題給解決掉了嗎？也未必啦！仔細想想我們也許還有另外一個方法，只要我們創建一個NTM就可以把這些難題給解決掉啦！期待一下目前正夯的量子電腦看有沒有可能是NTM呢！？</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
+    var align = "left",
+        indent = "1em",
+        linebreak = "true";
 
-    if (false) {
+    if (true) {
         align = (screen.width < 768) ? "left" : align;
         indent = (screen.width < 768) ? "0em" : indent;
         linebreak = (screen.width < 768) ? 'true' : linebreak;
@@ -296,10 +202,13 @@
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
     mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
         "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
         "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
         "    displayAlign: '"+ align +"'," +
@@ -313,7 +222,9 @@
         "        preview: 'TeX'," +
         "    }, " +
         "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} }," +
         "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
         "    }, " +
         "}); " +
@@ -333,109 +244,60 @@
                 "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
             "});" +
         "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_4.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    機器學習技法 學習筆記 (4)：Basic Aggregation Models
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_5.html" rel="next">
-                                    <span>Next Post</span>
-                                    機器學習技法 學習筆記 (5)：Boost Aggregation Models
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/algorithm-complexity-theory.html";
-            this.page.identifier = "algorithm-complexity-theory.html";
-            this.page.title = "輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/ml-course-techniques_4.html#anchor" title="機器學習技法 學習筆記 (4)：Basic Aggregation Models">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/ml-course-techniques_5.html#anchor" title="機器學習技法 學習筆記 (5)：Boost Aggregation Models">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>

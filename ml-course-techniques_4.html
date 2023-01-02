@@ -1,242 +1,147 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>機器學習技法 學習筆記 (4)：Basic Aggregation Models - YC Note</title>
-    <meta name="description" content="本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest">
-    <meta name="author" content="YC Chen">
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="機器學習技法 學習筆記 (4)：Basic Aggregation Models" />
-    <meta property="og:description" content="本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/ml-course-techniques_4.html" />
-    <meta property="og:site_name" content="YC Note" />
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest" name="description">
+<meta content="機器學習技法" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="機器學習技法 學習筆記 (4)：Basic Aggregation Models" property="og:title">
+<meta content="本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/ml-course-techniques_4.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2017-03-29 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="AI.ML" property="article:section">
+<meta content="機器學習技法" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – 機器學習技法 學習筆記 (4)：Basic Aggregation Models</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/ml-course-techniques_4.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Ml course techniques_4", "item": "https://ycc.idv.tw/ml-course-techniques_4.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "機器學習技法 學習筆記 (4)：Basic Aggregation Models", "about": "AI.ML", "datePublished": "2017-03-29 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="ml-course-techniques_4">機器學習技法 學習筆記 (4)：Basic Aggregation Models</h1>
+<p>
+      Posted on March 29, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 7,403
 
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "AI.ML",
-            "item": "https://www.ycc.idv.tw/category/aiml.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "機器學習技法 學習筆記 (4)：Basic Aggregation Models",
-            "item": "https://www.ycc.idv.tw/ml-course-techniques_4.html"
-          }]
-        }
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "機器學習技法 學習筆記 (4)：Basic Aggregation Models - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2017-03-29",
-          "image" : "https://www.ycc.idv.tw/images/ml-course-techniques.jpeg",
-          "articleSection" : "AI.ML",
-          "articleBody" : "本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest",
-          "url" : "https://www.ycc.idv.tw/ml-course-techniques_4.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "機器學習技法 學習筆記 (4)：Basic Aggregation Models"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" 
-                                 srcset="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 2000w, 
-                                 https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 1000w, 
-                                 https://www.ycc.idv.tw/images/ml-course-techniques.jpeg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        機器學習技法 學習筆記 (4)：Basic Aggregation Models
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2017-03-29</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a>                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest
-                        </div>
-
-                        <h3>綜觀Aggregation Models</h3>
+<div class="main-contents">
+<h3>綜觀Aggregation Models</h3>
 <p>如果今天我有很多支的Model，我有辦法融合他們得到更好的效果嗎？</p>
 <p>這就是Aggregation Models的精髓，Aggregation Models藉由類似於投票的方法綜合各個子Models的結果得到效果更好的Model。換個角度看，你可以把整個體系看成一個新的Model，而原本這些子Models當作轉換過後的新Features，<strong>所以Aggregation Model裡頭做了「特徵轉換」，這個特徵轉換產生出許多有預測答案能力的Features，稱為Predictive Features，然後再綜合它們得到最後的Model</strong>。</p>
-<p><img alt="Aggregation Models" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.007.jpeg"></p>
+<p><img alt="Aggregation Models" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.007.jpeg"/></p>
 <p>Aggregation Models可以分成兩大類，第一種的作法比較簡單，先Train出一個一個獨立的Predictive Features，然後在綜合它們，<strong>「集合」的動作是發生在得到Train好的Predictive Feature之後，這叫做「Blending Models」</strong>；第二種作法則是，<strong>「集合」的動作和Training同步進行，這叫做「Aggregation-Learning Models」</strong>，Aggregation-Learning Models有一個特殊的例子叫做Boost，翻開字典查Boost的意思是「促進」，在這邊的意義是<strong>假設在Training過程所產生的Predictive Feature朝著改善Model的方向前進就叫做Boost</strong>。</p>
 <p>從「集合」的方法上也可以進一步細分三種類型，有票票等值的<strong>「Uniform Aggregation Type」</strong>，有給予Predictive Features不同權重的<strong>「Linear Aggregation Type」</strong>，甚至還可以用條件或任意Model來分配Predictive Features，這叫做<strong>「Non-linear Aggregation Type」</strong>。</p>
 <p>所以兩種類型、三種Aggregation Type，交互產生各類的Aggregation Models。有Blending的三種Aggregation Type，Aggregation-Learning的Uniform Type—Bagging，再加上Aggregation-Learning的Linear Type兩種—AdaBoost和GradientBoost，這兩種也亦是Boost的方法，AdaBoost負責處理Classification的問題，而GradientBoost則負責處理Regression的問題，最後介紹Aggregation-Learning的Non-Linear Type—Decision Tree。然後接著，使用Decision Tree結合其他方法再進一步的產生Random Forest、AdaBoost Decision Tree和GradientBoost Decision Tree。</p>
@@ -244,19 +149,19 @@
 <p><br/></p>
 <h3>Blending</h3>
 <p><strong>Blending是泛指在Training結束之後得到幾個Predictive Features，然後再對這些Predictive Features做集合的方法</strong>。</p>
-<p><img alt="Blending" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.008.jpeg"></p>
+<p><img alt="Blending" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.008.jpeg"/></p>
 <p>如上圖，基本流程是這樣的，一開始先把Data切成一部分拿來Training，另外一部分拿來Validation，這部份很重要，因為我們待會要利用Validation的Error來決定每筆Predictive Feature對Model的貢獻分配比重；接下來使用不同的方法來產生不同的Predictive Features <span class="math">\(g_{t}\)</span>，來源可能是不同的Model形式、不同的參數變化、不同的隨機情形等等；有了各類的<span class="math">\(g_{t}\)</span>之後，我們就可以選擇使用怎樣的方式來結合它們，如果是Uniform Combination，就直接平均所有<span class="math">\(g_{t}\)</span>就可以了，那如果是Linear Combination，想當然爾就是使用線性模型來結合，那如果是Non-Linear Combination，你可以使用任意Model來描述也行；決定好結合方式了，也就同時決定了「特徵轉換」的方法，接下來出動Validation Data，使用這個「特徵轉換」來轉化Validation Data並且做Fitting，最後我們會找到一組解最佳的參數來確定結合的方法，如果是Uniform Combination是不需要這一步的，基本上你得到<span class="math">\(g_{t}\)</span>就直接平均就得到結果了，而Linear Combination則是需要去找出<span class="math">\(α_{t}\)</span>。</p>
 <p><strong>在數學上可以證明Aggregation的效果會比單一一個<span class="math">\(g_{t}\)</span>的描述的結果還好</strong>，這很像是在做投票選舉，不同方法可能帶有不一樣的偏見，但是綜合所有意見之後可以找到共識，這個共識是具有較少偏見的，你可以想像偏見就像是Overfitting，<strong>所以Aggregation是具有像Regularizaiton一般抑制Overfitting的效果的</strong>，但有些時候特別的看法不一定是偏見，也許這一個方法可以看出其他方法看不出來的規律，此時這個部分也不會被完全忽略掉，<strong>所以Aggregation也可以同時擁有像Feature Transform一樣的複雜度。因此Aggregation的方法可以同時增加Model複雜度又同時防止它Overfitting，這個效果是我們以前沒看過的，所以我們會說Aggregation具有截長補短的效果</strong>。</p>
 <p><br/></p>
 <h3>Bagging</h3>
-<p><img alt="Bagging" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.009.jpeg"></p>
+<p><img alt="Bagging" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.009.jpeg"/></p>
 <p><strong>Bagging是一種利用變換原本Data來造出不同<span class="math">\(g_{t}\)</span>的簡單方法</strong>，Bagging的全名稱為Bootstrap Aggregation，其中<strong>Bootstrap指的是「重新取樣原有Data產生新的Data，取樣的過程是均勻且可以重複取樣的」</strong>，使用Bootstrap我們就可以從一組Data中生出多組Dataset，然後就可以使用這些Dataset來產生多組<span class="math">\(g_{t}\)</span>，最後再Uniform Combination這些<span class="math">\(g_{t}\)</span>，就完成了Bagging。</p>
 <p><br/></p>
 <h3>Decision Tree（決策樹）</h3>
 <p>接下來談Decision Tree這個重要的概念，Decision Tree其實就像是一個多層次的分類，每一次的分類會根據某一個Feature來當作依據判斷它應該繼續往哪一條路走，然後繼續使用可能是另外一個Feature來繼續細分下去。舉個例子好了，假設今天有一個自由式摔跤重量63公斤的女選手Ms. D要參加奧運，所以得透過奧運的分級制度分級，一開始可能根據比賽模式這個Feature下去分類，我查了一下有自由式和古典式兩種，所以Ms. D會被歸類到自由式，再來根據性別這個Feature下去分類，Ms. D是女選手所以分到女選手這一類，再繼續可能會根據體重來細分，體重在奧運分級共有8級，Ms. D可能就被分到62公斤级的那類，這樣的分類精神就是Decision Tree。</p>
 <p>所以，Decision Tree的優點是結果所提供的結構非常容易讓人了解，另外在演算法部分也很容易實現，而且因為具有以條件篩選的結構，所以其實很容易可以做到多類別分類。但是Decision Tree也有一些為人詬病的缺點，Decision Tree整體理論是缺乏基礎的，存在很多是前人的巧思，很多作法都是使用起來感覺效果不錯就延續下去了，目前並不了解背後的原因，也因此沒有一個代表性的演算法存在。</p>
 <p>在講Decision Tree操作方法之前應該要先來講一下Decision Stump，Decision Stump做的事其實就是上述中提到的對某個Feature做切分的這件事，<strong>可以想知Decision Stump是一個預測效果很差的Model，而Aggregation這些Decision Stump形成Decision Tree卻有很好的效果</strong>，這就是Aggregation的威力。</p>
-<p><img alt="Decision Tree" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.010.jpeg"></p>
+<p><img alt="Decision Tree" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.010.jpeg"/></p>
 <p>見上圖，我們來看一下Decision Tree的流程，Decision Tree最為人所知的演算法是C&amp;RT，C&amp;RT是一整套的套件，我們今天只是提到它整套套件中的一種特例。Decision Tree產生的函式是這樣的，一開始先判斷進來的這筆資料還能不能繼續分支下去，在三個情況下，我們沒辦法繼續分支下去：</p>
 <ol>
 <li>數據<span class="math">\(Ɗ\)</span>只剩一筆數據。</li>
@@ -276,14 +181,14 @@
 <li><strong><span class="math">\(Impurity(Ɗ) = (1/N) 𝚺_{n} ( y_{n} - \overline{y} )^{2}\)</span></strong>，其中<span class="math">\(ȳ\)</span>代表的是<span class="math">\(\{y_{n}\}\)</span>的平均值，式子中使用平方誤差來評估資料的離散程度。</li>
 </ul>
 <p>有了Impurity Function我們就有了指標，找出應該要使用哪個Feature、應該要怎麼切，才能使得Impurity Function總和最小，決定好這一刀後，接下來就從這一刀切下去，把Data一分為二，然後這兩組Data再各自去長出一棵Decision Tree，經過遞迴式的迭代，我們就可以得到一棵完整的Decision Tree了。</p>
-<p><img alt="Show C&amp;RT" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.015.jpeg"></p>
+<p><img alt="Show C&amp;RT" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.015.jpeg"/></p>
 <p>如果我們讓一棵樹完整的長成了，可以想到的後果想當然爾就是Overfitting，所以我們必須要做Regularization，<strong>Decision Tree常用的Regularization的方法是Pruning</strong>，就是砍樹，我們將分支的數量<span class="math">\(Ω(G)\)</span>加進去<span class="math">\(E_{in}\)</span>中做為Regularization，所以我們問題變成是去找到 <span class="math">\(argmin\ E_{in}(G)+λΩ(G)\)</span>，其中的λ可以利用Validation Data來做選擇，你會發現如果真正的要去找到<span class="math">\(argmin\ E_{in}(G)+λΩ(G)\)</span>的最佳解，這問題會非常的困難，因為你必須要把所有的可能的樹都考慮進去，所以有一個替代方案，<strong>我們可以先將樹整棵長完，然後在一一的去合併分支，看哪兩個分支合併之後可以使<span class="math">\(E_{in}\)</span>最小就先合併，使用這樣的作法逐步減少分支的數量</strong>。</p>
 <p>順道一提，C&amp;RT可以產生許多替代方案，這些替代方案稱為Surrogate Branch，當有一筆Data缺乏某個Feature，我們仍然有辦法使用替代方案來做決策，這是C&amp;RT的一個大大的優點。</p>
 <p><br/></p>
 <h3>Random Forest（隨機森林）</h3>
 <p>如果我拿Decision Tree來做Bagging這樣可以嗎？當然OK，Aggregation Model的精髓就是可以綜合子Model，那Decision Tree也可以是看成一個子Model，所以我們在做的就是Aggregation of Aggregation，<strong>這種拿Decision Tree來做Bagging的Model叫做Random Forest</strong>，這個名字取的很生動，有很多棵數的地方就是森林啦！</p>
 <p><strong>Decision Tree和Bagging其實是有互補的作用</strong>，Decision Tree這種演算法是「變異度」很高的，因為它不像SVM這類的演算法，會去評估與Data之間的距離，空出最大的距離來避免Overfitting，而Bagging正可以拿來減少「變異度」，消除雜訊，所以<strong>Random Forest會比Decision Tree更不易Overfitting</strong>。</p>
-<p><img alt="Random Forest" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.011.jpeg"></p>
+<p><img alt="Random Forest" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.011.jpeg"/></p>
 <p>見上圖，我們來看一下Random Forest的流程，一開始先做和Bagging裡頭一樣做的事Bootstrap，藉此來產生新的Dataset，另外為了讓我們隨機程度變得更高，我也對我們Features來做點變化，將它乘上一個亂數產生的<span class="math">\(P\)</span>，如果<span class="math">\(P_{i}=0\)</span>代表我們完全不取這個Feature，如果<span class="math">\(P_{i}=1\)</span>代表我們完全取這個Feature，我們更可以以分數來代表我們對某個Feature的重視程度，這個手法叫做Random-subspace。接下來就是把弄的很亂的Dataset放進去長一顆Decision Tree，最後再把所有的Decision Tree平均就是Random Forest的結果。</p>
 <p>Random Forest發展出了一套獨特的Validation方法，我們知道Bootstrap的結果會造成有些Data取用而有些Data不使用，而取用的Data會拿來Training，這讓你想到什麼呢？沒錯，沒有用到的Data可以做Validation，我們可以拿那些沒有被取用的Data來評估Training的好壞，我們會稱那些沒被取用的Date叫做Out-of-Bag Data，而利用Out-of-Bag Data來Validation的Error，稱為Out-of-Bag Error，</p>
 <blockquote>
@@ -303,11 +208,11 @@ $$</div>
 <p>接下來，Learning-Aggregation的方法則化被動為主動，我們先提了Bagging，裡頭使用Bootstrap的技巧來造成資料的隨機性，利用這樣的變異來產生多個<span class="math">\(g_{t}\)</span>，再接下來我講了Decision Tree，Decision Tree由多個Decision Stump組合而成，每個Decision Stump就是<span class="math">\(g_{t}\)</span>，Decision Tree做的事就是，產生Decision Stump、切分Dataset、再產生Decision Stump...接續下去，最後綜合全部的Decision Stump成為Decision Tree。</p>
 <p>最後，我們結合Decision Tree和Bagging產生了Random Forest，利用彼此的互補，讓效果變得更好可以比單純Decision Tree更好。</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
+    var align = "left",
+        indent = "1em",
+        linebreak = "true";
 
-    if (false) {
+    if (true) {
         align = (screen.width < 768) ? "left" : align;
         indent = (screen.width < 768) ? "0em" : indent;
         linebreak = (screen.width < 768) ? 'true' : linebreak;
@@ -317,10 +222,13 @@ $$</div>
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
     mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
         "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
         "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
         "    displayAlign: '"+ align +"'," +
@@ -334,7 +242,9 @@ $$</div>
         "        preview: 'TeX'," +
         "    }, " +
         "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} }," +
         "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
         "    }, " +
         "}); " +
@@ -354,136 +264,69 @@ $$</div>
                 "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
             "});" +
         "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/the-brain-the-story-of-you.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    讀書手札：大腦解密手冊 The Brain: The Story of You
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/algorithm-complexity-theory.html" rel="next">
-                                    <span>Next Post</span>
-                                    輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                        <h3 class="h2">Related Articles</h3>
-                        <ul class="related">
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_2.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (3)：Kernel Regression</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_5.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (5)：Boost Aggregation Models</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_6.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</h5>
-                                </a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/ml-course-techniques_4.html";
-            this.page.identifier = "ml-course-techniques_4.html";
-            this.page.title = "機器學習技法 學習筆記 (4)：Basic Aggregation Models";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/the-brain-the-story-of-you.html#anchor" title="讀書手札：大腦解密手冊 The Brain: The Story of You">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/algorithm-complexity-theory.html#anchor" title="輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<div class="related-posts">
+<h4>You might enjoy</h4>
+<ul class="related-posts">
+<li><a href="https://ycc.idv.tw/ml-course-techniques_2.html">機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)</a></li>
+<li><a href="https://ycc.idv.tw/ml-course-techniques_3.html">機器學習技法 學習筆記 (3)：Kernel Regression</a></li>
+<li><a href="https://ycc.idv.tw/ml-course-techniques_5.html">機器學習技法 學習筆記 (5)：Boost Aggregation Models</a></li>
+<li><a href="https://ycc.idv.tw/ml-course-techniques_6.html">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</a></li>
+</ul>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>

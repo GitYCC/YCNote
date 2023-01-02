@@ -1,0 +1,769 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet/less" type="text/css" href="https://ycc.idv.tw/theme/stylesheet/style.less">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://ycc.idv.tw/theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet"
+        type="text/css"
+        href="https://ycc.idv.tw/theme/stork/stork.css" />
+
+  <link rel="stylesheet" type="text/css" href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ycc.idv.tw/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ycc.idv.tw/theme/font-awesome/css/solid.css">
+
+
+  <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+  <link rel="icon" href="/images/favicon.png" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#FFFFFF">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#FFFFFF">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+
+  <link href="https://ycc.idv.tw/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="YC Note Atom">
+
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+
+
+
+
+
+
+ 
+
+    <meta name="author" content="Yi-Chang Chen" />
+    <meta name="description" content="YC Note - ML/DL Tech Blog" />
+  <meta property="og:site_name" content="YC Note"/>
+  <meta property="og:type" content="blog"/>
+  <meta property="og:title" content="YC Note"/>
+  <meta property="og:description" content="YC Note - ML/DL Tech Blog"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://ycc.idv.tw"/>
+
+  <title>YC Note</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="https://ycc.idv.tw/">
+      <img src="https://ycc.idv.tw/theme/img/profile.png" alt="YC Note" title="YC Note">
+    </a>
+
+    <h1>
+      <a href="https://ycc.idv.tw/">YC Note</a>
+    </h1>
+
+    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+
+    
+
+    <div class="stork">
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(); this.onclick=null;"/>
+      <div class="stork-output" data-stork="sitesearch-output"></div>
+    </div>
+    <!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+
+    <p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+
+    <p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+
+
+    <ul class="social">
+      <li>
+        <a class="sc-facebook"
+           href="https://www.facebook.com/yc.note"
+           target="_blank">
+          <i class="fa-brands fa-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/GitYCC"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-linkedin"
+           href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/"
+           target="_blank">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav id="anchor">
+  <a href="https://ycc.idv.tw/">Home</a>
+
+  <a href="/about-me.html#anchor">About Me</a>
+  <a href="/categories.html#anchor">Categories</a>
+  <a href="/tags.html#anchor">Tags</a>
+
+  <a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+
+</nav>
+
+
+
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/uwarn-performance_2.html#anchor">[吉他] 光良-傷心地鐵</a></h2>
+    <p>
+      Posted on November 08, 2017 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 156
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>有窩表演</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/uwarn-performance_2.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/tensorflow-tutorial_2.html#anchor">實作Tensorflow (2)：Build First Deep Neurel Network (DNN)</a></h2>
+    <p>
+      Posted on November 07, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 5,345
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>增加Hidden Layer / Activation Function的選擇 / Mini-Batch Gradient Descent / Regularization / Weight Regularization / Dropout / Optimizer的選擇 / 來看看程式怎麼寫</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/tensorflow-tutorial_2.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/tensorflow-tutorial_1.html#anchor">實作Tensorflow (1)：Simple Logistic Classification on MNIST</a></h2>
+    <p>
+      Posted on October 23, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 5,372
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>MNIST Dataset / Softmax / Cross-Entropy Loss / 分離數據的重要性 / Tensorflow工作流程 / Tensorflow的基本「張量」元素 / Session的操作 / 第一個Tensorflow Model</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/tensorflow-tutorial_1.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/stock-sell-point.html#anchor">股票策略：移動停損法</a></h2>
+    <p>
+      Posted on September 05, 2017 in <a href="https://ycc.idv.tw/category/reading.html">Reading</a>. View: 6,345
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>簡言之就是「從買入當天開始算起，以過程的每天當中最高股價當作基準點，向下去設停損點，或是停利點，低於這點就當天賣，或隔天賣」</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/stock-sell-point.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/confusion-matrix.html#anchor">如何辨別機器學習模型的好壞？秒懂Confusion Matrix</a></h2>
+    <p>
+      Posted on August 04, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 108,119
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>本篇介紹包含Confusion Matrix, True Positive, False Negative, False Positive, True Negative, Type I Error, Type II Error, Prevalence, Accuracy, Precision, Recall, F1 Measure, F Measure, Sensitivity, Specificity, ROC Curve, AUC, TPR, FNR, FPR, TNR, FDR, FOR, PPV, NPV, 算數平均, 幾何平均, 調和平均</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/confusion-matrix.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/python-play-with-data_3.html#anchor">Python玩數據 (3)：Numpy [2/2]</a></h2>
+    <p>
+      Posted on May 06, 2017 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 4,675
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>產生ndarray的其他方法 / Broadcasting / Slice and Fancy Indexing /</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/python-play-with-data_3.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/ml-course-techniques_7.html#anchor">機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization</a></h2>
+    <p>
+      Posted on April 22, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 14,168
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/ml-course-techniques_7.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/ml-course-techniques_6.html#anchor">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</a></h2>
+    <p>
+      Posted on April 17, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 30,952
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>本篇內容涵蓋神經網路(Neural Network, NN)、深度學習(Deep Learning, DL)、反向傳播算法(Backpropagation, BP)、Weight-elimination Regularizer、Early Stop、Autoencoder、Principal Component Analysis (PCA)</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/ml-course-techniques_6.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/python-play-with-data_2.html#anchor">Python玩數據 (2)：Numpy [1/2]</a></h2>
+    <p>
+      Posted on April 17, 2017 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 13,355
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>Python常見的資料型別 / Numpy的數學運算 / Numpy基礎元素：ndarray / Numpy的矩陣運算</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/python-play-with-data_2.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/big-data-a-revolution.html#anchor">大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think</a></h2>
+    <p>
+      Posted on April 07, 2017 in <a href="https://ycc.idv.tw/category/reading.html">Reading</a>. View: 634
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>樣本=總體 / 允許不精確 / 「是什麼」比「為什麼」還重要 / 大數據時代的商業變革 / 全息社會</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/big-data-a-revolution.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/ml-course-techniques_5.html#anchor">機器學習技法 學習筆記 (5)：Boost Aggregation Models</a></h2>
+    <p>
+      Posted on April 02, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 4,737
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/ml-course-techniques_5.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/algorithm-complexity-theory.html#anchor">輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題</a></h2>
+    <p>
+      Posted on March 30, 2017 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 59,508
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>Turing Machine / 時間複雜度 / P＝NP？ / NP-Complete 問題</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/algorithm-complexity-theory.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/ml-course-techniques_4.html#anchor">機器學習技法 學習筆記 (4)：Basic Aggregation Models</a></h2>
+    <p>
+      Posted on March 29, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 7,403
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/ml-course-techniques_4.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/the-brain-the-story-of-you.html#anchor">讀書手札：大腦解密手冊 The Brain: The Story of You</a></h2>
+    <p>
+      Posted on March 24, 2017 in <a href="https://ycc.idv.tw/category/reading.html">Reading</a>. View: 739
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>大腦的可塑性 / 意識與無意識 / 腦中的交戰網路 / 科技將如何改變大腦的未來</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/the-brain-the-story-of-you.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/python-play-with-data_1.html#anchor">Python玩數據 (1)：安裝Python, IPython, Numpy, Pandas</a></h2>
+    <p>
+      Posted on March 20, 2017 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 5,316
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>安裝Python, IPython, Numpy, Pandas</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/python-play-with-data_1.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/how-to-read-books.html#anchor">從《如何閱讀一本書》想像一種不同的知識呈現方法</a></h2>
+    <p>
+      Posted on March 18, 2017 in <a href="https://ycc.idv.tw/category/reading.html">Reading</a>. View: 828
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>書籍與網路的PK / 閱讀的層次 / 檢視閱讀 / 分析閱讀 / 主題閱讀 / 書籍與網路的第二回合PK</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/how-to-read-books.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/ml-course-techniques_3.html#anchor">機器學習技法 學習筆記 (3)：Kernel Regression</a></h2>
+    <p>
+      Posted on March 15, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 5,604
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>本篇內容涵蓋Probabilistic SVM、Kernel Logistic Regression、Kernel Ridge Regression、Support Vector Regression (SVR)</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/ml-course-techniques_3.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/ml-course-techniques_2.html#anchor">機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)</a></h2>
+    <p>
+      Posted on February 20, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 10,914
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/ml-course-techniques_2.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/ml-course-techniques_1.html#anchor">機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹</a></h2>
+    <p>
+      Posted on January 12, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 10,291
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>有什麼特徵可以使用？ / Embedding Numerous Features ：Kernel Models / Combining Predictive Features：Aggregation Models / Distilling Implicit Features：Extraction Models</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/ml-course-techniques_1.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/ml-course-foundations_4.html#anchor">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</a></h2>
+    <p>
+      Posted on September 18, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 16,249
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>特徵轉換 / Overfitting / Regularization / Validation</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/ml-course-foundations_4.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/ml-course-foundations_3.html#anchor">機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?</a></h2>
+    <p>
+      Posted on August 07, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 7,331
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>Gradient Descent / Linear Regression / Logistic Regression / 使用迴歸法做二元分類問題</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/ml-course-foundations_3.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/ml-course-foundations_2.html#anchor">機器學習基石 學習筆記 (2)：為什麼機器可以學習?</a></h2>
+    <p>
+      Posted on June 26, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 11,641
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>機器可以學習嗎? / <span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異 / VC Generalization Bound / 機器要能學習的三要素 / 學習架構</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "left",
+        indent = "1em",
+        linebreak = "true";
+
+    if (true) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script><script type='text/javascript'>if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "left",
+        indent = "1em",
+        linebreak = "true";
+
+    if (true) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/ml-course-foundations_2.html#anchor">
+          Continue reading
+        </a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://ycc.idv.tw/ml-course-foundations_1.html#anchor">機器學習基石 學習筆記 (1)：何時可以使用機器學習?</a></h2>
+    <p>
+      Posted on June 06, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 12,561
+
+
+    </p>
+  </header>
+  <div>
+      <div><p>什麼是Machine Learning / ML的使用時機 / 二元分類問題 / 多元學習</p></div>
+        <br>
+        <a class="btn"
+           href="https://ycc.idv.tw/ml-course-foundations_1.html#anchor">
+          Continue reading
+        </a>
+  </div>
+</article>
+
+  <div class="pagination">
+    <a class="btn float-left" href="https://ycc.idv.tw/index.html">
+      <i class="fa fa-angle-left"></i> Newer Posts
+    </a>
+  </div>
+
+
+
+<footer>
+<p>
+  &copy; 2023  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script>  <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+  <script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
+
+</body>
+</html>

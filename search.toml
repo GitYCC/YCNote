@@ -1,0 +1,268 @@
+[input]
+base_directory = "/Users/ian/Workshop/YCNote/output"
+html_selector = "div.main-contents"
+
+[[input.files]]
+path = "about-me.html"
+url = "/about-me.html"
+title = "About Me: Yi-Chang Chen"
+
+[[input.files]]
+path = "multithread-multiprocess-gil.html"
+url = "/multithread-multiprocess-gil.html"
+title = "極簡說明Multi-thread/Multi-process、CPU-bound/IO-bound和GIL"
+
+[[input.files]]
+path = "tesla-aiday2022.html"
+url = "/tesla-aiday2022.html"
+title = "Tesla AI Day 2022 筆記"
+
+[[input.files]]
+path = "tesla-aiday2021.html"
+url = "/tesla-aiday2021.html"
+title = "Tesla AI Day 2021 筆記"
+
+[[input.files]]
+path = "diffusion-model.html"
+url = "/diffusion-model.html"
+title = "擴散模型（Diffusion Model）：生成模型的新成員"
+
+[[input.files]]
+path = "crnn-ctc.html"
+url = "/crnn-ctc.html"
+title = "OCR：CRNN+CTC開源加詳細解析"
+
+[[input.files]]
+path = "latest_ai_info.html"
+url = "/latest_ai_info.html"
+title = "資源整理：跟上AI前沿知識"
+
+[[input.files]]
+path = "deep-dl_4.html"
+url = "/deep-dl_4.html"
+title = "剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型"
+
+[[input.files]]
+path = "deep-dl_3.html"
+url = "/deep-dl_3.html"
+title = "剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點"
+
+[[input.files]]
+path = "deep-dl_2.html"
+url = "/deep-dl_2.html"
+title = "剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論"
+
+[[input.files]]
+path = "deep-dl_1.html"
+url = "/deep-dl_1.html"
+title = "剖析深度學習 (1)：為什麼Normal Distribution這麼好用？"
+
+[[input.files]]
+path = "egypt-travel_8.html"
+url = "/egypt-travel_8.html"
+title = "[入埃及記] Day9-10: 開羅【埃及博物館、哈利利市集】"
+
+[[input.files]]
+path = "egypt-travel_7.html"
+url = "/egypt-travel_7.html"
+title = "[入埃及記] Day8: 開羅Cairo【吉薩金字塔群、人面獅身像、香精專賣店、紙莎草專賣店】"
+
+[[input.files]]
+path = "egypt-travel_6.html"
+url = "/egypt-travel_6.html"
+title = "[入埃及記] Day7: 虎加達Hurghada【紅海渡假勝地】"
+
+[[input.files]]
+path = "egypt-travel_5.html"
+url = "/egypt-travel_5.html"
+title = "[入埃及記] Day6: 路克索【帝王谷、曼儂巨像】、虎加達"
+
+[[input.files]]
+path = "egypt-travel_4.html"
+url = "/egypt-travel_4.html"
+title = "[入埃及記] Day5: 艾得夫 Edfu【艾得夫神殿】、伊斯納水匣門、路克索【路克索神殿、卡納克神殿】"
+
+[[input.files]]
+path = "egypt-travel_3.html"
+url = "/egypt-travel_3.html"
+title = "[入埃及記] Day4: 阿布辛貝Abu Simbel【阿布辛貝雙神殿】、康孟波Kom Ombo【康孟波雙神殿】"
+
+[[input.files]]
+path = "egypt-travel_2.html"
+url = "/egypt-travel_2.html"
+title = "[入埃及記] Day3: 亞斯文【亞斯文大水壩、騎駱駝拜訪努比亞人家、三角風帆船】"
+
+[[input.files]]
+path = "egypt-travel_1.html"
+url = "/egypt-travel_1.html"
+title = "[入埃及記] Day1-2: 開羅 穆罕默德阿里清真寺"
+
+[[input.files]]
+path = "wide-and-deep-learning.html"
+url = "/wide-and-deep-learning.html"
+title = "[Paper] Wide & Deep Learning for Recommender Systems"
+
+[[input.files]]
+path = "sweet-child-oh-mine.html"
+url = "/sweet-child-oh-mine.html"
+title = "尾牙表演 - Sweet Child Oh Mine"
+
+[[input.files]]
+path = "introduction-object-oriented-programming_3.html"
+url = "/introduction-object-oriented-programming_3.html"
+title = "物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID"
+
+[[input.files]]
+path = "introduction-object-oriented-programming_2.html"
+url = "/introduction-object-oriented-programming_2.html"
+title = "物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹"
+
+[[input.files]]
+path = "introduction-object-oriented-programming_1.html"
+url = "/introduction-object-oriented-programming_1.html"
+title = "物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？"
+
+[[input.files]]
+path = "the-selfish-gene.html"
+url = "/the-selfish-gene.html"
+title = "自私的基因：基因觀點下的天擇"
+
+[[input.files]]
+path = "tensorflow-tutorial_6.html"
+url = "/tensorflow-tutorial_6.html"
+title = "實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)"
+
+[[input.files]]
+path = "tensorflow-tutorial_5.html"
+url = "/tensorflow-tutorial_5.html"
+title = "實作Tensorflow (5)：Word2Vec"
+
+[[input.files]]
+path = "tensorflow-tutorial_4.html"
+url = "/tensorflow-tutorial_4.html"
+title = "實作Tensorflow (4)：Autoencoder"
+
+[[input.files]]
+path = "tensorflow-tutorial_3.html"
+url = "/tensorflow-tutorial_3.html"
+title = "實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)"
+
+[[input.files]]
+path = "uwarn-performance_1.html"
+url = "/uwarn-performance_1.html"
+title = "[吉他] 方大同-三人遊"
+
+[[input.files]]
+path = "uwarn-performance_2.html"
+url = "/uwarn-performance_2.html"
+title = "[吉他] 光良-傷心地鐵"
+
+[[input.files]]
+path = "tensorflow-tutorial_2.html"
+url = "/tensorflow-tutorial_2.html"
+title = "實作Tensorflow (2)：Build First Deep Neurel Network (DNN)"
+
+[[input.files]]
+path = "tensorflow-tutorial_1.html"
+url = "/tensorflow-tutorial_1.html"
+title = "實作Tensorflow (1)：Simple Logistic Classification on MNIST"
+
+[[input.files]]
+path = "stock-sell-point.html"
+url = "/stock-sell-point.html"
+title = "股票策略：移動停損法"
+
+[[input.files]]
+path = "confusion-matrix.html"
+url = "/confusion-matrix.html"
+title = "如何辨別機器學習模型的好壞？秒懂Confusion Matrix"
+
+[[input.files]]
+path = "python-play-with-data_3.html"
+url = "/python-play-with-data_3.html"
+title = "Python玩數據 (3)：Numpy [2/2]"
+
+[[input.files]]
+path = "ml-course-techniques_7.html"
+url = "/ml-course-techniques_7.html"
+title = "機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization"
+
+[[input.files]]
+path = "ml-course-techniques_6.html"
+url = "/ml-course-techniques_6.html"
+title = "機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)"
+
+[[input.files]]
+path = "python-play-with-data_2.html"
+url = "/python-play-with-data_2.html"
+title = "Python玩數據 (2)：Numpy [1/2]"
+
+[[input.files]]
+path = "big-data-a-revolution.html"
+url = "/big-data-a-revolution.html"
+title = "大數據 Big Data:A Revolution That Will Transform How We Live, Work, and Think"
+
+[[input.files]]
+path = "ml-course-techniques_5.html"
+url = "/ml-course-techniques_5.html"
+title = "機器學習技法 學習筆記 (5)：Boost Aggregation Models"
+
+[[input.files]]
+path = "algorithm-complexity-theory.html"
+url = "/algorithm-complexity-theory.html"
+title = "輕鬆談演算法的複雜度分界：什麼是P, NP, NP-Complete, NP-Hard問題"
+
+[[input.files]]
+path = "ml-course-techniques_4.html"
+url = "/ml-course-techniques_4.html"
+title = "機器學習技法 學習筆記 (4)：Basic Aggregation Models"
+
+[[input.files]]
+path = "the-brain-the-story-of-you.html"
+url = "/the-brain-the-story-of-you.html"
+title = "讀書手札：大腦解密手冊 The Brain: The Story of You"
+
+[[input.files]]
+path = "python-play-with-data_1.html"
+url = "/python-play-with-data_1.html"
+title = "Python玩數據 (1)：安裝Python, IPython, Numpy, Pandas"
+
+[[input.files]]
+path = "how-to-read-books.html"
+url = "/how-to-read-books.html"
+title = "從《如何閱讀一本書》想像一種不同的知識呈現方法"
+
+[[input.files]]
+path = "ml-course-techniques_3.html"
+url = "/ml-course-techniques_3.html"
+title = "機器學習技法 學習筆記 (3)：Kernel Regression"
+
+[[input.files]]
+path = "ml-course-techniques_2.html"
+url = "/ml-course-techniques_2.html"
+title = "機器學習技法 學習筆記 (2)：Support Vector Machine (SVM)"
+
+[[input.files]]
+path = "ml-course-techniques_1.html"
+url = "/ml-course-techniques_1.html"
+title = "機器學習技法 學習筆記 (1)：我們將會學到什麼? 先見林再來見樹"
+
+[[input.files]]
+path = "ml-course-foundations_4.html"
+url = "/ml-course-foundations_4.html"
+title = "機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?"
+
+[[input.files]]
+path = "ml-course-foundations_3.html"
+url = "/ml-course-foundations_3.html"
+title = "機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?"
+
+[[input.files]]
+path = "ml-course-foundations_2.html"
+url = "/ml-course-foundations_2.html"
+title = "機器學習基石 學習筆記 (2)：為什麼機器可以學習?"
+
+[[input.files]]
+path = "ml-course-foundations_1.html"
+url = "/ml-course-foundations_1.html"
+title = "機器學習基石 學習筆記 (1)：何時可以使用機器學習?"

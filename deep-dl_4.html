@@ -1,239 +1,144 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型 - YC Note</title>
-    <meta name="description" content="學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。">
-    <meta name="author" content="YC Chen">
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型" />
-    <meta property="og:description" content="學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/deep-dl_4.html" />
-    <meta property="og:site_name" content="YC Note" />
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。" name="description">
+<meta content="剖析深度學習" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型" property="og:title">
+<meta content="學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/deep-dl_4.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2020-03-14 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="AI.ML" property="article:section">
+<meta content="剖析深度學習" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – 剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/deep-dl_4.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Deep dl_4", "item": "https://ycc.idv.tw/deep-dl_4.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型", "about": "AI.ML", "datePublished": "2020-03-14 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="deep-dl_4">剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型</h1>
+<p>
+      Posted on March 14, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 22,295
 
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "AI.ML",
-            "item": "https://www.ycc.idv.tw/category/aiml.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型",
-            "item": "https://www.ycc.idv.tw/deep-dl_4.html"
-          }]
-        }
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型 - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2020-03-14",
-          "image" : "https://www.ycc.idv.tw/images/deep_dl_cover.jpg",
-          "articleSection" : "AI.ML",
-          "articleBody" : "學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。",
-          "url" : "https://www.ycc.idv.tw/deep-dl_4.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/deep_dl_cover.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/deep_dl_cover.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2020-03-14</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a>                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            學習一段時間深度學習的你是不是有一個疑惑：Activation Function為什麼要用Sigmoid和Softmax？Loss Function為什麼要用MSE和Cross Entropy？其他狀況要用什麼？當然你可以把它們看作是個合理定義，但是學習深度就端看你是不是可以用最少的定義表示最多的東西，如果你仔細google一下就會發現有一個相關的名詞—廣義線性定理，但是大部分的文章和教材都沒辦法將它講的很清楚，原因是因為沒有先介紹「充分統計量」的概念。在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。
-                        </div>
-
-                        <blockquote>
+<div class="main-contents">
+<blockquote>
 <p>深度學習發展至今已經有相當多好用的套件，使得進入的門檻大大的降低，因此如果想要快速的實作一些深度學習或機器學習，通常是幾行程式碼可以解決的事。但是，如果想要將深度學習或機器學習當作一份工作，深入了解它背後的原理和數學是必要的，才有可能因地制宜的靈活運用，YC準備在這一系列當中帶大家深入剖析深度學習。</p>
 </blockquote>
 <p>前面的<a href="https://www.ycc.idv.tw/deep-dl_2.html">第二講</a>和<a href="https://www.ycc.idv.tw/deep-dl_3.html">第三講</a>其實都是為了這一講而存在。</p>
@@ -281,7 +186,7 @@ p_\theta (y_1,y_2,..,y_n)=h(y_1,y_2,..,y_n)g_\theta(T(y_1,y_2,..,y_n))  \ \ ↪�
 $$</div>
 <p>
 其中：<span class="math">\(f_\theta(.)\)</span>為你的Model假定的分布，當中包含決定Model的參數<span class="math">\(\theta\)</span>；<span class="math">\(y_1,y_2,..,y_n\)</span> 為多筆資料；<span class="math">\(T(.)\)</span> 稱為充分統計量，可以是一個單值或矩陣，它可以讓唯一包含 <span class="math">\(\theta\)</span> 資訊的 <span class="math">\(g_\theta\)</span> 不在直接depend on <span class="math">\(y_i\)</span>，而是depend on <span class="math">\(T(.)\)</span> ，也因此做到了「沒有任何其他可以從同一樣本中計算得出的統計量可以提供任何有關未知參數的額外信息」，因為唯一包含未知參數 <span class="math">\(\theta\)</span> 的 <span class="math">\(g_\theta(.)\)</span> 只需要 <span class="math">\(T(.)\)</span> 當作Input，其餘的統計量皆不需要，此時我們會稱 <span class="math">\(T\)</span> 為充分統計量。</p>
-<hr>
+<hr/>
 <p>還是以我們相當熟悉的Normal Distribution當作例子 （如果不熟悉，<a href="https://www.ycc.idv.tw/deep-dl_1.html">請詳見第一講</a>） ：
 </p>
 <div class="math">$$
@@ -311,7 +216,7 @@ $$</div>
 <div class="math">$$
 \operatorname{ln}p_{\theta}(y_1,y_2,..,y_n)=n\operatorname{ln}\frac{1}{\sqrt{2\pi}\sigma_\theta}-\frac{1}{2\sigma_\theta^2}(S_2-2\mu_\theta S_1+n\mu_\theta^2)  \ \ ↪︎【6】
 $$</div>
-<hr>
+<hr/>
 <p>這樣分離有什麼好處？好處是當我們需要Maximum <span class="math">\(\operatorname{ln}p_{\theta}(y_1,y_2,..,y_n)\)</span> 時事情會變得容易。</p>
 <p>假設我想利用數據 <span class="math">\(y_1,y_2,..,y_n\)</span> 找一組參數 <span class="math">\(\theta\)</span> 使 <span class="math">\(\operatorname{ln}p_{\theta}(y_1,y_2,..,y_n)\)</span> 最大：
 </p>
@@ -332,7 +237,7 @@ $$</div>
 $$</div>
 <p>
 這個關係式就足以讓我們找到最佳的 <span class="math">\(\theta^*\)</span> ，而其只與充分統計量 <span class="math">\(\{T(...)\}\)</span> 有關，也就是說：<strong>當我從數據當中統計出充分統計量 <span class="math">\(\{T(...)\}\)</span> 就足以讓我找到最佳的Model參數</strong>。</p>
-<hr>
+<hr/>
 <p>繼續剛剛的例子，將【6】代入【7】就可以得到Model的最佳參數：
 </p>
 <div class="math">$$
@@ -348,7 +253,7 @@ $$</div>
 \Rightarrow \sigma_\theta^2=\frac{S_2}{n}-(\frac{S_1}{n})^2=(\frac{1}{n}\sum_iy_i^2)-(\frac{1}{n}\sum_iy_i)^2  \ \ ↪︎【9】
 $$</div>
 <p>是不是跟我們之前學的東西是自恰的啊！</p>
-<hr>
+<hr/>
 <p>現在你知道我不得不提「充分統計量」這個概念的原因了吧！</p>
 <p><strong>有了「充分統計量」的概念，拿到一個分布你可以清楚的知道：我需要哪些必要的統計量才可以擬合這個分布，並且可以透過Maximun Log Probability輕易的找到這些充分統計量對應的Model變數。</strong></p>
 <h3>廣義線性模型（Generalized Linear Models, GLM）</h3>
@@ -371,7 +276,7 @@ $$</div>
 <li>Link Function必須是單調遞增（monotonic）</li>
 <li>Link Function的值域必須能夠覆蓋理論分布的空間</li>
 </ol>
-<hr>
+<hr/>
 <p>所以接下來作法就容易了，只要依以下步驟：</p>
 <ol>
 <li>決定好分布模型 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 且決定好Link Function <span class="math">\(g(.)\)</span> </li>
@@ -421,7 +326,7 @@ $$</div>
 </ol>
 <p>上面的式子就是Loss Function為Mean Squared Error (MSE) 的Regression，它背後假設的分布就是Normal Distribution。</p>
 <p><strong>這裡的 <span class="math">\(h(x_i,m,\theta)\)</span> 可以是線性的，當然如果將feature space先作非線性轉換得 <span class="math">\(z_i\)</span> 再代入得 <span class="math">\(h(z_i,m,\theta)\)</span> 也可以是非線性的，當然 <span class="math">\(h(z_i,m,\theta)\)</span> 可以是Neural Network，先用前面幾層Hidden Layers做非線性轉換，在拿轉換後的結果與數據做線性擬合。其中：<span class="math">\(m\)</span> 代表的是Network的Hyperparameters，包括：Network的結構、Learning Rate的大小、Batch Size、...等等；而 <span class="math">\(\theta\)</span> 則是Network中需要學習的權重。</strong></p>
-<hr>
+<hr/>
 <p>接下來我要問一個問題：</p>
 <blockquote>
 <p>其他分布能使用古典線性模型嗎？</p>
@@ -433,7 +338,7 @@ p(y_i\mid x_i,m,\theta)=\pi^{y_i}(1-\pi)^{1-y_i}  \ \ ↪︎【19】
 $$</div>
 <p>
 其中：<span class="math">\(y_i \in \{0,1\}\)</span>，<span class="math">\(\pi\)</span> 代表 <span class="math">\(y_i=1\)</span> 的機率。</p>
-<p>一樣假設Identity Function當作 Link Function <span class="math">\(g(.)\)</span> 
+<p>一樣假設Identity Function當作 Link Function <span class="math">\(g(.)\)</span>
 </p>
 <div class="math">$$
 h(x_i,m,\theta)=E_{y\sim p_{model}}[y_i]=\sum_{y_i=0}^{y_i=1} y_i \pi^{y_i}(1-\pi)^{1-y_i}=\pi
@@ -471,7 +376,7 @@ $$</div>
 <div class="math">$$
 Var[T(y)|\eta]=\frac{\partial^2 A(\eta)}{\partial \eta\partial \eta}  \ \ ↪︎【23】
 $$</div>
-<hr>
+<hr/>
 <p>列下考慮多筆Data的情況：
 </p>
 <div class="math">$$
@@ -488,7 +393,7 @@ $$</div>
 \Rightarrow E[T(y)|\eta^*]=\frac{1}{n} \sum_{i=1}^{n} T(y_i)  \ \ ↪︎【24】
 $$</div>
 <p><strong>因此指數族分布隱含著一個相當好的特性：在最好的參數 <span class="math">\(\eta^*\)</span> 之下，分布對 <span class="math">\(T(y)\)</span> 的期望值就等同於你量測 <span class="math">\(T(y_i)\)</span> 的平均值，而且 <span class="math">\(T(y_i)\)</span> 還是一個充分統計量，也就是說你已經不需要其他統計量了。</strong></p>
-<hr>
+<hr/>
 <p>當 <span class="math">\(T(y)=y\)</span> (大部分情形都是)，可得與Mean的關係式：
 </p>
 <div class="math">$$
@@ -511,7 +416,7 @@ $$</div>
 g(\mu)=h(x_i,m,\theta)  \ \ ↪︎【28】
 $$</div>
 <p><strong>在符合指數族分布的情況下，採用 <span class="math">\(\eta\)</span> 和 Canonical Link Function，會讓Mean變成為充分統計量，這意味著我們很有效率的使用著數據。</strong></p>
-<hr>
+<hr/>
 <p>現在我們可以回頭加深觀念：<strong>為什麼在古典模型當中會選擇 Identity Link Function 呢？因為對於Normal Distribution而言，Identity Link Function 是 Canonical Link Function。</strong>
 </p>
 <div class="math">$$
@@ -588,7 +493,7 @@ $$</div>
 $$</div>
 <p>
 上式就是我們擬合的關係式， <span class="math">\(h(x_i,m,\theta)\)</span> 可以是線性方程式，也可以是Neural Network，然後有注意到嗎？<strong>Sigmoid 剛剛好是 <span class="math">\(h(x_i,m,\theta)\)</span> 輸出後的最後一層，我們使用廣義線性定理就自然而然的得到Activation Function，這就是為什麼在Binary Classification問題中NN最後一層是Sigmoid的原因 </strong>。</p>
-<hr>
+<hr/>
 <p>接下來就按步驟求出最佳參數：</p>
 <ol>
 <li>使用Bernoulli Distribution和相應的 Canonical Link Function
@@ -646,7 +551,7 @@ $$</div>
 <li><span class="math">\(T_j(y)=\delta(y=j)  \ \ ↪︎【51】\)</span></li>
 <li><span class="math">\(A(\eta_1,...,\eta_{k-1})=-\operatorname{ln}\phi_k=\operatorname{ln}[\sum_{j=1}^{k}e^{\eta_j}]  \ \ ↪︎【52】\)</span></li>
 </ul>
-<hr>
+<hr/>
 <p>[堆導] <span class="math">\(A(\eta_j)\)</span> 的計算過程，從【50】式出發：
 </p>
 <div class="math">$$
@@ -673,7 +578,7 @@ $$</div>
 <div class="math">$$
 A(\eta_1,...,\eta_{k-1})=-\operatorname{ln}\phi_k=\operatorname{ln}[\sum_{j=1}^{k}e^{\eta_j}]  \ \ ↪︎【57】
 $$</div>
-<hr>
+<hr/>
 <p>將【52】式代入【20】式找 Canonical Link Function：
 </p>
 <div class="math">$$
@@ -685,7 +590,7 @@ $$</div>
 <div class="math">$$
 \mu_j=softmax(h_j(x_i,m,\theta))  \ \ ↪︎【59】
 $$</div>
-<hr>
+<hr/>
 <p>接下來就按步驟求出最佳參數：</p>
 <ol>
 <li>使用Categorical Distribution和相應的 Canonical Link Function
@@ -769,11 +674,11 @@ $$</div>
 <li>20200603: 修正從【4】到【9】式的公式錯誤（感謝 俊嘉 細心的揪出公式的錯誤）</li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
+    var align = "left",
+        indent = "1em",
+        linebreak = "true";
 
-    if (false) {
+    if (true) {
         align = (screen.width < 768) ? "left" : align;
         indent = (screen.width < 768) ? "0em" : indent;
         linebreak = (screen.width < 768) ? 'true' : linebreak;
@@ -783,10 +688,13 @@ $$</div>
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
     mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
         "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
         "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
         "    displayAlign: '"+ align +"'," +
@@ -800,7 +708,9 @@ $$</div>
         "        preview: 'TeX'," +
         "    }, " +
         "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} }," +
         "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
         "    }, " +
         "}); " +
@@ -820,130 +730,77 @@ $$</div>
                 "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
             "});" +
         "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/deep-dl_3.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/latest_ai_info.html" rel="next">
-                                    <span>Next Post</span>
-                                    資源整理：跟上AI前沿知識
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                        <h3 class="h2">Related Articles</h3>
-                        <ul class="related">
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/deep-dl_1.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
-                                    <h5 class="related__post-title">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/deep-dl_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
-                                    <h5 class="related__post-title">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/deep-dl_2.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/deep_dl_cover.jpg" alt="">
-                                    <h5 class="related__post-title">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</h5>
-                                </a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/deep-dl_4.html";
-            this.page.identifier = "deep-dl_4.html";
-            this.page.title = "剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/deep-dl_3.html#anchor" title="剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/latest_ai_info.html#anchor" title="資源整理：跟上AI前沿知識">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<div class="related-posts">
+<h4>You might enjoy</h4>
+<ul class="related-posts">
+<li><a href="https://ycc.idv.tw/deep-dl_3.html">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</a></li>
+<li><a href="https://ycc.idv.tw/deep-dl_2.html">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</a></li>
+<li><a href="https://ycc.idv.tw/deep-dl_1.html">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</a></li>
+</ul>
+</div>
+<div class="related-posts">
+<h4>Part 4 of the 剖析深度學習 series</h4>
+<h5>Previous articles</h5>
+<ul>
+<li><a href="https://ycc.idv.tw/deep-dl_1.html#anchor">剖析深度學習 (1)：為什麼Normal Distribution這麼好用？</a></li>
+<li><a href="https://ycc.idv.tw/deep-dl_2.html#anchor">剖析深度學習 (2)：你知道Cross Entropy和KL Divergence代表什麼意義嗎？談機器學習裡的資訊理論</a></li>
+<li><a href="https://ycc.idv.tw/deep-dl_3.html#anchor">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</a></li>
+</ul>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>

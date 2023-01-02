@@ -1,307 +1,212 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>Tesla AI Day 2021 筆記 - YC Note</title>
-    <meta name="description" content="在2021年舉辦的Tesla AI Day上，Tesla 揭露了他們開發自動駕駛的技術，並且預告他們將開發人形機器人。這篇是YC觀賞完AI Day後的筆記，我摘要了一些重點，並且在最後提出我的觀點。">
-    <meta name="author" content="YC Chen">
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="Tesla AI Day 2021 筆記" />
-    <meta property="og:description" content="在2021年舉辦的Tesla AI Day上，Tesla 揭露了他們開發自動駕駛的技術，並且預告他們將開發人形機器人。這篇是YC觀賞完AI Day後的筆記，我摘要了一些重點，並且在最後提出我的觀點。" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/ai_front_board.jpg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/tesla-aiday2021.html" />
-    <meta property="og:site_name" content="YC Note" />
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="在2021年舉辦的Tesla AI Day上，Tesla 揭露了他們開發自動駕駛的技術，並且預告他們將開發人形機器人。這篇是YC觀賞完AI Day後的筆記，我摘要了一些重點，並且在最後提出我的觀點。" name="description">
+<meta content="Tesla" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="Tesla AI Day 2021 筆記" property="og:title">
+<meta content="在2021年舉辦的Tesla AI Day上，Tesla 揭露了他們開發自動駕駛的技術，並且預告他們將開發人形機器人。這篇是YC觀賞完AI Day後的筆記，我摘要了一些重點，並且在最後提出我的觀點。" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/tesla-aiday2021.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2022-10-09 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="AI.ML" property="article:section">
+<meta content="Tesla" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – Tesla AI Day 2021 筆記</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/tesla-aiday2021.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Tesla aiday2021", "item": "https://ycc.idv.tw/tesla-aiday2021.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "Tesla AI Day 2021 筆記", "about": "AI.ML", "datePublished": "2022-10-09 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="tesla-aiday2021">Tesla AI Day 2021 筆記</h1>
+<p>
+      Posted on October 09, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 594
 
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "AI.ML",
-            "item": "https://www.ycc.idv.tw/category/aiml.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Tesla AI Day 2021 筆記",
-            "item": "https://www.ycc.idv.tw/tesla-aiday2021.html"
-          }]
-        }
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/tesla.html">Tesla</a>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "Tesla AI Day 2021 筆記 - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2022-10-09",
-          "image" : "https://www.ycc.idv.tw/images/ai_front_board.jpg",
-          "articleSection" : "AI.ML",
-          "articleBody" : "在2021年舉辦的Tesla AI Day上，Tesla 揭露了他們開發自動駕駛的技術，並且預告他們將開發人形機器人。這篇是YC觀賞完AI Day後的筆記，我摘要了一些重點，並且在最後提出我的觀點。",
-          "url" : "https://www.ycc.idv.tw/tesla-aiday2021.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "Tesla AI Day 2021 筆記"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/ai_front_board.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        Tesla AI Day 2021 筆記
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2022-10-09</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a>                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            在2021年舉辦的Tesla AI Day上，Tesla 揭露了他們開發自動駕駛的技術，並且預告他們將開發人形機器人。這篇是YC觀賞完AI Day後的筆記，我摘要了一些重點，並且在最後提出我的觀點。
-                        </div>
-
-                        <p>原始影片：<a href="https://www.youtube.com/watch?v=j0z4FweCy4M&amp;t=7750s">youtube</a></p>
+<div class="main-contents">
+<p>原始影片：<a href="https://www.youtube.com/watch?v=j0z4FweCy4M&amp;t=7750s">youtube</a></p>
 <h2>How do we make a car autonomous?</h2>
 <h3>Vision</h3>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/convert_to_vector_space.jpg"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/convert_to_vector_space.jpg"/></p>
 <p>在 Full Self-Driving（FSD）的任務當中，需要利用多顆鏡頭的影像來重建出 3-D 的 Vector Space，而在這 Vector Space 中我們就可以靠著 Planing Algorithm 來駕駛汽車。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/detection_head.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/detection_head.png"/></p>
 <p>在簡單的 FSD 原型中，可以輸入一個 Frame 的圖片進入 Feature Extractor，這裡採用RegNet [<a href="https://arxiv.org/abs/2003.13678">Designing Network Design Spaces, Radosavovic et al., 2020</a>]，並且採用 Bi-directional Feature Pyramid Network (BiFPN) [<a href="https://arxiv.org/abs/1911.09070">EfficientDet: Scalable and Efficient Object Detection, Mingxing Tan et al., 2019</a>] 來融合不同規模的資訊，Andrej 舉例當一輛車子在低解析度時無法被確認，此時如果使用高解析度的資訊就可以判別。最後就可以在其上設計 Detection Head，可以做分類任務或迴歸任務。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/hydranet.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/hydranet.png"/></p>
 <p>而在 FSD 中需要更多的資訊，需要物件偵測、交通號誌偵測並判別、車道預測等等，所以需要多任務的訓練，所以 Tesla 採用多個 Detection Head，整個結構稱為 HydraNets。這樣的結構帶來三點好處，第一，因為共享 Feature，這會在 Inference 時更為有效率；第二，因為各項任務的解耦合，我們可以在不影響其他任務的情況下微調單一任務；第三，因為抽出了 Multi-scale Features 的緣故，我們可以將它存起來，這帶來了使用上的彈性，有時使用暫存的 Multi-scale Features 來微調任務，而有時可以進行 End-to-end 的訓練。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/hydranet_first_demo.gif"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/hydranet_first_demo.gif"/></p>
 <p>上面的demo片段是最初版本的 HydraNets 結果，特別強調這邊使用單一 Frame 的圖片進行預測，從畫面中你可以看到，模型標示著停車指示、停止線、車道邊緣、其他車輛（並指示是否為停車的狀態）、交通號誌等，看起來一切好像不錯，但是當我們想將所有鏡頭的資訊綜合轉成 Vector Space 就出現了問題。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/problem_per_camera_detection_then_fusion.jpg"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/problem_per_camera_detection_then_fusion.jpg"/></p>
 <p>上圖揭露了問題，在每一個鏡頭下的每一個 Frame 都能清楚的預測標線，但是當我們想要利用這些資訊建立 3-D 的 Vector Space 時候，就會發現其匹配的狀況並不良好，從鳥瞰圖看來所有的線並不能正確的貼齊，效果相當差，原因在於每個圖片在預測深度時存在著誤差，誤差疊加之後就造成 Vector Space 的訊號不穩定。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/learning_where_to_look_end_to_end.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/learning_where_to_look_end_to_end.png"/></p>
 <p>於是乎 Tesla 的研發團隊打算另闢蹊徑，<strong>假設我們直接 End-to-End 的讓模型直接輸出 Vector Space，是不是就可以解決這個問題</strong>，舉個例子：當一輛卡車出現在八個鏡頭中的五個，如果使用每個鏡頭都獨立判斷的方式，模型難以感知這是同一輛卡車，但是如果我們可以綜合八顆鏡頭的資訊並且直接輸出 Vector Space，就有機會讓模型學習到這五個鏡頭內的卡車是同一輛，並且落在 Vector Space 的某個地方。要往這方向前進會先遇到兩個問題：1. 怎麼從 Image Space 轉成 Vector Space？ 2. 要做到 Vector Space 的預測，我們要有在 Vector Space 標注的資料集。問題2我們會在後續討論，而問題1的解法是引入 Self-attention [<a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need, Vaswani et al., 2017</a>] 來結合八顆鏡頭的 Multi-scale Features 產生 Vector Space 的 Features。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/rectify_to_a_common_virtual_camera.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/rectify_to_a_common_virtual_camera.png"/></p>
 <p>由於每輛出場的車輛其八顆鏡頭的參數可能存在著差異，如果將這些有差異的影像輸入到單一模型就可能達不到原有的效果。而 Tesla 的作法是將每顆鏡頭先做 Camera Calibration (Rectify Layer)，具體的作法是將八顆鏡頭轉換到 Synthetic Virtual Camera 作校正。上圖右側顯示校正前後的差異，其中將後側鏡頭（Repeater）的影像疊加，可以發現校正後圖片變得清晰了，這意味著所有車輛在調整完鏡頭後影像更為一致。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/vector_space_edges_and_lines.jpg"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/vector_space_edges_and_lines.jpg"/></p>
 <p>上圖右側的鳥瞰圖是 End-to-end 的結果，預測在 Vector Space 成效就明顯的提升了。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/detection_singlecam_multicam.gif"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/detection_singlecam_multicam.gif"/></p>
 <p>在多顆鏡頭一同學習的幫助下，可以有效的解決遮擋的問題，能更穩定的預測周遭車輛。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/video_nn.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/video_nn.png"/></p>
 <p>Tesla 的研究小組發現有一些預測需要上下文的資訊，於是他們設計一個 Feature Queue 並將每一個時間段 Frame 的 Feature 推入，並且利用 Video Module 去綜合萃取 Feature，Video Module 能更加穩定的預測周遭車輛。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/spatial_rnn.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/spatial_rnn.png"/></p>
 <p>除了時間尺度之外，他們還考慮了空間尺度，譬如左轉或右轉的標誌可能在先前的路上顯示，我們不能因為車輛等個紅燈就忘記了先前這些重要的資訊，所以除了時間尺度上的紀錄，我們還需要空間尺度上的紀錄，於是他們提出了 Spatial RNN 的方法在每一個空間點持續演化其 Feature，更棒的是不同 Tesla 車輛是可以共用這個空間 Feature Queue 的，所以經過不同車輛、不同時間、不同地點的大量蒐集資料，Tesla 精準的掌握豐富的資訊地圖。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/tesla_vision_summary.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/tesla_vision_summary.png"/></p>
 <p>以上就是 Tesla Vision 模型的大架構。</p>
 <h3>Planning &amp; Control</h3>
 <p>我們已經有了由 Tesla Vision 建立的 Vector Space，接下來我們就可以在這個空間裡開車，但這不是一件簡單的事，會遇到 Non-Convex    和 High-Dimensional 兩個問題。Non-Convex 意味著路線規劃中存在著多條足夠好的路徑，但是想要找到全局最優的那個路徑會變得困難，很有可能會卡在局部最優解；High-Dimensional 的原因是因為車輛需要為接下來10-15秒做規劃，要估計這一個時間區間的位置、速度、加速度，因此要描述一整條路徑是高維的。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/planning_and_control.gif"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/planning_and_control.gif"/></p>
 <p>優化方法有兩種策略 — Discrete Search 和 Continuous Function Optimization，但這兩種策略都有侷限性，Discrete Search 用在 High-Dimensional 的情況下會造成計算複雜度相當高，而 Continuous Function Optimization 用在 Non-Convex 容易陷在局部最佳解，因此 Tesla 的解法是採用混合式，<strong>先使用 Discrete Search 來建立一條可走的通道，來侷限路徑，稱為 Convex Corridor，再使用 Continuous Function Optimization 的方法找出一條平穩的路徑</strong>。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/need_consider_other.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/need_consider_other.png"/></p>
 <p>另外，我們在做行車規劃時還需要考慮其他車輛的移動，例如遇到會車的狀況，自動駕駛要能分辨來車是否要讓道，如果對方讓道，我們的車子前進；如果對方不讓道前進，我們的車子要讓道。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/example_parking_problem.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/example_parking_problem.png"/></p>
 <p>在一般道路，尤其是高速公路，路徑搜索還算簡單，但是有一些狀況卻是相當棘手的，例如：停車問題。如上圖，停車場充斥著許多障礙物，在路徑搜索中最常見的方法是使用 A* 演算法，但是這個簡單的方法展開次數要多達近40萬次，這樣的運算速度是不能接受的，所以 Tesla 再進一步加入行進方向導航，可以讓 A* 演算法進步到展開次數大概2萬次，但這仍然不夠快速。原因是因為目前作法並不能綜觀全局（使用鳥瞰圖）來找路徑，於是我們借助神經網路的幫忙，<strong>利用類似AlphaGO的方式來做路徑搜索，結果展開次數可以降到近300次而已，差異相當的巨大</strong>。</p>
 <h2>How do we generate training data?</h2>
 <h3>Manual labeling</h3>
 <p>演算法僅僅提供了效能的上界，我們還是需要充足的資料來調整演算法的參數，所以建構一個品質良好且量大的資料集是重要的，因此 <strong>Tesla 聘僱了大約1000名專業的標注人員進行標注，並且開發了專屬的標注軟體</strong>。在一開始他們是在2維的圖片上面標注，後來如上述所提及的，模型要直接預測 Vector Space 才能表現的夠好，所以他們開始在 Vector Space 上標注，直接標注在3維的空間加上時間尺度。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/labeding_tools.png"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/labeding_tools.png"/></p>
 <h3>Auto Labeling</h3>
 <p>人與電腦擅長的東西不同，人擅長語意相關的東西，而電腦擅長幾何、重建、追蹤等等，所以 Tesla 的標注軟體充分利用兩方的所長，進行人機協作，來更快速的建立良好的資料集，這就是Auto Labeling的技術。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/restructuring_the_road.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/restructuring_the_road.png"/></p>
 <p>Tesla 會從車輛上蒐集影片的資料，並上傳至伺服器 Dojo，利用這些資料我們就可以重建整個道路，如上圖左側的圖例，輸入 (x,y) 座標查詢地面高度、道路指示線、路緣等等。你可能會想利用三維網格來描述路面，但因為拓撲的限制，這樣的表示是不可微分的，並不適合重建或生成，所以他們實際的作法是用類似於Neural Radiance Fields (NeRF) [<a href="https://arxiv.org/abs/2003.08934">NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis, Ben Mildenhall et al., 2020</a>] ，<strong>NeRF 能做到利用多個角度鏡頭的拍攝來重建三維資訊（當然，必須要有這些鏡頭與拍攝物的空間相對關係）</strong>，而 Tesla 的八顆鏡頭正提供了這個設置，NeRF 的精髓在於將物體和場景的資訊以隱性的方法編碼進 MLP 中，所以當我們輸入 (x,y) 座標到 MLP，我們可以獲得我們想要的空間資訊。經過大量的查詢 (x,y) 得到 z，我們就可以將路面給建構起來。</p>
 <p>更棒的是，每一輛行走的 Tesla 車輛都會持續蒐集並重建這些路段，有些路段還很有可能由多輛 Tesla 電動車一起建構來消除雜訊，所以愈多 Tesla 電動車在路面上開，獲得的資料就越全面、越精確，自動駕駛的穩定度就更高。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/walls_barriers_and_everythingelse.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/walls_barriers_and_everythingelse.png"/></p>
 <p>同樣的技術要重建靜態物也是沒問題的。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/and_that_solve_the_problem.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/and_that_solve_the_problem.png"/></p>
 <p><strong>利用這樣的 Auto Labeling 技術 Tesla 成功的在三個月內將光雷達給移除</strong>，初期因為資料不夠充足，如果遇到視線不佳的情況，預測將會失準，如上圖左側所示。為了解決這個問題，Tesla 團隊從大量車輛中找尋類似視線不佳的影片一萬枚，並且利用 Auto Labeling 技術自動標注，大概只花了一週就完成，而這在過去採用純人工標記可能需要好幾個月，結果模型在加上這樣的資料集訓練後，就能在視線不佳的情況下做出良好的預測，如上圖右測所示，縱使視線不佳也能穩定的預測前方車輛，這為 Tesla 帶來移除光雷達的信心。</p>
 <h3>Simulation</h3>
 <p>Tesla 團隊也嘗試的使用模擬的方式人工合成影像資料來訓練模型。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/simulation.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/simulation.png"/></p>
 <p>使用模擬的一大好處是 Label 會同時產生，他可以幫助我們創造一些不容易出現的場景，例如：有人在高速公路跑步，或者創造出不容易標注的場景，例如：有一群人在走動同時存在著大量的遮擋問題。人工合成資料可以補足真實世界資料的不足，那要怎麼創造以假亂真的合成資料呢？有五個特點：</p>
 <ol>
 <li>精確傳感器的模擬：模擬的目的不是為了好看，而是要能反應真實，例如在不同相機曝光度的調整下，模擬的要盡可能接近實際的狀況，為了做到這一點，他們對傳感器進行建模，包括：傳感器噪音、運動模糊、光學失真、前燈傳輸、擋風玻璃折射特性。</li>
@@ -312,26 +217,26 @@
 </ol>
 <h2>Dojo</h2>
 <p>為了應付自動駕駛的龐大計算量，Tesla 還自建了他們自己的超級電腦—Dojo。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo.png"/></p>
 <p>Tesla 幾乎重頭打造整個系統，從晶片設計，到集成電路，到計算叢集，還有軟體設計。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo_training_node.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo_training_node.png"/></p>
 <p>上圖展示了訓練節點的內部結構，這是一個64位Superscalar CPU，圍繞著矩陣運算單元和向量SIMD進行優化。這個節點可以提供每秒1萬億次的浮點計算（FLOP）。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo_chip.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo_chip.png"/></p>
 <p>集成354個 Training Node，就得到中間黃色的計算陣列。在計算陣列周圍使用了576個高速低功耗的SerDes圍繞，使得該晶片擁有極高的I/O帶寬。結合這些就得到了 D1 Chip ，其採用 7 nm 製程，在645平方毫米下可容納500億個電晶體。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo_chip_scaling.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo_chip_scaling.png"/></p>
 <p>Dojo D1幾乎是業界第一。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo_system.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo_system.png"/></p>
 <p>含有多個Dojo D1的集成電路，可提供每秒9萬億次的浮點計算（FLOP）。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo_software.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/dojo_software.png"/></p>
 <p>得益於 Tesla 構建的強大的編譯器，只需要少許的改動原本的 Pytorch 就可以使用 Dojo。</p>
 <h2>Tesla Bot — Optimus</h2>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/tesla_bot.png"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/tesla_bot.png"/></p>
 <p>Tesla 將打造機器人，他們想延伸自動駕駛上面技術來打造一個通用機器人。</p>
 <h2>我的觀點</h2>
 <ul>
@@ -345,115 +250,61 @@
 <li>原本我也是一個對於移除光雷達的懷疑者，但聽完這個演講後我漸漸能理解 Tesla 為何採用純視覺的方法，一般駕駛員也是憑藉著視覺開車，更何況 Tesla 電動車有八顆鏡頭，其視野能力已經比人還好了，並且模型的預測是經過大量資料的驗證，反觀人類開車上路前的驗證是相對少的。而配置光雷達是需要成本的，如果大量資料都在在的顯示模型的有效性，拿掉光雷達的決策也是可以理解的。</li>
 <li>我覺得每個駕駛自行開車的操作也是一個重要的資訊，這場演講沒有講到他們怎麼使用這些資訊，有點想知道！</li>
 </ul>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/diffusion-model.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    擴散模型（Diffusion Model）：生成模型的新成員
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/tesla-aiday2022.html" rel="next">
-                                    <span>Next Post</span>
-                                    Tesla AI Day 2022 筆記
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                        <h3 class="h2">Related Articles</h3>
-                        <ul class="related">
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/tesla-aiday2022.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
-                                    <h5 class="related__post-title">Tesla AI Day 2022 筆記</h5>
-                                </a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/tesla-aiday2021.html";
-            this.page.identifier = "tesla-aiday2021.html";
-            this.page.title = "Tesla AI Day 2021 筆記";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/diffusion-model.html#anchor" title="擴散模型（Diffusion Model）：生成模型的新成員">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/tesla-aiday2022.html#anchor" title="Tesla AI Day 2022 筆記">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<div class="related-posts">
+<h4>You might enjoy</h4>
+<ul class="related-posts">
+<li><a href="https://ycc.idv.tw/tesla-aiday2022.html">Tesla AI Day 2022 筆記</a></li>
+</ul>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>

@@ -1,245 +1,150 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM) - YC Note</title>
-    <meta name="description" content="概論RNN / 梯度消失與梯度爆炸 / Long Short-Term Memory (LSTM) / 使用LSTM實作文章產生器">
-    <meta name="author" content="YC Chen">
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)" />
-    <meta property="og:description" content="概論RNN / 梯度消失與梯度爆炸 / Long Short-Term Memory (LSTM) / 使用LSTM實作文章產生器" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/tensorflow-tutorial_6.html" />
-    <meta property="og:site_name" content="YC Note" />
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="概論RNN / 梯度消失與梯度爆炸 / Long Short-Term Memory (LSTM) / 使用LSTM實作文章產生器" name="description">
+<meta content="Tensorflow" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)" property="og:title">
+<meta content="概論RNN / 梯度消失與梯度爆炸 / Long Short-Term Memory (LSTM) / 使用LSTM實作文章產生器" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/tensorflow-tutorial_6.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2017-11-25 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="AI.ML" property="article:section">
+<meta content="Tensorflow" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – 實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/tensorflow-tutorial_6.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Tensorflow tutorial_6", "item": "https://ycc.idv.tw/tensorflow-tutorial_6.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)", "about": "AI.ML", "datePublished": "2017-11-25 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="tensorflow-tutorial_6">實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)</h1>
+<p>
+      Posted on November 25, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 12,344
 
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "AI.ML",
-            "item": "https://www.ycc.idv.tw/category/aiml.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)",
-            "item": "https://www.ycc.idv.tw/tensorflow-tutorial_6.html"
-          }]
-        }
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/tensorflow.html">Tensorflow</a>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM) - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2017-11-25",
-          "image" : "https://www.ycc.idv.tw/images/tensorflow-logo.jpg",
-          "articleSection" : "AI.ML",
-          "articleBody" : "概論RNN / 梯度消失與梯度爆炸 / Long Short-Term Memory (LSTM) / 使用LSTM實作文章產生器",
-          "url" : "https://www.ycc.idv.tw/tensorflow-tutorial_6.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/tensorflow-logo.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/tensorflow-logo.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/tensorflow-logo.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2017-11-25</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a>                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            概論RNN / 梯度消失與梯度爆炸 / Long Short-Term Memory (LSTM) / 使用LSTM實作文章產生器
-                        </div>
-
-                        <p>如果我們想要處理的問題是具有時序性的，該怎麼辦呢？本章將會介紹有時序性的Neurel Network。</p>
+<div class="main-contents">
+<p>如果我們想要處理的問題是具有時序性的，該怎麼辦呢？本章將會介紹有時序性的Neurel Network。</p>
 <p>本單元程式碼LSTM部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/06_LSTM.py">Github</a>下載。</p>
 <h3>概論RNN</h3>
 <p>當我們想使得Neurel Network具有時序性，我們的Neurel Network就必須有記憶的功能，然後在我不斷的輸入新資訊時，也能同時保有歷史資訊的影響，最簡單的作法就是將Output的結果保留，等到新資訊進來時，將新的資訊和舊的Output一起考量來訓練Neurel Network。</p>
-<p><img alt="unrolling" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.010.jpeg"></p>
+<p><img alt="unrolling" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.010.jpeg"/></p>
 <p>這種將舊有資訊保留的Neurel Network統稱為Recurrent Neural Networks (RNN)，這種不斷回饋的網路可以攤開來處理，如上圖，如果我有5筆數據，拿訓練一個RNN 5個回合並做了5次更新，其實就等效於攤開來一次處理5筆數據並做1次更新，這樣的手法叫做Unrolling，我們實作上會使用Unrolling的手法來增加計算效率。</p>
-<p><img alt="RNN" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.011.jpeg"></p>
+<p><img alt="RNN" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.011.jpeg"/></p>
 <p>接下來來看RNN內部怎麼實現的，上圖是最簡單的RNN形式，我們將上一回產生的Output和這一回的Input一起評估出這一回的Output，詳細式子如下：</p>
 <div class="math">$$
 o_{new}=tanh(i \times W_i + o \times W_o + B)
@@ -252,7 +157,7 @@ $$</div>
 <p>在Tensorflow怎麼做到Gradient Clipping呢？作法是這樣的，以往我們使用<code>optimizer.minimize(loss)</code>來進行更新，事實上我們可以把這一步驟拆成兩部分，第一部分計算所有參數的梯度，第二部分使用這些梯度進行更新。因此我們可以從中作梗，把gradients偷天換日一番，一開始使用<code>optimizer.compute_gradients(loss)</code>來計算出個別的梯度，然後使用<code>tf.clip_by_global_norm(gradients, clip_norm)</code>來切梯度，最後再使用<code>optimizer.apply_gradients</code>把新的梯度餵入進行更新。</p>
 <h3>Long Short-Term Memory (LSTM)</h3>
 <p>LSTM是現今RNN的主流，它可以解決梯度消失的問題，我們先來看看結構，先預告一下，LSTM是迄今為止這系列課程當中看過最複雜的Neurel Network。</p>
-<p><img alt="LSTM" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.012.jpeg"></p>
+<p><img alt="LSTM" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.012.jpeg"/></p>
 <p>最一開始和RNN一樣，Input會和上一回的Output一起評估一個「短期記憶」，</p>
 <div class="math">$$
 f_m = tanh (i \times W_{mi} + o \times W_{mo} + B_m)
@@ -277,33 +182,31 @@ $$</div>
 <p>這就是LSTM，「長期記憶」的出現可以解決掉梯度消失的問題，RNN只有「短期記憶」，所以一旦認為一個特徵不重要，經過幾回連乘，這個特徵的梯度就會消失殆盡，但是LSTM保留State，並且使用「加」的方法更新State，所以有一些重要的State得以留下來持續影響著Output，解決了梯度消失的問題。但是，不幸的LSTM還是免不了梯度爆炸，為什麼呢？如果一個特徵真的很重要，State會記住，Input也會強調，所以幾輪下來還是有可能出現爆炸的情況，這時候我們就需要Gradient Clipping的幫忙。</p>
 <h3>使用LSTM實作文章產生器</h3>
 <p>接下來我們來實作LSTM，目標是做一個文章產生器，我們希望機器可以不斷的根據前文猜測下一個「字母」(Letters)應該要下什麼，如此一來我只要給個開頭字母，LSTM就可以幫我腦補成一篇文章。</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlretrieve</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
 <span class="n">tf</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="n">LETTER_SIZE</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c"># [a-z] + &#39; &#39;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">LETTER_SIZE</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># [a-z] + ' '</span>
 <span class="n">FIRST_LETTER_ASCII</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 <span class="k">def</span> <span class="nf">maybe_download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">expected_bytes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Download a file if not present, and make sure it&#39;s the right size.&quot;&quot;&quot;</span>
+    <span class="sd">"""Download a file if not present, and make sure it's the right size."""</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
         <span class="n">filename</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
     <span class="n">statinfo</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span> <span class="o">==</span> <span class="n">expected_bytes</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Found and verified </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Found and verified </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Failed to verify &#39;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">&#39;. Can you get to it with a browser?&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">'Failed to verify '</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">'. Can you get to it with a browser?'</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">filename</span>
 
 
@@ -317,10 +220,10 @@ $$</div>
 <span class="k">def</span> <span class="nf">char2id</span><span class="p">(</span><span class="n">char</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">-</span> <span class="n">FIRST_LETTER_ASCII</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="k">elif</span> <span class="n">char</span> <span class="o">==</span> <span class="s">&#39; &#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">char</span> <span class="o">==</span> <span class="s1">' '</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Unexpected character: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">char</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Unexpected character: </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">char</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">0</span>
 
 
@@ -328,61 +231,57 @@ $$</div>
     <span class="k">if</span> <span class="n">dictid</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">chr</span><span class="p">(</span><span class="n">dictid</span> <span class="o">+</span> <span class="n">FIRST_LETTER_ASCII</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s">&#39; &#39;</span>
+        <span class="k">return</span> <span class="s1">' '</span>
 
 
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;Downloading text8.zip&#39;</span><span class="p">)</span>
-<span class="n">filename</span> <span class="o">=</span> <span class="n">maybe_download</span><span class="p">(</span><span class="s">&#39;http://mattmahoney.net/dc/text8.zip&#39;</span><span class="p">,</span> <span class="s">&#39;./text8.zip&#39;</span><span class="p">,</span> <span class="mi">31344016</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Downloading text8.zip'</span><span class="p">)</span>
+<span class="n">filename</span> <span class="o">=</span> <span class="n">maybe_download</span><span class="p">(</span><span class="s1">'http://mattmahoney.net/dc/text8.zip'</span><span class="p">,</span> <span class="s1">'./text8.zip'</span><span class="p">,</span> <span class="mi">31344016</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;=====&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'====='</span><span class="p">)</span>
 <span class="n">text</span> <span class="o">=</span> <span class="n">read_data</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;Data size </span><span class="si">%d</span><span class="s"> letters&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Data size </span><span class="si">%d</span><span class="s1"> letters'</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;=====&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'====='</span><span class="p">)</span>
 <span class="n">valid_size</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="n">valid_text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[:</span><span class="n">valid_size</span><span class="p">]</span>
 <span class="n">train_text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="n">valid_size</span><span class="p">:]</span>
 <span class="n">train_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_text</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;Train Dataset: size:&#39;</span><span class="p">,</span> <span class="n">train_size</span><span class="p">,</span> <span class="s">&#39;letters,</span><span class="se">\n</span><span class="s">  first 64:&#39;</span><span class="p">,</span> <span class="n">train_text</span><span class="p">[:</span><span class="mi">64</span><span class="p">])</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;Validation Dataset: size:&#39;</span><span class="p">,</span> <span class="n">valid_size</span><span class="p">,</span> <span class="s">&#39;letters,</span><span class="se">\n</span><span class="s">  first 64:&#39;</span><span class="p">,</span> <span class="n">valid_text</span><span class="p">[:</span><span class="mi">64</span><span class="p">])</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="l-Scalar-Plain">Downloading text8.zip</span>
-<span class="l-Scalar-Plain">Found and verified ./text8.zip</span>
-<span class="l-Scalar-Plain">=====</span>
-<span class="l-Scalar-Plain">Data size 100000000 letters</span>
-<span class="l-Scalar-Plain">=====</span>
-<span class="l-Scalar-Plain">Train Dataset</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">size</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">99999000 letters,</span>
-  <span class="l-Scalar-Plain">first 64</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">ons anarchists advocate social relations based upon voluntary as</span>
-<span class="l-Scalar-Plain">Validation Dataset</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">size</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1000 letters,</span>
-  <span class="l-Scalar-Plain">first 64</span><span class="p-Indicator">:</span>  <span class="l-Scalar-Plain">anarchism originated as a term of abuse first used against earl</span>
-</pre></div>
-
-
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Train Dataset: size:'</span><span class="p">,</span> <span class="n">train_size</span><span class="p">,</span> <span class="s1">'letters,</span><span class="se">\n</span><span class="s1">  first 64:'</span><span class="p">,</span> <span class="n">train_text</span><span class="p">[:</span><span class="mi">64</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Validation Dataset: size:'</span><span class="p">,</span> <span class="n">valid_size</span><span class="p">,</span> <span class="s1">'letters,</span><span class="se">\n</span><span class="s1">  first 64:'</span><span class="p">,</span> <span class="n">valid_text</span><span class="p">[:</span><span class="mi">64</span><span class="p">])</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">Downloading text8.zip</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">Found and verified ./text8.zip</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">=====</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">Data size 100000000 letters</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">=====</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">Train Dataset</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">99999000 letters,</span><span class="w"></span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">first 64</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ons anarchists advocate social relations based upon voluntary as</span><span class="w"></span>
+<span class="nt">Validation Dataset</span><span class="p">:</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000 letters,</span><span class="w"></span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">first 64</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">anarchism originated as a term of abuse first used against earl</span><span class="w"></span>
+</code></pre></div>
 <p>上面操作我們建制完成了字母庫，接下來就可以產生我們訓練所需要的Batch Data，所以我們來看看究竟要產生怎樣格式的資料。</p>
-<p><img alt="LSTM Implement" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.013.jpeg"></p>
+<p><img alt="LSTM Implement" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.013.jpeg"/></p>
 <p>如上圖所示，有點小複雜，假設我要設計一個LSTM Model，它的Unrolling Number為3，Batch Size為2，然後遇到的字串是"abcde fghij klmno pqrst"，接下來就開始產生每個Round要用的Data，產生的結果如上圖所示，你會發現產生的Data第0軸表示的是考慮unrolling需要取樣的資料，總共應該會有(Unrolling Number+1)筆，如上圖例，共有4筆，3筆當作輸入而3筆當作Labels，中間有2筆重疊使用，另外還有一點，我們會保留最後一筆Data當作下一個回合的第一筆，這是為了不浪費使用每一個字母前後的組合。而第1軸則是餵入單一LSTM需要的資料，我們一次可以餵多組不相干的字母進去，如上圖例，Batch Size=2所以餵2個字母進去，那這些不相干的字母在取樣的時候，我們會盡量讓它平均分配在文字庫，才能確保彼此之間不相干，以增加LSTM的訓練效率和效果。</p>
 <p>因此，先產生Batch Data吧！</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="n">probabilities</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Turn a 1-hot encoding or a probability distribution over the possible</span>
-<span class="sd">    characters back into its (most likely) character representation.&quot;&quot;&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="n">probabilities</span><span class="p">):</span>
+    <span class="sd">"""Turn a 1-hot encoding or a probability distribution over the possible</span>
+<span class="sd">    characters back into its (most likely) character representation."""</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">id2char</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
 
 
 <span class="k">def</span> <span class="nf">batches2string</span><span class="p">(</span><span class="n">batches</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert a sequence of batches back into their (most likely) string</span>
-<span class="sd">    representation.&quot;&quot;&quot;</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">batches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="sd">"""Convert a sequence of batches back into their (most likely) string</span>
+<span class="sd">    representation."""</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="s1">''</span><span class="p">]</span> <span class="o">*</span> <span class="n">batches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">batches</span><span class="p">:</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">characters</span><span class="p">(</span><span class="n">b</span><span class="p">))]</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">characters</span><span class="p">(</span><span class="n">b</span><span class="p">))]</span>
     <span class="k">return</span> <span class="n">s</span>
 
 
 <span class="k">def</span> <span class="nf">rnn_batch_generator</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_unrollings</span><span class="p">):</span>
     <span class="n">text_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 
-    <span class="c">### initialization</span>
+    <span class="c1">### initialization</span>
     <span class="n">segment</span> <span class="o">=</span> <span class="n">text_size</span> <span class="o">//</span> <span class="n">batch_size</span>
     <span class="n">cursors</span> <span class="o">=</span> <span class="p">[</span><span class="n">offset</span> <span class="o">*</span> <span class="n">segment</span> <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)]</span>
 
@@ -393,13 +292,13 @@ $$</div>
         <span class="n">id_</span> <span class="o">=</span> <span class="n">char2id</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="n">cursor</span><span class="p">])</span>
         <span class="n">batch_initial</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
 
-        <span class="c"># move cursor</span>
+        <span class="c1"># move cursor</span>
         <span class="n">cursors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cursors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">text_size</span>
 
     <span class="n">batches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_initial</span><span class="p">)</span>
 
-    <span class="c">### generate loop</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="c1">### generate loop</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">batches</span> <span class="o">=</span> <span class="p">[</span><span class="n">batches</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">]</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_unrollings</span><span class="p">):</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">LETTER_SIZE</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
@@ -408,43 +307,39 @@ $$</div>
                 <span class="n">id_</span> <span class="o">=</span> <span class="n">char2id</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="n">cursor</span><span class="p">])</span>
                 <span class="n">batch</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
 
-                <span class="c"># move cursor</span>
+                <span class="c1"># move cursor</span>
                 <span class="n">cursors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cursors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">text_size</span>
             <span class="n">batches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
 
-        <span class="k">yield</span> <span class="n">batches</span>  <span class="c"># [last batch of previous batches] + [unrollings]</span>
+        <span class="k">yield</span> <span class="n">batches</span>  <span class="c1"># [last batch of previous batches] + [unrollings]</span>
 
 
-<span class="c"># demonstrate generator</span>
+<span class="c1"># demonstrate generator</span>
 <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">64</span>
 <span class="n">num_unrollings</span> <span class="o">=</span> <span class="mi">10</span>
 
 <span class="n">train_batches</span> <span class="o">=</span> <span class="n">rnn_batch_generator</span><span class="p">(</span><span class="n">train_text</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_unrollings</span><span class="p">)</span>
 <span class="n">valid_batches</span> <span class="o">=</span> <span class="n">rnn_batch_generator</span><span class="p">(</span><span class="n">valid_text</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;*** train_batches:&#39;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">batches2string</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">train_batches</span><span class="p">)))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">batches2string</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">train_batches</span><span class="p">)))</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&#39;*** valid_batches:&#39;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">batches2string</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">valid_batches</span><span class="p">)))</span>
-<span class="k">print</span><span class="p">(</span><span class="n">batches2string</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">valid_batches</span><span class="p">)))</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="err">***</span> <span class="l-Scalar-Plain">train_batches</span><span class="p-Indicator">:</span>
-<span class="p-Indicator">[</span><span class="s">&#39;ons</span><span class="nv"> </span><span class="s">anarchi&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;when</span><span class="nv"> </span><span class="s">milita&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;lleria</span><span class="nv"> </span><span class="s">arch&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">abbeys</span><span class="nv"> </span><span class="s">and&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;married</span><span class="nv"> </span><span class="s">urr&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;hel</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">ric&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;y</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">litur&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ay</span><span class="nv"> </span><span class="s">opened</span><span class="nv"> </span><span class="s">f&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;tion</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">t&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;migration</span><span class="nv"> </span><span class="s">t&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;new</span><span class="nv"> </span><span class="s">york</span><span class="nv"> </span><span class="s">ot&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;he</span><span class="nv"> </span><span class="s">boeing</span><span class="nv"> </span><span class="s">s&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;e</span><span class="nv"> </span><span class="s">listed</span><span class="nv"> </span><span class="s">wi&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;eber</span><span class="nv"> </span><span class="s">has</span><span class="nv"> </span><span class="s">pr&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;o</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">made</span><span class="nv"> </span><span class="s">t&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;yer</span><span class="nv"> </span><span class="s">who</span><span class="nv"> </span><span class="s">rec&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ore</span><span class="nv"> </span><span class="s">signifi&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;a</span><span class="nv"> </span><span class="s">fierce</span><span class="nv"> </span><span class="s">cr&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">two</span><span class="nv"> </span><span class="s">six</span><span class="nv"> </span><span class="s">ei&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;aristotle</span><span class="nv"> </span><span class="s">s&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ity</span><span class="nv"> </span><span class="s">can</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">intrac&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;tion</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;dy</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">pass</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;f</span><span class="nv"> </span><span class="s">certain</span><span class="nv"> </span><span class="s">d&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;at</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">will</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;e</span><span class="nv"> </span><span class="s">convince</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ent</span><span class="nv"> </span><span class="s">told</span><span class="nv"> </span><span class="s">hi&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ampaign</span><span class="nv"> </span><span class="s">and&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;rver</span><span class="nv"> </span><span class="s">side</span><span class="nv"> </span><span class="s">s&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ious</span><span class="nv"> </span><span class="s">texts</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;o</span><span class="nv"> </span><span class="s">capitaliz&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;a</span><span class="nv"> </span><span class="s">duplicate&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;gh</span><span class="nv"> </span><span class="s">ann</span><span class="nv"> </span><span class="s">es</span><span class="nv"> </span><span class="s">d&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ine</span><span class="nv"> </span><span class="s">january&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ross</span><span class="nv"> </span><span class="s">zero</span><span class="nv"> </span><span class="s">t&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;cal</span><span class="nv"> </span><span class="s">theorie&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ast</span><span class="nv"> </span><span class="s">instanc&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">dimensiona&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;most</span><span class="nv"> </span><span class="s">holy</span><span class="nv"> </span><span class="s">m&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;t</span><span class="nv"> </span><span class="s">s</span><span class="nv"> </span><span class="s">support&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;u</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">still</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;e</span><span class="nv"> </span><span class="s">oscillati&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;o</span><span class="nv"> </span><span class="s">eight</span><span class="nv"> </span><span class="s">sub&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;of</span><span class="nv"> </span><span class="s">italy</span><span class="nv"> </span><span class="s">la&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;s</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">tower&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;klahoma</span><span class="nv"> </span><span class="s">pre&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;erprise</span><span class="nv"> </span><span class="s">lin&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ws</span><span class="nv"> </span><span class="s">becomes</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;et</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">naz&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;the</span><span class="nv"> </span><span class="s">fabian</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;etchy</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">re&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">sharman</span><span class="nv"> </span><span class="s">ne&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ised</span><span class="nv"> </span><span class="s">empero&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ting</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">pol&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;d</span><span class="nv"> </span><span class="s">neo</span><span class="nv"> </span><span class="s">latin&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;th</span><span class="nv"> </span><span class="s">risky</span><span class="nv"> </span><span class="s">ri&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;encyclopedi&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;fense</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">a&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;duating</span><span class="nv"> </span><span class="s">fro&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;treet</span><span class="nv"> </span><span class="s">grid</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ations</span><span class="nv"> </span><span class="s">more&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;appeal</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">d&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;si</span><span class="nv"> </span><span class="s">have</span><span class="nv"> </span><span class="s">mad&#39;</span><span class="p-Indicator">]</span>
-<span class="p-Indicator">[</span><span class="s">&#39;ists</span><span class="nv"> </span><span class="s">advoca&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ary</span><span class="nv"> </span><span class="s">governm&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;hes</span><span class="nv"> </span><span class="s">nationa&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;d</span><span class="nv"> </span><span class="s">monasteri&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;raca</span><span class="nv"> </span><span class="s">prince&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;chard</span><span class="nv"> </span><span class="s">baer</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;rgical</span><span class="nv"> </span><span class="s">lang&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;for</span><span class="nv"> </span><span class="s">passeng&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;the</span><span class="nv"> </span><span class="s">nationa&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;took</span><span class="nv"> </span><span class="s">place</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ther</span><span class="nv"> </span><span class="s">well</span><span class="nv"> </span><span class="s">k&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;seven</span><span class="nv"> </span><span class="s">six</span><span class="nv"> </span><span class="s">s&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ith</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">gloss&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;robably</span><span class="nv"> </span><span class="s">bee&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;to</span><span class="nv"> </span><span class="s">recogniz&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ceived</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;icant</span><span class="nv"> </span><span class="s">than</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ritic</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">th&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ight</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">sig&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;s</span><span class="nv"> </span><span class="s">uncaused</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">lost</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">in&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;cellular</span><span class="nv"> </span><span class="s">ic&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;e</span><span class="nv"> </span><span class="s">size</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">t&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">him</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">stic&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;drugs</span><span class="nv"> </span><span class="s">confu&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">take</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">co&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">priest&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;im</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">name</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;d</span><span class="nv"> </span><span class="s">barred</span><span class="nv"> </span><span class="s">at&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;standard</span><span class="nv"> </span><span class="s">fo&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">such</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">es&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ze</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">g&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;e</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">or&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;d</span><span class="nv"> </span><span class="s">hiver</span><span class="nv"> </span><span class="s">one&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;y</span><span class="nv"> </span><span class="s">eight</span><span class="nv"> </span><span class="s">mar&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;the</span><span class="nv"> </span><span class="s">lead</span><span class="nv"> </span><span class="s">ch&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;es</span><span class="nv"> </span><span class="s">classica&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ce</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">non</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;al</span><span class="nv"> </span><span class="s">analysis&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;mormons</span><span class="nv"> </span><span class="s">bel&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;t</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">lea&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">disagreed</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ing</span><span class="nv"> </span><span class="s">system</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;btypes</span><span class="nv"> </span><span class="s">base&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;anguages</span><span class="nv"> </span><span class="s">th&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;r</span><span class="nv"> </span><span class="s">commissio&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ess</span><span class="nv"> </span><span class="s">one</span><span class="nv"> </span><span class="s">nin&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;nux</span><span class="nv"> </span><span class="s">suse</span><span class="nv"> </span><span class="s">li&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">first</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;zi</span><span class="nv"> </span><span class="s">concentr&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">society</span><span class="nv"> </span><span class="s">ne&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;elatively</span><span class="nv"> </span><span class="s">s&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;etworks</span><span class="nv"> </span><span class="s">sha&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;or</span><span class="nv"> </span><span class="s">hirohito&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;litical</span><span class="nv"> </span><span class="s">ini&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;n</span><span class="nv"> </span><span class="s">most</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">t&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;iskerdoo</span><span class="nv"> </span><span class="s">ri&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;ic</span><span class="nv"> </span><span class="s">overview&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;air</span><span class="nv"> </span><span class="s">compone&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;om</span><span class="nv"> </span><span class="s">acnm</span><span class="nv"> </span><span class="s">acc&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;</span><span class="nv"> </span><span class="s">centerline&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;e</span><span class="nv"> </span><span class="s">than</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;devotional</span><span class="nv"> </span><span class="s">&#39;</span><span class="p-Indicator">,</span> <span class="s">&#39;de</span><span class="nv"> </span><span class="s">such</span><span class="nv"> </span><span class="s">dev&#39;</span><span class="p-Indicator">]</span>
-<span class="err">***</span> <span class="l-Scalar-Plain">valid_batches</span><span class="p-Indicator">:</span>
-<span class="p-Indicator">[</span><span class="s">&#39;</span><span class="nv"> </span><span class="s">a&#39;</span><span class="p-Indicator">]</span>
-<span class="p-Indicator">[</span><span class="s">&#39;an&#39;</span><span class="p-Indicator">]</span>
-</pre></div>
-
-
+<span class="nb">print</span><span class="p">(</span><span class="s1">'*** train_batches:'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">batches2string</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">train_batches</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">batches2string</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">train_batches</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'*** valid_batches:'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">batches2string</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">valid_batches</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">batches2string</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">valid_batches</span><span class="p">)))</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nt">*** train_batches</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">[</span><span class="s">'ons</span><span class="nv"> </span><span class="s">anarchi'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'when</span><span class="nv"> </span><span class="s">milita'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'lleria</span><span class="nv"> </span><span class="s">arch'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">abbeys</span><span class="nv"> </span><span class="s">and'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'married</span><span class="nv"> </span><span class="s">urr'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'hel</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">ric'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'y</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">litur'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ay</span><span class="nv"> </span><span class="s">opened</span><span class="nv"> </span><span class="s">f'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'tion</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'migration</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'new</span><span class="nv"> </span><span class="s">york</span><span class="nv"> </span><span class="s">ot'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'he</span><span class="nv"> </span><span class="s">boeing</span><span class="nv"> </span><span class="s">s'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">listed</span><span class="nv"> </span><span class="s">wi'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'eber</span><span class="nv"> </span><span class="s">has</span><span class="nv"> </span><span class="s">pr'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'o</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">made</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'yer</span><span class="nv"> </span><span class="s">who</span><span class="nv"> </span><span class="s">rec'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ore</span><span class="nv"> </span><span class="s">signifi'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a</span><span class="nv"> </span><span class="s">fierce</span><span class="nv"> </span><span class="s">cr'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">two</span><span class="nv"> </span><span class="s">six</span><span class="nv"> </span><span class="s">ei'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'aristotle</span><span class="nv"> </span><span class="s">s'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ity</span><span class="nv"> </span><span class="s">can</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">intrac'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'tion</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'dy</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">pass</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'f</span><span class="nv"> </span><span class="s">certain</span><span class="nv"> </span><span class="s">d'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'at</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">will</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">convince</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ent</span><span class="nv"> </span><span class="s">told</span><span class="nv"> </span><span class="s">hi'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ampaign</span><span class="nv"> </span><span class="s">and'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'rver</span><span class="nv"> </span><span class="s">side</span><span class="nv"> </span><span class="s">s'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ious</span><span class="nv"> </span><span class="s">texts</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'o</span><span class="nv"> </span><span class="s">capitaliz'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a</span><span class="nv"> </span><span class="s">duplicate'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'gh</span><span class="nv"> </span><span class="s">ann</span><span class="nv"> </span><span class="s">es</span><span class="nv"> </span><span class="s">d'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ine</span><span class="nv"> </span><span class="s">january'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ross</span><span class="nv"> </span><span class="s">zero</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'cal</span><span class="nv"> </span><span class="s">theorie'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ast</span><span class="nv"> </span><span class="s">instanc'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">dimensiona'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'most</span><span class="nv"> </span><span class="s">holy</span><span class="nv"> </span><span class="s">m'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'t</span><span class="nv"> </span><span class="s">s</span><span class="nv"> </span><span class="s">support'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'u</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">still</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">oscillati'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'o</span><span class="nv"> </span><span class="s">eight</span><span class="nv"> </span><span class="s">sub'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'of</span><span class="nv"> </span><span class="s">italy</span><span class="nv"> </span><span class="s">la'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'s</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">tower'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'klahoma</span><span class="nv"> </span><span class="s">pre'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'erprise</span><span class="nv"> </span><span class="s">lin'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ws</span><span class="nv"> </span><span class="s">becomes</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'et</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">naz'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'the</span><span class="nv"> </span><span class="s">fabian</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'etchy</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">re'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">sharman</span><span class="nv"> </span><span class="s">ne'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ised</span><span class="nv"> </span><span class="s">empero'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ting</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">pol'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'d</span><span class="nv"> </span><span class="s">neo</span><span class="nv"> </span><span class="s">latin'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'th</span><span class="nv"> </span><span class="s">risky</span><span class="nv"> </span><span class="s">ri'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'encyclopedi'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'fense</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'duating</span><span class="nv"> </span><span class="s">fro'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'treet</span><span class="nv"> </span><span class="s">grid</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ations</span><span class="nv"> </span><span class="s">more'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'appeal</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">d'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'si</span><span class="nv"> </span><span class="s">have</span><span class="nv"> </span><span class="s">mad'</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="p p-Indicator">[</span><span class="s">'ists</span><span class="nv"> </span><span class="s">advoca'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ary</span><span class="nv"> </span><span class="s">governm'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'hes</span><span class="nv"> </span><span class="s">nationa'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'d</span><span class="nv"> </span><span class="s">monasteri'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'raca</span><span class="nv"> </span><span class="s">prince'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'chard</span><span class="nv"> </span><span class="s">baer</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'rgical</span><span class="nv"> </span><span class="s">lang'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'for</span><span class="nv"> </span><span class="s">passeng'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'the</span><span class="nv"> </span><span class="s">nationa'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'took</span><span class="nv"> </span><span class="s">place</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ther</span><span class="nv"> </span><span class="s">well</span><span class="nv"> </span><span class="s">k'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'seven</span><span class="nv"> </span><span class="s">six</span><span class="nv"> </span><span class="s">s'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ith</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">gloss'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'robably</span><span class="nv"> </span><span class="s">bee'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'to</span><span class="nv"> </span><span class="s">recogniz'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ceived</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'icant</span><span class="nv"> </span><span class="s">than</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ritic</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">th'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ight</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">sig'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'s</span><span class="nv"> </span><span class="s">uncaused</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">lost</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">in'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'cellular</span><span class="nv"> </span><span class="s">ic'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">size</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">him</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">stic'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'drugs</span><span class="nv"> </span><span class="s">confu'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">take</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">co'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">priest'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'im</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">name</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'d</span><span class="nv"> </span><span class="s">barred</span><span class="nv"> </span><span class="s">at'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'standard</span><span class="nv"> </span><span class="s">fo'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">such</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">es'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ze</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">g'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">or'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'d</span><span class="nv"> </span><span class="s">hiver</span><span class="nv"> </span><span class="s">one'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'y</span><span class="nv"> </span><span class="s">eight</span><span class="nv"> </span><span class="s">mar'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'the</span><span class="nv"> </span><span class="s">lead</span><span class="nv"> </span><span class="s">ch'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'es</span><span class="nv"> </span><span class="s">classica'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ce</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">non</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'al</span><span class="nv"> </span><span class="s">analysis'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'mormons</span><span class="nv"> </span><span class="s">bel'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'t</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">lea'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">disagreed</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ing</span><span class="nv"> </span><span class="s">system</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'btypes</span><span class="nv"> </span><span class="s">base'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'anguages</span><span class="nv"> </span><span class="s">th'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'r</span><span class="nv"> </span><span class="s">commissio'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ess</span><span class="nv"> </span><span class="s">one</span><span class="nv"> </span><span class="s">nin'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'nux</span><span class="nv"> </span><span class="s">suse</span><span class="nv"> </span><span class="s">li'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">first</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'zi</span><span class="nv"> </span><span class="s">concentr'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">society</span><span class="nv"> </span><span class="s">ne'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'elatively</span><span class="nv"> </span><span class="s">s'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'etworks</span><span class="nv"> </span><span class="s">sha'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'or</span><span class="nv"> </span><span class="s">hirohito'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'litical</span><span class="nv"> </span><span class="s">ini'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'n</span><span class="nv"> </span><span class="s">most</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'iskerdoo</span><span class="nv"> </span><span class="s">ri'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ic</span><span class="nv"> </span><span class="s">overview'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'air</span><span class="nv"> </span><span class="s">compone'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'om</span><span class="nv"> </span><span class="s">acnm</span><span class="nv"> </span><span class="s">acc'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">centerline'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">than</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'devotional</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'de</span><span class="nv"> </span><span class="s">such</span><span class="nv"> </span><span class="s">dev'</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="nt">*** valid_batches</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">[</span><span class="s">'</span><span class="nv"> </span><span class="s">a'</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="p p-Indicator">[</span><span class="s">'an'</span><span class="p p-Indicator">]</span><span class="w"></span>
+</code></pre></div>
 <p>定義一下待會會用到的函數。</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">sample_distribution</span><span class="p">(</span><span class="n">distribution</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sample one element from a distribution assumed to be an array of normalized</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sample_distribution</span><span class="p">(</span><span class="n">distribution</span><span class="p">):</span>
+    <span class="sd">"""Sample one element from a distribution assumed to be an array of normalized</span>
 <span class="sd">    probabilities.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distribution</span><span class="p">)):</span>
@@ -455,71 +350,69 @@ $$</div>
 
 
 <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">prediction</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Turn a (column) prediction into 1-hot encoded samples.&quot;&quot;&quot;</span>
+    <span class="sd">"""Turn a (column) prediction into 1-hot encoded samples."""</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">LETTER_SIZE</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
     <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">sample_distribution</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="k">return</span> <span class="n">p</span>
 
 
 <span class="k">def</span> <span class="nf">logprob</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Log-probability of the true labels in a predicted batch.&quot;&quot;&quot;</span>
+    <span class="sd">"""Log-probability of the true labels in a predicted batch."""</span>
     <span class="n">predictions</span><span class="p">[</span><span class="n">predictions</span> <span class="o">&lt;</span> <span class="mf">1e-10</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-10</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">predictions</span><span class="p">)))</span> <span class="o">/</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-
-
+</code></pre></div>
 <p>開始建制LSTM Model。</p>
-<div class="highlight"><pre><span class="k">class</span> <span class="nc">LSTM</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LSTM</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_unrollings</span><span class="p">,</span> <span class="n">n_memory</span><span class="p">,</span> <span class="n">n_train_batch</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_unrollings</span><span class="p">,</span> <span class="n">n_memory</span><span class="p">,</span> <span class="n">n_train_batch</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_unrollings</span> <span class="o">=</span> <span class="n">n_unrollings</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span> <span class="o">=</span> <span class="n">n_memory</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">saved</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saved</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>  <span class="c"># initialize new grap</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">,</span> <span class="n">n_train_batch</span><span class="p">)</span>  <span class="c"># building graph</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span>  <span class="c"># create session by the graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>  <span class="c1"># initialize new grap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">,</span> <span class="n">n_train_batch</span><span class="p">)</span>  <span class="c1"># building graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span>  <span class="c1"># create session by the graph</span>
 
     <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">,</span> <span class="n">n_train_batch</span><span class="p">):</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
-            <span class="c">### Input</span>
+            <span class="c1">### Input</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">train_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_unrollings</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">train_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">n_train_batch</span><span class="p">,</span> <span class="n">LETTER_SIZE</span><span class="p">]))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">train_inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_data</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">n_unrollings</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c"># labels are inputs shifted by one time step.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_data</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># labels are inputs shifted by one time step.</span>
 
 
-            <span class="c">### Optimalization</span>
-            <span class="c"># build neurel network structure and get their loss</span>
+            <span class="c1">### Optimalization</span>
+            <span class="c1"># build neurel network structure and get their loss</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span>
                 <span class="n">inputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_inputs</span><span class="p">,</span>
                 <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">,</span>
                 <span class="n">n_batch</span><span class="o">=</span><span class="n">n_train_batch</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="c"># define training operation</span>
+            <span class="c1"># define training operation</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdagradOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>
 
-            <span class="c"># gradient clipping</span>
+            <span class="c1"># gradient clipping</span>
 
-            <span class="c"># output gradients one by one</span>
+            <span class="c1"># output gradients one by one</span>
             <span class="n">gradients</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">compute_gradients</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">))</span>
-            <span class="n">gradients</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">clip_by_global_norm</span><span class="p">(</span><span class="n">gradients</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">)</span>  <span class="c"># clip gradient</span>
-            <span class="c"># apply clipped gradients</span>
+            <span class="n">gradients</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">clip_by_global_norm</span><span class="p">(</span><span class="n">gradients</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">)</span>  <span class="c1"># clip gradient</span>
+            <span class="c1"># apply clipped gradients</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">train_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">gradients</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
 
-            <span class="c">### Sampling and validation eval: batch 1, no unrolling.</span>
+            <span class="c1">### Sampling and validation eval: batch 1, no unrolling.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sample_input</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">LETTER_SIZE</span><span class="p">])</span>
 
             <span class="n">saved_sample_output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">]))</span>
             <span class="n">saved_sample_state</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">]))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reset_sample_state</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">group</span><span class="p">(</span>     <span class="c"># reset sample state operator</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset_sample_state</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">group</span><span class="p">(</span>     <span class="c1"># reset sample state operator</span>
                 <span class="n">saved_sample_output</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">])),</span>
                 <span class="n">saved_sample_state</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">])))</span>
 
@@ -527,85 +420,85 @@ $$</div>
                 <span class="bp">self</span><span class="o">.</span><span class="n">sample_input</span><span class="p">,</span> <span class="n">saved_sample_output</span><span class="p">,</span> <span class="n">saved_sample_state</span><span class="p">)</span>
             <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">control_dependencies</span><span class="p">([</span><span class="n">saved_sample_output</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">sample_output</span><span class="p">),</span>
                                           <span class="n">saved_sample_state</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">sample_state</span><span class="p">)]):</span>
-                <span class="c"># use tf.control_dependencies to make sure &#39;saving&#39; before &#39;prediction&#39;</span>
+                <span class="c1"># use tf.control_dependencies to make sure 'saving' before 'prediction'</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">sample_prediction</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span>
                     <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">xw_plus_b</span><span class="p">(</span><span class="n">sample_output</span><span class="p">,</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;classifier&#39;</span><span class="p">],</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s">&#39;classifier&#39;</span><span class="p">]))</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">'classifier'</span><span class="p">],</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">'classifier'</span><span class="p">]))</span>
 
-            <span class="c">### Initialization</span>
+            <span class="c1">### Initialization</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">lstm_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;Create a LSTM cell. See e.g.: http://arxiv.org/pdf/1402.1128v1.pdf</span>
+        <span class="sd">""""Create a LSTM cell. See e.g.: http://arxiv.org/pdf/1402.1128v1.pdf</span>
 <span class="sd">        Note that in this formulation, we omit the various connections between the</span>
-<span class="sd">        previous state and the gates.&quot;&quot;&quot;</span>
-        <span class="c">## Build Input Gate</span>
-        <span class="n">ix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;input_gate_i&#39;</span><span class="p">]</span>
-        <span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;input_gate_o&#39;</span><span class="p">]</span>
-        <span class="n">ib</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s">&#39;input_gate&#39;</span><span class="p">]</span>
+<span class="sd">        previous state and the gates."""</span>
+        <span class="c1">## Build Input Gate</span>
+        <span class="n">ix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">'input_gate_i'</span><span class="p">]</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">'input_gate_o'</span><span class="p">]</span>
+        <span class="n">ib</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">'input_gate'</span><span class="p">]</span>
         <span class="n">input_gate</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="o">+</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">im</span><span class="p">)</span> <span class="o">+</span> <span class="n">ib</span><span class="p">)</span>
-        <span class="c">## Build Forget Gate</span>
-        <span class="n">fx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;forget_gate_i&#39;</span><span class="p">]</span>
-        <span class="n">fm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;forget_gate_o&#39;</span><span class="p">]</span>
-        <span class="n">fb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s">&#39;forget_gate&#39;</span><span class="p">]</span>
+        <span class="c1">## Build Forget Gate</span>
+        <span class="n">fx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">'forget_gate_i'</span><span class="p">]</span>
+        <span class="n">fm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">'forget_gate_o'</span><span class="p">]</span>
+        <span class="n">fb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">'forget_gate'</span><span class="p">]</span>
         <span class="n">forget_gate</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fx</span><span class="p">)</span> <span class="o">+</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">fm</span><span class="p">)</span> <span class="o">+</span> <span class="n">fb</span><span class="p">)</span>
-        <span class="c">## Memory</span>
-        <span class="n">cx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;memory_i&#39;</span><span class="p">]</span>
-        <span class="n">cm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;memory_o&#39;</span><span class="p">]</span>
-        <span class="n">cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s">&#39;memory&#39;</span><span class="p">]</span>
+        <span class="c1">## Memory</span>
+        <span class="n">cx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">'memory_i'</span><span class="p">]</span>
+        <span class="n">cm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">'memory_o'</span><span class="p">]</span>
+        <span class="n">cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">'memory'</span><span class="p">]</span>
         <span class="n">update</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">cx</span><span class="p">)</span> <span class="o">+</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">cm</span><span class="p">)</span> <span class="o">+</span> <span class="n">cb</span>
-        <span class="c">## Update State</span>
+        <span class="c1">## Update State</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">forget_gate</span> <span class="o">*</span> <span class="n">state</span> <span class="o">+</span> <span class="n">input_gate</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">update</span><span class="p">)</span>
-        <span class="c">## Build Output Gate</span>
-        <span class="n">ox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;output_gate_i&#39;</span><span class="p">]</span>
-        <span class="n">om</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;output_gate_o&#39;</span><span class="p">]</span>
-        <span class="n">ob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s">&#39;output_gate&#39;</span><span class="p">]</span>
+        <span class="c1">## Build Output Gate</span>
+        <span class="n">ox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">'output_gate_i'</span><span class="p">]</span>
+        <span class="n">om</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">'output_gate_o'</span><span class="p">]</span>
+        <span class="n">ob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">'output_gate'</span><span class="p">]</span>
         <span class="n">output_gate</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ox</span><span class="p">)</span> <span class="o">+</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">om</span><span class="p">)</span> <span class="o">+</span> <span class="n">ob</span><span class="p">)</span>
-        <span class="c">## Ouput</span>
+        <span class="c1">## Ouput</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">output_gate</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">state</span>
 
     <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">n_batch</span><span class="p">):</span>
-        <span class="c">### Variable</span>
+        <span class="c1">### Variable</span>
         <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span>
-              <span class="s">&#39;input_gate_i&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
+              <span class="s1">'input_gate_i'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
                   <span class="p">[</span><span class="n">LETTER_SIZE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span>
-              <span class="s">&#39;input_gate_o&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
+              <span class="s1">'input_gate_o'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
                   <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span>
-              <span class="s">&#39;forget_gate_i&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
+              <span class="s1">'forget_gate_i'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
                   <span class="p">[</span><span class="n">LETTER_SIZE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span>
-              <span class="s">&#39;forget_gate_o&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
+              <span class="s1">'forget_gate_o'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
                   <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span>
-              <span class="s">&#39;output_gate_i&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
+              <span class="s1">'output_gate_i'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
                   <span class="p">[</span><span class="n">LETTER_SIZE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span>
-              <span class="s">&#39;output_gate_o&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
+              <span class="s1">'output_gate_o'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
                   <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span>
-              <span class="s">&#39;memory_i&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
+              <span class="s1">'memory_i'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
                   <span class="p">[</span><span class="n">LETTER_SIZE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span>
-              <span class="s">&#39;memory_o&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
+              <span class="s1">'memory_o'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
                   <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span>
-              <span class="s">&#39;classifier&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
+              <span class="s1">'classifier'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span>
                   <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">,</span> <span class="n">LETTER_SIZE</span><span class="p">],</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span>
 
             <span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="p">{</span>
-              <span class="s">&#39;input_gate&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">])),</span>
-              <span class="s">&#39;forget_gate&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">])),</span>
-              <span class="s">&#39;output_gate&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">])),</span>
-              <span class="s">&#39;memory&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">])),</span>
-              <span class="s">&#39;classifier&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">LETTER_SIZE</span><span class="p">])),</span>
+              <span class="s1">'input_gate'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">])),</span>
+              <span class="s1">'forget_gate'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">])),</span>
+              <span class="s1">'output_gate'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">])),</span>
+              <span class="s1">'memory'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">])),</span>
+              <span class="s1">'classifier'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">LETTER_SIZE</span><span class="p">])),</span>
             <span class="p">}</span>
 
-        <span class="c"># Variables saving state across unrollings.</span>
-        <span class="n">saved_output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">]),</span> <span class="n">trainable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="n">saved_state</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">]),</span> <span class="n">trainable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="c1"># Variables saving state across unrollings.</span>
+        <span class="n">saved_output</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">]),</span> <span class="n">trainable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">saved_state</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_memory</span><span class="p">]),</span> <span class="n">trainable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="c">### Structure</span>
-        <span class="c"># Unrolled LSTM loop.</span>
+        <span class="c1">### Structure</span>
+        <span class="c1"># Unrolled LSTM loop.</span>
         <span class="n">outputs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">saved_output</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">saved_state</span>
@@ -613,15 +506,15 @@ $$</div>
             <span class="n">output</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm_cell</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
             <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 
-        <span class="c"># State saving across unrollings.</span>
+        <span class="c1"># State saving across unrollings.</span>
         <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">control_dependencies</span><span class="p">([</span><span class="n">saved_output</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">output</span><span class="p">),</span>
                                       <span class="n">saved_state</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">state</span><span class="p">)]):</span>
-            <span class="c"># use tf.control_dependencies to make sure &#39;saving&#39; before &#39;calculating loss&#39;</span>
+            <span class="c1"># use tf.control_dependencies to make sure 'saving' before 'calculating loss'</span>
 
-            <span class="c"># Classifier</span>
+            <span class="c1"># Classifier</span>
             <span class="n">logits</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">xw_plus_b</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;classifier&#39;</span><span class="p">],</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s">&#39;classifier&#39;</span><span class="p">])</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">'classifier'</span><span class="p">],</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">'classifier'</span><span class="p">])</span>
             <span class="n">y_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
             <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
                     <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span>
@@ -630,8 +523,8 @@ $$</div>
         <span class="k">return</span> <span class="n">y_</span><span class="p">,</span> <span class="n">loss</span>
 
     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_op</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">online_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
@@ -667,17 +560,15 @@ $$</div>
             <span class="n">feed</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
             <span class="n">sentence</span> <span class="o">+=</span> <span class="n">characters</span><span class="p">(</span><span class="n">feed</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">sentence</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="c"># build training batch generator</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># build training batch generator</span>
 <span class="n">batch_generator</span> <span class="o">=</span> <span class="n">rnn_batch_generator</span><span class="p">(</span>
     <span class="n">text</span><span class="o">=</span><span class="n">train_text</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
     <span class="n">num_unrollings</span><span class="o">=</span><span class="n">num_unrollings</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="c"># build validation data</span>
+<span class="c1"># build validation data</span>
 <span class="n">valid_batches</span> <span class="o">=</span> <span class="n">rnn_batch_generator</span><span class="p">(</span>
     <span class="n">text</span><span class="o">=</span><span class="n">valid_text</span><span class="p">,</span> 
     <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
@@ -686,7 +577,7 @@ $$</div>
 
 <span class="n">valid_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">valid_batches</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">valid_size</span><span class="p">)]</span>
 
-<span class="c"># build LSTM model</span>
+<span class="c1"># build LSTM model</span>
 <span class="n">model_LSTM</span> <span class="o">=</span> <span class="n">LSTM</span><span class="p">(</span>
     <span class="n">n_unrollings</span><span class="o">=</span><span class="n">num_unrollings</span><span class="p">,</span>
     <span class="n">n_memory</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
@@ -694,10 +585,10 @@ $$</div>
     <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.9</span>
 <span class="p">)</span>
 
-<span class="c"># initial model</span>
+<span class="c1"># initial model</span>
 <span class="n">model_LSTM</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
 
-<span class="c"># online training</span>
+<span class="c1"># online training</span>
 <span class="n">epochs</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="n">num_batchs_in_epoch</span> <span class="o">=</span> <span class="mi">5000</span>
 <span class="n">valid_freq</span> <span class="o">=</span> <span class="mi">5</span>
@@ -713,110 +604,102 @@ $$</div>
     <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">avg_loss</span> <span class="o">/</span> <span class="n">num_batchs_in_epoch</span>
 
     <span class="n">train_perplexity</span> <span class="o">=</span> <span class="n">model_LSTM</span><span class="o">.</span><span class="n">perplexity</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Epoch </span><span class="si">%d</span><span class="s">/</span><span class="si">%d</span><span class="s">: </span><span class="si">%d</span><span class="s">s loss = </span><span class="si">%6.4f</span><span class="s">, perplexity = </span><span class="si">%6.4f</span><span class="s">&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Epoch </span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1">: </span><span class="si">%d</span><span class="s1">s loss = </span><span class="si">%6.4f</span><span class="s1">, perplexity = </span><span class="si">%6.4f</span><span class="s1">'</span>
            <span class="o">%</span> <span class="p">(</span> <span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span> <span class="n">avg_loss</span><span class="p">,</span> <span class="n">train_perplexity</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">valid_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;=============== Validation ===============&#39;</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;validation perplexity = </span><span class="si">%6.4f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">model_LSTM</span><span class="o">.</span><span class="n">perplexity</span><span class="p">(</span><span class="n">valid_data</span><span class="p">)))</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Generate From </span><span class="se">\&#39;</span><span class="s">a</span><span class="se">\&#39;</span><span class="s">:  &#39;</span><span class="p">,</span> <span class="n">model_LSTM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">len_generate</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Generate From </span><span class="se">\&#39;</span><span class="s">h</span><span class="se">\&#39;</span><span class="s">:  &#39;</span><span class="p">,</span> <span class="n">model_LSTM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s">&#39;h&#39;</span><span class="p">,</span> <span class="n">len_generate</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;Generate From </span><span class="se">\&#39;</span><span class="s">m</span><span class="se">\&#39;</span><span class="s">:  &#39;</span><span class="p">,</span> <span class="n">model_LSTM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s">&#39;m&#39;</span><span class="p">,</span> <span class="n">len_generate</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;==========================================&#39;</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
-</pre></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'=============== Validation ==============='</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'validation perplexity = </span><span class="si">%6.4f</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">model_LSTM</span><span class="o">.</span><span class="n">perplexity</span><span class="p">(</span><span class="n">valid_data</span><span class="p">)))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Generate From </span><span class="se">\'</span><span class="s1">a</span><span class="se">\'</span><span class="s1">:  '</span><span class="p">,</span> <span class="n">model_LSTM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s1">'a'</span><span class="p">,</span> <span class="n">len_generate</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Generate From </span><span class="se">\'</span><span class="s1">h</span><span class="se">\'</span><span class="s1">:  '</span><span class="p">,</span> <span class="n">model_LSTM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s1">'h'</span><span class="p">,</span> <span class="n">len_generate</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Generate From </span><span class="se">\'</span><span class="s1">m</span><span class="se">\'</span><span class="s1">:  '</span><span class="p">,</span> <span class="n">model_LSTM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s1">'m'</span><span class="p">,</span> <span class="n">len_generate</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'=========================================='</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">Epoch 1/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">66s loss = 1.8249, perplexity = 5.6840</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 2/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64s loss = 1.5348, perplexity = 5.7269</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 3/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">63s loss = 1.4754, perplexity = 5.7866</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 4/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">62s loss = 1.4412, perplexity = 5.3462</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 5/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">62s loss = 1.4246, perplexity = 5.8845</span><span class="w"></span>
 
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">=============== Validation ===============</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">validation perplexity = 3.7260</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'a'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">ah plays agrestiom scattery at an experiments the a</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'h'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">ht number om one nine six three kg aid rosta franci</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'm'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">m within v like opens and solepolity ledania as was</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">==========================================</span><span class="w"></span>
 
-<div class="highlight"><pre>    <span class="l-Scalar-Plain">Epoch 1/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">66s loss = 1.8249, perplexity = 5.6840</span>
-    <span class="l-Scalar-Plain">Epoch 2/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">64s loss = 1.5348, perplexity = 5.7269</span>
-    <span class="l-Scalar-Plain">Epoch 3/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">63s loss = 1.4754, perplexity = 5.7866</span>
-    <span class="l-Scalar-Plain">Epoch 4/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">62s loss = 1.4412, perplexity = 5.3462</span>
-    <span class="l-Scalar-Plain">Epoch 5/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">62s loss = 1.4246, perplexity = 5.8845</span>
+<span class="w">    </span><span class="nt">Epoch 6/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64s loss = 1.4094, perplexity = 6.0429</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 7/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64s loss = 1.3954, perplexity = 5.6133</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 8/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">63s loss = 1.3905, perplexity = 5.4791</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 9/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">62s loss = 1.3675, perplexity = 5.7168</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 10/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">62s loss = 1.3861, perplexity = 5.3937</span><span class="w"></span>
 
-    <span class="l-Scalar-Plain">=============== Validation ===============</span>
-    <span class="l-Scalar-Plain">validation perplexity = 3.7260</span>
-    <span class="l-Scalar-Plain">Generate From &#39;a&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">ah plays agrestiom scattery at an experiments the a</span>
-    <span class="l-Scalar-Plain">Generate From &#39;h&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">ht number om one nine six three kg aid rosta franci</span>
-    <span class="l-Scalar-Plain">Generate From &#39;m&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">m within v like opens and solepolity ledania as was</span>
-    <span class="l-Scalar-Plain">==========================================</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">=============== Validation ===============</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">validation perplexity = 3.5992</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'a'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">ands their hypenman sam diversion passes to rouke t</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'h'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">hash pryess the setuluply see include the grophistr</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'm'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">merhouses tourism in vertic or influence carbon min</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">==========================================</span><span class="w"></span>
 
-    <span class="l-Scalar-Plain">Epoch 6/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">64s loss = 1.4094, perplexity = 6.0429</span>
-    <span class="l-Scalar-Plain">Epoch 7/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">64s loss = 1.3954, perplexity = 5.6133</span>
-    <span class="l-Scalar-Plain">Epoch 8/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">63s loss = 1.3905, perplexity = 5.4791</span>
-    <span class="l-Scalar-Plain">Epoch 9/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">62s loss = 1.3675, perplexity = 5.7168</span>
-    <span class="l-Scalar-Plain">Epoch 10/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">62s loss = 1.3861, perplexity = 5.3937</span>
+<span class="w">    </span><span class="nt">Epoch 11/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64s loss = 1.3782, perplexity = 5.5835</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 12/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">62s loss = 1.3802, perplexity = 6.0567</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 13/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">62s loss = 1.3723, perplexity = 6.0672</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 14/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">62s loss = 1.3729, perplexity = 6.4365</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 15/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">62s loss = 1.3682, perplexity = 6.2878</span><span class="w"></span>
 
-    <span class="l-Scalar-Plain">=============== Validation ===============</span>
-    <span class="l-Scalar-Plain">validation perplexity = 3.5992</span>
-    <span class="l-Scalar-Plain">Generate From &#39;a&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">ands their hypenman sam diversion passes to rouke t</span>
-    <span class="l-Scalar-Plain">Generate From &#39;h&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">hash pryess the setuluply see include the grophistr</span>
-    <span class="l-Scalar-Plain">Generate From &#39;m&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">merhouses tourism in vertic or influence carbon min</span>
-    <span class="l-Scalar-Plain">==========================================</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">=============== Validation ===============</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">validation perplexity = 3.7153</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'a'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">ate at decade a july uses mobe on the john press to</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'h'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">htell yullandi is u one five it naval railandly eng</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'm'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">ment theory president and much three sinit in harde</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">==========================================</span><span class="w"></span>
 
-    <span class="l-Scalar-Plain">Epoch 11/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">64s loss = 1.3782, perplexity = 5.5835</span>
-    <span class="l-Scalar-Plain">Epoch 12/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">62s loss = 1.3802, perplexity = 6.0567</span>
-    <span class="l-Scalar-Plain">Epoch 13/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">62s loss = 1.3723, perplexity = 6.0672</span>
-    <span class="l-Scalar-Plain">Epoch 14/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">62s loss = 1.3729, perplexity = 6.4365</span>
-    <span class="l-Scalar-Plain">Epoch 15/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">62s loss = 1.3682, perplexity = 6.2878</span>
+<span class="w">    </span><span class="nt">Epoch 16/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65s loss = 1.3647, perplexity = 5.5579</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 17/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">63s loss = 1.3691, perplexity = 5.3885</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 18/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64s loss = 1.3535, perplexity = 6.4797</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 19/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">63s loss = 1.3637, perplexity = 5.8126</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 20/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">62s loss = 1.3567, perplexity = 5.9839</span><span class="w"></span>
 
-    <span class="l-Scalar-Plain">=============== Validation ===============</span>
-    <span class="l-Scalar-Plain">validation perplexity = 3.7153</span>
-    <span class="l-Scalar-Plain">Generate From &#39;a&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">ate at decade a july uses mobe on the john press to</span>
-    <span class="l-Scalar-Plain">Generate From &#39;h&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">htell yullandi is u one five it naval railandly eng</span>
-    <span class="l-Scalar-Plain">Generate From &#39;m&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">ment theory president and much three sinit in harde</span>
-    <span class="l-Scalar-Plain">==========================================</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">=============== Validation ===============</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">validation perplexity = 3.6210</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'a'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">ate treaty jack a golderazogon develoged civilized</span><span class="w"> </span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'h'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">hyene is ricpstowed dark preferent crurts annivaril</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'm'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">mer centine all level end of a character of tracks</span><span class="w"> </span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">==========================================</span><span class="w"></span>
 
-    <span class="l-Scalar-Plain">Epoch 16/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">65s loss = 1.3647, perplexity = 5.5579</span>
-    <span class="l-Scalar-Plain">Epoch 17/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">63s loss = 1.3691, perplexity = 5.3885</span>
-    <span class="l-Scalar-Plain">Epoch 18/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">64s loss = 1.3535, perplexity = 6.4797</span>
-    <span class="l-Scalar-Plain">Epoch 19/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">63s loss = 1.3637, perplexity = 5.8126</span>
-    <span class="l-Scalar-Plain">Epoch 20/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">62s loss = 1.3567, perplexity = 5.9839</span>
+<span class="w">    </span><span class="nt">Epoch 21/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65s loss = 1.3584, perplexity = 6.0557</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 22/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">63s loss = 1.3535, perplexity = 7.0777</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 23/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">63s loss = 1.3700, perplexity = 5.7674</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 24/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">63s loss = 1.3609, perplexity = 6.1226</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 25/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64s loss = 1.3663, perplexity = 6.2711</span><span class="w"></span>
 
-    <span class="l-Scalar-Plain">=============== Validation ===============</span>
-    <span class="l-Scalar-Plain">validation perplexity = 3.6210</span>
-    <span class="l-Scalar-Plain">Generate From &#39;a&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">ate treaty jack a golderazogon develoged civilized</span> 
-    <span class="l-Scalar-Plain">Generate From &#39;h&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">hyene is ricpstowed dark preferent crurts annivaril</span>
-    <span class="l-Scalar-Plain">Generate From &#39;m&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">mer centine all level end of a character of tracks</span> 
-    <span class="l-Scalar-Plain">==========================================</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">=============== Validation ===============</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">validation perplexity = 3.6048</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'a'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">an vary palest in some live halleten converting to</span><span class="w"> </span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'h'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">heper could use that the l bidging the five zero th</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'm'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">mer yort can the real forexanded or rather then for</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">==========================================</span><span class="w"></span>
 
-    <span class="l-Scalar-Plain">Epoch 21/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">65s loss = 1.3584, perplexity = 6.0557</span>
-    <span class="l-Scalar-Plain">Epoch 22/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">63s loss = 1.3535, perplexity = 7.0777</span>
-    <span class="l-Scalar-Plain">Epoch 23/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">63s loss = 1.3700, perplexity = 5.7674</span>
-    <span class="l-Scalar-Plain">Epoch 24/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">63s loss = 1.3609, perplexity = 6.1226</span>
-    <span class="l-Scalar-Plain">Epoch 25/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">64s loss = 1.3663, perplexity = 6.2711</span>
+<span class="w">    </span><span class="nt">Epoch 26/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">66s loss = 1.3551, perplexity = 6.1640</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 27/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65s loss = 1.3586, perplexity = 6.3620</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 28/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65s loss = 1.3744, perplexity = 5.5748</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 29/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64s loss = 1.3634, perplexity = 6.0498</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Epoch 30/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">63s loss = 1.3671, perplexity = 6.2313</span><span class="w"></span>
 
-    <span class="l-Scalar-Plain">=============== Validation ===============</span>
-    <span class="l-Scalar-Plain">validation perplexity = 3.6048</span>
-    <span class="l-Scalar-Plain">Generate From &#39;a&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">an vary palest in some live halleten converting to</span> 
-    <span class="l-Scalar-Plain">Generate From &#39;h&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">heper could use that the l bidging the five zero th</span>
-    <span class="l-Scalar-Plain">Generate From &#39;m&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">mer yort can the real forexanded or rather then for</span>
-    <span class="l-Scalar-Plain">==========================================</span>
-
-    <span class="l-Scalar-Plain">Epoch 26/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">66s loss = 1.3551, perplexity = 6.1640</span>
-    <span class="l-Scalar-Plain">Epoch 27/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">65s loss = 1.3586, perplexity = 6.3620</span>
-    <span class="l-Scalar-Plain">Epoch 28/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">65s loss = 1.3744, perplexity = 5.5748</span>
-    <span class="l-Scalar-Plain">Epoch 29/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">64s loss = 1.3634, perplexity = 6.0498</span>
-    <span class="l-Scalar-Plain">Epoch 30/30</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">63s loss = 1.3671, perplexity = 6.2313</span>
-
-    <span class="l-Scalar-Plain">=============== Validation ===============</span>
-    <span class="l-Scalar-Plain">validation perplexity = 3.4751</span>
-    <span class="l-Scalar-Plain">Generate From &#39;a&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">an one brivistrial empir thorodox to an of one city</span>
-    <span class="l-Scalar-Plain">Generate From &#39;h&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">ho wing two he wonders marding where never boat lit</span>
-    <span class="l-Scalar-Plain">Generate From &#39;m&#39;</span><span class="p-Indicator">:</span>   <span class="l-Scalar-Plain">mptemeignt linerical premore logical boldving on ch</span>
-    <span class="l-Scalar-Plain">==========================================</span>
-</pre></div>
-
-
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">=============== Validation ===============</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">validation perplexity = 3.4751</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'a'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">an one brivistrial empir thorodox to an of one city</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'h'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">ho wing two he wonders marding where never boat lit</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'm'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">mptemeignt linerical premore logical boldving on ch</span><span class="w"></span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">==========================================</span><span class="w"></span>
+</code></pre></div>
 <p>最後來產生一篇以"t"為開頭的1000字文章吧！</p>
-<div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="n">model_LSTM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s">&#39;t&#39;</span><span class="p">,</span> <span class="n">len_generate</span><span class="o">=</span><span class="mi">1000</span><span class="p">))</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="l-Scalar-Plain">th the oppose asia college on all of indirect i suicide upse angence and including khazool cashle with jeremp of the case hasway was catiline tribui s law can be wounds to free from an eventually locations university colid for admirum syn semition goths display the might the official up it alder stowinity name like or day elenth names and lesk external links a loons for have the genione e elevang cress leven isbn effects on cultural leave to oldincil he hokerzon blacklomen with the known resolvement of literated by college founded to families in ak urke player jain of highling fake state a first o al reason into the son then mmpt one nine three three npunt university unexal and currently amnyanipation behavion from ber and ii variety of the gupife number topan has one three zero z capital prime genary brown one nine five nine so universities country recipient the vegetables bether form the distinct de plus out as a first a johnson quicky s remain which an death to anti in panibus series</span>
-</pre></div>
-
-
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">model_LSTM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s1">'t'</span><span class="p">,</span> <span class="n">len_generate</span><span class="o">=</span><span class="mi">1000</span><span class="p">))</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">th the oppose asia college on all of indirect i suicide upse angence and including khazool cashle with jeremp of the case hasway was catiline tribui s law can be wounds to free from an eventually locations university colid for admirum syn semition goths display the might the official up it alder stowinity name like or day elenth names and lesk external links a loons for have the genione e elevang cress leven isbn effects on cultural leave to oldincil he hokerzon blacklomen with the known resolvement of literated by college founded to families in ak urke player jain of highling fake state a first o al reason into the son then mmpt one nine three three npunt university unexal and currently amnyanipation behavion from ber and ii variety of the gupife number topan has one three zero z capital prime genary brown one nine five nine so universities country recipient the vegetables bether form the distinct de plus out as a first a johnson quicky s remain which an death to anti in panibus series</span><span class="w"></span>
+</code></pre></div>
 <p>看得出來LSTM想表達什麼嗎，哈哈！</p>
 <h3>Reference</h3>
 <ul>
@@ -824,11 +707,11 @@ $$</div>
 <li><a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">http://colah.github.io/posts/2015-08-Understanding-LSTMs/</a></li>
 </ul>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
+    var align = "left",
+        indent = "1em",
+        linebreak = "true";
 
-    if (false) {
+    if (true) {
         align = (screen.width < 768) ? "left" : align;
         indent = (screen.width < 768) ? "0em" : indent;
         linebreak = (screen.width < 768) ? 'true' : linebreak;
@@ -838,10 +721,13 @@ $$</div>
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
     mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
         "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
         "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
         "    displayAlign: '"+ align +"'," +
@@ -855,7 +741,9 @@ $$</div>
         "        preview: 'TeX'," +
         "    }, " +
         "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} }," +
         "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
         "    }, " +
         "}); " +
@@ -875,142 +763,70 @@ $$</div>
                 "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
             "});" +
         "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_5.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    實作Tensorflow (5)：Word2Vec
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/the-selfish-gene.html" rel="next">
-                                    <span>Next Post</span>
-                                    自私的基因：基因觀點下的天擇
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                        <h3 class="h2">Related Articles</h3>
-                        <ul class="related">
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_6.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_2.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" alt="">
-                                    <h5 class="related__post-title">實作Tensorflow (2)：Build First Deep Neurel Network (DNN)</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" alt="">
-                                    <h5 class="related__post-title">實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_4.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" alt="">
-                                    <h5 class="related__post-title">實作Tensorflow (4)：Autoencoder</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_5.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" alt="">
-                                    <h5 class="related__post-title">實作Tensorflow (5)：Word2Vec</h5>
-                                </a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/tensorflow-tutorial_6.html";
-            this.page.identifier = "tensorflow-tutorial_6.html";
-            this.page.title = "實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/tensorflow-tutorial_5.html#anchor" title="實作Tensorflow (5)：Word2Vec">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/the-selfish-gene.html#anchor" title="自私的基因：基因觀點下的天擇">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<div class="related-posts">
+<h4>You might enjoy</h4>
+<ul class="related-posts">
+<li><a href="https://ycc.idv.tw/ml-course-techniques_6.html">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</a></li>
+<li><a href="https://ycc.idv.tw/tensorflow-tutorial_2.html">實作Tensorflow (2)：Build First Deep Neurel Network (DNN)</a></li>
+<li><a href="https://ycc.idv.tw/tensorflow-tutorial_3.html">實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)</a></li>
+<li><a href="https://ycc.idv.tw/tensorflow-tutorial_4.html">實作Tensorflow (4)：Autoencoder</a></li>
+<li><a href="https://ycc.idv.tw/tensorflow-tutorial_5.html">實作Tensorflow (5)：Word2Vec</a></li>
+</ul>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>

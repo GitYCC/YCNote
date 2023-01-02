@@ -1,298 +1,148 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>機器學習基石 學習筆記 (2)：為什麼機器可以學習? - YC Note</title>
-    <meta name="description" content="機器可以學習嗎? / \(E_{in}\)和\(E_{out}\)的差異 / VC Generalization Bound / 機器要能學習的三要素 / 學習架構 if (!document.getElementById(&#39;mathjaxscript_pelican_#%@#$@#&#39;)) { var align = &#34;center&#34;, indent = &#34;0em&#34;, linebreak = &#34;false&#34;; if (false) { align = (screen.width">
-    <meta name="author" content="YC Chen">
-
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="機器學習基石 學習筆記 (2)：為什麼機器可以學習?" />
-    <meta property="og:description" content="機器可以學習嗎? / \(E_{in}\)和\(E_{out}\)的差異 / VC Generalization Bound / 機器要能學習的三要素 / 學習架構 if (!document.getElementById(&#39;mathjaxscript_pelican_#%@#$@#&#39;)) { var align = &#34;center&#34;, indent = &#34;0em&#34;, linebreak = &#34;false&#34;; if (false) { align = (screen.width" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/ml-course-foundations_2.html" />
-    <meta property="og:site_name" content="YC Note" />
-
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "AI.ML",
-            "item": "https://www.ycc.idv.tw/category/aiml.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "機器學習基石 學習筆記 (2)：為什麼機器可以學習?",
-            "item": "https://www.ycc.idv.tw/ml-course-foundations_2.html"
-          }]
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "機器學習基石 學習筆記 (2)：為什麼機器可以學習? - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2016-06-26",
-          "image" : "https://www.ycc.idv.tw/images/ml-course-foundations.jpeg",
-          "articleSection" : "AI.ML",
-          "articleBody" : "機器可以學習嗎? / \(E_{in}\)和\(E_{out}\)的差異 / VC Generalization Bound / 機器要能學習的三要素 / 學習架構 if (!document.getElementById(&#39;mathjaxscript_pelican_#%@#$@#&#39;)) { var align = &#34;center&#34;, indent = &#34;0em&#34;, linebreak = &#34;false&#34;; if (false) { align = (screen.width",
-          "url" : "https://www.ycc.idv.tw/ml-course-foundations_2.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "機器學習基石 學習筆記 (2)：為什麼機器可以學習?"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" 
-                                 srcset="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 2000w, 
-                                 https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 1000w, 
-                                 https://www.ycc.idv.tw/images/ml-course-foundations.jpeg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        機器學習基石 學習筆記 (2)：為什麼機器可以學習?
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2016-06-26</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a>                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            機器可以學習嗎? / <span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異 / VC Generalization Bound / 機器要能學習的三要素 / 學習架構
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'TeX'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
 </script>
-                        </div>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-                        <h3>前言</h3>
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="機器可以學習嗎? / \(E_{in}\)和\(E_{out}\)的差異 / VC Generalization Bound / 機器要能學習的三要素 / 學習架構 if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) { var align = &quot;left&quot;, indent = &quot;1em&quot;, linebreak = &quot;true&quot;; if (true) { align = (screen.width &lt; 768) ? &quot;left&quot; : align; indent = (screen.width &lt; 768) ? &quot;0em&quot; : indent; linebreak = (screen.width &lt; 768) ? 'true' : linebreak; } var mathjaxscript = document.createElement('script'); mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#'; mathjaxscript.type = 'text/javascript'; mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML'; var configscript = document.createElement('script'); configscript.type = 'text/x-mathjax-config'; configscript[(window.opera ? &quot;innerHTML&quot; : &quot;text&quot;)] = &quot;MathJax.Hub.Config({&quot; + &quot; config: ['MMLorHTML.js'],&quot; + &quot; TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } },&quot; + &quot; jax: ['input/TeX','input/MathML','output/HTML-CSS'],&quot; + &quot; extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js'],&quot; + &quot; displayAlign: '&quot;+ align +&quot;',&quot; + &quot; displayIndent: '&quot;+ indent +&quot;',&quot; + &quot; showMathMenu: true,&quot; + &quot; messageStyle: 'normal',&quot; + &quot; tex2jax: { &quot; + &quot; inlineMath: [ ['\\\\(','\\\\)'] ], &quot; + &quot; displayMath: [ ['$$','$$'] ],&quot; + &quot; processEscapes: true,&quot; + &quot; preview: 'TeX',&quot; + &quot; }, &quot; + &quot; 'HTML-CSS': { &quot; + &quot; availableFonts: ['STIX', 'TeX'],&quot; + &quot; preferredFont: 'STIX',&quot; + &quot; styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} },&quot; + &quot; linebreaks: { automatic: &quot;+ linebreak +&quot;, width: '90% container' },&quot; + &quot; }, &quot; + &quot;}); &quot; + &quot;if ('default' !== 'default') {&quot; + &quot;MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {&quot; + &quot;var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;&quot; + &quot;VARIANT['normal'].fonts.unshift('MathJax_default');&quot; + &quot;VARIANT['bold'].fonts.unshift('MathJax_default-bold');&quot; + &quot;VARIANT['italic'].fonts.unshift('MathJax_default-italic');&quot; + &quot;VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');&quot; + &quot;});&quot; + &quot;MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {&quot; + &quot;var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;&quot; + &quot;VARIANT['normal'].fonts.unshift('MathJax_default');&quot; + &quot;VARIANT['bold'].fonts.unshift('MathJax_default-bold');&quot; + &quot;VARIANT['italic'].fonts.unshift('MathJax_default-italic');&quot; + &quot;VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');&quot; + &quot;});&quot; + &quot;}&quot;; (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript); (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript); } if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) { var align = &quot;left&quot;, indent = &quot;1em&quot;, linebreak = &quot;true&quot;; if (true) { align = (screen.width &lt; 768) ? &quot;left&quot; : align; indent = (screen.width &lt; 768) ? &quot;0em&quot; : indent; linebreak = (screen.width &lt; 768) ? 'true' : linebreak; } var mathjaxscript = document.createElement('script'); mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#'; mathjaxscript.type = 'text/javascript'; mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML'; var configscript = document.createElement('script'); configscript.type = 'text/x-mathjax-config'; configscript[(window.opera ? &quot;innerHTML&quot; : &quot;text&quot;)] = &quot;MathJax.Hub.Config({&quot; + &quot; config: ['MMLorHTML.js'],&quot; + &quot; TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } },&quot; + &quot; jax: ['input/TeX','input/MathML','output/HTML-CSS'],&quot; + &quot; extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js'],&quot; + &quot; displayAlign: '&quot;+ align +&quot;',&quot; + &quot; displayIndent: '&quot;+ indent +&quot;',&quot; + &quot; showMathMenu: true,&quot; + &quot; messageStyle: 'normal',&quot; + &quot; tex2jax: { &quot; + &quot; inlineMath: [ ['\\\\(','\\\\)'] ], &quot; + &quot; displayMath: [ ['$$','$$'] ],&quot; + &quot; processEscapes: true,&quot; + &quot; preview: 'TeX',&quot; + &quot; }, &quot; + &quot; 'HTML-CSS': { &quot; + &quot; availableFonts: ['STIX', 'TeX'],&quot; + &quot; preferredFont: 'STIX',&quot; + &quot; styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} },&quot; + &quot; linebreaks: { automatic: &quot;+ linebreak +&quot;, width: '90% container' },&quot; + &quot; }, &quot; + &quot;}); &quot; + &quot;if ('default' !== 'default') {&quot; + &quot;MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {&quot; + &quot;var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;&quot; + &quot;VARIANT['normal'].fonts.unshift('MathJax_default');&quot; + &quot;VARIANT['bold'].fonts.unshift('MathJax_default-bold');&quot; + &quot;VARIANT['italic'].fonts.unshift('MathJax_default-italic');&quot; + &quot;VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');&quot; + &quot;});&quot; + &quot;MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {&quot; + &quot;var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;&quot; + &quot;VARIANT['normal'].fonts.unshift('MathJax_default');&quot; + &quot;VARIANT['bold'].fonts.unshift('MathJax_default-bold');&quot; + &quot;VARIANT['italic'].fonts.unshift('MathJax_default-italic');&quot; + &quot;VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');&quot; + &quot;});&quot; + &quot;}&quot;; (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript); (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript); }" name="description">
+<meta content="機器學習基石" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="機器學習基石 學習筆記 (2)：為什麼機器可以學習?" property="og:title">
+<meta content="機器可以學習嗎? / \(E_{in}\)和\(E_{out}\)的差異 / VC Generalization Bound / 機器要能學習的三要素 / 學習架構 if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) { var align = &quot;left&quot;, indent = &quot;1em&quot;, linebreak = &quot;true&quot;; if (true) { align = (screen.width &lt; 768) ? &quot;left&quot; : align; indent = (screen.width &lt; 768) ? &quot;0em&quot; : indent; linebreak = (screen.width &lt; 768) ? 'true' : linebreak; } var mathjaxscript = document.createElement('script'); mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#'; mathjaxscript.type = 'text/javascript'; mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML'; var configscript = document.createElement('script'); configscript.type = 'text/x-mathjax-config'; configscript[(window.opera ? &quot;innerHTML&quot; : &quot;text&quot;)] = &quot;MathJax.Hub.Config({&quot; + &quot; config: ['MMLorHTML.js'],&quot; + &quot; TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } },&quot; + &quot; jax: ['input/TeX','input/MathML','output/HTML-CSS'],&quot; + &quot; extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js'],&quot; + &quot; displayAlign: '&quot;+ align +&quot;',&quot; + &quot; displayIndent: '&quot;+ indent +&quot;',&quot; + &quot; showMathMenu: true,&quot; + &quot; messageStyle: 'normal',&quot; + &quot; tex2jax: { &quot; + &quot; inlineMath: [ ['\\\\(','\\\\)'] ], &quot; + &quot; displayMath: [ ['$$','$$'] ],&quot; + &quot; processEscapes: true,&quot; + &quot; preview: 'TeX',&quot; + &quot; }, &quot; + &quot; 'HTML-CSS': { &quot; + &quot; availableFonts: ['STIX', 'TeX'],&quot; + &quot; preferredFont: 'STIX',&quot; + &quot; styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} },&quot; + &quot; linebreaks: { automatic: &quot;+ linebreak +&quot;, width: '90% container' },&quot; + &quot; }, &quot; + &quot;}); &quot; + &quot;if ('default' !== 'default') {&quot; + &quot;MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {&quot; + &quot;var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;&quot; + &quot;VARIANT['normal'].fonts.unshift('MathJax_default');&quot; + &quot;VARIANT['bold'].fonts.unshift('MathJax_default-bold');&quot; + &quot;VARIANT['italic'].fonts.unshift('MathJax_default-italic');&quot; + &quot;VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');&quot; + &quot;});&quot; + &quot;MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {&quot; + &quot;var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;&quot; + &quot;VARIANT['normal'].fonts.unshift('MathJax_default');&quot; + &quot;VARIANT['bold'].fonts.unshift('MathJax_default-bold');&quot; + &quot;VARIANT['italic'].fonts.unshift('MathJax_default-italic');&quot; + &quot;VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');&quot; + &quot;});&quot; + &quot;}&quot;; (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript); (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript); } if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) { var align = &quot;left&quot;, indent = &quot;1em&quot;, linebreak = &quot;true&quot;; if (true) { align = (screen.width &lt; 768) ? &quot;left&quot; : align; indent = (screen.width &lt; 768) ? &quot;0em&quot; : indent; linebreak = (screen.width &lt; 768) ? 'true' : linebreak; } var mathjaxscript = document.createElement('script'); mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#'; mathjaxscript.type = 'text/javascript'; mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML'; var configscript = document.createElement('script'); configscript.type = 'text/x-mathjax-config'; configscript[(window.opera ? &quot;innerHTML&quot; : &quot;text&quot;)] = &quot;MathJax.Hub.Config({&quot; + &quot; config: ['MMLorHTML.js'],&quot; + &quot; TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } },&quot; + &quot; jax: ['input/TeX','input/MathML','output/HTML-CSS'],&quot; + &quot; extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js'],&quot; + &quot; displayAlign: '&quot;+ align +&quot;',&quot; + &quot; displayIndent: '&quot;+ indent +&quot;',&quot; + &quot; showMathMenu: true,&quot; + &quot; messageStyle: 'normal',&quot; + &quot; tex2jax: { &quot; + &quot; inlineMath: [ ['\\\\(','\\\\)'] ], &quot; + &quot; displayMath: [ ['$$','$$'] ],&quot; + &quot; processEscapes: true,&quot; + &quot; preview: 'TeX',&quot; + &quot; }, &quot; + &quot; 'HTML-CSS': { &quot; + &quot; availableFonts: ['STIX', 'TeX'],&quot; + &quot; preferredFont: 'STIX',&quot; + &quot; styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} },&quot; + &quot; linebreaks: { automatic: &quot;+ linebreak +&quot;, width: '90% container' },&quot; + &quot; }, &quot; + &quot;}); &quot; + &quot;if ('default' !== 'default') {&quot; + &quot;MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {&quot; + &quot;var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;&quot; + &quot;VARIANT['normal'].fonts.unshift('MathJax_default');&quot; + &quot;VARIANT['bold'].fonts.unshift('MathJax_default-bold');&quot; + &quot;VARIANT['italic'].fonts.unshift('MathJax_default-italic');&quot; + &quot;VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');&quot; + &quot;});&quot; + &quot;MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {&quot; + &quot;var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;&quot; + &quot;VARIANT['normal'].fonts.unshift('MathJax_default');&quot; + &quot;VARIANT['bold'].fonts.unshift('MathJax_default-bold');&quot; + &quot;VARIANT['italic'].fonts.unshift('MathJax_default-italic');&quot; + &quot;VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');&quot; + &quot;});&quot; + &quot;}&quot;; (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript); (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript); }" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/ml-course-foundations_2.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2016-06-26 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="AI.ML" property="article:section">
+<meta content="機器學習基石" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – 機器學習基石 學習筆記 (2)：為什麼機器可以學習?</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/ml-course-foundations_2.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Ml course foundations_2", "item": "https://ycc.idv.tw/ml-course-foundations_2.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "機器學習基石 學習筆記 (2)：為什麼機器可以學習?", "about": "AI.ML", "datePublished": "2016-06-26 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="ml-course-foundations_2">機器學習基石 學習筆記 (2)：為什麼機器可以學習?</h1>
+<p>
+      Posted on June 26, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 11,641
+
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+<div class="main-contents">
+<h3>前言</h3>
 <p>在上一回當中，我們初探了機器學習，了解了什麼時候適合使用機器學習，而不是一般的Hard Coding，那今天這篇文章要繼續問下去。</p>
 <p><strong>為什麼機器可以學習(Why Can Machines Learn?)</strong>，本篇會介紹學理上機器學習（ML）必須要有哪些條件才可行，這些理論有非常多的數學，但卻是了解機器學習非常重要的內功，我會盡量避開繁複的數學運算，而帶大家直接的了解式子所要告訴我們的觀念。</p>
 <h3>機器可以學習嗎?</h3>
-<p><img alt="MachineLearningFoundations.001" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.001.jpeg"></p>
+<p><img alt="MachineLearningFoundations.001" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.001.jpeg"/></p>
 <p>還記得上面這張圖嗎? 上次帶大家初探了Machine Learning(ML)的基本架構，可以把整個概念總結成上面這張圖。</p>
 <p>我們來複習一下，先從最上面的盆子開始看起，我們用Target Function代表你想要學習的技能，在非常理想的情況下，也就是沒有noise的情況，每組輸入變數 <span class="math">\(X_n\)</span>都會找到一組精確的輸出 <span class="math">\(y_n\)</span>，而這個Target Function能產生多個Data，圖中那些小球就是代表由Target Function產生的Data，今天我從中隨機抽取出<span class="math">\(N\)</span>組Data來做機器學習，接下來Learning Algorithm會利用這些取出的Data去找出最吻合的Hypothesis，那這組Hypothesis就成了我們學習出來的結果，我們可以利用這個結果來預測新的問題。</p>
 <p>那麼上面這張圖真的合理嗎? 我們真的有辦法用上面的方法讓機器學習嗎? </p>
@@ -304,7 +154,7 @@
 <p>但遺憾的是我們不會真正知道<span class="math">\(E_{out}\)</span>，除非我們知道Target Function，所以我們只能評估<span class="math">\(E_{in}\)</span>來選取Model參數，因此重要的是需要<span class="math">\(E_{in} \approx E_{out}\)</span>這個條件要成立，否則一切的學習都是無效的。</p>
 <p><strong>總結一下機器學習的條件，我們必須建立一個 Learning Model可以確保<span class="math">\(E_{in}\approx E_{out}\)</span>，所以在Learning Algorithm選出最小<span class="math">\(E_{in}\)</span>的Hypothesis，同時這組Hypothesis也可以很好的預測Out-sample，我們就可以說機器已經會學習了。</strong></p>
 <h3><span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異</h3>
-<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.005.jpeg"></p>
+<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.005.jpeg"/></p>
 <p>剛剛我們已經提到了如果機器能學習，那就必須先確保<span class="math">\(E_{in} \approx E_{out}\)</span>，下面我會引入Hoeffding不等式來說明這個條件怎麼成立。</p>
 <p>先想像一下我有一個桶子，這個桶子裝了兩種顏色的小球，分別為橘色和綠色，今天如果桶子內橘色球佔的比例為<span class="math">\(μ\)</span>，而今天我們從中隨機抽樣出<span class="math">\(N\)</span>顆小球，並且計算出這<span class="math">\(N\)</span>顆小球中橘色佔的比例為<span class="math">\(ν\)</span>，此時我們可以想像的到，<span class="math">\(μ=ν\)</span>不一定會成立，但<span class="math">\(μ\)</span>也不至於離<span class="math">\(ν\)</span>太遠，所以Hoeffding不等式就告訴我們<span class="math">\(|μ-ν|\)</span>會被限制在一個範圍內，表示為：
 </p>
@@ -332,7 +182,7 @@ $$</div>
 $$</div>
 <p>
 上面這個式子告訴我們<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>差距超過<span class="math">\(ε\)</span>的可能性是被限制住的，只要抽樣的數量<span class="math">\(N\)</span>夠多，基本上<span class="math">\(E_{in}\approx E_{out}\)</span>就成立，我們這邊定義那些超出<span class="math">\(ε\)</span>的Data為Bad Data(不好的數據)，Bad Data出現的可能是被Bound住的，所以機器學習是有可能的。</p>
-<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.006.jpeg"></p>
+<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.006.jpeg"/></p>
 <p>而事實上，我們的hypothesis不會只有一個，所以接下來來考慮如果有M個Hypotheses的情況下我們的<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異會怎麼被參數影響。</p>
 <p>如果我們考慮M組Hypotheses，就會發現每種Hypothesis出現Bad Data的地方可能不一樣，因此大大的減少能使用的Data，如上圖左側所示。</p>
 <p>今天如果我有1000份從Target Function取<span class="math">\(N\)</span>個Data的情形，然後只用一個Hypothesis來衡量，根據Hoeffding's Inequality，1000份裡面假設大概5份會出現Bad Data，但今天我再增加一組Hypothesis來衡量，對於這個Hypothesis也可能有自己的5份Bad Data，如果很不幸的，剛剛好這5份Bad Data和前5份沒有重疊，因此用這兩個hypotheses來評估的話，1000份裡頭將會出現10份的Bad Data，由此類推，如果有<span class="math">\(M\)</span>組Hypotheses，最差的情況會發生在什麼時候呢? 那就是<span class="math">\(M\)</span>個Hypotheses的每份Bad Data彼此都沒有交集，夠慘吧! 所以把這些出現Bad Data的機率取聯集得到以下式子：
@@ -343,7 +193,7 @@ $$</div>
 <p>
 大家現在回想一下上一篇所提到的Perceptron Hypothesis Set就會發現，糟糕了! Perceptron Hypothesis Set 裡有無限多組的Hypotheses，也就是<span class="math">\(M→∞\)</span>，那我們不就需要無限多的Data才能做到<span class="math">\(E_{in} \approx E_{out}\)</span>，否則機器根本不會學習，所以前一篇的內容都在亂講，PLA根本無法學習，因為<span class="math">\(E_{in} \approx E_{out}\)</span>，就算<span class="math">\(E_{in}\)</span>很小也不代表學習成立，機器學習是不可能的。等一下！先沉住氣，聽我接下來慢慢解釋，你就會發現還有一線生機。</p>
 <h3>VC Generalization Bound</h3>
-<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.007.jpeg"></p>
+<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.007.jpeg"/></p>
 <p>問題出在這裡，我們在Multi-Bin Hoeffding’s Inequality中採用了一個假設，就是假設每組Hypotheses的Bad Data彼此間都沒有重疊，所以在<span class="math">\(M→∞\)</span>的情況下，當然會有一個無限大的上限值，但如果考慮了Bad Data重疊的情形，縱使<span class="math">\(M→∞\)</span>的情況下還是有機會把Bad Data的出現機率壓在一個有限的定值之下。</p>
 <p>我們回到二元分類問題，看一下上圖中左側的圖例，如果今天在二維平面上做二元分類，當數據量只有1個<span class="math">\(n=1\)</span>時，就算你的切法有無窮多種，但對於一組Data來說就只有兩類Hypotheses而已，再來看<span class="math">\(n=2\)</span>的情況，一樣的無限多組的切法但Hypotheses也只能歸類成4類。</p>
 <p>所以Hypotheses用來描述數據的情況是彼此有所重疊的，也就是Bad Data出現的情形在許多Hypotheses是相同的。</p>
@@ -375,12 +225,12 @@ $$</div>
 <li><strong>Good Learning Algorithm: 以上兩點可以確定的是<span class="math">\(E_{in} \approx E_{out}\)</span>，接下來好的Learning Algorithm要有能力找到<span class="math">\(E_{in}\)</span> 最小的參數。很直觀的，當我們可以調控的變數越多，我們的選擇就越多，也就是我們可以找到更小<span class="math">\(E_{in}\)</span> 的機會變多了，所以可以調控的變數不可以太少。</strong></li>
 </ol>
 <p>眼尖的你有沒有發現矛盾啊! 可以調控的變數很少，我們能確保<span class="math">\(E_{in} \approx E_{out}\)</span>，但是如果我想要找到更小的<span class="math">\(E_{in}\)</span> 又必須有更多的調控變數，這個矛盾是機器學習上一個重要的課題，<strong>解法是我們必須要能找到適當的調控變數數量，也就是適當大小的<span class="math">\(d_{VC}\)</span> </strong>。</p>
-<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.02.jpeg"></p>
+<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.02.jpeg"/></p>
 <p>from: <a href="https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf">https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf</a></p>
 <p>上圖中，我們把VC Generalization Bound公式帶入Growth Function和<span class="math">\(d_{VC}\)</span>的關係式，並且設<span class="math">\(δ\)</span> 為最大可以容忍的Bad Data出現機率，把它帶入取代掉<span class="math">\(ε\)</span>，整理一下，就可以推出上圖的公式，<span class="math">\(\Omega (N,\mathbb{H},δ)\)</span>稱為Model Complexity，這一項代表的是Hypothesis Set的大小造成的模型複雜度，它隨著<span class="math">\(d_{VC}\)</span>增加而增加。Model Complexity越大代表Bad Data更容易出現，所以<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>開始被帶開了。</p>
 <p><strong>這個現象有一個很常見的名字叫做Overfitting，指的是使用非常複雜的Model來Fitting，雖然可以把手頭上的數據Fit的很漂亮，但是拿到其他的數據來看就會發現這Model的預測性非常的差，原因就是因為Model Complexity造成<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>脫鉤了，所以選擇一個複雜度適中的Model是很重要的。</strong></p>
 <h3>機器學習架構一般化</h3>
-<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.008.jpeg"></p>
+<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.008.jpeg"/></p>
 <p>最後我們來總結一下機器學習的流程，上圖中是之前提到的機器學習的架構並額外考慮一些真實情形，</p>
 <ol>
 <li>每筆Data出現的機會不一定，同樣的採樣結果也是會受機率的影響，所以上圖中標示為<span class="math">\(\mathbb{P} (x)\)</span>，這個修改並不會影響機器學習的流程和結果。</li>
@@ -396,11 +246,11 @@ $$</div>
 <li><strong>最後評估一下是否有Overfitting的狀況，確保<span class="math">\(E_{in} \approx E_{out}\)</span></strong>（未來會講怎麼做）</li>
 </ol>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
+    var align = "left",
+        indent = "1em",
+        linebreak = "true";
 
-    if (false) {
+    if (true) {
         align = (screen.width < 768) ? "left" : align;
         indent = (screen.width < 768) ? "0em" : indent;
         linebreak = (screen.width < 768) ? 'true' : linebreak;
@@ -410,10 +260,13 @@ $$</div>
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
     mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
         "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
         "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
         "    displayAlign: '"+ align +"'," +
@@ -427,7 +280,9 @@ $$</div>
         "        preview: 'TeX'," +
         "    }, " +
         "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} }," +
         "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
         "    }, " +
         "}); " +
@@ -447,130 +302,68 @@ $$</div>
                 "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
             "});" +
         "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/ml-course-foundations_1.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    機器學習基石 學習筆記 (1)：何時可以使用機器學習?
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/ml-course-foundations_3.html" rel="next">
-                                    <span>Next Post</span>
-                                    機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                        <h3 class="h2">Related Articles</h3>
-                        <ul class="related">
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-foundations_1.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習基石 學習筆記 (1)：何時可以使用機器學習?</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-foundations_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-foundations_4.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-foundations.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</h5>
-                                </a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/ml-course-foundations_2.html";
-            this.page.identifier = "ml-course-foundations_2.html";
-            this.page.title = "機器學習基石 學習筆記 (2)：為什麼機器可以學習?";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/ml-course-foundations_1.html#anchor" title="機器學習基石 學習筆記 (1)：何時可以使用機器學習?">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/ml-course-foundations_3.html#anchor" title="機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<div class="related-posts">
+<h4>You might enjoy</h4>
+<ul class="related-posts">
+<li><a href="https://ycc.idv.tw/ml-course-foundations_1.html">機器學習基石 學習筆記 (1)：何時可以使用機器學習?</a></li>
+<li><a href="https://ycc.idv.tw/ml-course-foundations_3.html">機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?</a></li>
+<li><a href="https://ycc.idv.tw/ml-course-foundations_4.html">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</a></li>
+</ul>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>

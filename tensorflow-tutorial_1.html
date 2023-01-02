@@ -1,408 +1,289 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>實作Tensorflow (1)：Simple Logistic Classification on MNIST - YC Note</title>
-    <meta name="description" content="MNIST Dataset / Softmax / Cross-Entropy Loss / 分離數據的重要性 / Tensorflow工作流程 / Tensorflow的基本「張量」元素 / Session的操作 / 第一個Tensorflow Model">
-    <meta name="author" content="YC Chen">
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="實作Tensorflow (1)：Simple Logistic Classification on MNIST" />
-    <meta property="og:description" content="MNIST Dataset / Softmax / Cross-Entropy Loss / 分離數據的重要性 / Tensorflow工作流程 / Tensorflow的基本「張量」元素 / Session的操作 / 第一個Tensorflow Model" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/tensorflow-tutorial_1.html" />
-    <meta property="og:site_name" content="YC Note" />
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="MNIST Dataset / Softmax / Cross-Entropy Loss / 分離數據的重要性 / Tensorflow工作流程 / Tensorflow的基本「張量」元素 / Session的操作 / 第一個Tensorflow Model" name="description">
+<meta content="Tensorflow" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="實作Tensorflow (1)：Simple Logistic Classification on MNIST" property="og:title">
+<meta content="MNIST Dataset / Softmax / Cross-Entropy Loss / 分離數據的重要性 / Tensorflow工作流程 / Tensorflow的基本「張量」元素 / Session的操作 / 第一個Tensorflow Model" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/tensorflow-tutorial_1.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2017-10-23 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="AI.ML" property="article:section">
+<meta content="Tensorflow" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – 實作Tensorflow (1)：Simple Logistic Classification on MNIST</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/tensorflow-tutorial_1.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Tensorflow tutorial_1", "item": "https://ycc.idv.tw/tensorflow-tutorial_1.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "實作Tensorflow (1)：Simple Logistic Classification on MNIST", "about": "AI.ML", "datePublished": "2017-10-23 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="tensorflow-tutorial_1">實作Tensorflow (1)：Simple Logistic Classification on MNIST</h1>
+<p>
+      Posted on October 23, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 5,372
 
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "AI.ML",
-            "item": "https://www.ycc.idv.tw/category/aiml.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "實作Tensorflow (1)：Simple Logistic Classification on MNIST",
-            "item": "https://www.ycc.idv.tw/tensorflow-tutorial_1.html"
-          }]
-        }
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/tensorflow.html">Tensorflow</a>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "實作Tensorflow (1)：Simple Logistic Classification on MNIST - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2017-10-23",
-          "image" : "https://www.ycc.idv.tw/images/tensorflow-logo.jpg",
-          "articleSection" : "AI.ML",
-          "articleBody" : "MNIST Dataset / Softmax / Cross-Entropy Loss / 分離數據的重要性 / Tensorflow工作流程 / Tensorflow的基本「張量」元素 / Session的操作 / 第一個Tensorflow Model",
-          "url" : "https://www.ycc.idv.tw/tensorflow-tutorial_1.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "實作Tensorflow (1)：Simple Logistic Classification on MNIST"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/tensorflow-logo.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/tensorflow-logo.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/tensorflow-logo.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        實作Tensorflow (1)：Simple Logistic Classification on MNIST
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2017-10-23</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a>                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            MNIST Dataset / Softmax / Cross-Entropy Loss / 分離數據的重要性 / Tensorflow工作流程 / Tensorflow的基本「張量」元素 / Session的操作 / 第一個Tensorflow Model
-                        </div>
-
-                        <p>初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。</p>
+<div class="main-contents">
+<p>初次學習Tensorflow最困難的地方莫過於不知道從何下手，已經學會很多的Deep Learning理論，但是要自己使用Tensorflow將Network建起來卻是非常困難的，這篇文章我會先簡單的介紹幾個Tensorflow的概念，最後利用這些概念建立一個簡單的分類模型。</p>
 <p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/01_simple_logistic_classification_on_MNIST.py">Github</a>下載。</p>
 <p>首先，先<code>import</code>一些會用到的function</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">tf</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
 
-<span class="c"># Config the matplotlib backend as plotting inline in IPython</span>
+<span class="c1"># Config the matplotlib backend as plotting inline in IPython</span>
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
-</pre></div>
-
-
+</code></pre></div>
 <h3>MNIST Dataset</h3>
 <p>定義<code>summary</code> function以便於觀察ndarray。</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* shape: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ndarr</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* min: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* max: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* avg: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* std: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;* unique: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
-</pre></div>
-
-
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'* shape: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ndarr</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'* min: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'* max: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'* avg: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'* std: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'* unique: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ndarr</span><span class="p">)))</span>
+</code></pre></div>
 <p>ndarray是numpy的基本元素，它非常便於我們做矩陣的運算。</p>
 <p>我們使用MNIST Dataset來當作我們練習的標的，MNIST包含一包手寫數字的圖片，每張圖片大小為28x28，每一張圖片都是一個手寫的阿拉伯數字包含0到9，並且標記上它所對應的數字。我們的目標就是要利用MNIST做到手寫數字辨識。</p>
 <p>在Tensorflow你可以很簡單的得到「處理過後的」MNIST，只要利用以下程式碼，</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">tensorflow.examples.tutorials.mnist</span> <span class="kn">import</span> <span class="n">input_data</span>
-<span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s">&#39;MNIST_data/&#39;</span><span class="p">,</span> <span class="n">one_hot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">tensorflow.examples.tutorials.mnist</span> <span class="kn">import</span> <span class="n">input_data</span>
+<span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s1">'MNIST_data/'</span><span class="p">,</span> <span class="n">one_hot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">train_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span>
 <span class="n">valid_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">validation</span>
 <span class="n">test_data</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="l-Scalar-Plain">Successfully downloaded train-images-idx3-ubyte.gz 9912422 bytes.</span>
-<span class="l-Scalar-Plain">Extracting MNIST_data/train-images-idx3-ubyte.gz</span>
-<span class="l-Scalar-Plain">Successfully downloaded train-labels-idx1-ubyte.gz 28881 bytes.</span>
-<span class="l-Scalar-Plain">Extracting MNIST_data/train-labels-idx1-ubyte.gz</span>
-<span class="l-Scalar-Plain">Successfully downloaded t10k-images-idx3-ubyte.gz 1648877 bytes.</span>
-<span class="l-Scalar-Plain">Extracting MNIST_data/t10k-images-idx3-ubyte.gz</span>
-<span class="l-Scalar-Plain">Successfully downloaded t10k-labels-idx1-ubyte.gz 4542 bytes.</span>
-<span class="l-Scalar-Plain">Extracting MNIST_data/t10k-labels-idx1-ubyte.gz</span>
-</pre></div>
-
-
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">Successfully downloaded train-images-idx3-ubyte.gz 9912422 bytes.</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">Extracting MNIST_data/train-images-idx3-ubyte.gz</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">Successfully downloaded train-labels-idx1-ubyte.gz 28881 bytes.</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">Extracting MNIST_data/train-labels-idx1-ubyte.gz</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">Successfully downloaded t10k-images-idx3-ubyte.gz 1648877 bytes.</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">Extracting MNIST_data/t10k-images-idx3-ubyte.gz</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">Successfully downloaded t10k-labels-idx1-ubyte.gz 4542 bytes.</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">Extracting MNIST_data/t10k-labels-idx1-ubyte.gz</span><span class="w"></span>
+</code></pre></div>
 <p>每個<code>train_data</code>、<code>valid_data</code>、<code>test_data</code>都包含兩部分：圖片和標籤。</p>
 <p>我們來看一下圖片的部分，<code>train_data.images</code>一共有55000張圖，每一張圖原本大小是28x28，不過特別注意這裡的Data已經先做過預先處理了，因此圖片已經被打平成28x28=784的一維矩陣了，另外每個Pixel的值也先做過「Normalization」了，通常會這樣處理，每個值減去128再除以128，所以你可以從以下的<code>summary</code>中看到它的最大最小值落在0到1之間，還有這個Dataset也已經做過亂數重排了。</p>
-<div class="highlight"><pre><span class="n">summary</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="p-Indicator">[[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
- <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
- <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
- <span class="nv">...</span>
- <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
- <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
- <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]]</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">shape</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">(55000, 784)</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">min</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.0</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">max</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1.0</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">avg</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.13070042431354523</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">std</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.30815958976745605</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">unique</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">0.         0.00392157 0.00784314 0.01176471 0.01568628 0.01960784</span>
- <span class="nv">0.02352941 0.02745098 0.03137255 0.03529412 0.03921569 0.04313726</span>
- <span class="nv">0.04705883 0.0509804  0.05490196 0.05882353 0.0627451  0.06666667</span>
- <span class="nv">0.07058824 0.07450981 0.07843138 0.08235294 0.08627451 0.09019608</span>
- <span class="nv">0.09411766 0.09803922 0.10196079 0.10588236 0.10980393 0.1137255</span>
- <span class="nv">0.11764707 0.12156864 0.1254902  0.12941177 0.13333334 0.13725491</span>
- <span class="nv">0.14117648 0.14509805 0.14901961 0.15294118 0.15686275 0.16078432</span>
- <span class="nv">0.16470589 0.16862746 0.17254902 0.1764706  0.18039216 0.18431373</span>
- <span class="nv">0.18823531 0.19215688 0.19607845 0.20000002 0.20392159 0.20784315</span>
- <span class="nv">0.21176472 0.21568629 0.21960786 0.22352943 0.227451   0.23137257</span>
- <span class="nv">0.23529413 0.2392157  0.24313727 0.24705884 0.2509804  0.25490198</span>
- <span class="nv">0.25882354 0.2627451  0.26666668 0.27058825 0.27450982 0.2784314</span>
- <span class="nv">0.28235295 0.28627452 0.2901961  0.29411766 0.29803923 0.3019608</span>
- <span class="nv">0.30588236 0.30980393 0.3137255  0.31764707 0.32156864 0.3254902</span>
- <span class="nv">0.32941177 0.33333334 0.3372549  0.34117648 0.34509805 0.34901962</span>
- <span class="nv">0.3529412  0.35686275 0.36078432 0.3647059  0.36862746 0.37254903</span>
- <span class="nv">0.37647063 0.3803922  0.38431376 0.38823533 0.3921569  0.39607847</span>
- <span class="nv">0.40000004 0.4039216  0.40784317 0.41176474 0.4156863  0.41960788</span>
- <span class="nv">0.42352945 0.427451   0.43137258 0.43529415 0.43921572 0.4431373</span>
- <span class="nv">0.44705886 0.45098042 0.454902   0.45882356 0.46274513 0.4666667</span>
- <span class="nv">0.47058827 0.47450984 0.4784314  0.48235297 0.48627454 0.4901961</span>
- <span class="nv">0.49411768 0.49803925 0.5019608  0.5058824  0.50980395 0.5137255</span>
- <span class="nv">0.5176471  0.52156866 0.5254902  0.5294118  0.53333336 0.5372549</span>
- <span class="nv">0.5411765  0.54509807 0.54901963 0.5529412  0.5568628  0.56078434</span>
- <span class="nv">0.5647059  0.5686275  0.57254905 0.5764706  0.5803922  0.58431375</span>
- <span class="nv">0.5882353  0.5921569  0.59607846 0.6        0.6039216  0.60784316</span>
- <span class="nv">0.6117647  0.6156863  0.61960787 0.62352943 0.627451   0.6313726</span>
- <span class="nv">0.63529414 0.6392157  0.6431373  0.64705884 0.6509804  0.654902</span>
- <span class="nv">0.65882355 0.6627451  0.6666667  0.67058825 0.6745098  0.6784314</span>
- <span class="nv">0.68235296 0.6862745  0.6901961  0.69411767 0.69803923 0.7019608</span>
- <span class="nv">0.7058824  0.70980394 0.7137255  0.7176471  0.72156864 0.7254902</span>
- <span class="nv">0.7294118  0.73333335 0.7372549  0.7411765  0.74509805 0.7490196</span>
- <span class="nv">0.75294125 0.7568628  0.7607844  0.76470596 0.7686275  0.7725491</span>
- <span class="nv">0.77647066 0.7803922  0.7843138  0.78823537 0.79215693 0.7960785</span>
- <span class="nv">0.8000001  0.80392164 0.8078432  0.8117648  0.81568635 0.8196079</span>
- <span class="nv">0.8235295  0.82745105 0.8313726  0.8352942  0.83921576 0.8431373</span>
- <span class="nv">0.8470589  0.85098046 0.854902   0.8588236  0.86274517 0.86666673</span>
- <span class="nv">0.8705883  0.8745099  0.87843144 0.882353   0.8862746  0.89019614</span>
- <span class="nv">0.8941177  0.8980393  0.90196085 0.9058824  0.909804   0.91372555</span>
- <span class="nv">0.9176471  0.9215687  0.92549026 0.9294118  0.9333334  0.93725497</span>
- <span class="nv">0.94117653 0.9450981  0.9490197  0.95294124 0.9568628  0.9607844</span>
- <span class="nv">0.96470594 0.9686275  0.9725491  0.97647065 0.9803922  0.9843138</span>
- <span class="nv">0.98823535 0.9921569  0.9960785  1.</span>        <span class="p-Indicator">]</span>
-</pre></div>
-
-
+<div class="highlight"><pre><span></span><code><span class="n">summary</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">[[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w"> </span><span class="nv">...</span><span class="w"></span>
+<span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p p-Indicator">]]</span><span class="w"></span>
+<span class="nt">* shape</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(55000, 784)</span><span class="w"></span>
+<span class="nt">* min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0</span><span class="w"></span>
+<span class="nt">* max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w"></span>
+<span class="nt">* avg</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.13070042431354523</span><span class="w"></span>
+<span class="nt">* std</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.30815958976745605</span><span class="w"></span>
+<span class="nt">* unique</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.         0.00392157 0.00784314 0.01176471 0.01568628 0.01960784</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.02352941 0.02745098 0.03137255 0.03529412 0.03921569 0.04313726</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.04705883 0.0509804  0.05490196 0.05882353 0.0627451  0.06666667</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.07058824 0.07450981 0.07843138 0.08235294 0.08627451 0.09019608</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.09411766 0.09803922 0.10196079 0.10588236 0.10980393 0.1137255</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.11764707 0.12156864 0.1254902  0.12941177 0.13333334 0.13725491</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.14117648 0.14509805 0.14901961 0.15294118 0.15686275 0.16078432</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.16470589 0.16862746 0.17254902 0.1764706  0.18039216 0.18431373</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.18823531 0.19215688 0.19607845 0.20000002 0.20392159 0.20784315</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.21176472 0.21568629 0.21960786 0.22352943 0.227451   0.23137257</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.23529413 0.2392157  0.24313727 0.24705884 0.2509804  0.25490198</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.25882354 0.2627451  0.26666668 0.27058825 0.27450982 0.2784314</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.28235295 0.28627452 0.2901961  0.29411766 0.29803923 0.3019608</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.30588236 0.30980393 0.3137255  0.31764707 0.32156864 0.3254902</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.32941177 0.33333334 0.3372549  0.34117648 0.34509805 0.34901962</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.3529412  0.35686275 0.36078432 0.3647059  0.36862746 0.37254903</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.37647063 0.3803922  0.38431376 0.38823533 0.3921569  0.39607847</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.40000004 0.4039216  0.40784317 0.41176474 0.4156863  0.41960788</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.42352945 0.427451   0.43137258 0.43529415 0.43921572 0.4431373</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.44705886 0.45098042 0.454902   0.45882356 0.46274513 0.4666667</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.47058827 0.47450984 0.4784314  0.48235297 0.48627454 0.4901961</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.49411768 0.49803925 0.5019608  0.5058824  0.50980395 0.5137255</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.5176471  0.52156866 0.5254902  0.5294118  0.53333336 0.5372549</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.5411765  0.54509807 0.54901963 0.5529412  0.5568628  0.56078434</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.5647059  0.5686275  0.57254905 0.5764706  0.5803922  0.58431375</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.5882353  0.5921569  0.59607846 0.6        0.6039216  0.60784316</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.6117647  0.6156863  0.61960787 0.62352943 0.627451   0.6313726</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.63529414 0.6392157  0.6431373  0.64705884 0.6509804  0.654902</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.65882355 0.6627451  0.6666667  0.67058825 0.6745098  0.6784314</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.68235296 0.6862745  0.6901961  0.69411767 0.69803923 0.7019608</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.7058824  0.70980394 0.7137255  0.7176471  0.72156864 0.7254902</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.7294118  0.73333335 0.7372549  0.7411765  0.74509805 0.7490196</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.75294125 0.7568628  0.7607844  0.76470596 0.7686275  0.7725491</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.77647066 0.7803922  0.7843138  0.78823537 0.79215693 0.7960785</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.8000001  0.80392164 0.8078432  0.8117648  0.81568635 0.8196079</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.8235295  0.82745105 0.8313726  0.8352942  0.83921576 0.8431373</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.8470589  0.85098046 0.854902   0.8588236  0.86274517 0.86666673</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.8705883  0.8745099  0.87843144 0.882353   0.8862746  0.89019614</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.8941177  0.8980393  0.90196085 0.9058824  0.909804   0.91372555</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.9176471  0.9215687  0.92549026 0.9294118  0.9333334  0.93725497</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.94117653 0.9450981  0.9490197  0.95294124 0.9568628  0.9607844</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.96470594 0.9686275  0.9725491  0.97647065 0.9803922  0.9843138</span><span class="w"></span>
+<span class="w"> </span><span class="nv">0.98823535 0.9921569  0.9960785  1.</span><span class="w">        </span><span class="p p-Indicator">]</span><span class="w"></span>
+</code></pre></div>
 <p>來試著畫圖來看看，我們使用ndarray的index功能來選出第10張圖片，<code>train_data.images[10,:]</code>表示的是選第一軸的第10個和第二軸的全部。</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">plot_fatten_img</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">plot_fatten_img</span><span class="p">(</span><span class="n">ndarr</span><span class="p">):</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">ndarr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">img</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">28</span><span class="p">,</span><span class="mi">28</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="n">plot_fatten_img</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">10</span><span class="p">,:])</span>
-</pre></div>
-
-
-<p><img alt="png" src="data:image/png;base64,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%0AzaxP0ntqfA7wAzUuDb6Vsw1O+4GSdeyaX5LMbI6kX0j6lbv/aIb6Ekm/cPcVOdsh/EDJOvbFHjMz%0ASQ9Lemd68LMPAk/7hqS3z7RJANVp5dP+lZL2SHpL0um/hbxJ0o2SLlbjtP+wpPXZh4OpbXHkB0rW%0A0dP+TiH8QPn4Pj+AJMIPBEX4gaAIPxAU4QeCIvxAUIQfCIrwA0ERfiAowg8ERfiBoAg/EBThB4Ii%0A/EBQuX/As8Pek3Rk2vMvZMvqqK691bUvid7a1cne/rHVF3b1+/yf2bnZXncfqKyBhLr2Vte+JHpr%0AV1W9cdoPBEX4gaCqDv9wxftPqWtvde1Lord2VdJbpdf8AKpT9ZEfQEUqCb+ZXWNmI2Z20Mw2VtFD%0AM2Z22MzeMrPXq55iLJsG7YSZvT1t2UIz+42ZjWa/Z5wmraLetpjZePbevW5m11bU2yIz+62ZHTCz%0A/Wb279nySt+7RF+VvG9dP+03s1mS/ijpKkljkl6VdKO7H+hqI02Y2WFJA+5e+ZiwmX1V0l8lPXp6%0ANiQz+09JJ9393uw/znPd/Xs16W2LznDm5pJ6azaz9DdV4XvXyRmvO6GKI/8lkg66+yF3/5ukn0la%0AU0EftefuL0o6+anFayTtzB7vVOMfT9c16a0W3P2ou+/LHn8g6fTM0pW+d4m+KlFF+M+X9Kdpz8dU%0Arym/XdKvzew1MxuqupkZ9E2bGemYpL4qm5lB7szN3fSpmaVr8961M+N1p/GB32etdPd/lvRvkjZk%0Ap7e15I1rtjoN12yTtEyNadyOSvphlc1kM0s/Jem77n5qeq3K926Gvip536oI/7ikRdOefylbVgvu%0APp79PiHpGTUuU+rk+OlJUrPfJyru5+/c/bi7T7r7lKQfq8L3LptZ+ilJP3X3p7PFlb93M/VV1ftW%0ARfhflXSBmS01s7mS1knaVUEfn2Fm87IPYmRm8yR9XfWbfXiXpMHs8aCkZyvs5RPqMnNzs5mlVfF7%0AV7sZr9296z+SrlXjE///lfT9Knpo0tc/SXoj+9lfdW+SnlDjNPBjNT4b+bakf5C0W9KopBckLaxR%0Ab4+pMZvzm2oErb+i3laqcUr/pqTXs59rq37vEn1V8r5xhx8QFB/4AUERfiAowg8ERfiBoAg/EBTh%0AB4Ii/EBQhB8I6v8A+Md7QMI5IyUAAAAASUVORK5CYII=%0A"></p>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">plot_fatten_img</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">10</span><span class="p">,:])</span>
+</code></pre></div>
+<p><img alt="png" src="data:image/png;base64,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%0AzaxP0ntqfA7wAzUuDb6Vsw1O+4GSdeyaX5LMbI6kX0j6lbv/aIb6Ekm/cPcVOdsh/EDJOvbFHjMz%0ASQ9Lemd68LMPAk/7hqS3z7RJANVp5dP+lZL2SHpL0um/hbxJ0o2SLlbjtP+wpPXZh4OpbXHkB0rW%0A0dP+TiH8QPn4Pj+AJMIPBEX4gaAIPxAU4QeCIvxAUIQfCIrwA0ERfiAowg8ERfiBoAg/EBThB4Ii%0A/EBQuX/As8Pek3Rk2vMvZMvqqK691bUvid7a1cne/rHVF3b1+/yf2bnZXncfqKyBhLr2Vte+JHpr%0AV1W9cdoPBEX4gaCqDv9wxftPqWtvde1Lord2VdJbpdf8AKpT9ZEfQEUqCb+ZXWNmI2Z20Mw2VtFD%0AM2Z22MzeMrPXq55iLJsG7YSZvT1t2UIz+42ZjWa/Z5wmraLetpjZePbevW5m11bU2yIz+62ZHTCz%0A/Wb279nySt+7RF+VvG9dP+03s1mS/ijpKkljkl6VdKO7H+hqI02Y2WFJA+5e+ZiwmX1V0l8lPXp6%0ANiQz+09JJ9393uw/znPd/Xs16W2LznDm5pJ6azaz9DdV4XvXyRmvO6GKI/8lkg66+yF3/5ukn0la%0AU0EftefuL0o6+anFayTtzB7vVOMfT9c16a0W3P2ou+/LHn8g6fTM0pW+d4m+KlFF+M+X9Kdpz8dU%0Arym/XdKvzew1MxuqupkZ9E2bGemYpL4qm5lB7szN3fSpmaVr8961M+N1p/GB32etdPd/lvRvkjZk%0Ap7e15I1rtjoN12yTtEyNadyOSvphlc1kM0s/Jem77n5qeq3K926Gvip536oI/7ikRdOefylbVgvu%0APp79PiHpGTUuU+rk+OlJUrPfJyru5+/c/bi7T7r7lKQfq8L3LptZ+ilJP3X3p7PFlb93M/VV1ftW%0ARfhflXSBmS01s7mS1knaVUEfn2Fm87IPYmRm8yR9XfWbfXiXpMHs8aCkZyvs5RPqMnNzs5mlVfF7%0AV7sZr9296z+SrlXjE///lfT9Knpo0tc/SXoj+9lfdW+SnlDjNPBjNT4b+bakf5C0W9KopBckLaxR%0Ab4+pMZvzm2oErb+i3laqcUr/pqTXs59rq37vEn1V8r5xhx8QFB/4AUERfiAowg8ERfiBoAg/EBTh%0AB4Ii/EBQhB8I6v8A+Md7QMI5IyUAAAAASUVORK5CYII=%0A"/></p>
 <p>很顯而易見的，這是一個0。</p>
 <p>接下來來看標籤的部分，<code>train_data.labels</code>不意外的一樣的也是有相應的55000筆資料，所對應的就是前面的每一張圖片，總共有10種類型:0到9，所以大小為(55000, 10)。</p>
-<div class="highlight"><pre><span class="n">summary</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="p-Indicator">[[</span><span class="nv">0. 0. 0. ... 1. 0. 0.</span><span class="p-Indicator">]</span>
- <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
- <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
- <span class="nv">...</span>
- <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
- <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p-Indicator">]</span>
- <span class="p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 1. 0.</span><span class="p-Indicator">]]</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">shape</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">(55000, 10)</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">min</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.0</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">max</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1.0</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">avg</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.1</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">std</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0.30000000000000004</span>
-<span class="err">*</span> <span class="l-Scalar-Plain">unique</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">0. 1.</span><span class="p-Indicator">]</span>
-</pre></div>
-
-
+<div class="highlight"><pre><span></span><code><span class="n">summary</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">[[</span><span class="nv">0. 0. 0. ... 1. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w"> </span><span class="nv">...</span><span class="w"></span>
+<span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0. 0. 0. ... 0. 1. 0.</span><span class="p p-Indicator">]]</span><span class="w"></span>
+<span class="nt">* shape</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(55000, 10)</span><span class="w"></span>
+<span class="nt">* min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0</span><span class="w"></span>
+<span class="nt">* max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w"></span>
+<span class="nt">* avg</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w"></span>
+<span class="nt">* std</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.30000000000000004</span><span class="w"></span>
+<span class="nt">* unique</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0. 1.</span><span class="p p-Indicator">]</span><span class="w"></span>
+</code></pre></div>
 <p>所以我們來看看上面那張圖片的標籤，</p>
-<div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="p-Indicator">[</span><span class="nv">1. 0. 0. 0. 0. 0. 0. 0. 0. 0.</span><span class="p-Indicator">]</span>
-</pre></div>
-
-
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">[</span><span class="nv">1. 0. 0. 0. 0. 0. 0. 0. 0. 0.</span><span class="p p-Indicator">]</span><span class="w"></span>
+</code></pre></div>
 <p>看起來的確沒錯，在0的位置標示1.，而其他地方標示為0.，因此這是一個標示為0的label沒有錯，這種表示方法稱為One-Hot Encoding，它具有機率的涵義，所代表的是有100%的機會落在0的類別上。</p>
 <h3>Softmax</h3>
 <p>通常One-Hot Encoding會搭配Softmax一同服用，最後的Output結果如果是機率分布，那我也需要讓我的Neurel Network可以輸出機率分布。</p>
-<p><img alt="softmax" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.001.jpeg"></p>
+<p><img alt="softmax" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.001.jpeg"/></p>
 <p>通過Softmax這一層，我們就可以將輸出轉變為以「機率」表示。</p>
 <p>我們可以來手刻一個Softmax Function，不過直接套用Tensorflow中函數的也是可以的。</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="k">def</span> <span class="nf">softmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="c"># avoid exp function go to too large,</span>
-    <span class="c"># pre-reduce before applying exp function</span>
+    <span class="c1"># avoid exp function go to too large,</span>
+    <span class="c1"># pre-reduce before applying exp function</span>
     <span class="n">max_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">max_score</span>
 
@@ -412,14 +293,10 @@
     <span class="k">return</span> <span class="n">softmax</span>
 
 <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]</span>
-<span class="k">print</span><span class="p">(</span><span class="n">softmax</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="p-Indicator">[</span><span class="nv">0.8360188  0.11314284 0.05083836</span><span class="p-Indicator">]</span>
-</pre></div>
-
-
+<span class="nb">print</span><span class="p">(</span><span class="n">softmax</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">[</span><span class="nv">0.8360188  0.11314284 0.05083836</span><span class="p p-Indicator">]</span><span class="w"></span>
+</code></pre></div>
 <h3>Cross-Entropy Loss</h3>
 <p>一旦我們要處理機率預測的問題，就不可以使用單純的「平方誤差」，而必須使用Cross-Entropy Loss，是這樣計算的：</p>
 <div class="math">$$
@@ -438,130 +315,92 @@ $$</div>
 <p>深度學習是由一層一層可以微分的神經元所連接而成，數學上可以表示為張量(Tensor)的表示式，我們一般講的矩陣運算是指2x2的矩陣運算，而張量(Tensor)則是拓寬到n維陣列做計算，在Machine Learning當中我們常常需要處理到相當高維度的計算，例如：有五張28x28的彩色圖的表示就必須使用到四維張量，第一維表示第幾張、第二、三維表示圖片的大小、第四維則表示RGB，如果你是物理系的學生應該也對張量不陌生，廣義相對論裡頭大量的使用四維張量運算，三維空間加一維時間。</p>
 <p>而在做Neurel Network時，我們會根據需求不同設計不同形式但合理的流程(Flow)，再使用數據來訓練我的Model。所以，這就是Tensorflow命名由來：Tensor+Flow。</p>
 <p>因此，一開始要先設計Model的結構，這在Tensorflow裡頭稱為Graph，Graph的作用是事先決定Neurel Network的結構，決定Neuron要怎麼連接？決定哪一些窗口是可以由外部置放數據的？決定哪一些變數是可以被訓練的？哪一些變數是不可以被訓練的？定義將要怎麼樣優化這個系統？...等等。</p>
-<div class="highlight"><pre><span class="n">my_graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span> <span class="c"># Initialize a new graph</span>
+<div class="highlight"><pre><span></span><code><span class="n">my_graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span> <span class="c1"># Initialize a new graph</span>
 
-<span class="k">with</span> <span class="n">my_graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span> <span class="c"># Create a scope to build graph</span>
-    <span class="c"># ...</span>
-    <span class="c"># detail of building graph</span>
-</pre></div>
-
-
+<span class="k">with</span> <span class="n">my_graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span> <span class="c1"># Create a scope to build graph</span>
+    <span class="c1"># ...</span>
+    <span class="c1"># detail of building graph</span>
+</code></pre></div>
 <p>Graph只是一個結構，它不具有有效的資訊，而當我們定義完成Graph之後，接下來我們需要創造一個環境叫做Session，Session會將Graph的結構複製一份，然後再放入資訊進行Training或是預測等等，因此Session是具有有效資訊的。</p>
-<div class="highlight"><pre><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">my_graph</span><span class="p">)</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span> <span class="c"># Copy graph into session</span>
-    <span class="c"># ...</span>
-    <span class="c"># detail of doing machine learning  </span>
-</pre></div>
-
-
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">my_graph</span><span class="p">)</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span> <span class="c1"># Copy graph into session</span>
+    <span class="c1"># ...</span>
+    <span class="c1"># detail of doing machine learning  </span>
+</code></pre></div>
 <p>還有另外一種寫法也是相同作用的，我個人比較喜歡下面這種寫法。</p>
-<div class="highlight"><pre><span class="n">my_session</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">my_graph</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">my_session</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">my_graph</span><span class="p">)</span>
 <span class="n">my_session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-</pre></div>
-
-
+</code></pre></div>
 <h3>Tensorflow的基本「張量」元素</h3>
 <p>接下來我們就來看看有哪些構成Graph的基本元素可以使用。</p>
 <p>(1) 常數張量：</p>
 <p>一開始來看看「常數張量」，常數指的是在Model中不會改變的數值。</p>
-<div class="highlight"><pre><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-</pre></div>
-
-
+<div class="highlight"><pre><span></span><code><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+</code></pre></div>
 <p>(2) 變數張量：</p>
 <p>與常數截然不同的就是變數，「變數張量」是指在訓練當中可以改變的值，一般「變數張量」會用作於Machine Learning需要被訓練的參數，如果你沒有特別設定，在最佳化的過程中，Tensorflow會自動調整「變數張量」的數值來最佳化。</p>
-<div class="highlight"><pre><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)))</span>
-</pre></div>
-
-
+<div class="highlight"><pre><span></span><code><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)))</span>
+</code></pre></div>
 <p>因為變數通常是未知且待優化的參數，所以我們一般會使用Initalizer來設定它的初始值，<code>tf.truncated_normal(shape=(3,5))</code>會隨機產生大小3x5的矩陣，它的值呈常態分佈但只取兩個標準差以內的數值。</p>
 <p>如果今天你想要有一個「變數張量」但是又不希望它因為最佳化而改變，這時你要特別指定<code>trainable</code>為<code>False</code>。</p>
-<div class="highlight"><pre><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">trainable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-</pre></div>
-
-
+<div class="highlight"><pre><span></span><code><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">trainable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
 <p>(3) 置放張量：</p>
 <p>另外有一些張量負責擔任輸入窗口的角色，稱為Placeholder。</p>
-<div class="highlight"><pre><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
-</pre></div>
-
-
+<div class="highlight"><pre><span></span><code><span class="n">tensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+</code></pre></div>
 <p>因為我們在訓練之前還尚未知道Data的數量，所以這裡使用None來表示未知。<code>tf.placeholder</code>在Graph階段是沒有數值的，必須等到Session階段才將數值給輸入進去。</p>
 <p>(4) 操作型張量：</p>
 <p>這類張量並不含有實際數值，而是一種操作，常用的「操作型張量」有兩種，第一種是作為最佳化使用，</p>
-<div class="highlight"><pre><span class="n">loss</span> <span class="o">=</span> <span class="o">...</span>
+<div class="highlight"><pre><span></span><code><span class="n">loss</span> <span class="o">=</span> <span class="o">...</span>
 <span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
-</pre></div>
-
-
+</code></pre></div>
 <p>選擇Optimizer和最佳化的方式來定義最佳化的操作方法，上述的例子是使用learning_rate為0.5的Gradient Descent來降低loss。</p>
 <p>另外一種是初始化的操作，</p>
-<div class="highlight"><pre><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
-</pre></div>
-
-
+<div class="highlight"><pre><span></span><code><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
+</code></pre></div>
 <p>這一個步驟是必要的但常常被忽略，還記得剛剛我們定義「變數張量」時有用到Initalizer，這些Initalizer在Graph完成時還不具有數值，必須使用<code>init_op</code>來給予數值，所以記住一定要放<code>init_op</code>進去Graph裡頭，而且必須先定義完成所有會用到的Initalizer再來設定這個<code>init_op</code>。</p>
 <h3>Session的操作</h3>
 <p>「張量」元素具有兩個面向：功能和數值，在Graph階段「張量」只具有功能但不具有數值，只有到了Session階段才開始有數值，那如何將這些數值取出來呢？有兩種方法，以1+1當作範例來看看，</p>
-<div class="highlight"><pre><span class="n">g1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="n">g1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
 <span class="k">with</span> <span class="n">g1</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">sol</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="c"># add x and y</span>
+    <span class="n">sol</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="c1"># add x and y</span>
 
 <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">g1</span><span class="p">)</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span> 
-    <span class="k">print</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="c"># print tensor, not their value</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="l-Scalar-Plain">Tensor(&quot;Add:0&quot;, shape=(), dtype=int32)</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">g1</span><span class="p">)</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span> 
-    <span class="k">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">eval</span><span class="p">())</span> <span class="c"># evaluate their value</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="l-Scalar-Plain">2</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="n">s1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">g1</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">s1</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">))</span> <span class="c"># another way of evaluating value</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="l-Scalar-Plain">2</span>
-</pre></div>
-
-
+    <span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="c1"># print tensor, not their value</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">Tensor("Add:0", shape=(), dtype=int32)</span><span class="w"></span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">g1</span><span class="p">)</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span> 
+    <span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">eval</span><span class="p">())</span> <span class="c1"># evaluate their value</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">s1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">g1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s1</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">))</span> <span class="c1"># another way of evaluating value</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
+</code></pre></div>
 <p>那如果我想使用placeholder來做到x+y呢？</p>
-<div class="highlight"><pre><span class="n">g2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="n">g2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
 <span class="k">with</span> <span class="n">g2</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-    <span class="n">sol</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="c"># add x and y</span>
+    <span class="n">sol</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="c1"># add x and y</span>
 
 <span class="n">s2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">g2</span><span class="p">)</span>
 
-<span class="c"># if x = 2 and y = 3</span>
-<span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">3</span><span class="p">}))</span> 
-</pre></div>
-
-
-<div class="highlight"><pre><span class="l-Scalar-Plain">5</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="c"># if x = 5 and y = 7</span>
-<span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">7</span><span class="p">}))</span> 
-</pre></div>
-
-
-<div class="highlight"><pre><span class="l-Scalar-Plain">12</span>
-</pre></div>
-
-
+<span class="c1"># if x = 2 and y = 3</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">3</span><span class="p">}))</span> 
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"></span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># if x = 5 and y = 7</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">7</span><span class="p">}))</span> 
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">12</span><span class="w"></span>
+</code></pre></div>
 <p>因為x和y是placeholder，所以必須使用<code>feed_dict</code>來餵入相關資訊，否則會報錯。</p>
 <h3>第一個Tensorflow Model</h3>
 <p>有了以上的認識我們就可以來建立我們第一個Model。</p>
@@ -569,102 +408,102 @@ $$</div>
 <p>Machine Learning在操作上可以整理成三個大步驟：建構(Building)、訓練(Fitting)和推論(Inference)，所以我們將會使用這三大步驟來建製我們的Model。</p>
 <p>在<code>SimpleLogisticClassification</code>裡頭，「建構」的動作在<code>__init__</code>中會進行，由<code>build</code>函式來建立Graph，其中我將Neurel Network的結構分離存於<code>structure</code>裡。「訓練」的動作在<code>fit</code>中進行，這裡採用傳統的Gradient Descent的方法，將所有Data全部考慮進去最佳化，未來會再介紹Batch Gradient Descent。最後，「推論」的部分在<code>predict</code>和<code>evaluate</code>中進行。</p>
 <p><code>SimpleLogisticClassification</code>將會建構一個只有一層的Neurel Network，也就是說沒有Hidden Layer，畫個圖。</p>
-<p><img alt="Simple Logistic Classification" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.002.jpeg"></p>
-<div class="highlight"><pre><span class="k">class</span> <span class="nc">SimpleLogisticClassification</span><span class="p">:</span>
+<p><img alt="Simple Logistic Classification" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.002.jpeg"/></p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SimpleLogisticClassification</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">n_labels</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">n_labels</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span> <span class="o">=</span> <span class="n">n_labels</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>  <span class="c"># initialize new graph</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span>  <span class="c"># building graph</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span>  <span class="c"># create session by the graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>  <span class="c1"># initialize new graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span>  <span class="c1"># building graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span>  <span class="c1"># create session by the graph</span>
 
     <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">):</span>
-        <span class="c"># Building Graph</span>
+        <span class="c1"># Building Graph</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
-            <span class="c">### Input</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
+            <span class="c1">### Input</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
 
-            <span class="c">### Optimalization</span>
-            <span class="c"># build neurel network structure and get their predictions and loss</span>
+            <span class="c1">### Optimalization</span>
+            <span class="c1"># build neurel network structure and get their predictions and loss</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">,</span>
                                                 <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">)</span>
-            <span class="c"># define training operation</span>
+            <span class="c1"># define training operation</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
 
-            <span class="c">### Prediction</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
+            <span class="c1">### Prediction</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">new_y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_features</span><span class="p">,</span>
                                                         <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_labels</span><span class="p">)</span>
 
-            <span class="c">### Initialization</span>
+            <span class="c1">### Initialization</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">init_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
-        <span class="c"># build neurel network structure and return their predictions and loss</span>
-        <span class="c">### Variable</span>
+        <span class="c1"># build neurel network structure and return their predictions and loss</span>
+        <span class="c1">### Variable</span>
         <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))),</span>
+                <span class="s1">'fc1'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))),</span>
             <span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">biases</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s">&#39;fc1&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))),</span>
+                <span class="s1">'fc1'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_labels</span><span class="p">))),</span>
             <span class="p">}</span>
 
-        <span class="c">### Structure</span>
-        <span class="c"># one fully connected layer</span>
-        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dense_layer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s">&#39;fc1&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s">&#39;fc1&#39;</span><span class="p">])</span>
+        <span class="c1">### Structure</span>
+        <span class="c1"># one fully connected layer</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dense_layer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="s1">'fc1'</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases</span><span class="p">[</span><span class="s1">'fc1'</span><span class="p">])</span>
 
-        <span class="c"># predictions</span>
+        <span class="c1"># predictions</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
 
-        <span class="c"># loss: softmax cross entropy</span>
+        <span class="c1"># loss: softmax cross entropy</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
                  <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">logits</span><span class="o">=</span><span class="n">logits</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_dense_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_layer</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="c"># fully connected layer</span>
+    <span class="k">def</span> <span class="nf">get_dense_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_layer</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># fully connected layer</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">input_layer</span><span class="p">,</span> <span class="n">weight</span><span class="p">),</span> <span class="n">bias</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">activation</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">activation</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span>
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">test_data</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_op</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&#39;Epoch </span><span class="si">%2d</span><span class="s">/</span><span class="si">%2d</span><span class="s">: &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">'Epoch </span><span class="si">%2d</span><span class="s1">/</span><span class="si">%2d</span><span class="s1">: '</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="p">))</span>
 
-            <span class="c"># fully gradient descent</span>
+            <span class="c1"># fully gradient descent</span>
             <span class="n">feed_dict</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">train_features</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_labels</span><span class="p">:</span> <span class="n">y</span><span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="n">feed_dict</span><span class="p">)</span>
 
-            <span class="c"># evaluate at the end of this epoch</span>
+            <span class="c1"># evaluate at the end of this epoch</span>
             <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
             <span class="n">train_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
             <span class="n">train_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39; loss = </span><span class="si">%8.4f</span><span class="s">, acc = </span><span class="si">%3.2f%%</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">train_loss</span><span class="p">,</span> <span class="n">train_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">' loss = </span><span class="si">%8.4f</span><span class="s1">, acc = </span><span class="si">%3.2f%%</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">train_loss</span><span class="p">,</span> <span class="n">train_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">validation_data</span><span class="p">:</span>
                 <span class="n">val_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">validation_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
                 <span class="n">val_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">validation_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">validation_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s">&#39;, val_loss = </span><span class="si">%8.4f</span><span class="s">, val_acc = </span><span class="si">%3.2f%%</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">val_loss</span><span class="p">,</span> <span class="n">val_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s1">', val_loss = </span><span class="si">%8.4f</span><span class="s1">, val_acc = </span><span class="si">%3.2f%%</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">val_loss</span><span class="p">,</span> <span class="n">val_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
 
-            <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">test_data</span><span class="p">:</span>
             <span class="n">test_acc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">test_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&#39;test_acc = </span><span class="si">%3.2f%%</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">test_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">'test_acc = </span><span class="si">%3.2f%%</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">test_acc</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="n">predictions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -683,10 +522,8 @@ $$</div>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ndarray</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">ndarray</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">SimpleLogisticClassification</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span> <span class="n">n_labels</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">model</span> <span class="o">=</span> <span class="n">SimpleLogisticClassification</span><span class="p">(</span><span class="n">n_features</span><span class="o">=</span><span class="mi">28</span><span class="o">*</span><span class="mi">28</span><span class="p">,</span> <span class="n">n_labels</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">X</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span>
     <span class="n">y</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
@@ -694,39 +531,35 @@ $$</div>
     <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">valid_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">valid_data</span><span class="o">.</span><span class="n">labels</span><span class="p">),</span>
     <span class="n">test_data</span><span class="o">=</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">test_data</span><span class="o">.</span><span class="n">labels</span><span class="p">),</span>
 <span class="p">)</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span class="l-Scalar-Plain">Epoch  1/10</span><span class="p-Indicator">:</span> 
- <span class="l-Scalar-Plain">loss =   9.2515, acc = 12.81%, val_loss =   9.4888, val_acc = 11.92%</span>
-<span class="l-Scalar-Plain">Epoch  2/10</span><span class="p-Indicator">:</span> 
- <span class="l-Scalar-Plain">loss =   8.2946, acc = 13.89%, val_loss =   8.5156, val_acc = 13.10%</span>
-<span class="l-Scalar-Plain">Epoch  3/10</span><span class="p-Indicator">:</span> 
- <span class="l-Scalar-Plain">loss =   7.5609, acc = 15.92%, val_loss =   7.7680, val_acc = 15.02%</span>
-<span class="l-Scalar-Plain">Epoch  4/10</span><span class="p-Indicator">:</span> 
- <span class="l-Scalar-Plain">loss =   6.9563, acc = 18.31%, val_loss =   7.1521, val_acc = 17.44%</span>
-<span class="l-Scalar-Plain">Epoch  5/10</span><span class="p-Indicator">:</span> 
- <span class="l-Scalar-Plain">loss =   6.4402, acc = 20.94%, val_loss =   6.6249, val_acc = 19.80%</span>
-<span class="l-Scalar-Plain">Epoch  6/10</span><span class="p-Indicator">:</span> 
- <span class="l-Scalar-Plain">loss =   5.9915, acc = 23.35%, val_loss =   6.1650, val_acc = 22.38%</span>
-<span class="l-Scalar-Plain">Epoch  7/10</span><span class="p-Indicator">:</span> 
- <span class="l-Scalar-Plain">loss =   5.5971, acc = 25.79%, val_loss =   5.7596, val_acc = 24.98%</span>
-<span class="l-Scalar-Plain">Epoch  8/10</span><span class="p-Indicator">:</span> 
- <span class="l-Scalar-Plain">loss =   5.2479, acc = 28.18%, val_loss =   5.4001, val_acc = 27.30%</span>
-<span class="l-Scalar-Plain">Epoch  9/10</span><span class="p-Indicator">:</span> 
- <span class="l-Scalar-Plain">loss =   4.9376, acc = 30.46%, val_loss =   5.0803, val_acc = 29.86%</span>
-<span class="l-Scalar-Plain">Epoch 10/10</span><span class="p-Indicator">:</span> 
- <span class="l-Scalar-Plain">loss =   4.6608, acc = 32.71%, val_loss =   4.7947, val_acc = 32.20%</span>
-<span class="l-Scalar-Plain">test_acc = 33.58%</span>
-</pre></div>
-
-
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nt">Epoch  1/10</span><span class="p">:</span><span class="w"> </span>
+<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loss =   9.2515, acc = 12.81%, val_loss =   9.4888, val_acc = 11.92%</span><span class="w"></span>
+<span class="nt">Epoch  2/10</span><span class="p">:</span><span class="w"> </span>
+<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loss =   8.2946, acc = 13.89%, val_loss =   8.5156, val_acc = 13.10%</span><span class="w"></span>
+<span class="nt">Epoch  3/10</span><span class="p">:</span><span class="w"> </span>
+<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loss =   7.5609, acc = 15.92%, val_loss =   7.7680, val_acc = 15.02%</span><span class="w"></span>
+<span class="nt">Epoch  4/10</span><span class="p">:</span><span class="w"> </span>
+<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loss =   6.9563, acc = 18.31%, val_loss =   7.1521, val_acc = 17.44%</span><span class="w"></span>
+<span class="nt">Epoch  5/10</span><span class="p">:</span><span class="w"> </span>
+<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loss =   6.4402, acc = 20.94%, val_loss =   6.6249, val_acc = 19.80%</span><span class="w"></span>
+<span class="nt">Epoch  6/10</span><span class="p">:</span><span class="w"> </span>
+<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loss =   5.9915, acc = 23.35%, val_loss =   6.1650, val_acc = 22.38%</span><span class="w"></span>
+<span class="nt">Epoch  7/10</span><span class="p">:</span><span class="w"> </span>
+<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loss =   5.5971, acc = 25.79%, val_loss =   5.7596, val_acc = 24.98%</span><span class="w"></span>
+<span class="nt">Epoch  8/10</span><span class="p">:</span><span class="w"> </span>
+<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loss =   5.2479, acc = 28.18%, val_loss =   5.4001, val_acc = 27.30%</span><span class="w"></span>
+<span class="nt">Epoch  9/10</span><span class="p">:</span><span class="w"> </span>
+<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loss =   4.9376, acc = 30.46%, val_loss =   5.0803, val_acc = 29.86%</span><span class="w"></span>
+<span class="nt">Epoch 10/10</span><span class="p">:</span><span class="w"> </span>
+<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">loss =   4.6608, acc = 32.71%, val_loss =   4.7947, val_acc = 32.20%</span><span class="w"></span>
+<span class="l l-Scalar l-Scalar-Plain">test_acc = 33.58%</span><span class="w"></span>
+</code></pre></div>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
+    var align = "left",
+        indent = "1em",
+        linebreak = "true";
 
-    if (false) {
+    if (true) {
         align = (screen.width < 768) ? "left" : align;
         indent = (screen.width < 768) ? "0em" : indent;
         linebreak = (screen.width < 768) ? 'true' : linebreak;
@@ -736,10 +569,13 @@ $$</div>
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
     mathjaxscript.type = 'text/javascript';
     mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({" +
         "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
         "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
         "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
         "    displayAlign: '"+ align +"'," +
@@ -753,7 +589,9 @@ $$</div>
         "        preview: 'TeX'," +
         "    }, " +
         "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#0B5345 ! important'} }," +
         "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
         "    }, " +
         "}); " +
@@ -773,142 +611,70 @@ $$</div>
                 "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
             "});" +
         "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 </script>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/stock-sell-point.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    股票策略：移動停損法
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_2.html" rel="next">
-                                    <span>Next Post</span>
-                                    實作Tensorflow (2)：Build First Deep Neurel Network (DNN)
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                        <h3 class="h2">Related Articles</h3>
-                        <ul class="related">
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/ml-course-techniques_6.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ml-course-techniques.jpeg" alt="">
-                                    <h5 class="related__post-title">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_2.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" alt="">
-                                    <h5 class="related__post-title">實作Tensorflow (2)：Build First Deep Neurel Network (DNN)</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_3.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" alt="">
-                                    <h5 class="related__post-title">實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_4.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" alt="">
-                                    <h5 class="related__post-title">實作Tensorflow (4)：Autoencoder</h5>
-                                </a>
-                            </li>
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/tensorflow-tutorial_5.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/tensorflow-logo.jpg" alt="">
-                                    <h5 class="related__post-title">實作Tensorflow (5)：Word2Vec</h5>
-                                </a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/tensorflow-tutorial_1.html";
-            this.page.identifier = "tensorflow-tutorial_1.html";
-            this.page.title = "實作Tensorflow (1)：Simple Logistic Classification on MNIST";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/stock-sell-point.html#anchor" title="股票策略：移動停損法">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/tensorflow-tutorial_2.html#anchor" title="實作Tensorflow (2)：Build First Deep Neurel Network (DNN)">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<div class="related-posts">
+<h4>You might enjoy</h4>
+<ul class="related-posts">
+<li><a href="https://ycc.idv.tw/ml-course-techniques_6.html">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</a></li>
+<li><a href="https://ycc.idv.tw/tensorflow-tutorial_2.html">實作Tensorflow (2)：Build First Deep Neurel Network (DNN)</a></li>
+<li><a href="https://ycc.idv.tw/tensorflow-tutorial_3.html">實作Tensorflow (3)：Build First Convolutional Neurel Network (CNN)</a></li>
+<li><a href="https://ycc.idv.tw/tensorflow-tutorial_4.html">實作Tensorflow (4)：Autoencoder</a></li>
+<li><a href="https://ycc.idv.tw/tensorflow-tutorial_5.html">實作Tensorflow (5)：Word2Vec</a></li>
+</ul>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>

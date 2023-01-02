@@ -1,293 +1,198 @@
+
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+
+<html lang="en">
 <head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <!--- basic page needs
-    ================================================== -->
-    <meta charset="utf-8">
-    <title>Tesla AI Day 2022 筆記 - YC Note</title>
-    <meta name="description" content="在2022年舉辦的Tesla AI Day上，他們推出了人形機器人Optimus，以及介紹他們在自動駕駛上的技術推進。這篇是YC觀賞完AI Day後的筆記，摘要了一些重點，並且在最後提出我的觀點。">
-    <meta name="author" content="YC Chen">
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="Tesla AI Day 2022 筆記" />
-    <meta property="og:description" content="在2022年舉辦的Tesla AI Day上，他們推出了人形機器人Optimus，以及介紹他們在自動駕駛上的技術推進。這篇是YC觀賞完AI Day後的筆記，摘要了一些重點，並且在最後提出我的觀點。" />
-    <meta property="og:image" content="https://www.ycc.idv.tw/images/ai_front_board.jpg" />
-    <meta property="og:url" content="https://www.ycc.idv.tw/tesla-aiday2022.html" />
-    <meta property="og:site_name" content="YC Note" />
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="在2022年舉辦的Tesla AI Day上，他們推出了人形機器人Optimus，以及介紹他們在自動駕駛上的技術推進。這篇是YC觀賞完AI Day後的筆記，摘要了一些重點，並且在最後提出我的觀點。" name="description">
+<meta content="Tesla" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="Tesla AI Day 2022 筆記" property="og:title">
+<meta content="在2022年舉辦的Tesla AI Day上，他們推出了人形機器人Optimus，以及介紹他們在自動駕駛上的技術推進。這篇是YC觀賞完AI Day後的筆記，摘要了一些重點，並且在最後提出我的觀點。" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/tesla-aiday2022.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2022-10-15 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="AI.ML" property="article:section">
+<meta content="Tesla" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – Tesla AI Day 2022 筆記</title>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-5639899546876072",
+      enable_page_level_ads: true
+    });
+  </script>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/tesla-aiday2022.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Tesla aiday2022", "item": "https://ycc.idv.tw/tesla-aiday2022.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "Tesla AI Day 2022 筆記", "about": "AI.ML", "datePublished": "2022-10-15 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,516) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="tesla-aiday2022">Tesla AI Day 2022 筆記</h1>
+<p>
+      Posted on October 15, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 293
 
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "AI.ML",
-            "item": "https://www.ycc.idv.tw/category/aiml.html"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Tesla AI Day 2022 筆記",
-            "item": "https://www.ycc.idv.tw/tesla-aiday2022.html"
-          }]
-        }
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/tesla.html">Tesla</a>
+</p>
+</div>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
+<script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-    <script type="application/ld+json">
-        {
-          "@context" : "http://schema.org",
-          "@type" : "Article",
-          "name" : "Tesla AI Day 2022 筆記 - YC Note",
-          "author" : {
-            "@type" : "Person",
-            "name" : "YC Chen"
-          },
-          "datePublished" : "2022-10-15",
-          "image" : "https://www.ycc.idv.tw/images/ai_front_board.jpg",
-          "articleSection" : "AI.ML",
-          "articleBody" : "在2022年舉辦的Tesla AI Day上，他們推出了人形機器人Optimus，以及介紹他們在自動駕駛上的技術推進。這篇是YC觀賞完AI Day後的筆記，摘要了一些重點，並且在最後提出我的觀點。",
-          "url" : "https://www.ycc.idv.tw/tesla-aiday2022.html",
-          "publisher" : {
-            "@type" : "Organization",
-            "name" : "YC Note",
-            "logo" : {
-                "@type" : "ImageObject",
-                "url": "https://www.ycc.idv.tw/theme/images/favicon.png"
-            }
-          },
-          "headline" : "Tesla AI Day 2022 筆記"
-        }
-    </script>
-
-    <!-- mobile specific metas
-    ================================================== -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSS
-    ================================================== -->
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/base.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/vendor.css">
-    <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/main.css">
-    <!-- <link rel="stylesheet" href="https://www.ycc.idv.tw/theme/css/all.min.css"> -->
-    <link rel='stylesheet' id='font-awesome-css'  href='https://mk0athemesdemon3j7s5.kinstacdn.com/wp-content/themes/astrid/fonts/font-awesome.min.css?ver=5.2.4' type='text/css' media='all' />
-
-    <!-- script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/modernizr.js"></script>
-
-    <!-- favicons
-    ================================================== -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.ycc.idv.tw/theme/images/favicon.png">
-
-    <!-- Google Analytics
-    ================================================== -->
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-68393177-2', 'auto');
-        ga('send', 'pageview');
-    </script>
-
-    <script type="text/x-mathjax-config"> 
-        MathJax.Hub.Config({ 
-            "HTML-CSS": { scale: 90, linebreaks: { automatic: true } }, 
-            SVG: { linebreaks: { automatic:true } } 
-            });
-    </script>
-
-</head>
-
-<body class="ss-bg-white">
-
-    <!-- preloader
-    ================================================== -->
-    <div id="preloader">
-        <div id="loader" class="dots-fade">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-
-    <div id="top" class="s-wrap site-wrapper">
-
-        <!-- site header
-        ================================================== -->
-        <header class="s-header header">
-
-            <div class="header__top">
-                <div class="header__logo">
-                    <a class="site-logo" href="https://www.ycc.idv.tw/">
-                        <img src="https://www.ycc.idv.tw/theme/images/favicon.png" alt="Homepage">
-                    </a>
-                </div>
-
-                <!-- toggles -->
-                <a href="#0" class="header__menu-toggle"><span>Menu</span></a>
-
-            </div>
-
-            <nav class="header__nav-wrap">
-
-                <ul class="header__nav">
-                    <li><a href="https://www.ycc.idv.tw/" title="">Home</a></li>
-                    <li class="has-children">
-                        <a href="#0" title="">Categories</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/coding.html">Coding</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/life.html">Life</a></li>
-                            <li><a href="https://www.ycc.idv.tw/category/reading.html">Reading</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-children">
-                        <a href="#0" title="">Tags</a>
-                        <ul class="sub-menu">
-                            <li><a href="https://www.ycc.idv.tw/tag/ai-ji.html">埃及</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cs.html">CS</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/cv.html">CV</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html">機器學習技法</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html">機器學習基石</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ji-ta.html">吉他</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/papers.html">Papers</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html">剖析深度學習</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/pythonwan-shu-ju.html">Python玩數據</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/ruan-ti-she-ji.html">軟體設計</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/sheng-cheng-mo-xing.html">生成模型</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tensorflow.html">Tensorflow</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a></li>
-                            <li><a href="https://www.ycc.idv.tw/tag/you-ji.html">遊記</a></li>
-                        </ul>
-                    </li>
-                    <li></li>
-                    <li><a href="https://www.ycc.idv.tw/#about" title="">About</a></li>
-                </ul> <!-- end header__nav -->
-
-                <ul class="header__social">
-                    <li class="ss-facebook">
-                        <a href="https://www.facebook.com/yc.note/" target="_blank">
-                            <span class="screen-reader-text">Facebook</span>
-                        </a>
-                    </li>
-                    <li class="ss-github">
-                        <a href="https://github.com/GitYCC" target="_blank">
-                            <span class="screen-reader-text">Github</span>
-                        </a>
-                    </li>
-                    <li class="ss-linkedin">
-                        <a href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
-                            <span class="screen-reader-text">Linkedin</span>
-                        </a>
-                    </li>
-                    <li class="ss-email">
-                        <a href="mailto:ycc.tw.email@gmail.com" target="_blank">
-                            <span class="screen-reader-text">Email</span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </nav> <!-- end header__nav-wrap -->
-
-        </header> <!-- end s-header -->
-
-
-        <!-- site content
-        ================================================== -->
-        <div class="s-content content">
-            <main class="row content__page">
-
-                <article class="column large-full entry format-standard">
-
-                    <div class="media-wrap entry__media">
-                        <div class="entry__post-thumb">
-                            <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" 
-                                 srcset="https://www.ycc.idv.tw/images/ai_front_board.jpg 2000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 1000w, 
-                                 https://www.ycc.idv.tw/images/ai_front_board.jpg 500w" sizes="(max-width: 2000px) 100vw, 2000px" alt="">
-                        </div>
-                    </div>
-
-                    <div class="content__page-header entry__header">
-                        <h1 class="display-1 entry__title">
-                        Tesla AI Day 2022 筆記
-                        </h1>
-                        <ul class="entry__header-meta">
-                            <li class="author"><i class="fa fa-user"></i> YC Chen</a></li>
-                            <li class="date"><i class="fa fa-calendar"></i> 2022-10-15</li>
-                            <li class="cat-links">
-                                <i class="fa fa-archive"></i> <a href="https://www.ycc.idv.tw/category/aiml.html">AI.ML</a>
-                            </li>
-                            <li>
-                                <i class="fa fa-tags"></i> 
-<a href="https://www.ycc.idv.tw/tag/tesla.html">Tesla</a>                            </li>
-                        </ul>
-                    </div> <!-- end entry__header -->
-
-                    <div class="entry__content">
-                        <div style="background-color: rgba(0, 0, 0, 0.0470588);padding: 20px;margin-bottom:  50px;">
-                            在2022年舉辦的Tesla AI Day上，他們推出了人形機器人Optimus，以及介紹他們在自動駕駛上的技術推進。這篇是YC觀賞完AI Day後的筆記，摘要了一些重點，並且在最後提出我的觀點。
-                        </div>
-
-                        <p>原始影片：<a href="https://www.youtube.com/watch?v=ODSJsviD_SU&amp;t=9274s">youtube</a></p>
+<div class="main-contents">
+<p>原始影片：<a href="https://www.youtube.com/watch?v=ODSJsviD_SU&amp;t=9274s">youtube</a></p>
 <h2>Tesla Bot: Optimus</h2>
 <h3>Demo</h3>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/optimus.gif"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/optimus.gif"/></p>
 <p>上次 Tesla AI Day 預告的人形機器人 Optimus 終於亮相了，Musk 說開發這個機器主要是要幫助人類完成一些枯燥或危險的工作，為了達到這個目的，Optimus 的手指有特別設計，可以靈巧的完成人類的工作，Musk 強調說目前市面上大部分的機器人都缺乏大腦，而且售價昂貴，Optimus 未來售價將壓在2萬美元以下，並且預計在明年開始量產。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/optimus_2.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/optimus_2.png"/></p>
 <p>Optimus 目前已經可以完成一些基本動作。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/optimus_3.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/optimus_3.png"/></p>
 <p>Optimus 採用在自動駕駛上使用的視覺系統，含有語義分割的功能，所以在 Optimus 的眼中它可以認得出它自身的部分、地板、花圃、澆水器、等。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/optimus_4.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/optimus_4.png"/></p>
 <h3>Hardware Architecture</h3>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/human_form.png"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/human_form.png"/></p>
 <p>Optimus 以人的身體來打造，全身上下有多於200個自由度，自由度可以想像可以彎曲的地方，類比於人類的關節，而手有多達27個自由度，從影片仔細觀察 Optimus 的大拇指甚至可以向內折去碰觸小指頭，相當的細緻。而 Optimus 的重量也跟一個成人差不多約73公斤。並且 Tesla 團隊特別設計讓 Optimus 在待機的狀態下可以比較省電。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/latest_generation.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/latest_generation.png"/></p>
 <p>上圖橘色的部分為 Actuators（致動器，是一種將能源轉換成機械動能的裝置），而藍色的部分為電力系統，Optimus 同樣裝備著如電動車上的晶片，這晶片可以用來做影像處理、路線規劃，甚至他們希望未來我們可以跟 Optimus 溝通，所以裝備著無線連線器和聲音接收器。</p>
 <h3>Hardware Simulation</h3>
 <p>延續 Tesla 造車的經驗，Tesla 透過物理引擎模擬來設計機械結構，舉例：利用物理引擎模擬電動車撞擊的狀況來安全的設計車體結構。同樣的，可以透過這個物理引擎來模擬 Optimus 跌倒的狀況，並且設計 Optimus 在各種跌倒狀態下能避免電池和電路板等重要地方嚴重損壞。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/structure_for_mass_production.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/structure_for_mass_production.png"/></p>
 <p>同樣的，可以利用物理引擎來模擬機器人走路的受力狀況，並且設計出好的結構來應付各類動作。物理引擎可以有效的節省實體試錯的時間。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/knee_joint.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/knee_joint.png"/></p>
 <p>例如在設計膝關節也得益於物理引擎的幫忙，為了仿造膝蓋關節的結構 Tesla 經過模擬後採用「四軸系統」。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/knee_requirement_from_tasks.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/knee_requirement_from_tasks.png"/></p>
 <p>上圖綠色的曲線代表四軸系統，而藍色的曲線代表兩軸系統，其呈現的是在關節不同角度下的模擬受力狀況，可以發現兩軸系統在膝蓋彎曲的時候受力相當大，而四軸系統則能穩定維持低受力狀況，因此四軸系統比較有效率。</p>
 <h3>Actuators（致動器）＆ Hand</h3>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/actuator_1.png"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/actuator_1.png"/></p>
 <p>由電驅動的致動器已經用於電動車上，但電動車只需要前後兩個致動器，而為了支援人形機器人的各類動作，例如：走路、跑步、搬重物、爬樓梯等，Optimus 需要使用到28個致動器。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/actuator_2.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/actuator_2.png"/></p>
 <p>為了要選擇和設計這28個致動器，透過讓機器人走路和轉彎模擬並畫出各致動器的力矩-速度的軌跡，有了這個軌跡圖我們就可以計算某個致動器的耗能狀況，進而推算出其系統成本。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/actuator_3.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/actuator_3.png"/></p>
 <p>針對某一個位置，Tesla 團隊模擬了好幾十萬顆致動器並得到所有致動器在系統成本-致動器重量的分布，我們想要選擇系統成本越低、重量越輕的致動器，所以會選擇最靠近左下角原點的致動器，透過 Pareto Front 我們可以找出那最佳的致動器。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/actuator_4.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/actuator_4.png"/></p>
 <p>在28個位置都可以做同樣的計算，因此我們得到28種最佳的致動器，但是考慮到未來量產，28種款式顯然太多了，縱使因為左右對稱，可以省一半，但仍然還是太多款式，因此 Tesla 團隊透過 Commonality Study（共性研究）在權衡之下，使用6種致動器裝配在這28個地方。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/actuator_5.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/actuator_5.png"/></p>
 <p>這6種致動器如上圖所示，上排為旋轉式、下排為線性式。而講者特別展示他們的致動器有能力舉起一架三腳鋼琴，這並不是花俏的功能，這是必須要有的，因為人類的某些肌肉也同樣有此張力。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/hands.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/hands.png"/></p>
 <p>為了要打造像人類一樣靈巧的雙手，Optimus 手部使用了6個致動器，並提供了11個自由度。擁有可調整的抓握能力，可以依照情境去調整抓握的方法與力氣，可以提取約9公斤的重物，並且使用工具，甚至是相當小的物件。而特別有趣的一點是，Optimus 的手有嵌入 Sensors，所以在抓握的時候 Optimus 可以了解它與物件接觸的狀況來調整抓握的方法。</p>
 <h3>Optimus Software</h3>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/robot_occupancy.png"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/robot_occupancy.png"/></p>
 <p>Optimus 的視覺系統採用和自駕車相同的 Occupancy Network（詳見下方介紹），而因為通常在室內，所以沒有GPS可以參考，因此 Optimus 更仰賴於視覺系統。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/visual_navigation.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/visual_navigation.png"/></p>
 <p>為了能在室內行走而不去撞到東西，Optimus 建基在 Occupancy Network 上預測圖上藍色的高頻關注點，可以控制避免 Optimus 去撞上這些點的同時，也可以可以利用這些點的實時變化來了解機器人自身的動作。</p>
-<p><br></p>
+<p><br/></p>
 <p>讓機器人走路並不是件容易的事情，要考慮以下幾件事：</p>
 <ul>
 <li>對物理自身的了解：譬如腳的長度、重量、腳掌的長度</li>
@@ -295,42 +200,42 @@
 <li>平衡</li>
 <li>協同動作</li>
 </ul>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/locomaotion_plan_1.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/locomaotion_plan_1.png"/></p>
 <p>為了考量這些，Tesla 的作法是利用模擬去訂定移動計畫，並且規劃出軌跡，包括：左腳掌和右腳掌要踏的位置、腳掌的移動軌跡、骨盆的移動軌跡、等等。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/locomaotion_plan_real_world.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/locomaotion_plan_real_world.png"/></p>
 <p>但縱使使用模擬周全考慮後，在真實世界還是存在著誤差，例如：機器人可能會振動偏移、Sensors 也存在著觀測誤差，所以有許多狀況是超出模擬之外的，這導致一開始機器人是不穩定的，很容易跌倒。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/motion_control.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/motion_control.png"/></p>
 <p>所以 Tesla 提出了修正，建基在模擬預測之上，Optimus 使用 Sensors 去估計當下狀態，計算當下狀態與理想值的差異，並進行實時調整，才終於讓 Optimus 可以在正常世界行走。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/natrual_motion_reference.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/natrual_motion_reference.png"/></p>
 <p>為了要讓 Optimus 可以做許多人類的操作，Tesla 團隊蒐集了許多由人類示範的操作動作紀錄，把它們存成一個 Library。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/online_motion_adaption.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/online_motion_adaption.png"/></p>
 <p>而就算是拿箱子的這一個動作有存在 Library 中，但是實際狀況箱子可能有大有小、有輕有重，也可能如上圖所示放在不同的地方、高度，所以我們不能直接使用 Library 中的示範動作，因此需要透過一個軌跡優化程式來調整雙手的軌跡，才能正確的完成任務。</p>
 <h2>Full Self Driving</h2>
 <h3>Intro.</h3>
 <p>全自動駕駛從去年的2千個使用者，到今年2022已經提升到16萬個使用者，總共經歷了35個版本、訓練了近7.5萬個模型，大約每8分鐘就有一個新的模型。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/fsd_2022.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/fsd_2022.png"/></p>
 <p>這是今天的大綱，Neural Networks 的部分包含了 Occupancy Networks 和 Lanes &amp; Objects Networks，Occupancy Networks 作為底層描述幾何關係的預測，目標是從影像資料轉成實體世界，可以預測樹、牆、建築物、車，甚至預測它未來的移動方向；除此之外，Lanes &amp; Objects Networks 提供了更詳細的語義預測。Training Data 的部分有去年提過的 Auto Labeling 和 Simulation，Data Engine 的部分則是描述他們針對錯誤的預測做改正的系統性作法。Planning 則是自動駕駛計畫它軌跡的程式。</p>
 <h3>Planning</h3>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/assert_to_pedestrain.png"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/assert_to_pedestrain.png"/></p>
 <p>計畫行車軌跡是相當複雜的，其需要考慮交互關係，如上圖，紅色的車輛想要左轉，卻遇到左前方的行人和右前方疾駛的車輛，它應該怎麼行駛呢？當下急轉顯然不是一個好行為，可能會撞到行人，所以人類駕駛會選擇讓行人先通過，再左轉從行人後方通過，但如果選擇這樣的路徑，右方疾駛的車輛可能會撞上，所以更好的作法是等待行人通過以及等待右側車輛通過再左轉。所以好的自動駕駛應該要能考慮接下來路徑的所有交互作用，但是這一切計算只能在50ms內完成，如果有大約20個物件要考慮，大概需要考慮100種的交互作用，要如何在這麼短的時間內將一切都考慮進去呢？Tesla 採用平行計算的樹搜尋法。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/interaction_search_1.png"></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/interaction_search_2.png"></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/interaction_search_3.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/interaction_search_1.png"/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/interaction_search_2.png"/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/interaction_search_3.png"/></p>
 <p>基於預測的 3D Vector Space，可以計算出多條可能的路徑，針對每一種路徑 Tesla 會逐一的檢查所有可能的交互作用，最後挑選出最佳的路徑，這個過程可以看作一個 Tree Search，並且可以採用平行運算來加速這整個過程。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/interaction_search_4.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/interaction_search_4.png"/></p>
 <p>在樹中的每一個節點都會經歷三個歷程：路徑生成、路徑評分、基於交互作用或中間目標的分岔。</p>
 <p>路徑生成的部分，他們曾經嘗試使用物理數值優化，但這過程太過緩慢，平均一個動作需要花費1-5ms，如果有100個動作則最少需花費100ms，這超出了我們的限制，所以他們接著考慮使用神經網路的方法，讓神經網路學習人類的操作示範或數值優化後的路徑，如此一來便可以將一個動作壓在約100us，成功的解決問題。</p>
 <p>路徑生成過後，他們會針對路徑作評分，會考慮剛剛提到的「可能撞擊檢查」，好的路徑要禮讓行人、避免與其他車輛擦撞，同時也考慮了「行車舒適度」，並且使用神經網路的方法去評估「車主取消自動駕駛接管的可能性」和「這路徑像不像人類的行駛方法」。</p>
 <h2>Occupancy Network</h2>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/occupancy_network.png"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/occupancy_network.png"/></p>
 <p>Occupancy Network 作為底層描述幾何關係的預測，目標是從8顆鏡頭影像資料轉成實體世界，並提供所需的語義。它有以下特色：</p>
 <ul>
 <li>能描述 Volumetric Occupancy （體積佔用）</li>
@@ -349,43 +254,43 @@
 </ul>
 <h3>Training Infra.</h3>
 <p>為了要應付龐大的計算量，Tesla 裝備著14K顆GPU，其中4K顆作 Auto Labeling 之用、10K顆作模型訓練之用；並且裝備著30PB的分散式影片快取記憶體。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/optimizing_video_model_training.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/optimizing_video_model_training.png"/></p>
 <p>但是並不是將大量的GPU和大容量的記憶體裝上去就完事了，Tesla 團隊還為底層做了很多的優化，如上圖所示，例如，擴充原本的 PyTorch 加速影片訓練速度、設計新的儲存格式 .smol 來降低容量和減少輸出寫入的操作次數。在優化過後，訓練 Occupancy Network 的速度提升了2.3倍。</p>
 <h3>Lanes</h3>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/fsd_lanes.png"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/fsd_lanes.png"/></p>
 <p>縱使我們已經使用 Occupancy Network 重建了整個實體世界，包括標線、車輛、紅綠燈，但行車的路線仍然不是顯而易見的，如上圖所示你可以了解行車路線有多麼複雜，它包含著行車方向、變換車道、道路切換，所以我們希望使用神經網路來預測所有可能的路線。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/fsd_lanes_nn.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/fsd_lanes_nn.png"/></p>
 <p>FSD Lanes Neural Network 分為三個部分，Vision Component 設計的如同 Occupancy Network 的 Backbone 一樣；Map Component 則是希望融入 Navigation Map 的資訊，包括：路的幾何和拓撲、行車方向、車道數量、車道的拓撲、是否為公車道、是否為高乘載車道、.. 等；Language Component 則是希望以稀疏的形式輸出所有可能的路線，<strong>這邊的作法是借鏡了語言生成（如：GPT3）的方法，將路線化作一種語言，希望模型在參考視覺之後以 Autoregression 的方式生成這個關於路線的語言</strong>，以下詳細說明。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_1.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_1.png"/></p>
 <p>右側是鳥瞰圖，我們要在其上預測所有路徑，左側是 Autoregressive Decoder，這邊採用多層次的預測，要注意每一層的預測皆有使用 Cross Attention 參考影像及地圖的資訊。首先要預測節點位置，但因為計算量的考量，所以採用先在大的網格上預測位置，這次輸出是 index 18，我們可找到它並反白它的位置。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_2.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_2.png"/></p>
 <p>接下來接續著預測它細緻的位置，此時輸出index 31，我們可以找到它並反白，此時已經確認了點位。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_3.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_3.png"/></p>
 <p>接著預測這個點的「拓撲類型」，這邊預測的是 "Start"，也就是道路的起始點。我們可以將這些所有輸出組合成為一個 Character，然後接續的輸出下一個 Character 直到結束，是不是很像一種語言！</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_4.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_4.png"/></p>
 <p>當我們接續的輸出下一個 Character，這次是輸出黃色的點位，其拓撲類型為 "Continue"，這意味著與上一個點相連，而相連的軌跡則由 Spline Coefficient Predictor 預測，它會透過預測係數來描述兩點連接的平滑曲線的形狀，如此一來我們就使用語言的方式連出一條「路線」。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_5.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_5.png"/></p>
 <p>當然一個點可能有包含多條岔路，上面的例子預測藍綠色的點，其拓撲類型為 "Fork"，而 Fork Point Predictor 預測 index 0，代表是從第0個位置的點分岔出來，而 Spline Coefficient Predictor 同樣的預測兩點連線的曲線。</p>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_6.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/lang_of_lanes_6.png"/></p>
 <p>這個操作一路的進行下去，直到出現拓撲類型為 "End of sentence" 為止，我們就成功的建構了所有的路現，是不是很聰明的想法！順道一提這個技術同樣的用在機器人 Optimus 上。</p>
 <h3>Auto Labeling</h3>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/auto_labeling_for_lanes_net.png"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/auto_labeling_for_lanes_net.png"/></p>
 <p>在2018年 Tesla 還在 Image Space 上作標注，那時每一個 Clip 需要標注533小時。而目前使用的 multi-trip 版本每個 Clip 只需標注不到6分鐘，Auto Labeling 的技術帶來巨大的改變。其作法和去年的差不多（請詳見 <a href="https://www.ycc.idv.tw/tesla-aiday2021.html">Tesla AI Day 2021 筆記</a>），他這邊特別強調三個步驟來達到這樣的效果：</p>
 <ol>
 <li>高精度的軌跡：使用模型在每個軌跡上預測高精度的資訊，在目前任務中這個資訊就是指 Lanes</li>
 <li>多旅程重建：因為一條路徑可能有多台 Tesla 電動車在不同時間不同天氣開過無數遍，所以可以將這些資訊疊加在一起去雜訊，建構出更穩固的 Label</li>
 <li>運用於新路徑：當然 Auto Labeling 也可以運用在新的路徑的 Label 生成</li>
 </ol>
-<p><br></p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/auto_labeling_failed_case.png"></p>
+<p><br/></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/auto_labeling_failed_case.png"/></p>
 <p>當然還有一些時機 Auto Labeling 並不能表現的很好，例如：缺乏光線、濃霧、遮擋和雨天，還有待加強，不過不用擔心的是，因為在同一個路段會有不同時機的 Clip，所以縱使當下表現不好，也可以拿過去的資訊來彌補。</p>
 <h3>Simulation</h3>
 <ul>
@@ -394,7 +299,7 @@
 <li>甚至可以基於 Google 地圖去生成模擬城市</li>
 </ul>
 <h3>Data Engine</h3>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/how_data_helps.png"></p>
+<p><img alt="" src="http://www.ycc.idv.tw/media/Tesla/how_data_helps.png"/></p>
 <p>Tesla 建構一個標注的流程，讓標注人員針對模型預測錯誤的部分進行修正，並且將這些資料放到資料集當中。舉例，預測停車的問題，上圖中模型預測車子不處於停車的狀態，但標注人員從 Clip 看出車內沒有人，所以他手動標注為停車狀態，而這筆資料就相當有價值，會放進去讓模型重新訓練。和學術界不同，Tesla 不固定他的資料集，而是持續擴增他的資料集，為的就是確保在各種情況都能安全的駕駛。</p>
 <h2>我的觀點</h2>
 <ul>
@@ -404,115 +309,61 @@
 <li>自動駕駛的部分與去年相去不遠，但是今年有一些新東西和更仔細的說明。路徑規劃的部分有說明應該如何考慮與其他物件的交互作用，Occupancy Network 的部分有提到他們生成 Voxels 技術是採用不需要神經網路也能訓練的 NeRF。最令人驚艷的是 Lane Networks 採用語言生成的方法來預測所有可能的行車路線。</li>
 <li>去年我留下的疑問（怎麼利用駕駛人操作的資料來優化？）今年得到了解答，今年有提到使用物理引擎來規劃路徑速度太慢，所以他們使用神經網路來預測路徑，而這神經網路就是訓練在駕駛人操作的資料之上的。</li>
 </ul>
-
-                    </div> <!-- end entry content -->
-                    
-                    <div class="entry__pagenav">
-                        <div class="entry__nav">
-                            <div class="entry__prev">
-                                <a href="https://www.ycc.idv.tw/tesla-aiday2021.html" rel="prev">
-                                    <span>Previous Post</span>
-                                    Tesla AI Day 2021 筆記
-                                </a>
-                            </div>
-                            <div class="entry__next">
-                                <a href="https://www.ycc.idv.tw/multithread-multiprocess-gil.html" rel="next">
-                                    <span>Next Post</span>
-                                    極簡說明Multi-thread/Multi-process、CPU-bound/IO-bound和GIL
-                                </a>
-                            </div>
-                        </div>
-                    </div> <!-- end entry__pagenav -->
-
-                    <div class="entry__related">
-                        <h3 class="h2">Related Articles</h3>
-                        <ul class="related">
-                            <li class="related__item">
-                                <a href="https://www.ycc.idv.tw/tesla-aiday2021.html" class="related__link">
-                                    <img src="https://www.ycc.idv.tw/images/ai_front_board.jpg" alt="">
-                                    <h5 class="related__post-title">Tesla AI Day 2021 筆記</h5>
-                                </a>
-                            </li>
-                        </ul>
-                    </div> <!-- end entry related -->
-
-                    <div id="disqus-wrapper">
-                        <div id="disqus_thread"></div>
-                    </div>
-
-                </article> <!-- end column large-full entry-->
-            </main>
-
-        </div> <!-- end s-content -->
-
-        <!-- footer
-        ================================================== -->
-        <footer class="s-footer footer">
-            <div class="row">
-                <div class="column large-full footer__content">
-                    <div class="footer__copyright">
-                        <span>© Copyright YC Note 2019</span> 
-                        <span>Design by <a href="https://www.styleshout.com/">StyleShout</a></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"></a>
-            </div>
-        </footer>
-
-    </div> <!-- end s-wrap -->
-
-
-    <!-- Java Script
-    ================================================== -->
-    <script src="https://www.ycc.idv.tw/theme/js/jquery-3.2.1.min.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/plugins.js"></script>
-    <script src="https://www.ycc.idv.tw/theme/js/main.js"></script>
-    <script>
-        var elements = document.getElementsByTagName("h3");
-        for(i = 0; i < elements.length; i++)
-        {
-            elements[i].setAttribute("id", "anchor"+i);
-        }
-    </script>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://www.ycc.idv.tw/tesla-aiday2022.html";
-            this.page.identifier = "tesla-aiday2022.html";
-            this.page.title = "Tesla AI Day 2022 筆記";
-            this.language = "zh_TW";
-        };
-
-       (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//ycnote-1.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-    <script>
-    $(".entry__content img").attr("data-enlargable", "").css("cursor", "zoom-in");
-    
-    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
-        var src = $(this).attr('src');
-        $('<div>').css({
-            background: 'RGBA(0,0,0,.8) url('+src+') no-repeat center',
-            backgroundSize: 'contain',
-            borderTop: '40px solid RGBA(0,0,0,0.0)',
-            borderBottom: '40px solid RGBA(0,0,0,0.0)',
-            width:'100%', height:'100%',
-            position:'fixed',
-            zIndex:'10000',
-            top:'0', left:'0',
-            cursor: 'zoom-out'
-        }).click(function(){
-            $(this).remove();
-        }).appendTo('body');
-    });
-    </script>
-
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/tesla-aiday2021.html#anchor" title="Tesla AI Day 2021 筆記">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+<a class="btn float-right" href="https://ycc.idv.tw/multithread-multiprocess-gil.html#anchor" title="極簡說明Multi-thread/Multi-process、CPU-bound/IO-bound和GIL">
+      Next Post <i class="fa fa-angle-right"></i>
+</a>
+</div>
+<div class="related-posts">
+<h4>You might enjoy</h4>
+<ul class="related-posts">
+<li><a href="https://ycc.idv.tw/tesla-aiday2021.html">Tesla AI Day 2021 筆記</a></li>
+</ul>
+</div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2023  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80">
+</img></a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "YC Note - ML/DL Tech Blog"
+}
+</script> <script>
+    window.loadStorkIndex = function () {
+      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
 </body>
+</html>
