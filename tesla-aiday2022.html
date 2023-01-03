@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -271,7 +271,7 @@
 <li>有效率的記憶體使用和計算能力</li>
 <li>~10ms 的更新率</li>
 </ul>
-<p>而上圖為其結構，其實跟去年相去不遠，可以說是將去年提及的 HydraNets 和類似 NeRF 描述 Voxels (可以想成在3D中的Pixels) 的技術相結合，去年提及的部分就不贅述了（請詳見 <a href="https://www.ycc.idv.tw/tesla-aiday2021.html">Tesla AI Day 2021 筆記</a>），讓我們專注的討論今年值得一提的更新或更詳細的內容，如下：</p>
+<p>而上圖為其結構，其實跟去年相去不遠，可以說是將去年提及的 HydraNets 和類似 NeRF 描述 Voxels (可以想成在3D中的Pixels) 的技術相結合，去年提及的部分就不贅述了（請詳見 <a href="/tesla-aiday2021.html">Tesla AI Day 2021 筆記</a>），讓我們專注的討論今年值得一提的更新或更詳細的內容，如下：</p>
 <ul>
 <li>在 Deconvolutions 後，會進行 Volume Outputs 和 Surface Outputs 的預測，除了預測幾何關係外，還會預測語義和動向</li>
 <li>為了增加預測的解析度，他們設計了 Queryable Outputs 將原本 Volume Outputs 的資訊壓入 MLP 中，接著就可以查詢這個 MLP 來得到解析度更高的資訊，你可以想像在這個過程模型考量了許多資訊後給出了良好的內插結果，所以可以得到更高解析度的資訊</li>
@@ -308,7 +308,7 @@
 <p>這個操作一路的進行下去，直到出現拓撲類型為 "End of sentence" 為止，我們就成功的建構了所有的路現，是不是很聰明的想法！順道一提這個技術同樣的用在機器人 Optimus 上。</p>
 <h3 id="auto-labeling">Auto Labeling</h3>
 <p><img alt="" src="/media/Tesla/auto_labeling_for_lanes_net.png"/></p>
-<p>在2018年 Tesla 還在 Image Space 上作標注，那時每一個 Clip 需要標注533小時。而目前使用的 multi-trip 版本每個 Clip 只需標注不到6分鐘，Auto Labeling 的技術帶來巨大的改變。其作法和去年的差不多（請詳見 <a href="https://www.ycc.idv.tw/tesla-aiday2021.html">Tesla AI Day 2021 筆記</a>），他這邊特別強調三個步驟來達到這樣的效果：</p>
+<p>在2018年 Tesla 還在 Image Space 上作標注，那時每一個 Clip 需要標注533小時。而目前使用的 multi-trip 版本每個 Clip 只需標注不到6分鐘，Auto Labeling 的技術帶來巨大的改變。其作法和去年的差不多（請詳見 <a href="/tesla-aiday2021.html">Tesla AI Day 2021 筆記</a>），他這邊特別強調三個步驟來達到這樣的效果：</p>
 <ol>
 <li>高精度的軌跡：使用模型在每個軌跡上預測高精度的資訊，在目前任務中這個資訊就是指 Lanes</li>
 <li>多旅程重建：因為一條路徑可能有多台 Tesla 電動車在不同時間不同天氣開過無數遍，所以可以將這些資訊疊加在一起去雜訊，建構出更穩固的 Label</li>

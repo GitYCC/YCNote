@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -141,7 +141,7 @@
 <h3 id="neural-network">神經網路(Neural Network)</h3>
 <p>最後一個主題，我們要來講第三種「特徵轉換」— Extraction Models，其實就是現今很流行的「類神經網路」(Neural Network) 和「深度學習」(Deep Learning)，包括下圍棋的AlphaGo、Tesla的自動駕駛都是採用這一類的Machine Learning。</p>
 <p>Extraction Models的基本款就是廣為人知的「神經網路」(Neural Network)，它的特色是使用神經元來做非線性的特徵轉換，那如果具有多層神經元，就是做了多次的非線性特徵轉換，這就是所謂的「深度學習」(Deep Learning)。</p>
-<p><img alt="Neural Network" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.016.jpeg"/></p>
+<p><img alt="Neural Network" src="/media/MachineLearningTechniques/MachineLearningTechniques.016.jpeg"/></p>
 <p>上圖左側就是具有一層神經元的Neural Network，首先我們有一組特徵<span class="math">\(X\)</span>，通常我們會加入一個維度<span class="math">\(X_{0}=1\)</span>，這是為了可以讓結構變得更好看，未來可以與<span class="math">\(W_{0}\)</span>相乘產生常數項。使用<span class="math">\(W\)</span>來給予特徵<span class="math">\(X\)</span>權重，最後總和的結果稱之為Score，<span class="math">\(s = W_{0}X_{0}+𝚺_{i=1}W_{i}X_{i} = 𝚺_{i=0}W_{i}X_{i}\)</span>。</p>
 <p>這個Score會被輸入到一個Activation Function裡頭，<strong>Activation Function的用意就是開關</strong>，當Score大於某個閥值，就打通線路讓這條路的貢獻可以繼續向後傳遞；當Score小於某個閥值，就關閉線路，所以Activation Function可以是Binary Function，但在實際操作之下不會使用像Binary Function這類不可以微分的Activation Function，所以我們會找具有相似特性但又可以微分的函數，例如<span class="math">\(tanh\)</span>或者是<span class="math">\(ReLU\)</span>這類比較接近開關效果的函數，經過Activation Function轉換後的輸出表示成<span class="math">\(g_{t} = σ(𝚺_{i}W_{i}X_{i})\)</span>，這個<span class="math">\(g_{t}\)</span>就稱為神經元、<span class="math">\(σ\)</span>為Activation Function、<span class="math">\(𝚺_{i} W_{i}X_{i}\)</span>是Score。</p>
 <p>如果我們有多組權重<span class="math">\(W\)</span>就能產生多組神經元<span class="math">\(g_{t}\)</span>，然後最後把<span class="math">\(g_{t}\)</span>做線性組合並使用Output Function <span class="math">\(h(x)\)</span>來衡量出最後的答案，Output Function可以是Linear Classification的Binary Function <span class="math">\(h(x)=sign(x)\)</span>，不過一樣的問題，它不可以微分，通常不會被使用，常見的是使用Linear Regression <span class="math">\(h(x)=x\)</span>，或者Logistic Regression <span class="math">\(h(x)=Θ(x)\)</span>來當作Output Function，最後的結果可以表示成 <span class="math">\(y=h(𝚺_{t}α_{t}g_{t})\)</span>，看到這個式子有沒有覺得很熟悉，它就像我們上一回講的Aggregation，將特徵X使用特徵轉換轉成使用<span class="math">\(g_{t}\)</span>表示，再來組合這些<span class="math">\(g_{t}\)</span>成為最後的Model，所以單層的Neural Network就使用到了Aggregation，它繼承了Aggregation的優點。</p>
@@ -154,12 +154,12 @@
 <p>一直到了最近，<strong>G. E. Hinton博士為了讓Deep Neural Network起死回生，重新給了它一個新名字「Deep Learning」</strong>，再加上他在2006年提出的RBM初始化方法，這是一個非常複雜的方法，所以在學術界就造成了一股流行，雖然後來被證明RBM是沒有用的，不過卻因為很多人參與研究Deep Learning的關係，也找出了解決Deep Learning痛處的方法，<strong>2009年開始有人發現使用GPU可以大大的加速Deep Learning</strong>，從這一刻起，Deep Learning就開始流行起來，直到去年的2016年3月，圍棋程式Alpha GO運用Deep Learning技術以4:1擊敗世界頂尖棋手李世乭，Deep Learning正式掀起了AI的狂潮。</p>
 <p>聽完這個故事我們知道改名字的重要性XDD，不過大家是否還有看到什麼關鍵，「使用一層Neural Network就可以代表任意函數，那為何還要Deep呢？」這句話，這不就否定了我們今天做的事情了嗎？的確，使用一層的Neural Network就可以形成任意函數，而且完全可以用一層的神經元來表示任何多層的神經元，數學上是行得通的，但重點是參數量。Deep Learning的學習方法和人有點類似，我們在學習一個艱深的理論時，會先單元式的針對幾個簡單的概念學習，然後在整合這些概念去理解更高層次的問題，Deep Learning透過多層結構學習，雖然第一層的神經元沒有很多，能學到的也只是簡單的概念而已，不過第二層再重組這些簡單概念，第三層再用更高層次的方法看問題，所以同樣的問題使用一層Neural Network可能需要很多神經元才有辦法描述，但是Deep Learning卻可以使用更少的神經元做到一樣的效果，</p>
 <blockquote>
-<p>同樣表示的數學轉換過程，雖然單層和多層都是做得到相同轉換的，但是多層所用的參數量是比單層來得少的，依照VC Generalization Bound理論 (請參考：<a href="https://www.ycc.idv.tw/ml-course-foundations_2.html">機器學習基石 學習筆記 (2)：為什麼機器可以學習?</a>) 告訴我們可調控的參數量代表模型的複雜度，所以多層的NN比單層的有個優勢是在做到同樣的數學轉換的情況下更不容易Overfitting。</p>
+<p>同樣表示的數學轉換過程，雖然單層和多層都是做得到相同轉換的，但是多層所用的參數量是比單層來得少的，依照VC Generalization Bound理論 (請參考：<a href="/ml-course-foundations_2.html">機器學習基石 學習筆記 (2)：為什麼機器可以學習?</a>) 告訴我們可調控的參數量代表模型的複雜度，所以多層的NN比單層的有個優勢是在做到同樣的數學轉換的情況下更不容易Overfitting。</p>
 </blockquote>
 <p><strong>因此，Deep Learning中每一層當中做了Aggregation，在增加模型複雜度的同時，也因為平均的效果而做到截長補短，這具有Regularization的效果，並且在採用多層且瘦的結構也同時因為「模組化」而做到降低參數使用量，來減少模型複雜度，這就不難想像Deep Learning為何如此強大。</strong></p>
 <p><br/></p>
 <h3 id="backpropagation-bp">反向傳播算法(Backpropagation, BP)</h3>
-<p><img alt="Neural Network" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.017.jpeg"/></p>
+<p><img alt="Neural Network" src="/media/MachineLearningTechniques/MachineLearningTechniques.017.jpeg"/></p>
 <p>我們接下來就來看一下Deep Learning的演算法—反向傳播法，我們來看要怎麼從Gradient Descent來推出這個算法。</p>
 <p>看一下上面的圖，我畫出了具有<span class="math">\(L\)</span>層深的Deep Learning，每一層都有一個權重<span class="math">\(W_{ij}^{(ℓ)}\)</span>，因此我們可以估計出每一層的Score <span class="math">\(s_{j}^{(ℓ)}= 𝚺_{i} W_{ij}^{(ℓ)}X_{i}^{(ℓ-1)}\)</span>，把Score <span class="math">\(s_{j}^{(ℓ)}\)</span>通過Activation Function，就可以得到下一層的Input，如此不斷的疊上去，直到最後一層L為Output Layer，Output最後的結果<span class="math">\(y\)</span>，這裡我使用Linear Function來當作Output Function，這就是Deep Learning最簡單的架構。</p>
 <p>而我們需要Training的就是這些權重<span class="math">\(W_{ij}^{(ℓ)}\)</span>，我們如何一步一步的更新<span class="math">\(W_{ij}^{(ℓ)}\)</span>，使得它可以Fit數據呢？回想一下Gradient Descent的流程：</p>
@@ -218,7 +218,7 @@
 <p>第五種方法是接下來會用更大篇幅介紹的<strong>「Denoising Autoencoder」</strong>，在Deep Neural Network前面加入這樣的結構有助於抑制雜訊。</p>
 <p><br/></p>
 <h3 id="autoencoder">Autoencoder</h3>
-<p><img alt="Regularization in Deep Learning" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.018.jpeg"/></p>
+<p><img alt="Regularization in Deep Learning" src="/media/MachineLearningTechniques/MachineLearningTechniques.018.jpeg"/></p>
 <p>Neural Network針對不同需要發展出很多不同的型態，包括CNN, RNN，還有接下來要介紹的Autoencoder，<strong>Autoencoder是一種可以將資料重要資訊保留下來的Neural Network</strong>，效果有點像是資料壓縮，在做資料壓縮時，會有一個稱為Encoder的方法可以將資料壓縮，那當然還要有另外一個方法將它還原回去，這方法稱為Decoder，壓縮的過程就是用更精簡的方式保存了資料。<strong>Autoencoder同樣的有Encoder和Decoder，不過它不像資料壓縮一樣可以百分之一百還原，不過特別之處是Autoencoder會試著從Data中自己學習出Encoder和Decoder，並盡量讓資料在壓縮完了可以還原回去原始數據</strong>。</p>
 <p>見上圖中Basic Autoencoder的部分，透過兩層的轉換，我們試著讓Input <span class="math">\(X\)</span>可以完整還原回去，通常中間這一層會使用比較少的神經元，因為我們想要將資訊做壓縮，所以第一層的部分就是一個Encoder，而第二層則是Decoder，他們由權重<span class="math">\(W_{jk}^{(ℓ)}\)</span>決定，而在Training的過程，Autoencoder會試著找出最好的<span class="math">\(W_{jk}^{(ℓ)}\)</span>來使得資訊可以盡量完整還原回去，這也代表Autoencoder可以自行找出了Encoder和Decoder。</p>
 <p><strong>Encoder這一段就是在做一個Demension Reduction</strong>，Encoder轉換原本數據到一個新的空間，這個空間可以比原本Features描述的空間更能精準的描述這群數據，而中間這層Layer的數值就是新空間裡頭的座標，有些時候我們會用這個新空間來判斷每筆Data之間彼此的接近程度。</p>
@@ -228,7 +228,7 @@
 <p><br/></p>
 <h3 id="principal-component-analysis-pca">Principal Component Analysis (PCA)</h3>
 <p>最後來講一下Principal Component Analysis (PCA)，它不太算是Deep Learning的範疇，不過它是一個傳統且重要的Dimension Reduction的方法，我們就來看一下。</p>
-<p><img alt="PCA" src="http://www.ycc.idv.tw/media/MachineLearningTechniques/MachineLearningTechniques.019.jpeg"/></p>
+<p><img alt="PCA" src="/media/MachineLearningTechniques/MachineLearningTechniques.019.jpeg"/></p>
 <p>PCA的演算法是這樣的，第一步先求出資料Features的平均值，並且將各個Features減掉平均值，令為<span class="math">\(ζ\)</span>，第二步求出由<span class="math">\(ζ^{T}ζ\)</span>產生的矩陣的Eigenvalue和Eigenvector，第三步，從這些Eigenvalue和Eigenvector中挑選前面<span class="math">\(k\)</span>個，並組成轉換矩陣<span class="math">\(W\)</span>，而最終PCA的轉換就是<span class="math">\(Φ(x)=W^{T}(X-mean(X))\)</span>，這個轉換做的就是Dimension Reduction，將數據降維到<span class="math">\(k\)</span>維。</p>
 <p>PCA做的事是這樣的，每一個Eigenvector代表新空間裡頭的一個軸，而Eigenvalue代表站在這個軸上看資料的離散程度，當然我們如果可以描述每筆資料越分離，就代表這樣的描述方法越好，所以Eigenvalue越大的Eigenvector越是重要，<strong>所以取前面<span class="math">\(k\)</span>個Eigenvector的用意是在降低維度的過程，還可以盡量的保持對數據的描述力，而且Eigenvector彼此是正交的，也就是說在新空間裡頭的每個軸是彼此垂直，彼此沒有Dependent的軸是最精簡的，所以PCA所做的Dimension Reduction一定是線性模型中最好、最有效率的</strong>。</p>
 <p>另外，剛剛有提到的Linear Autoencode幾乎是等效於PCA，大家可以看上圖中的描述，這裡不多贅述，不過不同的是，Linear Autoencoder並沒有限制新空間軸必須是正交的特性，所以它的效率一定會比PCA來的差。</p>

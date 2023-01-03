@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="deep-dl_4">剖析深度學習 (4)：Sigmoid, Softmax怎麼來？為什麼要用MSE和Cross Entropy？談廣義線性模型</h1>
 <p>
-      Posted on March 14, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 22,305
+      Posted on March 14, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 22,306
 
     </p>
 </header>
@@ -141,7 +141,7 @@
 <blockquote>
 <p>深度學習發展至今已經有相當多好用的套件，使得進入的門檻大大的降低，因此如果想要快速的實作一些深度學習或機器學習，通常是幾行程式碼可以解決的事。但是，如果想要將深度學習或機器學習當作一份工作，深入了解它背後的原理和數學是必要的，才有可能因地制宜的靈活運用，YC準備在這一系列當中帶大家深入剖析深度學習。</p>
 </blockquote>
-<p>前面的<a href="https://www.ycc.idv.tw/deep-dl_2.html">第二講</a>和<a href="https://www.ycc.idv.tw/deep-dl_3.html">第三講</a>其實都是為了這一講而存在。</p>
+<p>前面的<a href="/deep-dl_2.html">第二講</a>和<a href="/deep-dl_3.html">第三講</a>其實都是為了這一講而存在。</p>
 <p>學習一段時間深度學習的你是不是有一個疑惑：</p>
 <ul>
 <li>Activation Function為什麼要用Sigmoid和Softmax？</li>
@@ -156,14 +156,14 @@
 <p>在本講你會學到如何用「充分統計量」來說明在廣義線性定理中的Canonical Link Function，進而推導出Activation Function，你會學到如何藉由MLE和MAP來推導出Loss Function，學完以後你會對Activation Function和Loss Function有更深的認識。</p>
 <p>這一篇我可以非常自豪的說，網路上的資料在這個議題上找不到寫的比我更詳細的，這是我看過很多書和教材融會貫通而成的，請大家一定要看到最後，必定收穫滿滿。</p>
 <h3 id="_1">前情提要</h3>
-<p><a href="https://www.ycc.idv.tw/deep-dl_3.html">上一講</a>中我們清楚的了解頻率學派和貝氏學派各自的觀點，並且從兩者觀點出發去探討機器學習問題。</p>
+<p><a href="/deep-dl_3.html">上一講</a>中我們清楚的了解頻率學派和貝氏學派各自的觀點，並且從兩者觀點出發去探討機器學習問題。</p>
 <p>頻率學派使用Maximum Likelihood Estimation (MLE) 來優化，優化關係式如下：
 </p>
 <div class="math">$$
 \theta_{MLE}=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(y_i\mid x_i,m,\theta)  \ \ ↪︎【1】
 $$</div>
 <p>
-此式等價於最小化Data與Model之間的Cross Entropy，或等價於最小化Data與Model之間的KL Divergence，與<a href="https://www.ycc.idv.tw/deep-dl_2.html">第二講的資訊理論</a>完美契合。</p>
+此式等價於最小化Data與Model之間的Cross Entropy，或等價於最小化Data與Model之間的KL Divergence，與<a href="/deep-dl_2.html">第二講的資訊理論</a>完美契合。</p>
 <p>貝氏學派則使用Maximum A Posterior (MAP) 來優化，優化關係式如下：
 </p>
 <div class="math">$$
@@ -187,7 +187,7 @@ $$</div>
 <p>
 其中：<span class="math">\(f_\theta(.)\)</span>為你的Model假定的分布，當中包含決定Model的參數<span class="math">\(\theta\)</span>；<span class="math">\(y_1,y_2,..,y_n\)</span> 為多筆資料；<span class="math">\(T(.)\)</span> 稱為充分統計量，可以是一個單值或矩陣，它可以讓唯一包含 <span class="math">\(\theta\)</span> 資訊的 <span class="math">\(g_\theta\)</span> 不在直接depend on <span class="math">\(y_i\)</span>，而是depend on <span class="math">\(T(.)\)</span> ，也因此做到了「沒有任何其他可以從同一樣本中計算得出的統計量可以提供任何有關未知參數的額外信息」，因為唯一包含未知參數 <span class="math">\(\theta\)</span> 的 <span class="math">\(g_\theta(.)\)</span> 只需要 <span class="math">\(T(.)\)</span> 當作Input，其餘的統計量皆不需要，此時我們會稱 <span class="math">\(T\)</span> 為充分統計量。</p>
 <hr/>
-<p>還是以我們相當熟悉的Normal Distribution當作例子 （如果不熟悉，<a href="https://www.ycc.idv.tw/deep-dl_1.html">請詳見第一講</a>） ：
+<p>還是以我們相當熟悉的Normal Distribution當作例子 （如果不熟悉，<a href="/deep-dl_1.html">請詳見第一講</a>） ：
 </p>
 <div class="math">$$
 p_{\theta}(y_1,y_2,..,y_n)=(\frac{1}{\sqrt{2\pi}\sigma_\theta})^n exp\{{\sum_i-\frac{1}{2\sigma_\theta^2}(y_i-\mu_\theta)^2}\}

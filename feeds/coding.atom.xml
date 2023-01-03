@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>YC Note - Coding</title><link href="https://ycc.idv.tw/" rel="alternate"></link><link href="https://ycc.idv.tw/feeds/coding.atom.xml" rel="self"></link><id>https://ycc.idv.tw/</id><updated>2018-04-14T12:00:00+08:00</updated><subtitle>ML/DL Tech Blog</subtitle><entry><title>物件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID</title><link href="https://ycc.idv.tw/introduction-object-oriented-programming_3.html" rel="alternate"></link><published>2018-04-14T12:00:00+08:00</published><updated>2018-04-14T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2018-04-14:/introduction-object-oriented-programming_3.html</id><summary type="html">&lt;p&gt;物件導向怎麼用才能成就好的程式碼？ / UML類別圖 / 單一職責原則(Single Responsibility Principle, SRP) / 開閉原則(Open-Closed Principle, OCP) / 里氏替換原則(Liskov Subsititution Principle, LSP) / 迪米特法則(Law of Demeter, LoD) / 依賴倒置原則(Dependence Inversion Principle, DIP) / 接口分隔原則(Interface Segregation Principle, ISP)&lt;/p&gt;</summary><content type="html">&lt;h3 id="_1"&gt;物件導向怎麼用才能成就好的程式碼？&lt;/h3&gt;
-&lt;p&gt;一個好的工具，也要配合對於工具的理解，才能發揮效用。&lt;a href="http://www.ycc.idv.tw/introduction-object-oriented-programming_2.html"&gt;在上一回中&lt;/a&gt;，我們完整介紹了Java和Python的物件導向實現方式，我們講到了「封裝」、「繼承」、「多型」等等物件導向的特色，也講了「抽象類別」、「接口」等抽象化的方法，不過我並沒有告訴大家該怎麼用這些工具？使用這些工具是不是有什麼樣的法則？&lt;/p&gt;
+&lt;p&gt;一個好的工具，也要配合對於工具的理解，才能發揮效用。&lt;a href="/introduction-object-oriented-programming_2.html"&gt;在上一回中&lt;/a&gt;，我們完整介紹了Java和Python的物件導向實現方式，我們講到了「封裝」、「繼承」、「多型」等等物件導向的特色，也講了「抽象類別」、「接口」等抽象化的方法，不過我並沒有告訴大家該怎麼用這些工具？使用這些工具是不是有什麼樣的法則？&lt;/p&gt;
 &lt;p&gt;在接下來的這一篇，我將會介紹物件導向的使用方式，我會提到物件導向著名的六大法則：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;單一職責原理&lt;/li&gt;
@@ -16,35 +16,35 @@
 &lt;ul&gt;
 &lt;li&gt;類別(Class): -代表&lt;code&gt;private&lt;/code&gt;，+代表&lt;code&gt;public&lt;/code&gt;，#代表&lt;code&gt;protected&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Class" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Class.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Class" src="/media/SOLID_Introduction/Class.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;抽象類別(Abstract Class)&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="AbstractClass" src="https://www.ycc.idv.tw/media/SOLID_Introduction/AbstractClass.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="AbstractClass" src="/media/SOLID_Introduction/AbstractClass.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;接口(Interface)&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Interface" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Interface.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Interface" src="/media/SOLID_Introduction/Interface.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;繼承關係(Inheritance)和抽象類、接口實現&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Inheritance" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Inheritance.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Inheritance" src="/media/SOLID_Introduction/Inheritance.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;關聯關係(Association)：A類中使用B類當作「成員變數」，但是A和B並沒有「擁有」的關係，只能說是「有個」的關係，就稱為：A關聯到B，英文為"has-a"的關係。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Associatione" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Association.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Associatione" src="/media/SOLID_Introduction/Association.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;聚合關係(Aggregation)：A類中使用B類當作「成員變數」，而且A和B有一個弱的「擁有」關係，A包含B，但B不是A的一部分，拔掉B，A依然能存在，就稱為：A聚合到B，英文為"owns-a"關係。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Aggregation" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Aggregation.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Aggregation" src="/media/SOLID_Introduction/Aggregation.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;合成（組合）關係(Composition)：A類中使用B類當作「成員變數」，而且A和B有一個強的「擁有」關係，B是A的組成的一部分，拔掉B，A就不完整，就稱為：A合成到B，英文為"is-part-of"關係。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Composition" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Composition.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Composition" src="/media/SOLID_Introduction/Composition.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;依賴關係(Dependency)：A類中使用到B類，但僅僅是弱連結，譬如：B類作為A類方法的參數、B類作為A類的局域變數、A類調用B類的靜態方法、B類作為A類方法的回傳值，就稱為：A依賴B，英文為"uses-a"的關係。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Dependency" src="https://www.ycc.idv.tw/media/SOLID_Introduction/Dependency.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Dependency" src="/media/SOLID_Introduction/Dependency.png" /&gt;&lt;/p&gt;
 &lt;h3 id="single-responsibility-principle-srp"&gt;單一職責原則(Single Responsibility Principle, SRP)&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -57,9 +57,9 @@
 &lt;p&gt;乍看之下，這樣的原則很容易實現，但是魔鬼藏在細節裡，我們常常會沒注意到其實還可以繼續的切分。舉個例子，假設我想設計一個電話的接口，我可能是這樣設計的&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="phone_1" src="https://www.ycc.idv.tw/media/SOLID_Introduction/phone_1.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="phone_1" src="/media/SOLID_Introduction/phone_1.png" /&gt;&lt;/p&gt;
 &lt;p&gt;乍看之下沒有問題，一個電話擁有撥號、掛號、數據傳送和接收，但是等等！連接的過程和數據的傳輸其實是兩個職責啊！它們之間沒有強烈的關聯性，完全是可以分開處理的，因此這個配置不符合「單一職責原則」，可以繼續切分下去，修改如下。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="phone_2" src="https://www.ycc.idv.tw/media/SOLID_Introduction/phone_2.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="phone_2" src="/media/SOLID_Introduction/phone_2.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;「單一職責原則」原文指的是類別的單一職責，但是務實上，類別如果切分到如此程度，程式碼會變得細碎不堪，這違反了程式碼的「可讀性」，所以我們一般只要求「接口必須保持單一原則」，而類別去套用接口，類別就盡量達成少的職責就好。&lt;/li&gt;
 &lt;/ul&gt;
@@ -96,13 +96,13 @@
 &lt;p&gt;有了「里氏替換原則」，我們終於可以談談一個上一章沒提到的重要問題：什麼情況可以做繼承？有一些書籍會告訴你，繼承為"is-a"的關係，例如：瑪爾濟斯(B) is-a 狗(A)，所以瑪爾濟斯(B)可以繼承狗(A)，乍看之下沒問題，但這樣的說法存在缺陷，舉個例子，假設今天我先有了類別&lt;code&gt;Retangle&lt;/code&gt;，也就是長方形，然後我想要弄一個新的類別&lt;code&gt;Square&lt;/code&gt;，也就是正方形，我可以讓&lt;code&gt;Square&lt;/code&gt;繼承自&lt;code&gt;Retangle&lt;/code&gt;嗎？我們用"is-a"來檢視：正方形是一個長方形？答案是Yes，但是「里氏替換原則」持相反意見，來看一下，&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="square_1" src="https://www.ycc.idv.tw/media/SOLID_Introduction/square_1.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="square_1" src="/media/SOLID_Introduction/square_1.png" /&gt;&lt;/p&gt;
 &lt;p&gt;依照「里氏替換原則」，&lt;code&gt;Square&lt;/code&gt;不能繼承自&lt;code&gt;Retangle&lt;/code&gt;，因為&lt;code&gt;Square&lt;/code&gt;只需要&lt;code&gt;width&lt;/code&gt;的成員變數，而&lt;code&gt;Retangle&lt;/code&gt;則需要&lt;code&gt;width&lt;/code&gt;和&lt;code&gt;height&lt;/code&gt;兩個成員變數，當我們將子類&lt;code&gt;Square&lt;/code&gt;放到父類&lt;code&gt;Retangle&lt;/code&gt;的方法中，因為缺少&lt;code&gt;height&lt;/code&gt;變數，必然會出錯，所以違反「里氏替換原則」，因此這兩類不適合作為「繼承」關係。我們可以這樣改善，讓&lt;code&gt;Square&lt;/code&gt;應用&lt;code&gt;Retangle&lt;/code&gt;來幫忙計算，使用「關聯」關係取代「繼承」關係。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="square_2" src="https://www.ycc.idv.tw/media/SOLID_Introduction/square_2.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="square_2" src="/media/SOLID_Introduction/square_2.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;下面這一張集合圖是我自創的，圖中清楚的指出「繼承」中的父類和子類應該是什麼樣的關係。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="Inheritance Principle.jpeg" src="https://www.ycc.idv.tw/media/SOLID_Introduction/inheritance_principle.jpeg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Inheritance Principle.jpeg" src="/media/SOLID_Introduction/inheritance_principle.jpeg" /&gt;&lt;/p&gt;
 &lt;h3 id="law-of-demeter-lod"&gt;迪米特法則(Law of Demeter, LoD)&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -161,7 +161,7 @@
     &lt;span class="n"&gt;teacher&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;command&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name_list&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;leader&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img alt="teacher-leader-student_1" src="https://www.ycc.idv.tw/media/SOLID_Introduction/teacher-leader-student_1.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="teacher-leader-student_1" src="/media/SOLID_Introduction/teacher-leader-student_1.png" /&gt;&lt;/p&gt;
 &lt;p&gt;以上程式違反「迪米特法則」，因為在類別&lt;code&gt;Teacher&lt;/code&gt;的方法&lt;code&gt;command&lt;/code&gt;中訪問了不是朋友的&lt;code&gt;Student&lt;/code&gt;，這會使得&lt;code&gt;Teacher&lt;/code&gt;和&lt;code&gt;Student&lt;/code&gt;會產生不必要的耦合，我們可以將創造&lt;code&gt;student_list&lt;/code&gt;的權責轉移到&lt;code&gt;Leader&lt;/code&gt;上，如此一來就可以斷開&lt;code&gt;Teacher&lt;/code&gt;和&lt;code&gt;Student&lt;/code&gt;的耦合。&lt;/p&gt;
 &lt;p&gt;正確示範：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;### Python3.4&lt;/span&gt;
@@ -192,7 +192,7 @@
     &lt;span class="n"&gt;teacher&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;command&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name_list&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;leader&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img alt="teacher-leader-student_2" src="https://www.ycc.idv.tw/media/SOLID_Introduction/teacher-leader-student_2.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="teacher-leader-student_2" src="/media/SOLID_Introduction/teacher-leader-student_2.png" /&gt;&lt;/p&gt;
 &lt;p&gt;-- Why it works? &lt;/p&gt;
 &lt;p&gt;先來想想「朋友」有什麼共通之處？其實它們都是類別本身無法斷開耦合的物件，既然無法斷開耦合，何不運用到底，運用這些「朋友」來完成任務，不要再去增加其他的耦合性，也同時幫助提升類別的內聚性，這就是「迪米特法則」真正想做的事。&lt;/p&gt;
 &lt;p&gt;以這樣的方式去寫程式，也可以避免寫出像是&lt;code&gt;A.getB().getC()&lt;/code&gt;的程式碼（A和C不是朋友），這樣冗長的程式碼不僅增加了無益的耦合，也讓程式變得不利於可讀性。&lt;/p&gt;
@@ -247,12 +247,12 @@
 &lt;p&gt;範例：假設我們成立一家玩具車公司，開始著手設計我們的第一款車款A，設計的架構圖如下&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="toycar_1" src="https://www.ycc.idv.tw/media/SOLID_Introduction/toycar_1.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="toycar_1" src="/media/SOLID_Introduction/toycar_1.png" /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;ToyCarA&lt;/code&gt;是我們的實體車子，可以使用&lt;code&gt;setRPM&lt;/code&gt;來設定在幾秒之後到達什麼轉速，而控制他的是電腦模擬的虛擬車&lt;code&gt;VirtualCar&lt;/code&gt;，虛擬車提供方法&lt;code&gt;setSpeeed&lt;/code&gt;可以設定車速，當然！模擬的車速要和真實車速吻合，還需配合適當的調控實體車的轉速，所以&lt;code&gt;VirtualCarA&lt;/code&gt;關聯到&lt;code&gt;ToyCarA&lt;/code&gt;去做控制。然後我們公司會提供一個控制器&lt;code&gt;ControllerA&lt;/code&gt;來控制車子，控制器上的搖桿分為五級，讓使用者可以控制速度，使用&lt;code&gt;controlBarLevel&lt;/code&gt;方法根據級數去控制&lt;code&gt;VirtualCarA&lt;/code&gt;的速度。&lt;/p&gt;
 &lt;p&gt;檢驗一下這個設計圖，它違反「依賴倒置原則」，&lt;code&gt;ControllerA&lt;/code&gt;依賴&lt;code&gt;VirtualCarA&lt;/code&gt;，&lt;code&gt;VirtualCarA&lt;/code&gt;依賴&lt;code&gt;ToyCarA&lt;/code&gt;，這些都是實體類別，高層次依賴了低層次。不過，公司的車子A還是賣得很好，沒有什麼大礙。&lt;/p&gt;
 &lt;p&gt;終於有一天災難降臨了，市場出現了比車子A馬力更強大的玩具車，我們公司如果不趕緊採用新的馬達推出新的車款，就會失去競爭力，我們需要採用新的玩具車&lt;code&gt;ToyCarB&lt;/code&gt;，它擁有更好的馬達，我們需要為因應高速度而推出九級分級的搖桿，新的控制器&lt;code&gt;ControllerB&lt;/code&gt;，結果回頭一看原本設計圖，完了！所有的A系列的程式碼都耦合在一起了，核心程式&lt;code&gt;VirtualCarA&lt;/code&gt;原可以不需要大改，就建造出&lt;code&gt;VirtualCarB&lt;/code&gt;的，但是現在程式碼全部耦合在一起，它已經變得不可擴張了。&lt;/p&gt;
 &lt;p&gt;如果我們一開始就依照「依賴倒置原則」，我們來看看擴張會有多容易&lt;/p&gt;
-&lt;p&gt;&lt;img alt="toycar_2" src="https://www.ycc.idv.tw/media/SOLID_Introduction/toycar_2.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="toycar_2" src="/media/SOLID_Introduction/toycar_2.png" /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;VirtualCar&lt;/code&gt;中的很多方法都可以在B車款上再重用，大大的減少重新開發的成本。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -281,9 +281,9 @@
 &lt;p&gt;範例：剛剛玩具車公司的設計圖其實還是不夠好，如果今天公司想要開發新的車款C，添加新「方向盤」的功能，你會發現夢魘又再次的降臨，抽象類別&lt;code&gt;ToyCar&lt;/code&gt;、&lt;code&gt;VirtualCar&lt;/code&gt;、&lt;code&gt;Controller&lt;/code&gt;都需要改變，而且就算真的把「方向盤」的相關方法添加上去，抽象類別也會開始出現多於一的職責，所以我們用Interface來重新改寫架構，如下圖所示。不難看出，控制馬達、控制速度、控制搖桿的行為是彼此依賴的，我們可以將他們的行為由Interface獨立拉出並相互依賴。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="toycar_3" src="https://www.ycc.idv.tw/media/SOLID_Introduction/toycar_3.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="toycar_3" src="/media/SOLID_Introduction/toycar_3.png" /&gt;&lt;/p&gt;
 &lt;p&gt;如此一來，當我們想要開發新的車款C，添加新「方向盤」的功能，也能輕鬆的擴充，如下所示。&lt;code&gt;ToyCarPlus&lt;/code&gt;、&lt;code&gt;VirtualCarPlus&lt;/code&gt;、&lt;code&gt;ControllerPlus&lt;/code&gt;是我們實作C車款的抽象類別，它現在可以直接套用&lt;code&gt;IMotor&lt;/code&gt;、&lt;code&gt;ISpeed&lt;/code&gt;、&lt;code&gt;IControlBar&lt;/code&gt;的Interface。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="toycar_4" src="https://www.ycc.idv.tw/media/SOLID_Introduction/toycar_4.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="toycar_4" src="/media/SOLID_Introduction/toycar_4.png" /&gt;&lt;/p&gt;
 &lt;h3 id="solid"&gt;總結：物件導向的指導原則—SOLID&lt;/h3&gt;
 &lt;p&gt;上面介紹的六大原理：&lt;/p&gt;
 &lt;ol&gt;
@@ -295,7 +295,7 @@
 &lt;li&gt;Dependence Inversion Principle&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;剛剛好組成SOLID這個單字，所以又被統稱SOLID原則。&lt;/p&gt;
-&lt;p&gt;事實上，這些原則所要達到的目的，不外乎就是我們&lt;a href="http://www.ycc.idv.tw/YCNote/post/47"&gt;第一篇&lt;/a&gt;當中所介紹的好的程式碼特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，或者是「低耦合、高內聚」，所以寫程式時如果能時時注意，說不定你也可以自己領會這六大法則。&lt;/p&gt;
+&lt;p&gt;事實上，這些原則所要達到的目的，不外乎就是我們&lt;a href="/introduction-object-oriented-programming_1.html"&gt;第一篇&lt;/a&gt;當中所介紹的好的程式碼特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，或者是「低耦合、高內聚」，所以寫程式時如果能時時注意，說不定你也可以自己領會這六大法則。&lt;/p&gt;
 &lt;p&gt;我來快速的總結這六大法則告訴我們的事：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;在開發程式的初期，先定義好抽象架構，也就是廣義的接口，徹底的使客戶端與業務邏輯分離，將「行為」定義成Interface，將「類別的泛化」定義成Abstract Class。&lt;/li&gt;
@@ -311,7 +311,7 @@
 &lt;li&gt;&lt;a href="https://www.tenlong.com.tw/products/9789866761799"&gt;大話設計模式&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://www.tenlong.com.tw/products/9787111437871"&gt;設計模式之禪&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;</content><category term="Coding"></category><category term="軟體設計"></category></entry><entry><title>物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹</title><link href="https://ycc.idv.tw/introduction-object-oriented-programming_2.html" rel="alternate"></link><published>2018-04-10T12:00:00+08:00</published><updated>2018-04-10T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2018-04-10:/introduction-object-oriented-programming_2.html</id><summary type="html">&lt;p&gt;物件導向編程 / 類別(Class)與物件(Object) / 方法多載（Method Overloading） / 物件導向三大特性—封裝(Encapsulation) / 物件導向三大特性—繼承(Inheritance) / 抽象化：抽象類別(Abstract Class)、抽象方法(Abstract Method)和接口(Interface) / 物件導向三大特性—多型(Polymorphism) /&lt;/p&gt;</summary><content type="html">&lt;h3 id="_1"&gt;物件導向編程&lt;/h3&gt;
-&lt;p&gt;&lt;a href="http://www.ycc.idv.tw/introduction-object-oriented-programming_1.html"&gt;在上一章當中&lt;/a&gt;，我們藉由好的程式碼的特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，自然而然引出物件導向的概念。在這一章當中YC會接續介紹完整的物件導向要如何實現，包括物件導向三大特性：封裝、繼承和多型。&lt;/p&gt;
+&lt;p&gt;&lt;a href="/introduction-object-oriented-programming_1.html"&gt;在上一章當中&lt;/a&gt;，我們藉由好的程式碼的特性：「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」，自然而然引出物件導向的概念。在這一章當中YC會接續介紹完整的物件導向要如何實現，包括物件導向三大特性：封裝、繼承和多型。&lt;/p&gt;
 &lt;p&gt;在本章我會採用兩種語言交叉作說明，一種是靜態型別的語言Java，另一種是動態型別的語言Python，這兩種語言都是可以實現物件導向的語言，而所謂型別的動態與靜態可以用一個簡單的方法來區分：型別檢查(Type Checking)發生在什麼時候？像Java這類的靜態型別語言，它的型別檢查是在編譯時期(Compile Time)完成的，而像是Python這類的動態型別語言，它的型別檢查則是在執行時期(Runtime)才去做，所以Python可以不事先宣告變數型別，這點使得Python在開發上方便許多。&lt;/p&gt;
 &lt;p&gt;雖然Python和Java都是支援物件導向的語言，但在使用上有很大的差異，首先，因為Python的動態型別，所以有些物件導向的性質對它來說就不是那麼重要，另外，因為Python追求簡潔，簡化了相當多的東西，所以很多的使用方法不同於傳統的物件導向，需要認識到這些差異才可以讓你使用Python的物件導向不會顯得很彆扭。Java是一套對物件導向支援非常完整的語言，而Python是一套易於快速開發的語言，使用兩種語言說明物件導向是為了讓讀者更能了解物件導向的本質，而非語言本身。&lt;/p&gt;
 &lt;p&gt;本篇採用『&lt;a href="https://www.tenlong.com.tw/products/9789866761799"&gt;大話設計模式&lt;/a&gt;』書中的物件導向篇範例。&lt;/p&gt;
@@ -1498,7 +1498,7 @@ H = F + G&amp;quot;
 &lt;/ul&gt;</content><category term="Coding"></category><category term="Python玩數據"></category></entry><entry><title>Python玩數據 (2)：Numpy [1/2]</title><link href="https://ycc.idv.tw/python-play-with-data_2.html" rel="alternate"></link><published>2017-04-17T12:00:00+08:00</published><updated>2017-04-17T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2017-04-17:/python-play-with-data_2.html</id><summary type="html">&lt;p&gt;Python常見的資料型別 / Numpy的數學運算 / Numpy基礎元素：ndarray / Numpy的矩陣運算&lt;/p&gt;</summary><content type="html">&lt;p&gt;在上一次我們已經成功了安裝了IPython，這將會是我們這系列教學的主要舞台，而今天我要教大家在這個舞台上利用Numpy來做一些簡單的科學計算。&lt;/p&gt;
 &lt;h3 id="ipython"&gt;IPython&lt;/h3&gt;
 &lt;p&gt;像上次一樣，打開IPython，緊接著把numpy和pandas載入，載入numpy之後我們習慣用&lt;code&gt;as&lt;/code&gt;將它縮寫為&lt;code&gt;np&lt;/code&gt;，pandas則縮寫為&lt;code&gt;pd&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="ipython" src="http://www.ycc.idv.tw/media/PlayDataWithPython/ipython.jpeg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ipython" src="/media/PlayDataWithPython/ipython.jpeg" /&gt;&lt;/p&gt;
 &lt;p&gt;IPython是一個具有互動式介面的python執行介面，你可以一邊寫一邊理解目前的狀況，舉個例子&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;12&lt;/span&gt; &lt;span class="c1"&gt;# integer(整數)&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;     &lt;span class="c1"&gt;# check variable a&lt;/span&gt;
@@ -1661,7 +1661,7 @@ H = F + G&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;畫張圖可能比較好理解一點，在各個方向上加總的結果都不一樣。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="ndarray axis" src="http://www.ycc.idv.tw/media/PlayDataWithPython/ndarray_axis.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ndarray axis" src="/media/PlayDataWithPython/ndarray_axis.png" /&gt;&lt;/p&gt;
 &lt;p&gt;同樣，axis的概念也可以用在矩陣的shape&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;D&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;array&lt;/span&gt;&lt;span class="p"&gt;([[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;],[&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;],[&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;]])&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;D&lt;/span&gt;
@@ -2033,7 +2033,7 @@ $ sudo make altinstall
 &lt;li&gt;Windows&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;Step 1:&lt;/strong&gt; 在這個&lt;a href="https://www.python.org/downloads/release/python-2713/"&gt;網站&lt;/a&gt;依照你的CPU架構下載安裝檔，並安裝。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="python_win_install_01" src="http://www.ycc.idv.tw/media/PlayDataWithPython/python_win_install_01.jpeg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="python_win_install_01" src="/media/PlayDataWithPython/python_win_install_01.jpeg" /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Step 2:&lt;/strong&gt; 設定環境變數&lt;/p&gt;
 &lt;p&gt;打開 控制台 &amp;gt; 系統及安全性 &amp;gt; 系統 &amp;gt; 進階系統設定 &amp;gt; 環境變數&lt;/p&gt;
 &lt;p&gt;選Path，並按下 編輯，將&lt;code&gt;C:\Python27;C:\Python27＼Scripts&lt;/code&gt; 加到後面，並儲存。環境變數的說明請參考上面Mac安裝的第四步，原理是一樣的，不過在windows裡的區分的符號是&lt;code&gt;;&lt;/code&gt;不是&lt;code&gt;:&lt;/code&gt;。&lt;/p&gt;
@@ -2079,5 +2079,5 @@ $ conda install pandas
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;試著import numpy和pandas進來，如果都正常，就代表成功了！&lt;/p&gt;
-&lt;p&gt;&lt;img alt="ipython" src="http://www.ycc.idv.tw/media/PlayDataWithPython/ipython.jpeg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ipython" src="/media/PlayDataWithPython/ipython.jpeg" /&gt;&lt;/p&gt;
 &lt;p&gt;Ctrl + D 就可以結束跳出啦～ 今天就到這～&lt;/p&gt;</content><category term="Coding"></category><category term="Python玩數據"></category></entry></feed>

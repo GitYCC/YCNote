@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -163,7 +163,7 @@ $$</div>
 <h2 id="variational-inference-evidence-lower-bound-elbo">從 Variational Inference 到 Evidence Lower Bound (ELBO)</h2>
 <p>近年來面對極其複雜（e.g. NN）的機率模型，傳統的優化方式變得不可行，如： Expectation-Maximization Algorithm ，所以接下來要跟大家介紹的 Variational Inference (VI) 就變得開始廣為人使用。</p>
 <p><img alt="" src="/media/Generative/variational_inference.png"/></p>
-<p>常見的生成模型可以表示成如上圖所示，<span class="math">\(\pmb{x}\)</span>  為生成之樣本，而 <span class="math">\(\pmb{z}\)</span> 座落於 latent space <span class="math">\(Z\)</span> 上的一個點，這個 latent space 可以具有各類可能的分布，為求方便通常會定義為一個 <a href="https://www.ycc.idv.tw/deep-dl_1.html">高斯分佈</a>，即 <span class="math">\(p (\pmb{z})\sim\mathcal{N}(\pmb{z}:\pmb{0};\pmb{I})\)</span> 。假設 <span class="math">\(p (\pmb{x}\mid \pmb{z})\)</span> (給定<span class="math">\(\pmb{z}\)</span> 之後求 <span class="math">\(\pmb{x}\)</span>  的分布) 是已知的，則聯合機率為
+<p>常見的生成模型可以表示成如上圖所示，<span class="math">\(\pmb{x}\)</span>  為生成之樣本，而 <span class="math">\(\pmb{z}\)</span> 座落於 latent space <span class="math">\(Z\)</span> 上的一個點，這個 latent space 可以具有各類可能的分布，為求方便通常會定義為一個 <a href="/deep-dl_1.html">高斯分佈</a>，即 <span class="math">\(p (\pmb{z})\sim\mathcal{N}(\pmb{z}:\pmb{0};\pmb{I})\)</span> 。假設 <span class="math">\(p (\pmb{x}\mid \pmb{z})\)</span> (給定<span class="math">\(\pmb{z}\)</span> 之後求 <span class="math">\(\pmb{x}\)</span>  的分布) 是已知的，則聯合機率為
 </p>
 <div class="math">$$
 p (\pmb{x},\pmb{z})=p (\pmb{x}\mid \pmb{z})p (\pmb{z})   \ \ 【1.1】

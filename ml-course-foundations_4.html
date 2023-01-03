@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="ml-course-foundations_4">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</h1>
 <p>
-      Posted on September 18, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 16,250
+      Posted on September 18, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 16,251
 
     </p>
 </header>
@@ -142,7 +142,7 @@
 <p>在上一回中，我們已經了解了機器學習基本的操作該怎麼做。而這一篇中，我們來看<strong>機器可以怎麼學得更好?</strong> 基本上有三招：Feature Transformation（特徵轉換）、Regularization（正規化）和Validation（驗證），我們來看看。</p>
 <p><br/></p>
 <h3 id="feature-transformation">Feature Transformation（特徵轉換）</h3>
-<p><img alt="ML" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.013.jpeg"/></p>
+<p><img alt="ML" src="/media/MachineLearningFoundations/MachineLearningFoundations.013.jpeg"/></p>
 <p>在上一回當中我們講了很多的線性模型，大家有沒有懷疑說，數據呈現的方式一定可以用線性描述嗎？我的答案是通常線性描述會表現不錯，但不是絕對，<strong>那我們怎麼用非線性的方法來描述我們的數據，這邊提供一個方法叫做「非線性轉換」，或者又稱為「特徵轉換」（還記得變數<span class="math">\(x\)</span>又可以稱為特徵Features）</strong>，聽起來有點困難齁～其實不會啦！</p>
 <p>假設今天你的Data分布是圓圈狀的分布，顯而易見的你很難用一條線去區分他們，那我們應該怎麼做呢？假設今天有一個轉換可以把這個圓圈狀分布的空間轉換到另外一個空間，而且在這個新的空間，我們可以做到線性可分，這樣問題就解決了，我們非常擅長做線性可分啊！怎麼做呢？我們知道這個空間分布是圓圈分布，所以套用以前學過的公式：
 </p>
@@ -162,13 +162,13 @@ $$</div>
 <p><br/></p>
 <h3 id="overfitting">Overfitting</h3>
 <p>Overfitting是一個大怪獸，在學習怎麼對付牠之前，我們先來好好的了解牠！</p>
-<p><img alt="Overfitting" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.03.png"/></p>
+<p><img alt="Overfitting" src="/media/MachineLearningFoundations/MachineLearningFoundations.000.03.png"/></p>
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf</a></p>
 <p>上面這張圖用很簡單的方法說明了Overfitting是怎麼一回事，假設藍色的線是Target，也就是我們抽樣的母群體，因為雜訊的關係，抽樣出來的點可能會稍微偏離Target，而如果這個時候我們用二次式來描述這些抽樣出來的Data（上圖中的左側）會發現<span class="math">\(E_{in}\)</span>不能壓到0，所以這個時候可能有人想說加進去更高次項來試試看（上圖中的右側），此時會發現<span class="math">\(E_{in}=0\)</span>，所有數據都可以被完整描述了，但是你會發現Fit的曲線已經完全偏離了Target，反而是使用低次項還描述比較好，低次項描述的<span class="math">\(E_{in}\)</span>和 <span class="math">\(E_{out}\)</span>(Target Function) 比較接近，所以結論是<strong>如果我們把「隨機雜訊」（Stochastic Noise）Fit進去Model裡面就會因此產生Overfitting，要避免這種情況發生，就要小心使用高次項</strong>。</p>
-<p><img alt="Overfitting2" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.04.png"/></p>
+<p><img alt="Overfitting2" src="/media/MachineLearningFoundations/MachineLearningFoundations.000.04.png"/></p>
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf</a></p>
 <p>但可別以為沒有「隨機雜訊」鬧場就不會出現Overfitting，上圖假設一個沒有「隨機雜訊」的情形，但是這次Target Function的複雜度很高（上圖右側），當我們從中採樣一些Data來進行Fitting，如上圖左側，我們分別使用2次和10次來做Fitting，這個時候你會發現雖然2次和10次都和Target曲線差很遠，但是小次方的還是Fit的比較好一點，造成Overfitting的原因是因為當Target很複雜的情況下，如果採樣的數據不大，根本無法反應Target本身，所以就算使用了和Target一樣複雜的Model，也只是在瞎猜而已。<strong>這種因為Target本身的複雜度所帶來的雜訊，我們稱為「決定性雜訊」(Deterministic Noise)</strong>。</p>
-<p><img alt="Noise" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.05.png"/></p>
+<p><img alt="Noise" src="/media/MachineLearningFoundations/MachineLearningFoundations.000.05.png"/></p>
 <p>From: <a href="https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf">https://www.csie.ntu.edu.tw/~htlin/course/mlfound17fall/doc/13_handout.pdf</a></p>
 <p>我們來看一下「隨機雜訊」（Stochastic Noise）和「決定性雜訊」（Deterministic Noise）怎麼造成Overfitting的，上圖中的兩張漸層圖表示的是Overfitting的程度，越接近紅色代表Overfitting越嚴重；反之，越接近藍色則Overfitting越輕微。左邊的漸層圖是考慮「隨機誤差」的影響，右邊的漸層圖則是考慮「決定性雜訊」的影響。從這兩張圖我們可以觀察出下面四點特性：</p>
 <ol>
@@ -187,7 +187,7 @@ $$</div>
 </ol>
 <p><br/></p>
 <h3 id="regularization">Regularization（正規化）</h3>
-<p><img alt="regularation" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.014.jpeg"/></p>
+<p><img alt="regularation" src="/media/MachineLearningFoundations/MachineLearningFoundations.014.jpeg"/></p>
 <p>剛剛我們提到了Overfitting所造成的影響很大一部分是因為Model複雜度所造成的，但是為了可以把<span class="math">\(E_{in}\)</span>給壓下去，我們又的確需要去增加高次項，所以依照建議需要從低次項開始慢慢的加，這樣感覺很麻煩啊！<strong>有沒有辦法讓機器自己去限制高次項的出現呢？有的，這就是Regularization（正規化）</strong>。</p>
 <p>還記得剛剛在講「特徵轉換」時，有提到一點，ML有辦法自行學習「特徵轉換」的關鍵是因為高次項前面有一個可調控的權重，而機器會針對Data來調整權重大小，那其實就是等價於機器自己學習到了「特徵轉換」，同理可知，<strong>我們只要限制權重<span class="math">\(W\)</span>的大小就等同於限制了機器無所忌憚的使用高次項</strong>。</p>
 <p>經數學證明，<strong>限制權重<span class="math">\(W\)</span>的大小可以等價於在<span class="math">\(E_{in}\)</span>上面加上「<span class="math">\(W\)</span>大小的平方」乘上定值<span class="math">\(λ\)</span>，<span class="math">\(λ\)</span>越大代表<span class="math">\(W\)</span>大小限制越緊；<span class="math">\(λ\)</span>越小代表<span class="math">\(W\)</span>大小限制越鬆</strong>，這也非常容易想像，訓練Model的方法是去降低<span class="math">\(E_{in}\)</span>，但是如果使用了大的<span class="math">\(W\)</span>，就會使得<span class="math">\(E_{in}\)</span>增大，自然而然在訓練的過程中，機器會去尋找小一點的<span class="math">\(W\)</span>，也就等同於限制了<span class="math">\(W\)</span>的大小。</p>
@@ -199,7 +199,7 @@ $$</div>
 <p>最後提一個Regularization的細節，你會發現因為高次項是彼此兩兩相乘的結果，所以項目的個數會隨著次方增加而增加，這麼一來在做Regularization時可能會過度懲罰高次項，因此，我們可以將Feature轉換成Legendre Polynomials來避免這個問題。</p>
 <p><br/></p>
 <h3 id="validation">Validation（驗證）</h3>
-<p><img alt="validation" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.015.jpeg"/></p>
+<p><img alt="validation" src="/media/MachineLearningFoundations/MachineLearningFoundations.015.jpeg"/></p>
 <p>講了這麼多Overfitting，但到底要怎麼去量化Overfitting呢？Overfitting就是<span class="math">\(E_{in} \approx E_{out}\)</span>不成立，但是<span class="math">\(E_{out}\)</span>我們不會知道啊！因為我們不會知道Target Function是什麼，那該怎麼得到量化Overfitting的值呢？</p>
 <p><strong>有一個方法叫做Validation可以拿來量化Overfitting的值，這個方法是先將採樣的數據做分離，一部分將會拿來做Model Fitting（Model Training），另外一部分保留起來評估訓練完畢的Model，因為保留的這一部分源自於母群體，而且又沒有被Model給看過，所以它可以很客觀的反應出<span class="math">\(E_{out}\)</span>的大小。</strong></p>
 <p>我們的Model和Algorithm從以前講到現在已經是越來越複雜了，來複習一下Model和Algorithm受哪些參數影響，Algorithm的選擇就有很多了，包括：PLA、Linear Regression、Logistic Regression；Learning Rate <span class="math">\(η\)</span>也需要去選擇大小決定學習速率；Feature Transformation中Feature的決定和次方大小的決定；Regularization也有L2、L1 Regularizer的選擇；還有Regularization的<span class="math">\(λ\)</span>值也必須被決定。</p>

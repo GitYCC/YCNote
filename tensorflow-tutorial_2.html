@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -138,7 +138,7 @@
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 <div class="main-contents">
-<p>接續著<a href="http://www.ycc.idv.tw/YCNote/post/38">上一回</a>，我們已經有一個單層的Neurel Network，緊接著我們來試著一步一步改造它，讓它成為我們常使用的Deep Neurel Network的形式。</p>
+<p>接續著<a href="/tensorflow-tutorial_1.html">上一回</a>，我們已經有一個單層的Neurel Network，緊接著我們來試著一步一步改造它，讓它成為我們常使用的Deep Neurel Network的形式。</p>
 <p>本單元程式碼可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/02_DNN_classification_on_MNIST.py">Github</a>下載。</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">random</span>
 
@@ -152,7 +152,7 @@
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
 </code></pre></div>
 <h3 id="hidden-layer">增加Hidden Layer</h3>
-<p>在上一回當中，我們只有一層Neurel Network，也就是做完一個線性轉換後，就直接使用Softmax Layer來轉換成機率表示方式，這樣的結構並不夠powerful，我們需要把它的結構弄的又窄又深，這樣效果才會好，詳細原因請參考<a href="http://www.ycc.idv.tw/YCNote/post/35">這一篇的介紹</a>。</p>
+<p>在上一回當中，我們只有一層Neurel Network，也就是做完一個線性轉換後，就直接使用Softmax Layer來轉換成機率表示方式，這樣的結構並不夠powerful，我們需要把它的結構弄的又窄又深，這樣效果才會好，詳細原因請參考<a href="/ml-course-techniques_6.html">這一篇的介紹</a>。</p>
 <p>因此，我們來試著加入一層Hidden Layer，來打造成兩層的Neurel Network，並在兩層之間加入Activation Function，為我的Model增加非線性因子。</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">n_hidden</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">dropout_ratio</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="c1"># build neurel network structure and return their predictions and loss</span>
@@ -236,7 +236,7 @@
 <p>如果你已經看到Overfitting出現了，有什麼方法可以抑制他呢？這個時候就需要Regularization的幫忙，在Neurel Network常見的Regularization有兩種：Weight Regularization和Dropout，待會會一一介紹。</p>
 <p>這邊特別注意，不要每次精確度沒有提升就怪Overfitting！如果連你的Training Set都沒辦法有好的表現，這就可能不是Overfitting，反而可能是Underfitting，這個時候不要再增加Regularization，而是試著去調整Learning Rate，或者增加模型的複雜度，加深DNN或增加神經元的數目。</p>
 <h3 id="weight-regularization">Weight Regularization</h3>
-<p>我們可以藉著在Loss Function裡頭加入Weight的貢獻，來達到限制W的大小的目標，這樣做可以降低Overfitting，詳細原理請<a href="http://www.ycc.idv.tw/YCNote/post/28">參考這篇的Regularization的部分</a>。</p>
+<p>我們可以藉著在Loss Function裡頭加入Weight的貢獻，來達到限制W的大小的目標，這樣做可以降低Overfitting，詳細原理請<a href="/ml-course-foundations_4.html">參考這篇的Regularization的部分</a>。</p>
 <p>我們來看看應該怎麼做到L2 Regularization。</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># regularization loss</span>
 <span class="n">regularization</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">([</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">l2_loss</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">/</span> <span class="n">tf</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">out_type</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>

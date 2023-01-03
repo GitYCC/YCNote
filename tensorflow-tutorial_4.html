@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -141,7 +141,7 @@
 <p>Autoencoder是一個Neurel Network重要的工具，我個人認為它還漂亮的呈現Neurel Network的強大。</p>
 <p>本單元程式碼Autoencoder部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/04_1_Autoencoder_on_MNIST.py">Github</a>下載，De-noise Autoencoder部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/04_2_DenoiseAutoencoder_on_MNIST.py">Github</a>下載。</p>
 <h3 id="autoencoder">Autoencoder觀念解析</h3>
-<p>在「機器學習技法」的系列文章，我也<a href="http://www.ycc.idv.tw/YCNote/post/35">曾經介紹過Autoencoder</a>，可以搭配這篇服用。</p>
+<p>在「機器學習技法」的系列文章，我也<a href="/ml-course-techniques_6.html">曾經介紹過Autoencoder</a>，可以搭配這篇服用。</p>
 <p>Autoencoder概念很簡單，就是做資訊的壓縮，概念是這樣的，當我在一層當中使用神經元愈多，可以儲存的資訊量也就愈多，相反的神經元越少，可以儲存的資訊量越少，如果我要使用Neurel Network作資料壓縮的話，我希望的是可以使用比原本更少的資訊量來儲存，如果原本是一張MNIST的圖，有28x28=784個Pixels，所以可以想知，如果我要作壓縮就要使得壓縮後的神經元可以比784個更少。</p>
 <p>但是什麼都不做我們就可以平白無故的做到壓縮？當然不行，我們還得從資料中找到一些規律，套用這些規律把多餘的東西去除，留下精髓，我們才可以把資料作壓縮，所以在實作上我們會建立一個神經元由大到小的Neurel Network，逐步的轉換，逐步的壓縮資訊。</p>
 <p>那麼壓縮的目的是為了什麼？當然是有辦法還原回去原本狀態，這樣的壓縮才是有意義的，例如：將文檔打包成RAR，檔案大小會變小，但如果實際要再使用這個檔案，那就必須先做解壓縮，然後還原回去原本的檔案，這裡的還原率必須是百分之一百的，Autoencoder一樣的有一個機制可以還原，在實作上我們會建立一個神經元由小到大的Neurel Network，逐步的還原回去原本的狀態。</p>
@@ -512,7 +512,7 @@ $$</div>
 <p>似乎看起來是有效果的，數字還原的比較清晰。</p>
 <h3 id="code">壓縮碼Code與視覺化</h3>
 <p>剛剛提到在Autoencoder前半段是一個Encoder，所以我們可以利用這個Encoder來做壓縮，會得到一個Code，在上面的這個例子，這個Code總共有4個值，因為中間層有4個神經元，可以把這個Code看成Dimension Reduction的結果，原本一張圖代表的是28x28=784個維度下的一個點，現在經過轉換後變成是4個維度下的一個點，而我們會直覺的認為同樣一群的數字圖形應該會有較高的相似度，所以在4個維度之下，同樣的數字圖片應該會彼此靠近的比較近，甚至聚成一團。</p>
-<p>我想要驗證一下這件事，我們需要先圖像化，不過卻卡在維度太高的問題，人類無法想像高於3個維度以上的空間，也沒辦法將它視覺化，這個時候我們需要再做一次的Dimension Reduction，將維度降到低於3才可以視覺化，那一般手法是使用PCA來做這件事，有關於PCA我之前已經介紹過，請參考<a href="http://www.ycc.idv.tw/YCNote/post/35">這篇</a>，如此一來就可以在4個維度中切一個重要的截面來視覺化這些數據。不過記得喔！4個維度才是真正可以表示這群資料，做PCA只是為了畫圖而做的粗略轉換而已。</p>
+<p>我想要驗證一下這件事，我們需要先圖像化，不過卻卡在維度太高的問題，人類無法想像高於3個維度以上的空間，也沒辦法將它視覺化，這個時候我們需要再做一次的Dimension Reduction，將維度降到低於3才可以視覺化，那一般手法是使用PCA來做這件事，有關於PCA我之前已經介紹過，請參考<a href="/ml-course-techniques_6.html">這篇</a>，如此一來就可以在4個維度中切一個重要的截面來視覺化這些數據。不過記得喔！4個維度才是真正可以表示這群資料，做PCA只是為了畫圖而做的粗略轉換而已。</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># get code</span>
 <span class="n">encode</span> <span class="o">=</span> <span class="n">model_2</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
 

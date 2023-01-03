@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -147,7 +147,7 @@
 <p>所以，做ML有點像是手把手的造一顆大腦，並且訓練它學會Data背後的知識。那這個大腦要怎麼設計呢？這個大腦用我們學物理的人的說法就是建一個Model，而餵給它Data的過程就是Model Fitting。</p>
 <p>那什麼是Model呢？讓我來解釋一下，<strong>所謂的Model就是給一個未知現象的框架來試圖描述它</strong>，舉個例子，我們都知道力的公式是<span class="math">\(F=ma\)</span>（力＝質量x加速度），但如果你今天拿一顆皮球來，你就會發現這個公式並不那麼正確，因為皮球會形變，那怎麼辦呢？我們可以假設形變會把部份的力給抵消掉，所以式子改寫成<span class="math">\((F-F_1)=ma\)</span>，在這邊<span class="math">\(F_1\)</span>就是那個抵消的力，這樣就是設計了一個Model來描述這個現象，而<span class="math">\(F_1\)</span>是一個未知的值，我們可以用實驗數據來推估<span class="math">\(F_1\)</span>，這就是所謂的Model Fitting。</p>
 <p>物理上的Model通常是這樣做的，我們先觀察未知現象，然後從中猜測可能造成這現象的原因，總結這些原因來設計一個Model，Model中可能有一些參數還沒被決定，此時我們就可以用數據來決定它，這就是Model Fitting。</p>
-<p><img alt="MachineLearningFoundations.001" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.001.jpeg"/></p>
+<p><img alt="MachineLearningFoundations.001" src="/media/MachineLearningFoundations/MachineLearningFoundations.001.jpeg"/></p>
 <p>了解了Model的概念就相當好了解ML的架構，上圖是ML的基本架構，<strong>假設我們今天要讓機器學一樣技術，這個技術我們用一個函數來表示，稱之為Target Function，這個Target Function就是隱藏在Data後面的真正道理</strong>，每個變數<span class="math">\(X\)</span>會有相應的正確答案<span class="math">\(Y\)</span>。</p>
 <p>今天我從Target Function中取出<span class="math">\(N\)</span>組當作Data來給我的機器學習，那目標是什麼?<strong>目標當然是讓機器學習出這個Target Function啦！</strong>所以我們要先設計我們的Model，最終目的是決定Model裡的參數之後，這個被選擇的Model就是Target Function。</p>
 <p>Model就是上圖中的Hypothesis Set，在Model參數還沒被決定之前，你可以想像它就像一個集合包含很多可以選擇的函數，而使用數據Model Fitting以後，選出一組最佳化的參數，就好像從這個集合中挑選一組函數一樣。</p>
@@ -167,25 +167,25 @@
 <li><strong>存在可以代表這個要學習的模式的Data</strong></li>
 </ol>
 <h3 id="_2">二元分類問題</h3>
-<p><img alt="img" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.01.jpeg"/></p>
+<p><img alt="img" src="/media/MachineLearningFoundations/MachineLearningFoundations.000.01.jpeg"/></p>
 <p>from: <a href="https://class.coursera.org/ntumlone-003/lecture/17">https://class.coursera.org/ntumlone-003/lecture/17</a></p>
 <p>好! 大家現在應該對於機器學習有一些認識了，那接下來我們來實作一些例子來了解機器學習架構怎麼運作。像個小學生一樣，我們先從簡單的是非題來學起，是非題學究一點的講法就是「二元分類問題」。</p>
 <p>舉個例子，今天有一家銀行想要開發一款ML的軟體，這個軟體可以根據過去信用卡核發用戶的資料，去判斷要不要核發信用卡給這個新的申請人，這些過去的資料可能包括：用戶年齡、用戶性別、用戶年薪等等，讓機器藉由這些資料去學習判斷要不要核發信用卡。把這樣的二元分類問題化作</p>
 <p>Target Function：<span class="math">\(f: X → y\)</span></p>
 <p><span class="math">\(X\)</span>有年齡、性別和年薪這些變數，而<span class="math">\(y\)</span>則是個二元類別，不是<span class="math">\(y=1\)</span>(核發)就是<span class="math">\(y= -1\)</span>(不核發)。</p>
 <p>那接下來，我們就要決定我們的Learning Model，也就是Hypothesis Set。</p>
-<p><img alt="MachineLearningFoundations.002" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.002.jpeg"/></p>
+<p><img alt="MachineLearningFoundations.002" src="/media/MachineLearningFoundations/MachineLearningFoundations.002.jpeg"/></p>
 <p>引入<strong>Perceptron(感知器) Hypothesis Set</strong>來當作我們的Hypothesis Set，如上圖，我們給予我們的輸入變數個別的權重，然後相加起來，並且看這個值是正還是負，來決定輸出值是<span class="math">\(+1\)</span>或<span class="math">\(-1\)</span>，<span class="math">\(sign\)</span>函數的作用是假設輸入的值為正則輸出<span class="math">\(+1\)</span>，反之則輸出<span class="math">\(-1\)</span>。</p>
 <p>對應核發信用卡這個例子，</p>
 <p><span class="math">\(x_1\)</span> = 用戶年齡; <span class="math">\(x_2\)</span> = 用戶性別; <span class="math">\(x_3\)</span> = 用戶年薪，</p>
 <p>在分別乘上weight <span class="math">\(w_1\)</span>, <span class="math">\(w_2\)</span>, <span class="math">\(w_3\)</span>，這個變數前面的weight代表這個變數對於答案<span class="math">\(Y\)</span>有什麼影響，如果是正向影響，<span class="math">\(weight &gt; 0\)</span>，如果沒有影響，<span class="math">\(weight = 0\)</span>，如果負向影響，<span class="math">\(weight &lt; 0\)</span>，舉個例子，高年薪也許可以提升核發信用卡的機會，那它前面的weight應該就是正的，也許性別並不影響核發信用卡的機會，則<span class="math">\(weight = 0\)</span>，那麼考慮到這些input變數對結果影響的評估，我們會得到一個數值 <span class="math">\((w_1\times x_1+w_2\times x_2+...)\)</span>。</p>
 <p>此時我們要用這個數值去做「二元分類」，也就是一分為二，怎麼做呢? 很簡單，給他一分水嶺，高於一個閥值我就給他 <span class="math">\(y=+1\)</span>，低於一個閥值我就給他<span class="math">\(y=-1\)</span>，假設這個閥值為<span class="math">\((-w_0)\)</span>，則分類依據就可以表示為 <span class="math">\(sign(w_0+w_1\times x_1+w_2\times x_2+...)\)</span> 。</p>
 <p>上圖中的 <span class="math">\(s = w_0+w_1\times x_1+w_2\times x_2+...\)</span> 就像一個分數(score)一樣，高分 <span class="math">\(s&gt;0\)</span> 的我就核發(<span class="math">\(+1\)</span>)，低分 <span class="math">\(s &lt; 0\)</span> 的我就不核發(<span class="math">\(-1\)</span>)，其中權重 <span class="math">\(w_0, w_1, w_2, ...\)</span> 都可以由機器學習去調整，這些不同的weight就構成了Hypothesis Set，也就是Model，那接下來我們還需要Learning Algorithm來取出最佳參數，也就是決定一組最佳weight來選出最吻合數據的Hypothesis。</p>
-<p><img alt="MachineLearningFoundations.003" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.003.jpeg"/></p>
+<p><img alt="MachineLearningFoundations.003" src="/media/MachineLearningFoundations/MachineLearningFoundations.003.jpeg"/></p>
 <p>如上圖所示，<strong>Perceptron Learning Algorithm(PLA)</strong>是用於處理Perceptron Hypothesis Set的一種演算法。</p>
 <p>它的作法簡單來講是，藉由一筆一筆的數據去逐步的更新它的weight使得Model可以描述這筆數據，直到不需要再更新為止，此時所有的Data都可以用這個Model表示，更新的方法是先判斷進來的這筆數據是否符合目前的Model預測，如果不符合，此時<span class="math">\(\left[...\right]\)</span>為<span class="math">\(+ 1\)</span>，則必須朝變數向量<span class="math">\(X_n\)</span>的方向，前進或後退大小為Learning Rate的一步來更新weight，前進還是後退端看你的Data是<span class="math">\(y=-1\)</span>或<span class="math">\(+1\)</span>，<span class="math">\(y=+1\)</span>就往前進，<span class="math">\(y=-1\)</span>就往後退。</p>
 <p>因此，這個跨步更新的動作必須可以使Model接近正確答案，這麼神奇，真的假的？不太直覺，先從score來想起，假設有一筆資料為<span class="math">\((X_n,y_n)\)</span>，則Score：<span class="math">\(s = W_t・X_n\)</span>，在<span class="math">\(W_t\)</span>和<span class="math">\(X_n\)</span>向量彼此有同向分量的情況下，<span class="math">\(s &gt; 0\)</span>，如果這個時候<span class="math">\(y_n\)</span>剛好為<span class="math">\(+1\)</span>，則<span class="math">\(sign(s)=y_n\)</span>，這個時候<span class="math">\(W_t\)</span>描述這個數據就很好啊，我們就不需要去更新它；如果相反<span class="math">\(y_n=-1\)</span>，這個<span class="math">\(W_t\)</span>描述這個數據就不正確，也就是說<span class="math">\(W_t\)</span> 和 <span class="math">\(X_n\)</span>不應該同向，所以我們讓<span class="math">\(W_t\)</span>加上<span class="math">\(-X_n\)</span>(<span class="math">\(=y_n\times X_n\)</span>)，把<span class="math">\(W_t\)</span>從原本與<span class="math">\(X_n\)</span>同向的狀態反向拉離開來。那如果在<span class="math">\(W_t\)</span>和<span class="math">\(X_n\)</span>向量彼此不同向的情況下，<span class="math">\(s &lt; 0\)</span>，這個時候如果<span class="math">\(y_n\)</span>剛好為<span class="math">\(-1\)</span>，則<span class="math">\(sign(s)=y_n\)</span>，很好我們不去更新它；如果相反<span class="math">\(y_n=+1\)</span>，這個<span class="math">\(W_t\)</span>描述這個數據不正確，也就是說<span class="math">\(W_t\)</span> 和 <span class="math">\(X_n\)</span>不應該反向，所以我們讓<span class="math">\(W_t\)</span>加上<span class="math">\(X_n\)</span>(<span class="math">\(=y_n\times X_n\)</span>)，把<span class="math">\(W_t\)</span>拉到和<span class="math">\(X_n\)</span>同向一點。這就是PLA找到更好<span class="math">\(W_t\)</span>的機制。</p>
-<p><img alt="MachineLearningFoundations.004" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.004.jpeg"/></p>
+<p><img alt="MachineLearningFoundations.004" src="/media/MachineLearningFoundations/MachineLearningFoundations.004.jpeg"/></p>
 <p>Seeing is believing，上面這張圖帶我們來看PLA如何運作，</p>
 <ul>
 <li>Initially: 在最一開始的時候，我們weight <span class="math">\(W_t\)</span>先設成零向量</li>
@@ -193,7 +193,7 @@
 <li>Update 2: 上一輪的<span class="math">\(W_{t+1}\)</span>已經是這一輪的<span class="math">\(W_t\)</span>，也就是紅色的那個向量，<span class="math">\(W_t\)</span>決定了一條壁壘分明的二元分類邊界，這條線的方程式其實就是 <span class="math">\(w_0+w_1x_1+... = 0\)</span>，如果你還記得高中數學的話，這條邊界必然會和<span class="math">\(W_t\)</span>垂直，如圖所示，而<span class="math">\(W_t\)</span>的方向是屬於<span class="math">\(y=+1\)</span>的區域，這一輪剛剛好找到一個圈(<span class="math">\(y=+1\)</span>)落在<span class="math">\(y=-1\)</span>的區域，因此我們需要更新weight，做法是把<span class="math">\(W_t\)</span> 和 <span class="math">\(y_n\times X_n\)</span>(=<span class="math">\(X_n\)</span>)相加成為新的weight <span class="math">\(W_{t+1}\)</span></li>
 <li>...........以此類推</li>
 </ul>
-<p><strong>如果資料線性可分的話，PLA在迭代多次後，是可以用一條線完全區分兩種數據</strong>。但如果數據不是線性可分，不存在一條線來區分數據，此時最佳解就必須評估整體犯錯有多少，找出犯錯最少的那條直線就是最佳解，但可惜的是PLA方法並不會在迭代中趨向於犯錯最少的那條線，什麼時候該停止迭代是個世紀難解的NP-Hard問題（如果不了解這個名詞，<a href="http://www.ycc.idv.tw/algorithm-complexity-theory.html">詳見</a>）。</p>
+<p><strong>如果資料線性可分的話，PLA在迭代多次後，是可以用一條線完全區分兩種數據</strong>。但如果數據不是線性可分，不存在一條線來區分數據，此時最佳解就必須評估整體犯錯有多少，找出犯錯最少的那條直線就是最佳解，但可惜的是PLA方法並不會在迭代中趨向於犯錯最少的那條線，什麼時候該停止迭代是個世紀難解的NP-Hard問題（如果不了解這個名詞，<a href="/algorithm-complexity-theory.html">詳見</a>）。</p>
 <p>因此要改變一下PLA，這個方法我們稱之為Pocket，當每次得到一組weight的時候，都拿它來評估它對所有Data的區分能力好或壞，而只留下一組最好的放進口袋裡，所以當迭代次數做多了，保留在口袋的這組解就可以看成是最佳解，就這麼簡單。</p>
 <h3 id="_3">多元學習</h3>
 <p>機器學習和人類學習一樣，有各式各樣的學習型態。剛剛的<strong>「二元分類問題」</strong>就像考「是非題」一樣，答案要嘛是Yes不然就是No，表示為 <strong><span class="math">\(y=\{-1, 1\}\)</span></strong>，這就像是機器在小學時代的問題，較為簡單。</p>

@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="deep-dl_3">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</h1>
 <p>
-      Posted on March 07, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 16,662
+      Posted on March 07, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 16,663
 
     </p>
 </header>
@@ -247,9 +247,9 @@ $$</div>
 \theta_{MLE}=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(y_i\mid x_i,m,\theta)  \ \ ↪︎【14】
 $$</div>
 <p>
-上面這個式子是可以透過實驗來找到 <span class="math">\(\theta_{MLE}\)</span> 的，其中 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 表示在Model固定的情況下，估計輸入<span class="math">\(x_i\)</span>會得到<span class="math">\(y_i\)</span>的機率，我們可以透過Grandient Descent的方法調整參數來最大化這一項，詳細怎麼做我會在<a href="https://www.ycc.idv.tw/deep-dl_4.html">下一講</a>交代清楚。</p>
+上面這個式子是可以透過實驗來找到 <span class="math">\(\theta_{MLE}\)</span> 的，其中 <span class="math">\(p(y_i\mid x_i,m,\theta)\)</span> 表示在Model固定的情況下，估計輸入<span class="math">\(x_i\)</span>會得到<span class="math">\(y_i\)</span>的機率，我們可以透過Grandient Descent的方法調整參數來最大化這一項，詳細怎麼做我會在<a href="/deep-dl_4.html">下一講</a>交代清楚。</p>
 <hr/>
-<p>還沒有結束喔！大家有沒有覺得【14】式怪眼熟的，這很像是我們在<a href="https://www.ycc.idv.tw/deep-dl_2.html">上一講</a>討論的東西。</p>
+<p>還沒有結束喔！大家有沒有覺得【14】式怪眼熟的，這很像是我們在<a href="/deep-dl_2.html">上一講</a>討論的東西。</p>
 <p>我們把【14】式乘上負號，再除上資料筆數 <span class="math">\(N\)</span>，得
 </p>
 <div class="math">$$
@@ -270,7 +270,7 @@ D_{KL}(p_{data}\| p_{model})=E_{x\sim p_{data}}[\operatorname{ln}p_{data}(x)-\op
 $$</div>
 <p>
 但是因為 <span class="math">\(\operatorname{ln}p_{data}(x)\)</span> 與 <span class="math">\(\theta\)</span> 無關，所以計算還是只剩下第二項的Cross Entropy。</p>
-<p>特別注意，<strong>剛剛的所有推論並沒有提到我們的問題是Regression問題還是Classification問題，再次強調Cross Entropy並不專屬於Sigmoid或Softmax</strong>，甚至<a href="https://www.ycc.idv.tw/deep-dl_4.html">下一講</a>我還會提到Mean Squared Error是源於Data分布與Normal Distribution的Cross Entropy。</p>
+<p>特別注意，<strong>剛剛的所有推論並沒有提到我們的問題是Regression問題還是Classification問題，再次強調Cross Entropy並不專屬於Sigmoid或Softmax</strong>，甚至<a href="/deep-dl_4.html">下一講</a>我還會提到Mean Squared Error是源於Data分布與Normal Distribution的Cross Entropy。</p>
 <h3 id="maximum-a-posterior-map">Maximum A Posterior (MAP)</h3>
 <p>再來我們聊聊貝氏學派，我們好奇頻率學派究竟有什麼不足？MLE有什麼不足？為什麼我們需要一個新的觀點。</p>
 <p>最重要的一點是<strong>MLE認為所有 <span class="math">\(\theta\)</span> 出現的機率是均等的</strong>，我們優化的目標是 <span class="math">\(p(\mathcal{D}\mid m,\theta)\)</span> [from 【5】]，式子中是直接「給定」一組 <span class="math">\(\theta\)</span> ，所以這個 <span class="math">\(\theta\)</span> 怎麼來的、 <span class="math">\(\theta\)</span> 出現的機率，這些都不在MLE的考量當中。</p>
@@ -348,9 +348,9 @@ $$</div>
 <hr/>
 <p>觀察 【26】式，非常清楚的我們在優化第一項就如同優化MLE，<strong>但是MAP比MLE多了 <span class="math">\(\operatorname{ln}p(\theta\mid m)\)</span> </strong>，我們就針對這一項來討論，</p>
 <ul>
-<li>假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Uniform Distribution，也就是說所有的 <span class="math">\(\theta\)</span> 出現機率均等，則 <span class="math">\(p(\theta\mid m)=const.\)</span>，這麼一來這一項在【26】式可以直接槓掉，因為它與 <span class="math">\(\theta\)</span> 無關，此時 <span class="math">\(\theta_{MAP}=\theta_{MLE}\)</span> 。所以說在貝氏學派的觀點下，MLE只是MAP的一個特例，MLE只是假設 <span class="math">\(\theta\)</span> 出現機率均等的MAP，<a href="https://www.ycc.idv.tw/deep-dl_2.html">上一講有提過</a>Uniform Distribution為所有分布當中Entropy最大的，也就是不確定程度最大的，也就是人為假設幾乎為零的分布，確實符合頻率學派的觀點：不需要太多人為假設。</li>
+<li>假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Uniform Distribution，也就是說所有的 <span class="math">\(\theta\)</span> 出現機率均等，則 <span class="math">\(p(\theta\mid m)=const.\)</span>，這麼一來這一項在【26】式可以直接槓掉，因為它與 <span class="math">\(\theta\)</span> 無關，此時 <span class="math">\(\theta_{MAP}=\theta_{MLE}\)</span> 。所以說在貝氏學派的觀點下，MLE只是MAP的一個特例，MLE只是假設 <span class="math">\(\theta\)</span> 出現機率均等的MAP，<a href="/deep-dl_2.html">上一講有提過</a>Uniform Distribution為所有分布當中Entropy最大的，也就是不確定程度最大的，也就是人為假設幾乎為零的分布，確實符合頻率學派的觀點：不需要太多人為假設。</li>
 </ul>
-<p>但是基於剛剛的推論 <span class="math">\(p(\theta\mid m)\)</span> 的均等並不是我們想要的，我們希望 <span class="math">\(\theta\)</span> 可以多出現在接近 <span class="math">\(\theta=0\)</span> 的附近，<strong>因此我們希望  <span class="math">\(p(\theta\mid m)\)</span> 的分布具有 有限Variance且平均值接近0 (<span class="math">\(E_{p(\theta\mid m)}[x]=0\)</span>)</strong>。此時的第一首選就是Normal Distribution，因為我們在<a href="https://www.ycc.idv.tw/deep-dl_1.html">第一講</a>中說過：Normal Distribution是具有限Variance分布中具有最少人為假設的。</p>
+<p>但是基於剛剛的推論 <span class="math">\(p(\theta\mid m)\)</span> 的均等並不是我們想要的，我們希望 <span class="math">\(\theta\)</span> 可以多出現在接近 <span class="math">\(\theta=0\)</span> 的附近，<strong>因此我們希望  <span class="math">\(p(\theta\mid m)\)</span> 的分布具有 有限Variance且平均值接近0 (<span class="math">\(E_{p(\theta\mid m)}[x]=0\)</span>)</strong>。此時的第一首選就是Normal Distribution，因為我們在<a href="/deep-dl_1.html">第一講</a>中說過：Normal Distribution是具有限Variance分布中具有最少人為假設的。</p>
 <ul>
 <li>假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Normal Distribution且平均值為0，則
   <div class="math">$$
@@ -398,7 +398,7 @@ $$</div>
 \theta_{MLE}=argmax_\theta\ \sum_{i}\ \operatorname{ln}p(y_i\mid x_i,m,\theta)
 $$</div>
 <p>
-此項經過轉換會等同於最小化Data與Model之間的Cross Entropy，或等同於最小化Data與Model之間的KL Divergence，與<a href="https://www.ycc.idv.tw/deep-dl_2.html">上一講的資訊理論</a>完美契合。</p>
+此項經過轉換會等同於最小化Data與Model之間的Cross Entropy，或等同於最小化Data與Model之間的KL Divergence，與<a href="/deep-dl_2.html">上一講的資訊理論</a>完美契合。</p>
 <p>貝氏學派則使用Maximum A Posterior (MAP) 來優化，優化關係式如下：
 </p>
 <div class="math">$$
@@ -406,7 +406,7 @@ $$</div>
 $$</div>
 <p>
 除了第一項與MLE一樣之外，此時我們還需考慮了參數可能的分布，當參數分布是均等時，MAP和MLE是等價的。但是我們希望 <span class="math">\(\theta\)</span> 可以接近0，所以一般會去假設 <span class="math">\(p(\theta\mid m)\)</span> 為一個Variance有限且平均值為0的分布，如果選擇使用Normal Distribution，則會得到L2 Regularization Term；如果選擇用Laplace Distribution，則會得到L1 Regularization Term。</p>
-<p>本講已經給出了兩個觀點的機率優化式，但是要怎麼變換成擬合問題呢？這需要一大篇幅來介紹，我們會在<a href="https://www.ycc.idv.tw/deep-dl_4.html">下一講</a>來仔細討論這個問題，敬請期待囉！</p>
+<p>本講已經給出了兩個觀點的機率優化式，但是要怎麼變換成擬合問題呢？這需要一大篇幅來介紹，我們會在<a href="/deep-dl_4.html">下一講</a>來仔細討論這個問題，敬請期待囉！</p>
 <h3 id="reference">Reference</h3>
 <ul>
 <li><a href="https://www.deeplearningbook.org">Ian Goodfellow and Yoshua Bengio and Aaron Courville. Deep Learning. 2016.</a></li>

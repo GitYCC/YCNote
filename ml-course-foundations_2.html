@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -142,7 +142,7 @@
 <p>在上一回當中，我們初探了機器學習，了解了什麼時候適合使用機器學習，而不是一般的Hard Coding，那今天這篇文章要繼續問下去。</p>
 <p><strong>為什麼機器可以學習(Why Can Machines Learn?)</strong>，本篇會介紹學理上機器學習（ML）必須要有哪些條件才可行，這些理論有非常多的數學，但卻是了解機器學習非常重要的內功，我會盡量避開繁複的數學運算，而帶大家直接的了解式子所要告訴我們的觀念。</p>
 <h3 id="_2">機器可以學習嗎?</h3>
-<p><img alt="MachineLearningFoundations.001" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.001.jpeg"/></p>
+<p><img alt="MachineLearningFoundations.001" src="/media/MachineLearningFoundations/MachineLearningFoundations.001.jpeg"/></p>
 <p>還記得上面這張圖嗎? 上次帶大家初探了Machine Learning(ML)的基本架構，可以把整個概念總結成上面這張圖。</p>
 <p>我們來複習一下，先從最上面的盆子開始看起，我們用Target Function代表你想要學習的技能，在非常理想的情況下，也就是沒有noise的情況，每組輸入變數 <span class="math">\(X_n\)</span>都會找到一組精確的輸出 <span class="math">\(y_n\)</span>，而這個Target Function能產生多個Data，圖中那些小球就是代表由Target Function產生的Data，今天我從中隨機抽取出<span class="math">\(N\)</span>組Data來做機器學習，接下來Learning Algorithm會利用這些取出的Data去找出最吻合的Hypothesis，那這組Hypothesis就成了我們學習出來的結果，我們可以利用這個結果來預測新的問題。</p>
 <p>那麼上面這張圖真的合理嗎? 我們真的有辦法用上面的方法讓機器學習嗎? </p>
@@ -154,7 +154,7 @@
 <p>但遺憾的是我們不會真正知道<span class="math">\(E_{out}\)</span>，除非我們知道Target Function，所以我們只能評估<span class="math">\(E_{in}\)</span>來選取Model參數，因此重要的是需要<span class="math">\(E_{in} \approx E_{out}\)</span>這個條件要成立，否則一切的學習都是無效的。</p>
 <p><strong>總結一下機器學習的條件，我們必須建立一個 Learning Model可以確保<span class="math">\(E_{in}\approx E_{out}\)</span>，所以在Learning Algorithm選出最小<span class="math">\(E_{in}\)</span>的Hypothesis，同時這組Hypothesis也可以很好的預測Out-sample，我們就可以說機器已經會學習了。</strong></p>
 <h3 id="e_ine_out"><span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異</h3>
-<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.005.jpeg"/></p>
+<p><img alt="image" src="/media/MachineLearningFoundations/MachineLearningFoundations.005.jpeg"/></p>
 <p>剛剛我們已經提到了如果機器能學習，那就必須先確保<span class="math">\(E_{in} \approx E_{out}\)</span>，下面我會引入Hoeffding不等式來說明這個條件怎麼成立。</p>
 <p>先想像一下我有一個桶子，這個桶子裝了兩種顏色的小球，分別為橘色和綠色，今天如果桶子內橘色球佔的比例為<span class="math">\(μ\)</span>，而今天我們從中隨機抽樣出<span class="math">\(N\)</span>顆小球，並且計算出這<span class="math">\(N\)</span>顆小球中橘色佔的比例為<span class="math">\(ν\)</span>，此時我們可以想像的到，<span class="math">\(μ=ν\)</span>不一定會成立，但<span class="math">\(μ\)</span>也不至於離<span class="math">\(ν\)</span>太遠，所以Hoeffding不等式就告訴我們<span class="math">\(|μ-ν|\)</span>會被限制在一個範圍內，表示為：
 </p>
@@ -182,7 +182,7 @@ $$</div>
 $$</div>
 <p>
 上面這個式子告訴我們<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>差距超過<span class="math">\(ε\)</span>的可能性是被限制住的，只要抽樣的數量<span class="math">\(N\)</span>夠多，基本上<span class="math">\(E_{in}\approx E_{out}\)</span>就成立，我們這邊定義那些超出<span class="math">\(ε\)</span>的Data為Bad Data(不好的數據)，Bad Data出現的可能是被Bound住的，所以機器學習是有可能的。</p>
-<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.006.jpeg"/></p>
+<p><img alt="image" src="/media/MachineLearningFoundations/MachineLearningFoundations.006.jpeg"/></p>
 <p>而事實上，我們的hypothesis不會只有一個，所以接下來來考慮如果有M個Hypotheses的情況下我們的<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異會怎麼被參數影響。</p>
 <p>如果我們考慮M組Hypotheses，就會發現每種Hypothesis出現Bad Data的地方可能不一樣，因此大大的減少能使用的Data，如上圖左側所示。</p>
 <p>今天如果我有1000份從Target Function取<span class="math">\(N\)</span>個Data的情形，然後只用一個Hypothesis來衡量，根據Hoeffding's Inequality，1000份裡面假設大概5份會出現Bad Data，但今天我再增加一組Hypothesis來衡量，對於這個Hypothesis也可能有自己的5份Bad Data，如果很不幸的，剛剛好這5份Bad Data和前5份沒有重疊，因此用這兩個hypotheses來評估的話，1000份裡頭將會出現10份的Bad Data，由此類推，如果有<span class="math">\(M\)</span>組Hypotheses，最差的情況會發生在什麼時候呢? 那就是<span class="math">\(M\)</span>個Hypotheses的每份Bad Data彼此都沒有交集，夠慘吧! 所以把這些出現Bad Data的機率取聯集得到以下式子：
@@ -193,7 +193,7 @@ $$</div>
 <p>
 大家現在回想一下上一篇所提到的Perceptron Hypothesis Set就會發現，糟糕了! Perceptron Hypothesis Set 裡有無限多組的Hypotheses，也就是<span class="math">\(M→∞\)</span>，那我們不就需要無限多的Data才能做到<span class="math">\(E_{in} \approx E_{out}\)</span>，否則機器根本不會學習，所以前一篇的內容都在亂講，PLA根本無法學習，因為<span class="math">\(E_{in} \approx E_{out}\)</span>，就算<span class="math">\(E_{in}\)</span>很小也不代表學習成立，機器學習是不可能的。等一下！先沉住氣，聽我接下來慢慢解釋，你就會發現還有一線生機。</p>
 <h3 id="vc-generalization-bound">VC Generalization Bound</h3>
-<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.007.jpeg"/></p>
+<p><img alt="image" src="/media/MachineLearningFoundations/MachineLearningFoundations.007.jpeg"/></p>
 <p>問題出在這裡，我們在Multi-Bin Hoeffding’s Inequality中採用了一個假設，就是假設每組Hypotheses的Bad Data彼此間都沒有重疊，所以在<span class="math">\(M→∞\)</span>的情況下，當然會有一個無限大的上限值，但如果考慮了Bad Data重疊的情形，縱使<span class="math">\(M→∞\)</span>的情況下還是有機會把Bad Data的出現機率壓在一個有限的定值之下。</p>
 <p>我們回到二元分類問題，看一下上圖中左側的圖例，如果今天在二維平面上做二元分類，當數據量只有1個<span class="math">\(n=1\)</span>時，就算你的切法有無窮多種，但對於一組Data來說就只有兩類Hypotheses而已，再來看<span class="math">\(n=2\)</span>的情況，一樣的無限多組的切法但Hypotheses也只能歸類成4類。</p>
 <p>所以Hypotheses用來描述數據的情況是彼此有所重疊的，也就是Bad Data出現的情形在許多Hypotheses是相同的。</p>
@@ -225,12 +225,12 @@ $$</div>
 <li><strong>Good Learning Algorithm: 以上兩點可以確定的是<span class="math">\(E_{in} \approx E_{out}\)</span>，接下來好的Learning Algorithm要有能力找到<span class="math">\(E_{in}\)</span> 最小的參數。很直觀的，當我們可以調控的變數越多，我們的選擇就越多，也就是我們可以找到更小<span class="math">\(E_{in}\)</span> 的機會變多了，所以可以調控的變數不可以太少。</strong></li>
 </ol>
 <p>眼尖的你有沒有發現矛盾啊! 可以調控的變數很少，我們能確保<span class="math">\(E_{in} \approx E_{out}\)</span>，但是如果我想要找到更小的<span class="math">\(E_{in}\)</span> 又必須有更多的調控變數，這個矛盾是機器學習上一個重要的課題，<strong>解法是我們必須要能找到適當的調控變數數量，也就是適當大小的<span class="math">\(d_{VC}\)</span> </strong>。</p>
-<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.000.02.jpeg"/></p>
+<p><img alt="image" src="/media/MachineLearningFoundations/MachineLearningFoundations.000.02.jpeg"/></p>
 <p>from: <a href="https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf">https://d396qusza40orc.cloudfront.net/ntumlone/lecture_slides/07_handout.pdf</a></p>
 <p>上圖中，我們把VC Generalization Bound公式帶入Growth Function和<span class="math">\(d_{VC}\)</span>的關係式，並且設<span class="math">\(δ\)</span> 為最大可以容忍的Bad Data出現機率，把它帶入取代掉<span class="math">\(ε\)</span>，整理一下，就可以推出上圖的公式，<span class="math">\(\Omega (N,\mathbb{H},δ)\)</span>稱為Model Complexity，這一項代表的是Hypothesis Set的大小造成的模型複雜度，它隨著<span class="math">\(d_{VC}\)</span>增加而增加。Model Complexity越大代表Bad Data更容易出現，所以<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>開始被帶開了。</p>
 <p><strong>這個現象有一個很常見的名字叫做Overfitting，指的是使用非常複雜的Model來Fitting，雖然可以把手頭上的數據Fit的很漂亮，但是拿到其他的數據來看就會發現這Model的預測性非常的差，原因就是因為Model Complexity造成<span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>脫鉤了，所以選擇一個複雜度適中的Model是很重要的。</strong></p>
 <h3 id="_4">機器學習架構一般化</h3>
-<p><img alt="image" src="http://www.ycc.idv.tw/media/MachineLearningFoundations/MachineLearningFoundations.008.jpeg"/></p>
+<p><img alt="image" src="/media/MachineLearningFoundations/MachineLearningFoundations.008.jpeg"/></p>
 <p>最後我們來總結一下機器學習的流程，上圖中是之前提到的機器學習的架構並額外考慮一些真實情形，</p>
 <ol>
 <li>每筆Data出現的機會不一定，同樣的採樣結果也是會受機率的影響，所以上圖中標示為<span class="math">\(\mathbb{P} (x)\)</span>，這個修改並不會影響機器學習的流程和結果。</li>
