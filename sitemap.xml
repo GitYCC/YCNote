@@ -5,513 +5,506 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://ycc.idv.tw/</loc>
-<lastmod>2023-01-03T13:38:43-00:00</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<lastmod>2023-01-03T16:09:38-00:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/about-me.html</loc>
 <lastmod>2023-01-01T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/multithread-multiprocess-gil.html</loc>
 <lastmod>2022-11-26T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tesla-aiday2022.html</loc>
 <lastmod>2022-10-15T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tesla-aiday2021.html</loc>
 <lastmod>2022-10-09T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/diffusion-model.html</loc>
 <lastmod>2022-05-20T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/crnn-ctc.html</loc>
 <lastmod>2020-10-12T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/latest_ai_info.html</loc>
 <lastmod>2020-07-04T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/deep-dl_4.html</loc>
 <lastmod>2020-03-14T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/deep-dl_3.html</loc>
 <lastmod>2020-03-07T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/deep-dl_2.html</loc>
 <lastmod>2020-02-25T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/deep-dl_1.html</loc>
 <lastmod>2020-02-18T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/egypt-travel_8.html</loc>
 <lastmod>2020-02-13T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/egypt-travel_7.html</loc>
 <lastmod>2020-02-12T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/egypt-travel_6.html</loc>
 <lastmod>2020-02-11T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/egypt-travel_5.html</loc>
 <lastmod>2020-02-10T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/egypt-travel_4.html</loc>
 <lastmod>2020-02-09T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/egypt-travel_3.html</loc>
 <lastmod>2020-02-08T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/egypt-travel_2.html</loc>
 <lastmod>2020-02-07T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/egypt-travel_1.html</loc>
 <lastmod>2020-02-05T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/wide-and-deep-learning.html</loc>
 <lastmod>2019-06-01T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/sweet-child-oh-mine.html</loc>
 <lastmod>2019-03-30T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/introduction-object-oriented-programming_3.html</loc>
 <lastmod>2018-04-14T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/introduction-object-oriented-programming_2.html</loc>
 <lastmod>2018-04-10T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/introduction-object-oriented-programming_1.html</loc>
 <lastmod>2018-04-05T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/the-selfish-gene.html</loc>
 <lastmod>2018-02-03T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tensorflow-tutorial_6.html</loc>
 <lastmod>2017-11-25T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tensorflow-tutorial_5.html</loc>
 <lastmod>2017-11-19T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tensorflow-tutorial_4.html</loc>
 <lastmod>2017-11-18T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tensorflow-tutorial_3.html</loc>
 <lastmod>2017-11-12T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/uwarn-performance_1.html</loc>
 <lastmod>2017-11-09T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/uwarn-performance_2.html</loc>
 <lastmod>2017-11-08T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tensorflow-tutorial_2.html</loc>
 <lastmod>2017-11-07T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tensorflow-tutorial_1.html</loc>
 <lastmod>2017-10-23T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/stock-sell-point.html</loc>
 <lastmod>2017-09-05T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/confusion-matrix.html</loc>
 <lastmod>2017-08-04T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/python-play-with-data_3.html</loc>
 <lastmod>2017-05-06T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/ml-course-techniques_7.html</loc>
 <lastmod>2017-04-22T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/ml-course-techniques_6.html</loc>
 <lastmod>2017-04-17T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/python-play-with-data_2.html</loc>
 <lastmod>2017-04-17T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/big-data-a-revolution.html</loc>
 <lastmod>2017-04-07T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/ml-course-techniques_5.html</loc>
 <lastmod>2017-04-02T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/algorithm-complexity-theory.html</loc>
 <lastmod>2017-03-30T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/ml-course-techniques_4.html</loc>
 <lastmod>2017-03-29T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/the-brain-the-story-of-you.html</loc>
 <lastmod>2017-03-24T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/python-play-with-data_1.html</loc>
 <lastmod>2017-03-20T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/how-to-read-books.html</loc>
 <lastmod>2017-03-18T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/ml-course-techniques_3.html</loc>
 <lastmod>2017-03-15T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/ml-course-techniques_2.html</loc>
 <lastmod>2017-02-20T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/ml-course-techniques_1.html</loc>
 <lastmod>2017-01-12T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/ml-course-foundations_4.html</loc>
 <lastmod>2016-09-18T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/ml-course-foundations_3.html</loc>
 <lastmod>2016-08-07T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/ml-course-foundations_2.html</loc>
 <lastmod>2016-06-26T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/ml-course-foundations_1.html</loc>
 <lastmod>2016-06-06T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
-<priority>0.7</priority>
+<priority>1.0</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/category/aiml.html</loc>
 <lastmod>2022-11-26T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/category/coding.html</loc>
 <lastmod>2018-04-14T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/category/life.html</loc>
 <lastmod>2023-01-01T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/category/reading.html</loc>
 <lastmod>2018-02-03T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/cs.html</loc>
 <lastmod>2022-11-26T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/tesla.html</loc>
 <lastmod>2022-10-15T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/sheng-cheng-mo-xing.html</loc>
 <lastmod>2022-05-20T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/cv.html</loc>
 <lastmod>2020-10-12T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/pou-xi-shen-du-xue-xi.html</loc>
 <lastmod>2020-03-14T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/you-ji.html</loc>
 <lastmod>2020-02-13T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/ai-ji.html</loc>
 <lastmod>2020-02-13T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/papers.html</loc>
 <lastmod>2019-06-01T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/ji-ta.html</loc>
 <lastmod>2019-03-30T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/ruan-ti-she-ji.html</loc>
 <lastmod>2018-04-14T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/tensorflow.html</loc>
 <lastmod>2017-11-25T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/pythonwan-shu-ju.html</loc>
 <lastmod>2017-05-06T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/ji-qi-xue-xi-ji-fa.html</loc>
 <lastmod>2017-04-22T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 <url>
 <loc>https://ycc.idv.tw/tag/ji-qi-xue-xi-ji-shi.html</loc>
 <lastmod>2016-09-18T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://ycc.idv.tw/author/yc-chen.html</loc>
-<lastmod>2023-01-01T12:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
 </url>
 
 </urlset>
