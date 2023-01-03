@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,763) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,778) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="multithread-multiprocess-gil">極簡說明Multi-thread/Multi-process、CPU-bound/IO-bound和GIL</h1>
 <p>
-      Posted on November 26, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 1,651
+      Posted on November 26, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 1,652
 
     </p>
 </header>
@@ -155,7 +155,7 @@
 <li>粗略的原則：在CPython的情況下，遇到CPU-bound Task使用Multi-process，遇到 IO-bound Task使用Multi-thread。</li>
 </ul>
 <h3 id="multi-thread-and-multi-process">Multi-Thread and Multi-Process</h3>
-<p><img alt="" src="http://www.ycc.idv.tw/media/CS/thread_and_process.png"/></p>
+<p><img alt="" src="/media/CS/thread_and_process.png"/></p>
 <ul>
 <li>Single Process Single Thread<ul>
 <li>Single Process中記憶體存放Code、Data</li>
@@ -203,7 +203,7 @@
 </li>
 </ul>
 <h3 id="gil-global-interpreter-lock">GIL (Global Interpreter Lock)</h3>
-<p><img alt="" src="http://www.ycc.idv.tw/media/CS/cpython_thread_and_process.png"/></p>
+<p><img alt="" src="/media/CS/cpython_thread_and_process.png"/></p>
 <ul>
 <li>Python 在原始 default 的編譯器是採用CPython，而 CPython 採用了GIL，這導致了一個Python Job（一個Process）同一時間只能跑一個Thread，這意味著就算有多顆CPU的存在，同時間還是沒辦法吃一顆以上的CPU，也因此會有以下情況。</li>
 <li>當我們需要處理CPU-bound Task時，如果採用Multi-thread，因為GIL的緣故導致無法同時使用多顆CPU，也因此計算效能無法提升。相反如果採用Multi-process，因為開了好幾個Process，每個Process都有自己獨立的GIL，因此才能吃到多顆CPU，進而解決CPU-bound的問題。</li>

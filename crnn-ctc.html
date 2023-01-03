@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,763) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,778) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -159,22 +159,22 @@
 <p><a href="https://github.com/GitYCC/crnn-pytorch">GitYCC/crnn-pytorch</a></p>
 <p>👆🏼👆🏼👆🏼👆🏼👆🏼</p>
 <p>麻煩大家不吝給予星星 ⭐️，並且分享給更多人知道！</p>
-<p><img alt="reading" src="http://www.ycc.idv.tw/media/CV/170_READING_62745.jpg"/></p>
-<p><img alt="showtime" src="http://www.ycc.idv.tw/media/CV/178_Showtime_70541.jpg"/></p>
-<p><img alt="novel" src="http://www.ycc.idv.tw/media/CV/78_Novel_52433.jpg"/></p>
+<p><img alt="reading" src="/media/CV/170_READING_62745.jpg"/></p>
+<p><img alt="showtime" src="/media/CV/178_Showtime_70541.jpg"/></p>
+<p><img alt="novel" src="/media/CV/78_Novel_52433.jpg"/></p>
 <h2 id="_1">網路架構</h2>
 <p>CRNN+CTC 結構源於論文<a href="http://arxiv.org/abs/1507.05717">An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition (2015), Baoguang Shi et al.</a>，其網路架構其實並不複雜，講白了就是 CNN 的 Backbone 再搭配 Bi-directional RNN，最後對每個時間點作Softmax分類問題，但是在衡量輸出時則是需要綜觀每個時間點的 CTC Loss。</p>
-<p><img alt="crnn_structure" src="http://www.ycc.idv.tw/media/CV/crnn_structure.png"/></p>
-<p><img alt="crnn_structure_detail" src="http://www.ycc.idv.tw/media/CV/crnn_structure_detail.png"/></p>
+<p><img alt="crnn_structure" src="/media/CV/crnn_structure.png"/></p>
+<p><img alt="crnn_structure_detail" src="/media/CV/crnn_structure_detail.png"/></p>
 <p>首先，將圖片轉成灰階並且伸縮至高度32，通過多層的Conv2D、MaxPool和BatchNormalization抽取圖片相關的特徵。</p>
 <script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_01.py"></script>
 <p>接下來藉由一個 DenseLayer 去將圖片轉成維度為 <code>map_to_seq_hidden</code> 的序列，這樣就可以接續的使用 RNN 來萃取序列的特徵。</p>
 <script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_02.py"></script>
 <p>這邊特別注意一下，當你經過 CNN Backbone 之後的維度是：<code>(batch, channel, new_height, new_width)</code> ，但是你希望進RNN前的維度是：<code>(seq_len, batch, map_to_seq_hidden)</code> ，所以需要將 <code>channel, new_height</code> 攤平再過 DenseLayer，如下：</p>
 <script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_03.py"></script>
-<p><img alt="map_to_seq" src="http://www.ycc.idv.tw/media/CV/map_to_seq.png"/></p>
+<p><img alt="map_to_seq" src="/media/CV/map_to_seq.png"/></p>
 <p>最後再過兩層 Bi-directional LSTM 萃取序列相關的特徵，並且過 DenseLayer 來將維度轉成與分類的數量相同，再過 Softmax 就大功告成！注意：分類的類別是所有要預測的字元再加上 blank ε ，一般我們會讓 blank ε 在Onehot Encoding 時放在 index=0 的位置。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/CV/biLSTM.png"/></p>
+<p><img alt="" src="/media/CV/biLSTM.png"/></p>
 <p>詳細模型架構請詳見：<a href="https://github.com/GitYCC/crnn-pytorch/blob/master/src/model.py">src/model.py</a></p>
 <h2 id="ctc-connectionist-temporal-classification">CTC (Connectionist Temporal Classification)</h2>
 <p>RNNs 與其他傳統方法相比，如：HMMs (Hidden Markov Model) 和 CRFs (Conditional Random Field) 有以下優勢：</p>
@@ -189,12 +189,12 @@
 <li>透過映射機制 <span class="math">\(B\)</span> 將 RNN 的輸出轉化成 Sequence Prediction</li>
 <li>映射機制 <span class="math">\(B\)</span>：合併相鄰的字元並且除去 blank ε </li>
 </ol>
-<p><img alt="ctc mapping" src="http://www.ycc.idv.tw/media/CV/ctc_mapping.png"/></p>
+<p><img alt="ctc mapping" src="/media/CV/ctc_mapping.png"/></p>
 <p>有了這個映射機制 <span class="math">\(B\)</span> 我們就可以不需要事先分配 Sequence Label 也能訓練網路，但是要注意：能映射到一組 Sequence Label 的可能性是有很多組合的，例如：<code>"hee-l-lloo"</code> 和 <code>"hheel-lloo"</code> 都會映射到 <code>"hello"</code>，所以要特別去設計它的 Loss 讓其可以考慮各種可能性，這會在下一節中仔細闡述。</p>
 <h2 id="ctc-loss-forward-backward-algorithm">CTC Loss: Forward-Backward Algorithm</h2>
 <p>接下來這一個部分將會是本篇最難理解的部分，而且也最為數學，所以在陷進去數學漩渦之前，我們先來概念性的了解 CTC Loss 究竟是做了什麼。簡言之，<strong>我們需要讓 CTC Loss 降低的同時，等同於做到提升產生 Ground True Sequence Label 的機率，而在映射函數 <span class="math">\(B\)</span> 的作用下產生這個 Ground True Sequence Label 會有多種來源組合，這些組合都必須被考慮進去，然後我們有了 CTC Loss 與參數的關係式就可以使用梯度下降進行優化。</strong></p>
 <p>所以我們需要窮舉所有可能的組合才能正確的將產生 Ground True Sequence Label 的機率算出來，我們就來試著羅列。假設我們的 Sequence Label 是 <code>"CAT"</code> ，見圖一，所以我們的 <span class="math">\(\ell\)</span> 為 <code>"CAT"</code>，為了把 blank ε 列入考慮，我們設計了 <span class="math">\(\ell'\)</span>，其長度關係為 <span class="math">\(|\ell'|=2|\ell|+1\)</span> 。參照映射函數的規則，只有圖中兩個紅點是可能的出發點、兩個藍點是可能的結束點，因此我們需要羅列從出發點到結束點可能的路徑 <span class="math">\(\pi\)</span>，這些路徑都可以在經過映射函數 <span class="math">\(B\)</span> 後產生 Sequence Label <code>"CAT"</code> 。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_example_01.png"/></p>
+<p><img alt="" src="/media/CV/IMG_ctc_example_01.png"/></p>
 <p><center><small>
   圖一
 </small></center><br/></p>
@@ -257,7 +257,7 @@ $$</div>
 $$</div>
 <p>
 連接到 <span class="math">\((t,s)\)</span> 可分為三種路徑情況，如下圖：</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_example_02.png"/></p>
+<p><img alt="" src="/media/CV/IMG_ctc_example_02.png"/></p>
 <p><center><small>
   圖二：Forward Algorithm可能路徑
 </small></center><br/></p>
@@ -296,7 +296,7 @@ $$</div>
 $$</div>
 <p>
 從 <span class="math">\((t,s)\)</span> 連接的情況一樣也可分為三種情況，如下圖：</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_example_03.png"/></p>
+<p><img alt="" src="/media/CV/IMG_ctc_example_03.png"/></p>
 <p><center><small>
   圖三：Backward Algorithm可能路徑
 </small></center><br/></p>
@@ -358,14 +358,14 @@ $$</div>
 \ell^*\approx B(\pi^*)\ ;\ \pi^*= \{argmax_{s}\ y^{t}_{s}\ \text{ for t=1..T}\}
 $$</div>
 <p>這是最 heuristic 的方法，直接找在每個時間點 <span class="math">\(t\)</span> 最大的 <span class="math">\(s\)</span> 當作路徑 <span class="math">\(\pi^*\)</span> 再過映射函數 <span class="math">\(B\)</span>。這個方法雖然簡單，但在大部分情況下會是正確的。在最佳解時我們希望的是在過完映射函數 <span class="math">\(B\)</span> 之後得到最大可能的路徑 <span class="math">\(\ell^*\)</span> ，所以需要考慮所有可能的路徑並將其機率加總才能得到最佳解，但是  Greedy Decode 則是只考慮了最高機率的一條路徑。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_greed_decode.png"/></p>
+<p><img alt="" src="/media/CV/IMG_ctc_greed_decode.png"/></p>
 <p><center><small>
   圖四：Greedy Decode
 </small></center><br/></p>
 <script src="https://gist.github.com/GitYCC/21a0629a083db2a14e1c9bc86fa78836.js?file=crnn_ctc_04.py"></script>
 <h3 id="beam-search-decode">Beam Search Decode</h3>
 <p>既然只選一條機率最大的路徑不那麼精確，那麼我就選最大的前 <span class="math">\(k\)</span> 條路徑再將其機率相加，這個就是 Beam Search 的近似方法。為了達到這個目的，我們在每一個時間點 <span class="math">\(t\)</span> 都會保留前 <span class="math">\(k\)</span> 條累積相乘機率最大的可能路徑，如下圖所示。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_beam_search.png"/></p>
+<p><img alt="" src="/media/CV/IMG_ctc_beam_search.png"/></p>
 <p><center><small>
   圖五：Beam Search Decode (beam size = 2)
 </small></center><br/></p>
@@ -375,10 +375,10 @@ $$</div>
 <p>我們可以再進一步讓它更精確一點，剛剛的 Beam Search 是在映射函數 <span class="math">\(B\)</span> 之前找 <span class="math">\(k\)</span> 條路徑，Prefix Beam Search 更進一步拿前 <span class="math">\(k\)</span> 條經過映射函數 <span class="math">\(B\)</span> 後的 Prefix 當作評估的方式 ，如此會更接近我們想要找到映射後的最高機率的 Sequence。</p>
 <p>在 Prefix 的世界裡不存在 blank ε，但是 blank ε 卻是會影響 Prefix，例如：<code>"A-A"</code> 映射完會是 <code>"AA"</code>，但是 <code>"AA"</code> 映射完則會是 <code>"A"</code> ，所以在 Prefix Beam Search 存在 <code>ProbabilityWithBlank</code> 和 <code>ProbabilityNoBlank</code> 兩種累積機率，這兩種情況分別是結尾有 blank 的<strong>累積</strong>機率和結尾沒有 blank 的<strong>累積</strong>機率，特別注意：<strong>累積</strong>機率代表從開始到目前的總機率。</p>
 <p>有了這個概念，我們來看會遇到什麼樣的狀況，並且在每個狀況下我們要怎麼去計算 <code>ProbabilityWithBlank</code> 和 <code>ProbabilityNoBlank</code> ，以下符號 <code>*</code> 代表上一時刻的 prefix，<code>E</code> 代表上一時刻 prefix 的最後一個字元，<code>ε</code> 代表 blank，以下的情況皆是在考慮新字元進來要怎麼去累加 <code>ProbabilityWithBlank</code> 和 <code>ProbabilityNoBlank</code> ：</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/CV/prefix_beam_search_formula.png"/></p>
+<p><img alt="" src="/media/CV/prefix_beam_search_formula.png"/></p>
 <p>特別注意，以上初始化是遇到新的字元就假設其後會不帶 blank。</p>
 <p>當然每次考慮一個新的時間點，我們都需要去累加可能會產生這個 Prefix 的各種情況，因此在以下的程式碼中，我們的 <code>ProbabilityWithBlank</code> 和 <code>ProbabilityNoBlank</code> 是會迭代累加的。當累積完這個時間點的所有 Prefix 機率後，我們會取前 <span class="math">\(k\)</span> 大機率的 Prefix 留下來繼續往下一個時間點累加，此時要用 <code>ProbabilityWithBlank</code> 和 <code>ProbabilityNoBlank</code> 的合來當作排序的依據。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/CV/IMG_ctc_prefix_beam_search.png"/></p>
+<p><img alt="" src="/media/CV/IMG_ctc_prefix_beam_search.png"/></p>
 <p><center><small>
   圖六：Prefix Beam Search Decode (beam size = 2)
 </small></center><br/></p>
