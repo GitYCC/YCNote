@@ -1,4 +1,7 @@
 from datetime import datetime
+import logging
+
+LOG_FILTER = [(logging.WARN, 'Empty alt attribute for image %s in %s')]
 
 AUTHOR = 'Yi-Chang Chen'
 SITEURL = ' '
@@ -40,13 +43,13 @@ PLUGINS = ['render_math', 'sitemap', 'related_posts', 'ga_pageviews', 'seo', 'ne
 SITEMAP = {
     'format': 'xml',
     'priorities': {
-        'articles': 0.7,
-        'indexes': 0.5,
-        'pages': 0.3,
+        'articles': 1.0,
+        'indexes': 0.2,
+        'pages': 0.0,
     },
     'changefreqs': {
         'articles': 'monthly',
-        'indexes': 'daily',
+        'indexes': 'monthly',
         'pages': 'monthly',
     }
 }
@@ -146,3 +149,7 @@ GOOGLE_ADSENSE = {
         'article_bottom': '',
     },
 }
+
+AUTHOR_SAVE_AS = ''
+AUTHORS_SAVE_AS = ''
+ARCHIVES_SAVE_AS = ''

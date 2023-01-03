@@ -1,10 +1,14 @@
 {% if 'pelican.plugins.search' in PLUGINS %}
   <script>
-    window.loadStorkIndex = function () {
+    window.loadStorkIndex = async (input_obj) => {
+      input_obj.disabled = true;
+      input_obj.placeholder = 'Downloading index file, please wait ...'
       {% if not STORK_VERSION %}
-      stork.initialize("{{ SITEURL }}/{{ THEME_STATIC_DIR }}/stork/stork.wasm")
+      await stork.initialize("{{ SITEURL }}/{{ THEME_STATIC_DIR }}/stork/stork.wasm")
       {% endif %}
-      stork.register("sitesearch", "{{ SITEURL }}/search-index.st", { showProgress: false });
+      await stork.register("sitesearch", "{{ SITEURL }}/search-index.st", { showProgress: false });
+      input_obj.placeholder = 'Search ...'
+      input_obj.disabled = false;
     }
   </script>
   {% if STORK_VERSION %}
