@@ -101,12 +101,12 @@
       <a href="https://ycc.idv.tw/">YC Note</a>
     </h1>
 
-    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
+    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,907) </p>
 
     
 
     <div class="stork">
-      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(); this.onclick=null;"/>
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(this); this.onclick=null;"/>
       <div class="stork-output" data-stork="sitesearch-output"></div>
     </div>
     <!-- <script>
@@ -179,6 +179,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>物競天擇？ / 生命源自於複製 / 基因的代理人—神經網絡 / 再談利他行為 / 文化的複製者—迷因（Meme）</p></div>
         <br>
         <a class="btn"
@@ -198,6 +199,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>簡言之就是「從買入當天開始算起，以過程的每天當中最高股價當作基準點，向下去設停損點，或是停利點，低於這點就當天賣，或隔天賣」</p></div>
         <br>
         <a class="btn"
@@ -217,6 +219,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>樣本=總體 / 允許不精確 / 「是什麼」比「為什麼」還重要 / 大數據時代的商業變革 / 全息社會</p></div>
         <br>
         <a class="btn"
@@ -236,6 +239,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>大腦的可塑性 / 意識與無意識 / 腦中的交戰網路 / 科技將如何改變大腦的未來</p></div>
         <br>
         <a class="btn"
@@ -255,6 +259,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>書籍與網路的PK / 閱讀的層次 / 檢視閱讀 / 分析閱讀 / 主題閱讀 / 書籍與網路的第二回合PK</p></div>
         <br>
         <a class="btn"
@@ -298,8 +303,12 @@ Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a 
   "description": "YC Note - ML/DL Tech Blog"
 }
 </script>  <script>
-    window.loadStorkIndex = function () {
-      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    window.loadStorkIndex = async (input_obj) => {
+      input_obj.disabled = true;
+      input_obj.placeholder = 'Downloading index file, please wait ...'
+      await stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+      input_obj.placeholder = 'Search ...'
+      input_obj.disabled = false;
     }
   </script>
   <script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>

@@ -101,12 +101,12 @@
       <a href="https://ycc.idv.tw/">YC Note</a>
     </h1>
 
-    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
+    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,907) </p>
 
     
 
     <div class="stork">
-      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(); this.onclick=null;"/>
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(this); this.onclick=null;"/>
       <div class="stork-output" data-stork="sitesearch-output"></div>
     </div>
     <!-- <script>
@@ -173,12 +173,13 @@
   <header>
     <h2><a href="https://ycc.idv.tw/tensorflow-tutorial_6.html#anchor">實作Tensorflow (6)：Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)</a></h2>
     <p>
-      Posted on November 25, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 12,346
+      Posted on November 25, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 12,347
 
 
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>概論RNN / 梯度消失與梯度爆炸 / Long Short-Term Memory (LSTM) / 使用LSTM實作文章產生器</p></div>
         <br>
         <a class="btn"
@@ -198,6 +199,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>Word2Vec觀念解析 / Word2Vec的架構 / Word2Vec的兩種常用方法：Skip-Gram和CBOW / 準備文本語料庫 / 實作Skip-Gram / 實作CBOW (Continuous Bag of Words)</p></div>
         <br>
         <a class="btn"
@@ -211,12 +213,13 @@
   <header>
     <h2><a href="https://ycc.idv.tw/tensorflow-tutorial_4.html#anchor">實作Tensorflow (4)：Autoencoder</a></h2>
     <p>
-      Posted on November 18, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 13,130
+      Posted on November 18, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 13,131
 
 
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>Autoencoder觀念解析 / Autoencoder程式碼 / 測試Autoencoder / 壓縮碼Code與視覺化 / 去雜訊(De-noise) Autoencoder</p></div>
         <br>
         <a class="btn"
@@ -236,6 +239,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>影像有什麼特性 / DNN用在影像上的侷限 / Convolutional Neurel Network (CNN) / Convolution Layer / Pooling Layer / 最簡單的CNN架構：LeNet5 / 圖像化</p></div>
         <br>
         <a class="btn"
@@ -255,6 +259,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>增加Hidden Layer / Activation Function的選擇 / Mini-Batch Gradient Descent / Regularization / Weight Regularization / Dropout / Optimizer的選擇 / 來看看程式怎麼寫</p></div>
         <br>
         <a class="btn"
@@ -268,12 +273,13 @@
   <header>
     <h2><a href="https://ycc.idv.tw/tensorflow-tutorial_1.html#anchor">實作Tensorflow (1)：Simple Logistic Classification on MNIST</a></h2>
     <p>
-      Posted on October 23, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 5,374
+      Posted on October 23, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 5,377
 
 
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>MNIST Dataset / Softmax / Cross-Entropy Loss / 分離數據的重要性 / Tensorflow工作流程 / Tensorflow的基本「張量」元素 / Session的操作 / 第一個Tensorflow Model</p></div>
         <br>
         <a class="btn"
@@ -317,8 +323,12 @@ Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a 
   "description": "YC Note - ML/DL Tech Blog"
 }
 </script>  <script>
-    window.loadStorkIndex = function () {
-      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    window.loadStorkIndex = async (input_obj) => {
+      input_obj.disabled = true;
+      input_obj.placeholder = 'Downloading index file, please wait ...'
+      await stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+      input_obj.placeholder = 'Search ...'
+      input_obj.disabled = false;
     }
   </script>
   <script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>

@@ -79,9 +79,9 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,907) </p>
 <div class="stork">
-<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(this); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
 </div>
 <!-- <script>
@@ -1021,8 +1021,12 @@ Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a 
   "description": "YC Note - ML/DL Tech Blog"
 }
 </script> <script>
-    window.loadStorkIndex = function () {
-      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    window.loadStorkIndex = async (input_obj) => {
+      input_obj.disabled = true;
+      input_obj.placeholder = 'Downloading index file, please wait ...'
+      await stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+      input_obj.placeholder = 'Search ...'
+      input_obj.disabled = false;
     }
   </script>
 <script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>

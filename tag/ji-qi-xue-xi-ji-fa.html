@@ -101,12 +101,12 @@
       <a href="https://ycc.idv.tw/">YC Note</a>
     </h1>
 
-    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
+    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,907) </p>
 
     
 
     <div class="stork">
-      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(); this.onclick=null;"/>
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(this); this.onclick=null;"/>
       <div class="stork-output" data-stork="sitesearch-output"></div>
     </div>
     <!-- <script>
@@ -173,12 +173,13 @@
   <header>
     <h2><a href="https://ycc.idv.tw/ml-course-techniques_7.html#anchor">機器學習技法 學習筆記 (7)：Radial Basis Function Network與Matrix Factorization</a></h2>
     <p>
-      Posted on April 22, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 14,171
+      Posted on April 22, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 14,172
 
 
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>本篇內容涵蓋Radial Basis Function (RBF) Network、K-Means、One-Hot Encoding和Matrix Factorization</p></div>
         <br>
         <a class="btn"
@@ -192,12 +193,13 @@
   <header>
     <h2><a href="https://ycc.idv.tw/ml-course-techniques_6.html#anchor">機器學習技法 學習筆記 (6)：神經網路(Neural Network)與深度學習(Deep Learning)</a></h2>
     <p>
-      Posted on April 17, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 30,958
+      Posted on April 17, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 30,959
 
 
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>本篇內容涵蓋神經網路(Neural Network, NN)、深度學習(Deep Learning, DL)、反向傳播算法(Backpropagation, BP)、Weight-elimination Regularizer、Early Stop、Autoencoder、Principal Component Analysis (PCA)</p></div>
         <br>
         <a class="btn"
@@ -217,6 +219,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>本篇內容涵蓋AdaBoost (Adaptive Boost)、Gradient Boost、AdaBoosted Decision Tree和Gradient Boosted Decision Tree (GBDT)。</p></div>
         <br>
         <a class="btn"
@@ -230,12 +233,13 @@
   <header>
     <h2><a href="https://ycc.idv.tw/ml-course-techniques_4.html#anchor">機器學習技法 學習筆記 (4)：Basic Aggregation Models</a></h2>
     <p>
-      Posted on March 29, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 7,406
+      Posted on March 29, 2017 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 7,407
 
 
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>本篇內容涵蓋Blending、Bagging、Decision Tree和Random Forest</p></div>
         <br>
         <a class="btn"
@@ -255,6 +259,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>本篇內容涵蓋Probabilistic SVM、Kernel Logistic Regression、Kernel Ridge Regression、Support Vector Regression (SVR)</p></div>
         <br>
         <a class="btn"
@@ -274,6 +279,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>本篇內容涵蓋Hard-Margin Support Vector Machine (SVM)、Kernel Function、Kernel Hard-Margin SVM、Soft-Margin SVM、Kernel Soft-Margin SVM、拉格朗日乘子法（Lagrange Multiplier）、Lagrangian Dual Problem</p></div>
         <br>
         <a class="btn"
@@ -293,6 +299,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>有什麼特徵可以使用？ / Embedding Numerous Features ：Kernel Models / Combining Predictive Features：Aggregation Models / Distilling Implicit Features：Extraction Models</p></div>
         <br>
         <a class="btn"
@@ -336,8 +343,12 @@ Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a 
   "description": "YC Note - ML/DL Tech Blog"
 }
 </script>  <script>
-    window.loadStorkIndex = function () {
-      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    window.loadStorkIndex = async (input_obj) => {
+      input_obj.disabled = true;
+      input_obj.placeholder = 'Downloading index file, please wait ...'
+      await stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+      input_obj.placeholder = 'Search ...'
+      input_obj.disabled = false;
     }
   </script>
   <script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>

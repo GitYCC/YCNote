@@ -101,12 +101,12 @@
       <a href="https://ycc.idv.tw/">YC Note</a>
     </h1>
 
-    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
+    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,907) </p>
 
     
 
     <div class="stork">
-      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(); this.onclick=null;"/>
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(this); this.onclick=null;"/>
       <div class="stork-output" data-stork="sitesearch-output"></div>
     </div>
     <!-- <script>
@@ -173,12 +173,13 @@
   <header>
     <h2><a href="https://ycc.idv.tw/ml-course-foundations_4.html#anchor">機器學習基石 學習筆記 (4)：機器可以怎麼學得更好?</a></h2>
     <p>
-      Posted on September 18, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 16,251
+      Posted on September 18, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 16,254
 
 
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>特徵轉換 / Overfitting / Regularization / Validation</p></div>
         <br>
         <a class="btn"
@@ -192,12 +193,13 @@
   <header>
     <h2><a href="https://ycc.idv.tw/ml-course-foundations_3.html#anchor">機器學習基石 學習筆記 (3)：機器可以怎麼樣學習?</a></h2>
     <p>
-      Posted on August 07, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 7,332
+      Posted on August 07, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 7,333
 
 
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>Gradient Descent / Linear Regression / Logistic Regression / 使用迴歸法做二元分類問題</p></div>
         <br>
         <a class="btn"
@@ -217,6 +219,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>機器可以學習嗎? / <span class="math">\(E_{in}\)</span>和<span class="math">\(E_{out}\)</span>的差異 / VC Generalization Bound / 機器要能學習的三要素 / 學習架構</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "left",
@@ -353,12 +356,13 @@
   <header>
     <h2><a href="https://ycc.idv.tw/ml-course-foundations_1.html#anchor">機器學習基石 學習筆記 (1)：何時可以使用機器學習?</a></h2>
     <p>
-      Posted on June 06, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 12,562
+      Posted on June 06, 2016 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 12,563
 
 
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>什麼是Machine Learning / ML的使用時機 / 二元分類問題 / 多元學習</p></div>
         <br>
         <a class="btn"
@@ -402,8 +406,12 @@ Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a 
   "description": "YC Note - ML/DL Tech Blog"
 }
 </script>  <script>
-    window.loadStorkIndex = function () {
-      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    window.loadStorkIndex = async (input_obj) => {
+      input_obj.disabled = true;
+      input_obj.placeholder = 'Downloading index file, please wait ...'
+      await stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+      input_obj.placeholder = 'Search ...'
+      input_obj.disabled = false;
     }
   </script>
   <script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>

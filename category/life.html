@@ -101,12 +101,12 @@
       <a href="https://ycc.idv.tw/">YC Note</a>
     </h1>
 
-    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
+    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,907) </p>
 
     
 
     <div class="stork">
-      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(); this.onclick=null;"/>
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(this); this.onclick=null;"/>
       <div class="stork-output" data-stork="sitesearch-output"></div>
     </div>
     <!-- <script>
@@ -173,7 +173,7 @@
   <header>
     <h2><a href="https://ycc.idv.tw/about-me.html#anchor">About Me: Yi-Chang Chen</a></h2>
     <p>
-      Posted on January 01, 2023 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 1,661
+      Posted on January 01, 2023 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 1,664
 
 
     </p>
@@ -198,6 +198,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div></div>
         <br>
         <a class="btn"
@@ -217,6 +218,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div></div>
         <br>
         <a class="btn"
@@ -236,6 +238,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div></div>
         <br>
         <a class="btn"
@@ -249,12 +252,13 @@
   <header>
     <h2><a href="https://ycc.idv.tw/egypt-travel_5.html#anchor">[入埃及記] Day6: 路克索【帝王谷、曼儂巨像】、虎加達</a></h2>
     <p>
-      Posted on February 10, 2020 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 363
+      Posted on February 10, 2020 in <a href="https://ycc.idv.tw/category/life.html">Life</a>. View: 365
 
 
     </p>
   </header>
   <div>
+        <img src="">
       <div></div>
         <br>
         <a class="btn"
@@ -274,6 +278,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div></div>
         <br>
         <a class="btn"
@@ -293,6 +298,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div></div>
         <br>
         <a class="btn"
@@ -312,6 +318,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div></div>
         <br>
         <a class="btn"
@@ -331,6 +338,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div></div>
         <br>
         <a class="btn"
@@ -350,6 +358,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>尾牙吼起來</p></div>
         <br>
         <a class="btn"
@@ -369,6 +378,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>有窩表演</p></div>
         <br>
         <a class="btn"
@@ -388,6 +398,7 @@
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>有窩表演</p></div>
         <br>
         <a class="btn"
@@ -431,8 +442,12 @@ Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a 
   "description": "YC Note - ML/DL Tech Blog"
 }
 </script>  <script>
-    window.loadStorkIndex = function () {
-      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    window.loadStorkIndex = async (input_obj) => {
+      input_obj.disabled = true;
+      input_obj.placeholder = 'Downloading index file, please wait ...'
+      await stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+      input_obj.placeholder = 'Search ...'
+      input_obj.disabled = false;
     }
   </script>
   <script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>

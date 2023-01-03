@@ -101,12 +101,12 @@
       <a href="https://ycc.idv.tw/">YC Note</a>
     </h1>
 
-    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,815) </p>
+    <p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,907) </p>
 
     
 
     <div class="stork">
-      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(); this.onclick=null;"/>
+      <input class="stork-input" type="text" autocomplete="off" name="q" data-stork="sitesearch" placeholder="Search (beta feature) ..." onclick="loadStorkIndex(this); this.onclick=null;"/>
       <div class="stork-output" data-stork="sitesearch-output"></div>
     </div>
     <!-- <script>
@@ -173,12 +173,13 @@
   <header>
     <h2><a href="https://ycc.idv.tw/multithread-multiprocess-gil.html#anchor">極簡說明Multi-thread/Multi-process、CPU-bound/IO-bound和GIL</a></h2>
     <p>
-      Posted on November 26, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 1,655
+      Posted on November 26, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 1,658
 
 
     </p>
   </header>
   <div>
+        <img src="">
       <div><p>Python GIL 究竟怎麼影響我們應該採用Multi-thread或Multi-process？ Multi-thread和Multi-process又是什麼？什麼是CPU-bound和IO-bound呢？</p></div>
         <br>
         <a class="btn"
@@ -222,8 +223,12 @@ Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a 
   "description": "YC Note - ML/DL Tech Blog"
 }
 </script>  <script>
-    window.loadStorkIndex = function () {
-      stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+    window.loadStorkIndex = async (input_obj) => {
+      input_obj.disabled = true;
+      input_obj.placeholder = 'Downloading index file, please wait ...'
+      await stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+      input_obj.placeholder = 'Search ...'
+      input_obj.disabled = false;
     }
   </script>
   <script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
