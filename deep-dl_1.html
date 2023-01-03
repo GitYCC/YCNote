@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,778) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -150,7 +150,7 @@
 <li>在使用GAN（generative adversarial network）時，為什麼給予的輸入要假設Normal Distribution？</li>
 </ul>
 <p>如果你不知道為什麼使用Normal Distribution，你用起來不會怕嗎？這一講我想要回答的是：為什麼Normal Distribution這麼好用？甚至已經到了無腦用的程度，我會從統計學和資訊理論來回答這個問題。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/best_gaussian.jpeg"/></p>
+<p><img alt="" src="/media/DeepDL/best_gaussian.jpeg"/></p>
 <p><center><small>
   Courtesy <a href="https://www.facebook.com/nas.mooty">Nas Mouti</a>
 </small></center><br/></p>
@@ -297,7 +297,7 @@ Var_{x\sim normal}[x]=\sigma^2+\mu^2-(\mu)^2=\sigma^2  \ \ ↪︎【13】
 $$</div>
 <hr/>
 <p>所以未來當你看到Normal Distribution的公式時，應該能夠馬上看出他的Mean和Variance。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/IMG_gaussian_distribution.png"/></p>
+<p><img alt="" src="/media/DeepDL/IMG_gaussian_distribution.png"/></p>
 <h3 id="normal-distribution_1">隨機誤差大都呈現Normal Distribution</h3>
 <p>雖然說並非所有的隨機分布都是Normal Distribution。例如有：適用於二元系統的Bernoulli Distribution；適用於計數系統的Poisson Distribution；適用於時間間隔的Gamma Distribution；...等等。</p>
 <p>但是大多數情況下，沒有特別的理由，隨機誤差會遵循Normal Distribution。</p>
@@ -321,10 +321,10 @@ $$</div>
 <p>當<span class="math">\(n=1\)</span>時，<span class="math">\(S_n\)</span>的分布其實就是 <span class="math">\(p(x)\)</span> 的分布，當然Mean和Variance會和原分布 <span class="math">\(p(x)\)</span> 一模一樣。</p>
 <p>中央極限定理告訴我們如果今天採樣數量 <span class="math">\(n\)</span> 增加到一定的量，<span class="math">\(S_n\)</span>的分布會趨近於Normal Distribution，也就是說隨著 <span class="math">\(n\)</span> 的增加，<span class="math">\(S_n\)</span> 的分布會從 <span class="math">\(p(x)\)</span> 變成接近 <span class="math">\(p_{normal}(\mu,(\frac{\sigma}{\sqrt{n}})^2)\)</span> 分布。</p>
 <p>眼見為憑，接下來我要透過<a href="https://seeing-theory.brown.edu/probability-distributions/index.html">Seeing-Theory</a>這個網站來Demo一下中央極限定理，</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/clt_demo.gif"/></p>
+<p><img alt="" src="/media/DeepDL/clt_demo.gif"/></p>
 <p>給定一個採樣分布（黃色），每次採樣 <span class="math">\(n=15\)</span> 作平均並打點記下來，經過多次的操作就可以得到累積分布圖（紅色），而因為 <span class="math">\(n\)</span> 夠大，所以這個累積分布圖會逼近於Normal Distribution。</p>
 <p>再來看看採樣平均的累積分布怎麼隨著 <span class="math">\(n\)</span> 增加而改變</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/DeepDL/clt_demo_2.gif"/></p>
+<p><img alt="" src="/media/DeepDL/clt_demo_2.gif"/></p>
 <p>觀察上面的動圖，會發現 <span class="math">\(n\)</span> 越大，Variance越來越小，而且分布狀況也越接近Normal Distribution。</p>
 <hr/>
 <p>好！講了這麼多，那這跟隨機誤差有什麼關係呢？</p>

@@ -60,7 +60,7 @@
 &lt;li&gt;粗略的原則：在CPython的情況下，遇到CPU-bound Task使用Multi-process，遇到 IO-bound Task使用Multi-thread。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id="multi-thread-and-multi-process"&gt;Multi-Thread and Multi-Process&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="" src="/media/CS/thread_and_process.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/CS/IMG_thread_and_process.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Single Process Single Thread&lt;ul&gt;
 &lt;li&gt;Single Process中記憶體存放Code、Data&lt;/li&gt;
@@ -108,7 +108,7 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id="gil-global-interpreter-lock"&gt;GIL (Global Interpreter Lock)&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="" src="/media/CS/cpython_thread_and_process.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/CS/IMG_cpython_thread_and_process.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Python 在原始 default 的編譯器是採用CPython，而 CPython 採用了GIL，這導致了一個Python Job（一個Process）同一時間只能跑一個Thread，這意味著就算有多顆CPU的存在，同時間還是沒辦法吃一顆以上的CPU，也因此會有以下情況。&lt;/li&gt;
 &lt;li&gt;當我們需要處理CPU-bound Task時，如果採用Multi-thread，因為GIL的緣故導致無法同時使用多顆CPU，也因此計算效能無法提升。相反如果採用Multi-process，因為開了好幾個Process，每個Process都有自己獨立的GIL，因此才能吃到多顆CPU，進而解決CPU-bound的問題。&lt;/li&gt;
@@ -447,9 +447,9 @@
 &lt;h2 id="generative-model"&gt;生成模型 (Generative Model) 家族&lt;/h2&gt;
 &lt;p&gt;在過去，作為生成模型的 GAN (Generative Adversarial Network) 最廣為人使用，GAN是在2014年由 Goodfellow 所提出來的方法，其結構由兩個網路所組成：生成器網路和鑑別器網路，生成器網路負責生成以假亂真的合成樣本，而鑑別器網路負責仔細區分出真實樣本和合成樣本，經由兩者交替對抗學習，最終我們可以得到一個好的生成器。這個生成器網路通常輸入為一組取樣自高斯分布的亂數，而輸出就是合成樣本。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;為何我們需要取樣於一個「分布」？&lt;/strong&gt;以圖片為例，假設是長32寬32的一張圖片可以由一組長度為32x32x3的向量來表示，這並不意味著一組長度為32x32x3的隨機向量就能產生一張「有意義的」圖片，所以在32x32x3的空間中存在著能產生有意義圖片的不同機率分布，我們只要能把這個機率分布估準了，就可以從這個機率分布抽樣出有意義的圖片，這就是為何生成模型往往需要抽樣至某個分布，可想而知要用簡單的數學式來表示這樣的分布是多們困難的一件事，因此科學家們設計了一個簡單分布—高斯分布，並希望透過若干複雜的轉換（通常使用深度網路）後可以得到這個複雜的分布，通常我們會稱這個高斯分布為Hidden Space，因此「從樣本空間抽樣」等效於「從Hidden Space抽樣再轉換」。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/Generative/hidden-to-sample-space.jpeg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/Generative/hidden-to-sample-space.jpeg" /&gt;&lt;/p&gt;
 &lt;p&gt;繼GAN以後有一個後起之秀 — Flow-based Generative Model，不同於 GAN 需要一個鑑別器網路來輔助訓練生成器網路，Flow-based Generative Model 透過一個可逆推的網路結構來訓練，這個可逆推網路的兩端就是Hidden Space跟我們想要得到的Sample Space，既然網路是可以逆推的，我們就可以輸入一群真實樣本訓練網路將其分布轉換為高斯分布的Hidden Space，待網路訓練完成我們就可以逆推來作為生成器使用。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="ddpm" src="http://www.ycc.idv.tw/media/Generative/ddpm.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ddpm" src="/media/Generative/ddpm.png" /&gt;&lt;/p&gt;
 &lt;p&gt;近期，生成模型的家族又多了一個新的模型，就是本篇要介紹的擴散模型（Diffusion Model），Diffusion Model 的中心思想是使用若干個微幅轉換來轉換Hidden Space成為Sample Space，如上圖所示， &lt;span class="math"&gt;\(\pmb{x}_T\)&lt;/span&gt; 代表抽樣自高斯分布Hidden Space的圖片，&lt;span class="math"&gt;\(\pmb{x}_0\)&lt;/span&gt; 代表抽樣自Sample Space的圖片，從 &lt;span class="math"&gt;\(\pmb{x}_0\)&lt;/span&gt; 到 &lt;span class="math"&gt;\(\pmb{x}_T\)&lt;/span&gt; 是模糊化的過程，中間經過若干事先定義好的操作 &lt;span class="math"&gt;\(q(\pmb{x}_{t}\mid \pmb{x}_{t-1})\)&lt;/span&gt;，而生成模型旨於學習模糊化的逆向轉換 &lt;span class="math"&gt;\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)&lt;/span&gt; ，當我們有了&lt;span class="math"&gt;\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)&lt;/span&gt; 就可以隨機抽樣自Hidden Space並轉成一張合成的圖片。實際操作上，&lt;span class="math"&gt;\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)&lt;/span&gt; 是一個神經網路，其輸入為圖片 &lt;span class="math"&gt;\(\pmb{x}_t\)&lt;/span&gt; 和其所在的step &lt;span class="math"&gt;\(t\)&lt;/span&gt;，其輸出為預測模糊化中被添加的雜訊 &lt;span class="math"&gt;\(\pmb{z}_\theta(\pmb{x}_t ,t)\)&lt;/span&gt; ，經理論的推導證明：
 &lt;/p&gt;
 &lt;div class="math"&gt;$$
@@ -460,7 +460,7 @@ $$&lt;/div&gt;
 &lt;p&gt;閱讀到這裡的你已經把它的概念弄懂八成了，接下來要進入到可怕的數學時間，Are you ready?&lt;/p&gt;
 &lt;h2 id="variational-inference-evidence-lower-bound-elbo"&gt;從 Variational Inference 到 Evidence Lower Bound (ELBO)&lt;/h2&gt;
 &lt;p&gt;近年來面對極其複雜（e.g. NN）的機率模型，傳統的優化方式變得不可行，如： Expectation-Maximization Algorithm ，所以接下來要跟大家介紹的 Variational Inference (VI) 就變得開始廣為人使用。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/Generative/variational_inference.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/Generative/variational_inference.png" /&gt;&lt;/p&gt;
 &lt;p&gt;常見的生成模型可以表示成如上圖所示，&lt;span class="math"&gt;\(\pmb{x}\)&lt;/span&gt;  為生成之樣本，而 &lt;span class="math"&gt;\(\pmb{z}\)&lt;/span&gt; 座落於 latent space &lt;span class="math"&gt;\(Z\)&lt;/span&gt; 上的一個點，這個 latent space 可以具有各類可能的分布，為求方便通常會定義為一個 &lt;a href="https://www.ycc.idv.tw/deep-dl_1.html"&gt;高斯分佈&lt;/a&gt;，即 &lt;span class="math"&gt;\(p (\pmb{z})\sim\mathcal{N}(\pmb{z}:\pmb{0};\pmb{I})\)&lt;/span&gt; 。假設 &lt;span class="math"&gt;\(p (\pmb{x}\mid \pmb{z})\)&lt;/span&gt; (給定&lt;span class="math"&gt;\(\pmb{z}\)&lt;/span&gt; 之後求 &lt;span class="math"&gt;\(\pmb{x}\)&lt;/span&gt;  的分布) 是已知的，則聯合機率為
 &lt;/p&gt;
 &lt;div class="math"&gt;$$
@@ -675,7 +675,7 @@ L_{t,mean,simple}=\mid\mid\pmb{\epsilon}-\pmb{z}_\theta(\sqrt{\bar{\alpha}_t}\pm
 $$&lt;/div&gt;
 &lt;p&gt;
 因此DDPM的訓練和取樣示例代碼如下：&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/Generative/DDPM-algo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/Generative/DDPM-algo.png" /&gt;&lt;/p&gt;
 &lt;p&gt;其中應用到【2.24】和【2.22】。&lt;/p&gt;
 &lt;h2 id="appendix-a-kl-divergence-between-two-gaussians"&gt;Appendix A: KL Divergence between two Gaussians&lt;/h2&gt;
 &lt;div class="math"&gt;$$
@@ -1081,7 +1081,7 @@ $$&lt;/div&gt;
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
 &lt;/script&gt;</content><category term="AI.ML"></category><category term="CV"></category></entry><entry><title>資源整理：跟上AI前沿知識</title><link href="https://ycc.idv.tw/latest_ai_info.html" rel="alternate"></link><published>2020-07-04T12:00:00+08:00</published><updated>2020-07-04T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-07-04:/latest_ai_info.html</id><summary type="html">&lt;p&gt;AI領域日新月異，在這領域的玩家應該要持續的跟上最前沿的知識和技術，本篇文章整理了相關學術研討會、部落格，讓讀者可以輕易的接觸到可靠的新資源。（也歡迎讀者補充更多資訊）(持續更新)&lt;/p&gt;</summary><content type="html">&lt;h3 id="arxiv"&gt;arXiv&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/arxiv_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/arxiv_logo.png" /&gt;&lt;/p&gt;
 &lt;p&gt;通常在&lt;a href="https://arxiv.org/"&gt;arXiv&lt;/a&gt;上幾乎可以搜到所有AI領域重要的論文，而且還可以拿到第一手的論文，但是arXiv並沒有嚴格的審核機制，所以在尚未經過其他研討會和期刊審核過之前務必要對內容執懷疑的態度。&lt;/p&gt;
 &lt;h5 id="arxiv-computer-science"&gt;&lt;a href="https://arxiv.org/corr/subjectclasses"&gt;arXiv: Computer Science分類項目&lt;/a&gt;&lt;/h5&gt;
 &lt;h5 id="ai"&gt;&lt;a href="https://arxiv.org/list/cs.AI/recent"&gt;AI項目最新論文&lt;/a&gt;&lt;/h5&gt;
@@ -1092,7 +1092,7 @@ $$&lt;/div&gt;
 &lt;p&gt;AI領域大多數的成果都會以學術研討會的方式呈現，以下列出較具權威的學術研討會。&lt;/p&gt;
 &lt;p&gt;以下研討會的順序排名以Google Scholar Metrics為主，h-index代表所有發表論文中至少有h篇分別被引用了至少h次；h-median代表被引用最多的h篇（由h-index決定）論文當中引用次數的中位數。舉例：一個研討會有五篇文章，其被引用次數如下：17, 9, 6, 3, 2，其h-index為3，所以其具影響力的h篇文章被引用數如下：17, 9, 6，因此中位數9就是h-median。&lt;/p&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/neurips_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/neurips_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="neurips-neural-information-processing-systems"&gt;&lt;a href="https://nips.cc"&gt;NeurIPS (Neural Information Processing Systems)&lt;/a&gt;&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;時間：於每年的12月舉辦&lt;/code&gt;   &lt;code&gt;h5-index: 169&lt;/code&gt;   &lt;code&gt;h5-median: 334&lt;/code&gt;&lt;/li&gt;
@@ -1102,7 +1102,7 @@ $$&lt;/div&gt;
 &lt;li&gt;相較於其他 AI &amp;amp; ML 研討會，NeurIPS 較著重在理論和方法論上&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/iclr_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/iclr_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="iclr-international-conference-on-learning-representations"&gt;&lt;a href="https://iclr.cc"&gt;ICLR (International Conference on Learning Representations)&lt;/a&gt;&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;時間：於每年的4-5月間舉辦&lt;/code&gt;   &lt;code&gt;h5-index: 150&lt;/code&gt;   &lt;code&gt;h5-median: 276&lt;/code&gt;&lt;/li&gt;
@@ -1110,7 +1110,7 @@ $$&lt;/div&gt;
 &lt;li&gt;ICLR 是非常新的研討會，於2013年舉辦第一屆，但是近年來深度學習火熱，再加上兩位神級創辦人 Yoshua Bengio 和 Yann LeCun 的加持之下，ICLR 的聲望自然是水漲船高&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/icml_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/icml_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="icml-international-conference-on-machine-learning"&gt;&lt;a href="https://icml.cc"&gt;ICML (International Conference on Machine Learning)&lt;/a&gt;&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;時間：於每年的7月舉辦&lt;/code&gt;   &lt;code&gt;h5-index: 135&lt;/code&gt;   &lt;code&gt;h5-median: 254&lt;/code&gt;&lt;/li&gt;
@@ -1118,7 +1118,7 @@ $$&lt;/div&gt;
 &lt;li&gt;相較於其他 AI &amp;amp; ML 研討會，ICML 較著重在理論和方法論上&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/aaai_logo.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/aaai_logo.jpg" /&gt;&lt;/p&gt;
 &lt;h5 id="aaai-aaai-conference-on-artificial-intelligence"&gt;&lt;a href="https://aaai.org"&gt;AAAI (AAAI Conference on Artificial Intelligence)&lt;/a&gt;&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;時間：於每年的2月舉辦&lt;/code&gt;   &lt;code&gt;h5-index: 95&lt;/code&gt;   &lt;code&gt;h5-median: 153&lt;/code&gt;&lt;/li&gt;
@@ -1128,7 +1128,7 @@ $$&lt;/div&gt;
 &lt;li&gt;相當古老的研討會，最早自1980年&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/kdd_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/kdd_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="sigkdd-special-interest-group-on-knowledge-discovery-and-data-mining"&gt;&lt;a href="https://www.kdd.org"&gt;SIGKDD (Special Interest Group on Knowledge Discovery and Data Mining)&lt;/a&gt;&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;時間：於每年的8月舉辦&lt;/code&gt;   &lt;code&gt;h5-index: 86&lt;/code&gt;   &lt;code&gt;h5-median: 138&lt;/code&gt;&lt;/li&gt;
@@ -1136,21 +1136,21 @@ $$&lt;/div&gt;
 &lt;li&gt;相較於其他 AI &amp;amp; ML 研討會，KDD 較著重在實務運用&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/ijcai_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/ijcai_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="ijcai-international-joint-conference-on-artificial-intelligence"&gt;&lt;a href="https://www.ijcai.org"&gt;IJCAI (International Joint Conference on Artificial Intelligence)&lt;/a&gt;&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;時間：2015年之前是單數年舉辦，目前已改成每年7-8月間舉辦&lt;/code&gt;   &lt;code&gt;h5-index: 67&lt;/code&gt;   &lt;code&gt;h5-median: 100&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;屬於綜合性的 AI 研討會&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/colt.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/colt.png" /&gt;&lt;/p&gt;
 &lt;h5 id="colt-conference-on-learning-theory"&gt;&lt;a href="http://www.learningtheory.org"&gt;COLT (Conference on Learning Theory)&lt;/a&gt;&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;時間：於每年6-7月間舉辦&lt;/code&gt;   &lt;code&gt;h5-index: 48&lt;/code&gt;   &lt;code&gt;h5-median: 65&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;這是計算理論最好的研討會，由 ACM (電腦協會) 主辦&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h4 id="computer-vision"&gt;Computer Vision 電腦視覺&lt;/h4&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/cvpr_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/cvpr_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="cvpr-international-conference-on-computer-vision-and-pattern-recognition"&gt;&lt;a href="http://cvpr2020.thecvf.com"&gt;CVPR (International Conference on Computer Vision and Pattern Recognition)&lt;/a&gt;&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;時間：於每年6-7月間舉辦&lt;/code&gt;   &lt;code&gt;h5-index: 240&lt;/code&gt;   &lt;code&gt;h5-median: 383&lt;/code&gt;&lt;/li&gt;
@@ -1159,14 +1159,14 @@ $$&lt;/div&gt;
 &lt;li&gt;由 IEEE 舉辦&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/eccv.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/eccv.png" /&gt;&lt;/p&gt;
 &lt;h5 id="eccv-european-conference-on-computer-vision"&gt;&lt;a href="https://eccv2020.eu"&gt;ECCV (European Conference on Computer Vision)&lt;/a&gt;&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;時間：與ICCV交替舉辦，於偶數年舉辦&lt;/code&gt;   &lt;code&gt;h5-index: 137&lt;/code&gt;   &lt;code&gt;h5-median: 263&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;電腦視覺三大頂尖研討會之一&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/iccv.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/iccv.png" /&gt;&lt;/p&gt;
 &lt;h5 id="iccv-international-conference-on-computer-vision"&gt;&lt;a href="http://iccv2019.thecvf.com"&gt;ICCV (International Conference on Computer Vision)&lt;/a&gt;&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;時間：與ECCV交替舉辦，於奇數年舉辦&lt;/code&gt;   &lt;code&gt;h5-index: 129&lt;/code&gt;   &lt;code&gt;h5-median: 220&lt;/code&gt;&lt;/li&gt;
@@ -1174,7 +1174,7 @@ $$&lt;/div&gt;
 &lt;li&gt;由 IEEE 舉辦&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h4 id="natural-language-processing"&gt;Natural Language Processing 自然語言處理&lt;/h4&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/acl_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/acl_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="acl-meeting-of-the-association-for-computational-linguistics"&gt;&lt;a href="https://www.aclweb.org"&gt;ACL (Meeting of the Association for Computational Linguistics)&lt;/a&gt;&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;時間：於每年7-8月間舉辦&lt;/code&gt;   &lt;code&gt;h5-index: 106&lt;/code&gt;   &lt;code&gt;h5-median: 168&lt;/code&gt;&lt;/li&gt;
@@ -1186,51 +1186,51 @@ $$&lt;/div&gt;
 &lt;h3 id="blogs"&gt;Blogs 部落格&lt;/h3&gt;
 &lt;p&gt;許多歐美科技大廠都有寫它們的研究部落格，通常較為通俗易懂。&lt;/p&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/googleai_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/googleai_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="google-ai-blog"&gt;&lt;a href="https://ai.googleblog.com/"&gt;Google AI blog&lt;/a&gt;&lt;/h5&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/deepmind_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/deepmind_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="deepmind-blog"&gt;&lt;a href="https://deepmind.com/blog/"&gt;Deepmind blog&lt;/a&gt;&lt;/h5&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/openai_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/openai_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="openai-research"&gt;&lt;a href="https://openai.com/research/"&gt;OpenAI Research&lt;/a&gt;&lt;/h5&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/fb_logo.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/fb_logo.jpg" /&gt;&lt;/p&gt;
 &lt;h5 id="facebook-ai-research"&gt;&lt;a href="https://research.fb.com/category/facebook-ai-research/"&gt;Facebook AI Research&lt;/a&gt;&lt;/h5&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/ms_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/ms_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="microsoft-ai-blog"&gt;&lt;a href="https://blogs.microsoft.com/ai/"&gt;Microsoft AI Blog&lt;/a&gt;&lt;/h5&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/amazon_ai_logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/amazon_ai_logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="amazon-ai"&gt;&lt;a href="https://blog.aboutamazon.com/amazon-ai"&gt;Amazon AI&lt;/a&gt;&lt;/h5&gt;
 &lt;h5 id="aws-machine-learning-blog"&gt;&lt;a href="https://aws.amazon.com/tw/blogs/machine-learning/"&gt;AWS Machine Learning Blog&lt;/a&gt;&lt;/h5&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/nvidia_logo.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/nvidia_logo.jpg" /&gt;&lt;/p&gt;
 &lt;h5 id="nvidia-news-ai"&gt;&lt;a href="https://news.developer.nvidia.com/category/artificial-intelligence/"&gt;NVIDIA News AI&lt;/a&gt;&lt;/h5&gt;
 &lt;hr /&gt;
 &lt;p&gt;還有學術界較知名的部落格。&lt;/p&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/mit.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/mit.png" /&gt;&lt;/p&gt;
 &lt;h5 id="mits-artificial-intelligence-news"&gt;&lt;a href="http://news.mit.edu/topic/artificial-intelligence2"&gt;MIT’s artificial intelligence news&lt;/a&gt;&lt;/h5&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/BAIR_Logo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/BAIR_Logo.png" /&gt;&lt;/p&gt;
 &lt;h5 id="berkeley-artificial-intelligence-research-bair-blog"&gt;&lt;a href="https://bair.berkeley.edu/blog/"&gt;Berkeley Artificial Intelligence Research (BAIR) Blog&lt;/a&gt;&lt;/h5&gt;
 &lt;hr /&gt;
 &lt;p&gt;最後列一些其他知名的部落格。&lt;/p&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/distill.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/distill.png" /&gt;&lt;/p&gt;
 &lt;h5 id="distill"&gt;&lt;a href="https://distill.pub/"&gt;Distill&lt;/a&gt;&lt;/h5&gt;
 &lt;p&gt;嚴格來說Distill並不算是部落格，它比較像是線上的期刊。Distill旨在以一種更加易懂的方式展示AI研究，並結合互動式圖表和圖形，幫助讀者更輕鬆地理解研究。&lt;/p&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/ml_theory.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/ml_theory.png" /&gt;&lt;/p&gt;
 &lt;h5 id="machine-learning-theory"&gt;&lt;a href="http://hunch.net/"&gt;Machine Learning (Theory)&lt;/a&gt;&lt;/h5&gt;
 &lt;p&gt;此部落格的作者為微軟首席研究員 &lt;a href="https://www.microsoft.com/en-us/research/people/jcl/"&gt;John Langford&lt;/a&gt; ，Langford 常常提供有關機器學習理論的深刻見解，並提供了有關國際機器學習大會的最新信息。&lt;/p&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/ml_mastery.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/ml_mastery.png" /&gt;&lt;/p&gt;
 &lt;h5 id="machine-learning-mastery"&gt;&lt;a href="https://machinelearningmastery.com/blog/"&gt;Machine Learning Mastery&lt;/a&gt;&lt;/h5&gt;
 &lt;p&gt;身為開發者的 Jason Brownlee 早在幾年前就開始撰寫這個部落格，內容較為貼近如何實用機器學習。到目前它仍然是尋求增加ML概念知識的業界人士的首選部落格。 &lt;/p&gt;
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/LatestAIInfo/analytics_vidhya.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/LatestAIInfo/analytics_vidhya.png" /&gt;&lt;/p&gt;
 &lt;h5 id="analytics-vidhya"&gt;&lt;a href="https://www.analyticsvidhya.com/blog/"&gt;Analytics Vidhya&lt;/a&gt;&lt;/h5&gt;
 &lt;p&gt;Analytics Vidhya的網站為數據科學家們提供了許多的乾貨，包括大量有關AI、機器學習和深度學習的材料。&lt;/p&gt;
 &lt;h3 id="reference"&gt;Reference&lt;/h3&gt;
@@ -1875,7 +1875,7 @@ $$&lt;/div&gt;
 &lt;li&gt;if X and Y are independent, 
     &lt;span class="math"&gt;\(p(X=x_i,Y=y_j\mid Z=z_k)=p(X=x_i\mid Z=z_k)\cdot p(Y=y_j\mid Z=z_k)  \ \ ↪︎【4】\)&lt;/span&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/DeepDL/IMG_conditional_probability.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/DeepDL/IMG_conditional_probability.png" /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;center&gt;&lt;small&gt;
 碰到條件機率，心中應該要有這張圖，如果公式忘記了也可以輕易的推出來
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -2086,7 +2086,7 @@ $$&lt;/div&gt;
   $$&lt;/div&gt;
 &lt;p&gt;
   第二項就是L1 Regularization Term。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/DeepDL/Gaussian-distribution-and-Laplace-distribution.ppm.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/DeepDL/Gaussian-distribution-and-Laplace-distribution.ppm.png" /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;center&gt;&lt;small&gt;
   Courtesy &lt;a href="https://www.researchgate.net/figure/Gaussian-distribution-and-Laplace-distribution_fig7_321825093"&gt;Youngjoo Kim&lt;/a&gt;
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -2211,7 +2211,7 @@ H(x)=E_{x\sim p}[I(x)]=-E_{x\sim p}[log_2p(x)]  \ \ ↪︎【2】
 $$&lt;/div&gt;
 &lt;p&gt;
 上式所傳達的意思是：Shannon Entropy即是評估Self-Information的期望值。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/DeepDL/Entropy_flip_2_coins.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/DeepDL/Entropy_flip_2_coins.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;為了進一步的了解Shannon Entropy的內涵，我們來舉個例子。假設你的系統是離散的，可以進一步表示成為
 &lt;/p&gt;
 &lt;div class="math"&gt;$$
@@ -2347,7 +2347,7 @@ D_{KL}(q||p)＝-E_{x\sim q}[\operatorname{ln}p(x)-\operatorname{ln}q(x)]＝H(q,p
 $$&lt;/div&gt;
 &lt;p&gt;
 【21】式意味著從&lt;span class="math"&gt;\(p(x)\)&lt;/span&gt;到&lt;span class="math"&gt;\(q(x)\)&lt;/span&gt;所降低的nats期望值與從&lt;span class="math"&gt;\(q(x)\)&lt;/span&gt;到&lt;span class="math"&gt;\(p(x)\)&lt;/span&gt;所降低的nats期望值不相等。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/DeepDL/KL-Gauss-Example.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/DeepDL/KL-Gauss-Example.png" /&gt;&lt;/p&gt;
 &lt;h3 id="f-divergence"&gt;f-Divergence&lt;/h3&gt;
 &lt;p&gt;Divergence其實有多個形式，定義如下：
 當有兩個獨立的機率分布&lt;span class="math"&gt;\(p(x)\)&lt;/span&gt;和&lt;span class="math"&gt;\(q(x)\)&lt;/span&gt;同時對應到同一個隨機變數&lt;span class="math"&gt;\(x\)&lt;/span&gt;，
@@ -2472,7 +2472,7 @@ $$&lt;/div&gt;
 &lt;li&gt;在使用GAN（generative adversarial network）時，為什麼給予的輸入要假設Normal Distribution？&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;如果你不知道為什麼使用Normal Distribution，你用起來不會怕嗎？這一講我想要回答的是：為什麼Normal Distribution這麼好用？甚至已經到了無腦用的程度，我會從統計學和資訊理論來回答這個問題。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/DeepDL/best_gaussian.jpeg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/DeepDL/best_gaussian.jpeg" /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;center&gt;&lt;small&gt;
   Courtesy &lt;a href="https://www.facebook.com/nas.mooty"&gt;Nas Mouti&lt;/a&gt;
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -2619,7 +2619,7 @@ Var_{x\sim normal}[x]=\sigma^2+\mu^2-(\mu)^2=\sigma^2  \ \ ↪︎【13】
 $$&lt;/div&gt;
 &lt;hr /&gt;
 &lt;p&gt;所以未來當你看到Normal Distribution的公式時，應該能夠馬上看出他的Mean和Variance。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/DeepDL/IMG_gaussian_distribution.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/DeepDL/IMG_gaussian_distribution.png" /&gt;&lt;/p&gt;
 &lt;h3 id="normal-distribution_1"&gt;隨機誤差大都呈現Normal Distribution&lt;/h3&gt;
 &lt;p&gt;雖然說並非所有的隨機分布都是Normal Distribution。例如有：適用於二元系統的Bernoulli Distribution；適用於計數系統的Poisson Distribution；適用於時間間隔的Gamma Distribution；...等等。&lt;/p&gt;
 &lt;p&gt;但是大多數情況下，沒有特別的理由，隨機誤差會遵循Normal Distribution。&lt;/p&gt;
@@ -2643,10 +2643,10 @@ $$&lt;/div&gt;
 &lt;p&gt;當&lt;span class="math"&gt;\(n=1\)&lt;/span&gt;時，&lt;span class="math"&gt;\(S_n\)&lt;/span&gt;的分布其實就是 &lt;span class="math"&gt;\(p(x)\)&lt;/span&gt; 的分布，當然Mean和Variance會和原分布 &lt;span class="math"&gt;\(p(x)\)&lt;/span&gt; 一模一樣。&lt;/p&gt;
 &lt;p&gt;中央極限定理告訴我們如果今天採樣數量 &lt;span class="math"&gt;\(n\)&lt;/span&gt; 增加到一定的量，&lt;span class="math"&gt;\(S_n\)&lt;/span&gt;的分布會趨近於Normal Distribution，也就是說隨著 &lt;span class="math"&gt;\(n\)&lt;/span&gt; 的增加，&lt;span class="math"&gt;\(S_n\)&lt;/span&gt; 的分布會從 &lt;span class="math"&gt;\(p(x)\)&lt;/span&gt; 變成接近 &lt;span class="math"&gt;\(p_{normal}(\mu,(\frac{\sigma}{\sqrt{n}})^2)\)&lt;/span&gt; 分布。&lt;/p&gt;
 &lt;p&gt;眼見為憑，接下來我要透過&lt;a href="https://seeing-theory.brown.edu/probability-distributions/index.html"&gt;Seeing-Theory&lt;/a&gt;這個網站來Demo一下中央極限定理，&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/DeepDL/clt_demo.gif" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/DeepDL/clt_demo.gif" /&gt;&lt;/p&gt;
 &lt;p&gt;給定一個採樣分布（黃色），每次採樣 &lt;span class="math"&gt;\(n=15\)&lt;/span&gt; 作平均並打點記下來，經過多次的操作就可以得到累積分布圖（紅色），而因為 &lt;span class="math"&gt;\(n\)&lt;/span&gt; 夠大，所以這個累積分布圖會逼近於Normal Distribution。&lt;/p&gt;
 &lt;p&gt;再來看看採樣平均的累積分布怎麼隨著 &lt;span class="math"&gt;\(n\)&lt;/span&gt; 增加而改變&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/DeepDL/clt_demo_2.gif" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/DeepDL/clt_demo_2.gif" /&gt;&lt;/p&gt;
 &lt;p&gt;觀察上面的動圖，會發現 &lt;span class="math"&gt;\(n\)&lt;/span&gt; 越大，Variance越來越小，而且分布狀況也越接近Normal Distribution。&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p&gt;好！講了這麼多，那這跟隨機誤差有什麼關係呢？&lt;/p&gt;
@@ -2845,115 +2845,115 @@ $$&lt;/div&gt;
     (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</content><category term="AI.ML"></category><category term="剖析深度學習"></category></entry><entry><title>[入埃及記] Day9-10: 開羅【埃及博物館、哈利利市集】</title><link href="https://ycc.idv.tw/egypt-travel_8.html" rel="alternate"></link><published>2020-02-13T12:00:00+08:00</published><updated>2020-02-13T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-13:/egypt-travel_8.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="http://www.ycc.idv.tw/media/EgyptTravel/egypt_map_d9.png" /&gt;&lt;/p&gt;
+&lt;/script&gt;</content><category term="AI.ML"></category><category term="剖析深度學習"></category></entry><entry><title>[入埃及記] Day9-10: 開羅【埃及博物館、哈利利市集】</title><link href="https://ycc.idv.tw/egypt-travel_8.html" rel="alternate"></link><published>2020-02-13T12:00:00+08:00</published><updated>2020-02-13T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-13:/egypt-travel_8.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="/media/EgyptTravel/egypt_map_d9.png" /&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Day9-10 行程：開羅【埃及博物館、哈利利市集】&amp;gt; ✈️(3.5 hrs) &amp;gt; 杜拜 &amp;gt; ✈️(8 hrs) &amp;gt; 桃園 &lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id="egyptian-museum"&gt;埃及博物館 Egyptian Museum&lt;/h3&gt;
 &lt;p&gt;館內收集的埃及古文物，及手工藝品居世界首位，多達十萬件以上，以考古為主軸的博物館，沒有它者可以與之匹敵，縱使以每分鐘參觀一件展品的速度，也得花費9個月才足以參觀完畢。&lt;/p&gt;
 &lt;p&gt;很幸運的，三個月前已經開放遊客用手機拍照，可以不用額外收錢。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3401" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3401.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3401" src="/media/EgyptTravel/IMG_3401.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 埃及博物館本身就有120年的歷史，裡面展示的文物更是古老
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3402" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3402.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3402" src="/media/EgyptTravel/IMG_3402.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 門碑上有三個神祉，中間的是Isis，兩側則是希臘、羅馬的女神
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3405" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3405.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3407" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3407.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3405" src="/media/EgyptTravel/IMG_3405.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3407" src="/media/EgyptTravel/IMG_3407.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 埃及博物館門票
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;首先Hassan直接帶我們到二樓，先參觀新王國第18王朝的一位部長的文物。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3414" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3414.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3414" src="/media/EgyptTravel/IMG_3414.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 部長和他老婆的面罩
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3518" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3518.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3518" src="/media/EgyptTravel/IMG_3518.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 部長的馬車
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3420" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3420.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3421" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3421.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3420" src="/media/EgyptTravel/IMG_3420.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3421" src="/media/EgyptTravel/IMG_3421.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 部長的金棺
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3424" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3424.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3424" src="/media/EgyptTravel/IMG_3424.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 部長的木乃伊
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3427" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3427.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3427" src="/media/EgyptTravel/IMG_3427.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 部長妻子的金棺
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3426" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3426.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3426" src="/media/EgyptTravel/IMG_3426.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 部長妻子的木乃伊
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3429" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3429.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3430" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3430.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3433" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3433.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3429" src="/media/EgyptTravel/IMG_3429.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3430" src="/media/EgyptTravel/IMG_3430.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3433" src="/media/EgyptTravel/IMG_3433.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 4個分別存放死者的胃、腸、肝和肺的卡諾皮克罐（Canopic Jars）
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;接下來參觀同樣是在二樓，大名鼎鼎的圖坦卡門，圖坦卡門是一位在位時間很短的法老王，但是他的墓穴出土的文物仍然相當驚人，可以想知如果其他法老王的陪葬品沒有被盜竊，例如：拉美西斯二世的陪葬品，一定是更驚人的。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3437" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3437.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3437" src="/media/EgyptTravel/IMG_3437.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門墓室照片。陪葬品不是用展示的方式擺，是用堆放的方式
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3514" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3514.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3514" src="/media/EgyptTravel/IMG_3514.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門的ka雕像。ka可以解釋成靈魂，圖坦卡蒙當然不是黑人，塗黑色意味著死亡
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3439" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3439.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3439" src="/media/EgyptTravel/IMG_3439.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門的黃金王座。畫中的是圖坦卡門和他的妻子安克蘇拉姆
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3441" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3441.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3441" src="/media/EgyptTravel/IMG_3441.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門的黃金王座側面
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3442" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3442.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3442" src="/media/EgyptTravel/IMG_3442.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門的黃金王座背面
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3446" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3446.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3447" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3447.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3448" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3448.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3449" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3449.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3450" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3450.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3446" src="/media/EgyptTravel/IMG_3446.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3447" src="/media/EgyptTravel/IMG_3447.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3448" src="/media/EgyptTravel/IMG_3448.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3449" src="/media/EgyptTravel/IMG_3449.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3450" src="/media/EgyptTravel/IMG_3450.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 阿努比斯，墓室的守護神
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3452" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3452.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3456" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3456.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3452" src="/media/EgyptTravel/IMG_3452.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3456" src="/media/EgyptTravel/IMG_3456.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門的彩繪箱，刻畫著圖坦卡門帶軍作戰的英姿（不代表真的有打過戰）
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3457" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3457.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3461" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3461.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3463" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3463.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3467" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3467.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3469" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3469.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3457" src="/media/EgyptTravel/IMG_3457.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3461" src="/media/EgyptTravel/IMG_3461.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3463" src="/media/EgyptTravel/IMG_3463.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3467" src="/media/EgyptTravel/IMG_3467.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3469" src="/media/EgyptTravel/IMG_3469.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門的折疊床
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;接下來進去一處是不能拍照的地方，裡面有擺圖坦卡門的黃金面具和外棺。&lt;/p&gt;
 &lt;p&gt;之前有說過法老王的棺木共七層，純金的內棺包進鍍金的棺木，鍍金的棺木放入花崗岩的棺木，這三層棺木再放進去四層的盒子內，如下圖。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3513" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3513.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3513" src="/media/EgyptTravel/IMG_3513.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門的第四層盒子
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3512" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3512.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3512" src="/media/EgyptTravel/IMG_3512.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門的第五層盒子
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3511" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3511.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3511" src="/media/EgyptTravel/IMG_3511.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門的第六層盒子
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3510" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3510.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3510" src="/media/EgyptTravel/IMG_3510.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門的第七層（最外層）盒子
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -2962,88 +2962,88 @@ $$&lt;/div&gt;
 &lt;p&gt;有一說 阿肯納頓 之所以這樣做，跟其成長過程受父母冷落有關，因此他上任時屏棄父母親的信仰，並且遷都離開傷心地。另外一說，是因為意識到了阿蒙神的祭司地位高漲，威脅到法老的地位，阿肯納頓想藉由宗教改革進而瓦解祭司階級制度，自立成為唯一的祭司，把王權和神權都集中於一手。&lt;/p&gt;
 &lt;p&gt;但是後來 阿肯納頓 對宗教的狂熱，使他無視於嚴重的經濟衰退，更疏於聯繫同盟，在位17年就讓原本鼎盛的埃及開始走下坡，再加上百姓無法接受拋棄傳統信仰，民怨沸騰。因此，阿肯納頓 的兒子 圖坦卡門 繼任後重拾傳統，遷都回底比斯、重修祭司階級制度&lt;/p&gt;
 &lt;p&gt;有此看來，阿蒙神的地位絲毫未受阿肯納頓宗教改革的影響，反而日益強大，而阿蒙神的祭司也如願的達到權傾天下，最後釀成祭司干政、篡奪王位，導致埃及走入混亂的黑暗時期，直到亞歷山大大帝揮軍而下，埃及才逐漸恢復平定。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3505" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3505.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3505" src="/media/EgyptTravel/IMG_3505.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 阿肯納頓（Akenaten）雕像
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3506" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3506.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3506" src="/media/EgyptTravel/IMG_3506.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 皇室家族石碑。阿肯納頓（Akenaten）崇拜太陽神Aten，那個有很多手的太陽就是Aten的形象
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;接下來我們回頭參觀一樓。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3477" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3477.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3478" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3478.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3477" src="/media/EgyptTravel/IMG_3477.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3478" src="/media/EgyptTravel/IMG_3478.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 女法老 哈賽普蘇的獅身人面像
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3482" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3482.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3482" src="/media/EgyptTravel/IMG_3482.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 女法老 哈賽普蘇的頭像
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3481" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3481.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3483" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3483.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3481" src="/media/EgyptTravel/IMG_3481.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3483" src="/media/EgyptTravel/IMG_3483.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 中王國的一位法老的雕像。辨認中王國法老的雕像的方法是臉看起來不開心，因為中王國非常的亂
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3484" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3484.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3484" src="/media/EgyptTravel/IMG_3484.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉和闐 ＆ 諾福蕾 雕像。拉和闐不是法老王，所以其雕像會比較接近真人，兩個雕像的眼睛是用水晶做的
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3486" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3486.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3486" src="/media/EgyptTravel/IMG_3486.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 古埃及最古老的彩色壁畫，有5000年歷史
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3487" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3487.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3487" src="/media/EgyptTravel/IMG_3487.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 書記雕像，埃鎊200元上的圖正是用這個
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3489" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3489.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3489" src="/media/EgyptTravel/IMG_3489.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 卡夫拉雕像
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3490" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3490.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3490" src="/media/EgyptTravel/IMG_3490.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 卡夫拉雕像背面有一隻老鷹守護著法老
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3491" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3491.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3491" src="/media/EgyptTravel/IMG_3491.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 平民雕像
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3493" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3493.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3493" src="/media/EgyptTravel/IMG_3493.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 孟卡拉在中間，兩位女神保護環抱著法老，意味著守護
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3494" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3494.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3494" src="/media/EgyptTravel/IMG_3494.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 納麥爾色盤正面。此浮雕記載著第一位法老王統一上下埃及
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3495" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3495.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3495" src="/media/EgyptTravel/IMG_3495.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 納麥爾色盤背面。此浮雕記載著第一位法老王統一上下埃及
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3497" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3497.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3497" src="/media/EgyptTravel/IMG_3497.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Zoser雕像。階梯金字塔是為他蓋的，盜墓人挖走他的水晶眼睛，破壞嚴重
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3504" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3504.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3507" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3507.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3508" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3508.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3504" src="/media/EgyptTravel/IMG_3504.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3507" src="/media/EgyptTravel/IMG_3507.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3508" src="/media/EgyptTravel/IMG_3508.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 娜芙蒂蒂未完成的雕像
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3524" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3524.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3524" src="/media/EgyptTravel/IMG_3524.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 我最喜歡的雕像
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3526" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3526.JPG" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3526" src="/media/EgyptTravel/IMG_3526.JPG" /&gt;&lt;/p&gt;
 &lt;h3 id="khan-el-khalili"&gt;哈利利市集 Khan el-Khalili&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="IMG_3537" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3537.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3538" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3538.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3540" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3540.jpg" /&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day8: 開羅Cairo【吉薩金字塔群、人面獅身像、香精專賣店、紙莎草專賣店】</title><link href="https://ycc.idv.tw/egypt-travel_7.html" rel="alternate"></link><published>2020-02-12T12:00:00+08:00</published><updated>2020-02-12T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-12:/egypt-travel_7.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="http://www.ycc.idv.tw/media/EgyptTravel/egypt_map_d8.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3537" src="/media/EgyptTravel/IMG_3537.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3538" src="/media/EgyptTravel/IMG_3538.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3540" src="/media/EgyptTravel/IMG_3540.jpg" /&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day8: 開羅Cairo【吉薩金字塔群、人面獅身像、香精專賣店、紙莎草專賣店】</title><link href="https://ycc.idv.tw/egypt-travel_7.html" rel="alternate"></link><published>2020-02-12T12:00:00+08:00</published><updated>2020-02-12T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-12:/egypt-travel_7.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="/media/EgyptTravel/egypt_map_d8.png" /&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Day8 行程：開羅Cairo【吉薩金字塔群、人面獅身像、香精專賣店、紙莎草專賣店】 &amp;gt; Conrad Cairo Hotel @開羅😴&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;img alt="IMG_3391" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3391.JPG" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3391" src="/media/EgyptTravel/IMG_3391.JPG" /&gt;
 &lt;center&gt;&lt;small&gt;
 Conrad Cairo Hotel 
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -3060,7 +3060,7 @@ Conrad Cairo Hotel
 &lt;li&gt;孟卡拉金字塔（Pyramid of Menkaure）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;這三座金字塔的前面都有用花崗岩造的廟，金字塔前的第一座稱為祭廟（或稱靈殿），祭廟很接近金字塔，而離祭廟稍遠的前方會有谷廟（或稱河谷神殿）。法老王死後如我們之前說的就要做成木乃伊，做木乃伊和曝曬太陽的地方通通在谷廟進行，好了之後會將法老的木乃伊送到祭廟，由大祭師祭奉兩個小時，再送入金字塔裡並封關，不管是祭廟和谷廟都僅僅使用一次而已。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/pyramids_of_giza_map.jpg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/pyramids_of_giza_map.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 cite from: 埃及 / 墨刻編輯部
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -3070,68 +3070,68 @@ cite from: 埃及 / 墨刻編輯部
 &lt;p&gt;蓋第一座金字塔時，使用了55度的仰角，再蓋第一座的同時也在蓋第二座，同樣採用55度的仰角，結果第一座蓋到一半就崩掉了，因為採用這樣的角度上面的石頭太重，於是趕緊把第二座金字塔的角度中途改成仰角43度，採用內傾的結構，勉強用木材支撐，最後蓋出來就是一個彆扭的形狀，因此有彎曲金字塔之稱。&lt;/p&gt;
 &lt;p&gt;有了之前的經驗，而且法老王還健在，所以又開始建立第三座金字塔，這次學乖了直接採用仰角43度，最後完美的完成了紅色金字塔，從階梯金字塔到紅色金字塔足足花了60年的實驗才建出今天所看到的金字塔。&lt;/p&gt;
 &lt;p&gt;以古夫大金字塔為範例，我們來看看金字塔內部結構長什麼樣子&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/pyramid_khufu.png" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/pyramid_khufu.png" /&gt;
 &lt;center&gt;&lt;small&gt;
 cite from: 埃及 / 墨刻編輯部
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;很重要的一點是減壓室和承材支撐的窄室的設計，都是為了減小金字塔天花板的重量，同時兼具支撐整個結構，這些都是實驗後的豐富成果。&lt;/p&gt;
 &lt;p&gt;然後三座金字塔的內部都採用來自亞斯文的花崗岩，而外面則使用石灰岩，而原本的斜面是有壁畫，但是長期的風化已破壞殆盡。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3158" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3158.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3158" src="/media/EgyptTravel/IMG_3158.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 吉薩金字塔群門票
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;首先我們參觀的是古夫大金字塔，古夫大金字塔為139米高，下面的四方形邊長為220米，迄今已經有4500年歷史，當時用了20萬人，總共還蓋了21年才完工，蓋的方法如我們之前所說是用沙子做的斜坡來搬運石材。&lt;/p&gt;
 &lt;p&gt;必須特別強調的，金字塔不是使用奴隸來建造的。考古學家在金字塔旁發現工人營地的遺址，遺址中有大量的魚、牛、羊骨，看起來吃得並不差，而且從工人墓地裡挖出的骨骼也檢測出頗高的蛋白質含量，少數工人甚至在遺骨上發現醫療手術的痕跡，並且也有工人們的請假紀錄被挖掘出來，總總證據證明興建金字塔的工人絕不是奴隸，專家推測除了一般雇用的民工外，也有不少趁尼羅河氾濫的空檔投入工事的農民，建金字塔以展示對法老王的崇拜，也算是一種宗教活動吧！&lt;/p&gt;
 &lt;p&gt;古夫大金字塔目前一共找到三個房間，不過應該還有其他房間沒被發現，因為法老的木乃伊還沒找到，也沒有在黑市流通。在前年，有找到一個很走不進去的小通道，科學家用機器人往下探了25米深，結果發現有一個有青銅把手的門，所有一切目前還在研究當中。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3164" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3164.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3160" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3160.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3159" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3159.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2705" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2705.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2726" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2726.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3197" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3197.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2738" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2738.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2744" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2744.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2775" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2775.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3164" src="/media/EgyptTravel/IMG_3164.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3160" src="/media/EgyptTravel/IMG_3160.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3159" src="/media/EgyptTravel/IMG_3159.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2705" src="/media/EgyptTravel/IMG_2705.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2726" src="/media/EgyptTravel/IMG_2726.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3197" src="/media/EgyptTravel/IMG_3197.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2738" src="/media/EgyptTravel/IMG_2738.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2744" src="/media/EgyptTravel/IMG_2744.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2775" src="/media/EgyptTravel/IMG_2775.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;接下來參觀第二大的金字塔—卡夫拉金字塔，卡夫拉金字塔為136米高，但是其所處的位置比較高，所以乍看之下是三個裡頭最高的。&lt;/p&gt;
 &lt;p&gt;這個金字塔我們有進去它的墓室看看，往墓室的通道相當狹小，必須要彎腰才能前進，然後是先下坡再上坡才到墓室，其實裡面空空如也，連壁畫都沒有，而且空氣有點稀薄，走起來不舒服。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3198" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3198.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3198" src="/media/EgyptTravel/IMG_3198.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 卡夫拉金字塔門票
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3196" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3196.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3211" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3211.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3196" src="/media/EgyptTravel/IMG_3196.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3211" src="/media/EgyptTravel/IMG_3211.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 往墓室的通道
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3215" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3215.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3220" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3220.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2779" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2779-2.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3215" src="/media/EgyptTravel/IMG_3215.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3220" src="/media/EgyptTravel/IMG_3220.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2779" src="/media/EgyptTravel/IMG_2779-2.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;接下來我們去一個可以同時拍到古夫金字塔、卡夫拉金字塔和孟卡拉金字塔的地方。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3253" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3253.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3259" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3259.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3264" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3264.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3268" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3268.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3283" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3283.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_4262" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_4262.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3253" src="/media/EgyptTravel/IMG_3253.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3259" src="/media/EgyptTravel/IMG_3259.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3264" src="/media/EgyptTravel/IMG_3264.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3268" src="/media/EgyptTravel/IMG_3268.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3283" src="/media/EgyptTravel/IMG_3283.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_4262" src="/media/EgyptTravel/IMG_4262.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="_2"&gt;人面獅身像&lt;/h3&gt;
 &lt;p&gt;又稱斯芬克斯(Sphinx)，是目前已知最古老的紀念雕像，位於卡夫拉金字塔前，外型為一個人頭配上獅子的身軀，長約73.5米、寬約6米、高約20.22米。&lt;/p&gt;
 &lt;p&gt;人面獅身像原本是按照卡夫拉（Khafra）的相貌所造，是法老王形象的具體化，蹲踞在金字塔前守護著。&lt;/p&gt;
 &lt;p&gt;其實人面獅身像在古埃及是很少見的，為什麼當初這裡會有這個雕像呢？&lt;/p&gt;
 &lt;p&gt;當時卡夫拉每年會來檢查他的金字塔一次，要知道古埃及人相信墳墓比宮殿重要，因為他們相信復活，所以宮殿用石灰岩蓋一下就好，墳墓則是使用比較耐久的花崗岩（所以宮殿沒保留多少）。那時，卡夫拉的谷廟前面有一個尼羅河的支流，有一次卡夫拉巡視完畢非常滿意，準備從卡夫拉的谷廟前的尼羅河會去，結果他一看，不對勁！有一顆石灰岩擋到了他的金字塔，卡夫拉就不滿意，並且命令工人要處理，所以工人們就把這整塊石灰岩刻成卡夫拉形象的人面獅身像。&lt;/p&gt;
 &lt;p&gt;因為石灰岩易風化，他的頭上原本戴有皇冠、額頭部分也有聖蛇浮雕、下顎處有鬍鬚，脖子也有項圈，但經過數千年的風吹雨打及人為破壞，皇冠與項圈已消失殆盡，而聖蛇浮雕脫落並保存於埃及博物館內，而鬍鬚脫落則被英國人帶去大英博物館裡頭保存，鼻子部分也遭到毀損了。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3314" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3314.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3314" src="/media/EgyptTravel/IMG_3314.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 三個金字塔和人面獅身像
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3315" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3315.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3315" src="/media/EgyptTravel/IMG_3315.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 原本這邊有尼羅河的支流，在1971後因為蓋水壩，水量減少，支流從六支變成剩兩支
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3321" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3321.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3322" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3322.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2814" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2814.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_4348" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_4348.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3340" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3340.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3321" src="/media/EgyptTravel/IMG_3321.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3322" src="/media/EgyptTravel/IMG_3322.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2814" src="/media/EgyptTravel/IMG_2814.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_4348" src="/media/EgyptTravel/IMG_4348.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3340" src="/media/EgyptTravel/IMG_3340.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 中午餐廳
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -3153,8 +3153,8 @@ cite from: 埃及 / 墨刻編輯部
 &lt;li&gt;伊西斯神：Gucci&lt;/li&gt;
 &lt;li&gt;阿蒙拉神：阿曼尼&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="IMG_3361" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3361.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3363" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3363.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3361" src="/media/EgyptTravel/IMG_3361.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3363" src="/media/EgyptTravel/IMG_3363.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="_4"&gt;紙莎草專賣店&lt;/h3&gt;
 &lt;p&gt;埃及人是目前所知世界最早發明用紙的民族，他們利用叢生在尼羅河溼地中的蘆葦，經過繁複的製作程序，加上自然的礦石與植物顏料，創造出歷久不衰的藝術作品。古埃及人利用紙莎草記載歷史，透過保存完整的古埃及紙莎草畫，讓現代人有機會了解古埃及人的思想、宗教觀及智慧。如今在埃及博物館中還可看到眾多3千到5千年前，顏色依舊鮮明的紙莎草畫。&lt;/p&gt;
 &lt;p&gt;Hassan為我們演示了紙莎草的製作過程：&lt;/p&gt;
@@ -3169,128 +3169,128 @@ cite from: 埃及 / 墨刻編輯部
 &lt;li&gt;拿出來就是紙莎草了&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;辨識真偽的方法是看它是不是有紋路，如果是機器做的會沒有紋路或者紋路異常整齊，再來正統的紙莎草放在水裡是不會爛掉的。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3365" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3365.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3365" src="/media/EgyptTravel/IMG_3365.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 蘆葦草桿
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3369" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3369.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3369" src="/media/EgyptTravel/IMG_3369.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 槌子敲一片一片的內部纖維
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3370" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3370.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3370" src="/media/EgyptTravel/IMG_3370.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 用桿麵棍桿過一片一片的內部纖維
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3371" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3371.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3371" src="/media/EgyptTravel/IMG_3371.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 將一片一片的內部纖維交錯放置
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3374" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3374.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3374" src="/media/EgyptTravel/IMG_3374.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 用兩塊布壓住一個禮拜將水吸乾
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3376" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3376.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3377" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3377.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3376" src="/media/EgyptTravel/IMG_3376.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3377" src="/media/EgyptTravel/IMG_3377.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 正統的紙莎草放在水裡是不會爛掉的
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3382" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3382.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3382" src="/media/EgyptTravel/IMG_3382.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 紙莎草畫
-&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day7: 虎加達Hurghada【紅海渡假勝地】</title><link href="https://ycc.idv.tw/egypt-travel_6.html" rel="alternate"></link><published>2020-02-11T12:00:00+08:00</published><updated>2020-02-11T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-11:/egypt-travel_6.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="http://www.ycc.idv.tw/media/EgyptTravel/egypt_map_d7.png" /&gt;&lt;/p&gt;
+&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day7: 虎加達Hurghada【紅海渡假勝地】</title><link href="https://ycc.idv.tw/egypt-travel_6.html" rel="alternate"></link><published>2020-02-11T12:00:00+08:00</published><updated>2020-02-11T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-11:/egypt-travel_6.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="/media/EgyptTravel/egypt_map_d7.png" /&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Day7 行程： 虎加達Hurghada【紅海渡假勝地】 &amp;gt; 🚐(485KM) &amp;gt; 開羅 &amp;gt; Conrad Cairo Hotel @開羅😴&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id="hurghada-marriott-beach-resort"&gt;Hurghada Marriott Beach Resort @虎加達&lt;/h3&gt;
 &lt;p&gt;虎加達位於紅海旁，屬於亞熱帶區的沙漠氣候，夏天非常炎熱，冬天較和暖。所以許多歐洲人會在冬天時候來虎加達度假，可以享受沙灘、海水。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3065" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3065.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3066" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3066.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3067" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3067.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3065" src="/media/EgyptTravel/IMG_3065.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3066" src="/media/EgyptTravel/IMG_3066.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3067" src="/media/EgyptTravel/IMG_3067.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 驚人的甜點
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3068" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3068.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3068" src="/media/EgyptTravel/IMG_3068.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 驚人的甜點
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3069" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3069.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3069" src="/media/EgyptTravel/IMG_3069.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 夕陽西下
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;今天對我來說就是一個放鬆的行程，早上睡到自然醒，起來吃個早餐、寫個明信片，然後就去游紅海。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3075" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3075.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3075" src="/media/EgyptTravel/IMG_3075.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 早起的鳥兒
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3079" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3079.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3080" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3080.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3082" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3082.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3083" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3083.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3085" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3085.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3079" src="/media/EgyptTravel/IMG_3079.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3080" src="/media/EgyptTravel/IMG_3080.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3082" src="/media/EgyptTravel/IMG_3082.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3083" src="/media/EgyptTravel/IMG_3083.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3085" src="/media/EgyptTravel/IMG_3085.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;游紅海成就達成！紅海的水流不湍，在飯店外面就有一片沙灘連接紅海，換好泳裝就來海灘這裡準備游泳。&lt;/p&gt;
 &lt;p&gt;剛下水會有點冷，浸到剩半身時真的冷到不行，此時的大招就是不顧一切的往前撲，然後就開始不斷的游，大概兩分鐘其實就不冷了，但水真的蠻鹹的，我游到一個比較深的地方發現了一些魚，想要潛下去近一點看魚，不過沒有負重海水還蠻難下潛的。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3089" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3089.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3094" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3094.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3099" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3099.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3101" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3101.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_7775" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_7775.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3105" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3105.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3089" src="/media/EgyptTravel/IMG_3089.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3094" src="/media/EgyptTravel/IMG_3094.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3099" src="/media/EgyptTravel/IMG_3099.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3101" src="/media/EgyptTravel/IMG_3101.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_7775" src="/media/EgyptTravel/IMG_7775.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3105" src="/media/EgyptTravel/IMG_3105.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 仿金字塔
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3109" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3109.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3110" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3110.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3111" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3111.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3109" src="/media/EgyptTravel/IMG_3109.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3110" src="/media/EgyptTravel/IMG_3110.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3111" src="/media/EgyptTravel/IMG_3111.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="_1"&gt;拉車回開羅&lt;/h3&gt;
 &lt;p&gt;接下來下午就是長達六小時的拉車，旅行社的安排有一個缺點就是想要把所有客群想去的點全部囊括進去，所以會導致點跟點的距離很長，如果是自助的話，因為我比較喜歡古文明，我會去掉亞斯文水壩和虎加達，然後看古蹟的時間就可以拉長一點，此次看古蹟的時間感覺是少了一點，感覺每次都是匆匆忙忙的，不過有導遊講解能更快的了解古蹟的內容，而不是走馬看花，所以跟團就真的有好有壞，好的是有導遊、有安排，壞的是無法自己分配參觀的時間。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3129" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3129.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3130" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3130.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3132" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3132.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3135" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3135.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3129" src="/media/EgyptTravel/IMG_3129.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3130" src="/media/EgyptTravel/IMG_3130.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3132" src="/media/EgyptTravel/IMG_3132.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3135" src="/media/EgyptTravel/IMG_3135.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Hassan感慨的講述埃及為何衰敗，主要就是源於官僚制度的腐敗，埃及有運河、有石油、有觀光、有花崗岩，但是這些好處都被上面寡斷了。一直以來，埃及雖然有總統但卻不是代表民眾的，他們都是軍方選出來的，到了茉莉花革命，埃及人推翻證明，民選出一名教授當總統，不過體制仍然是腐敗的，軍方和司法不斷找他麻煩，最後只好草草下台，結果又回到由軍方指派的老樣子。而且Hassan說，這些話他只敢用中文說，他們國家和中國一樣沒有言論自由，亂講話可能會被消失。
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3136" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3136.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3136" src="/media/EgyptTravel/IMG_3136.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 椰棗乾
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3139" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3139.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3139" src="/media/EgyptTravel/IMG_3139.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 埃及在地料理
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3140" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3140.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3140" src="/media/EgyptTravel/IMG_3140.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 埃及在地料理
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3141" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3141.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3141" src="/media/EgyptTravel/IMG_3141.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 埃及在地料理
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3144" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3144.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3144" src="/media/EgyptTravel/IMG_3144.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Conrad Cairo Hotel
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3145" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3145.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3145" src="/media/EgyptTravel/IMG_3145.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Conrad Cairo Hotel
-&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day6: 路克索【帝王谷、曼儂巨像】、虎加達</title><link href="https://ycc.idv.tw/egypt-travel_5.html" rel="alternate"></link><published>2020-02-10T12:00:00+08:00</published><updated>2020-02-10T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-10:/egypt-travel_5.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="http://www.ycc.idv.tw/media/EgyptTravel/egypt_map_d6.png" /&gt;&lt;/p&gt;
+&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day6: 路克索【帝王谷、曼儂巨像】、虎加達</title><link href="https://ycc.idv.tw/egypt-travel_5.html" rel="alternate"></link><published>2020-02-10T12:00:00+08:00</published><updated>2020-02-10T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-10:/egypt-travel_5.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="/media/EgyptTravel/egypt_map_d6.png" /&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Day6 行程： Luxor路克索【帝王谷、曼儂巨像】&amp;gt;  🚐(335KM) &amp;gt; 虎加達Hurghada &amp;gt; Hurghada Marriott Beach Resort @虎加達😴&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id="_1"&gt;帝王谷&lt;/h3&gt;
 &lt;p&gt;大約西元前1539年到西元前1075年間，古埃及新王國時期18到20王朝各代法老的陵墓大都放在帝王谷，包含62個陵墓。&lt;/p&gt;
 &lt;p&gt;帝王谷目前找到共62個法老王的陵寢，但是其中的61個都被盜墓者清空了，唯一只有圖坦卡門的墓保留完整的一切，為什麼盜墓人唯獨闕漏了這個呢？圖坦卡門登基時只有8歲，卻在18歲時過世，時間倉促來不及挖新的墓，所以將他放在一個別人的墓，這個墓的大小很小，而且還在其他人的墓的下方，非常不容易發現。歷經三千多年的時間雖然墓室被盜空了，但是牆上的壁畫顏色依舊清晰可見。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/kv9.png" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/kv9.png" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉美西斯六世（編號KV9）（cite from: https://describingegypt.com/tours/ramessesvi/kv9_entrance_corridor_b/0/-5/80）
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;如上圖，陵墓內部的設計基本結構都是從入口處一道密佈浮雕的長廊，通道底部的主墓室。這些壁畫的主題不外乎是節錄自『死亡之書』的內容，另外通常在到主墓室前會有一個前廳，停棺的房間外用花崗岩封死，裡面放滿法老王生前使用的東西，棺木上有著胡狼造型的阿努比斯神，祂是死者的守護神，內棺裡有4個分別存放死者的胃、腸、肝和肺的卡諾皮克罐（Canopic Jars）。&lt;/p&gt;
 &lt;p&gt;古埃及很聰明都把陵墓放在沙漠中，包括120座金字塔和62座帝王谷陵墓，沙漠乾燥有助於保存壁畫，所以帝王谷裡的壁畫顏色都還很鮮豔，而且帝王谷也離尼羅河很遠，才能免於氾濫破壞。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2881" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2881.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2881" src="/media/EgyptTravel/IMG_2881.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 帝王谷模型
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2883" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2883.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2883" src="/media/EgyptTravel/IMG_2883.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 所有的墓室，KV是Kings Valley的縮寫。其中KV7就是大名鼎鼎的拉美西斯二世的墓室，但是因為他名氣實在太大，所以樹大招風，墓室幾乎破壞殆盡，壁畫也被盜墓者割下，所以KV7也就沒有開放了
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -3302,209 +3302,209 @@ Conrad Cairo Hotel
 &lt;p&gt;注意喔！古埃及人沒有地獄的概念。&lt;/p&gt;
 &lt;p&gt;因為真心相信復活，法老王在登基就會開始蓋自己的陵墓（生前契約！？），活越久就蓋越深，死後就把木乃伊和陪葬品放入陵墓當中，其實放東西的方法就像是堆倉庫一樣，因為陵墓不是為了展示用的，也沒打算要再打開。最後用土把陵墓的洞補起來就收工了。&lt;/p&gt;
 &lt;p&gt;剛剛有提到活越久就蓋越深，大名鼎鼎的圖坦卡門在位不過十年，所以他的墓室很小，也沒什麼壁畫，而且所有的陪葬品都搬到埃及博物館了，另外還要額外收費，所以導遊不推薦我們去看圖坦卡門的墓室。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2885" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2885.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2889" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2889.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2885" src="/media/EgyptTravel/IMG_2885.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2889" src="/media/EgyptTravel/IMG_2889.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 據說這座谷地之所以會雀屏中選，是因為阿爾巴赫里山有金字塔型的山頂
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2890" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2890.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2890" src="/media/EgyptTravel/IMG_2890.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 帝王谷門票
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h3 id="kv8"&gt;KV8（麥倫普塔赫）&lt;/h3&gt;
 &lt;p&gt;麥倫普塔赫為拉美西斯二世的兒子，你會覺得奇怪，拉美西斯二世的兒子怎麼不叫拉美西斯三世？其實古埃及的一世二世...並沒有繼承關係，只是歷史上有重複就一路排下去。法老王在登基可以自己選擇一個名字，並一定要和父親一樣，另外每在位多十年就會再多加一個名字，所以有些法老是有很多名字的。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2893" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2893.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2893" src="/media/EgyptTravel/IMG_2893.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 KV8的透視圖。值得一提，看板上有三種文字，英文就是從左向右讀，阿拉伯文則是從右向左讀，那麼埃及文呢？埃及文是上下左右都可以，什麼！？重點是要看鳥的方向，像上面的鳥是朝左，所以是從右向左讀，麥倫普塔赫在位剛好10年所以你可以看到他有兩個名字
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2899" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2899.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2900" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2900.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2899" src="/media/EgyptTravel/IMG_2899.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2900" src="/media/EgyptTravel/IMG_2900.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 死亡之書
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2901" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2901.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2901" src="/media/EgyptTravel/IMG_2901.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 象徵靈魂的鳥，在天花板上朝內飛，意味著當回歸時靈魂會飛過這個走道
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2902" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2902.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2903" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2903.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2902" src="/media/EgyptTravel/IMG_2902.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2903" src="/media/EgyptTravel/IMG_2903.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 正義女神 Maat。會用她頭上的羽毛進行秤心儀式
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2904" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2904.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2905" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2905.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2906" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2906.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2908" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2908.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2915" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2915.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2917" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2917.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2904" src="/media/EgyptTravel/IMG_2904.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2905" src="/media/EgyptTravel/IMG_2905.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2906" src="/media/EgyptTravel/IMG_2906.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2908" src="/media/EgyptTravel/IMG_2908.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2915" src="/media/EgyptTravel/IMG_2915.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2917" src="/media/EgyptTravel/IMG_2917.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 花崗岩石棺
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2918" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2918.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2918" src="/media/EgyptTravel/IMG_2918.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Horus用生命之鑰替法老開口
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2919" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2919.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2919" src="/media/EgyptTravel/IMG_2919.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 天堂門內有冥王Osiris鎮守
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2921" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2921.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2921" src="/media/EgyptTravel/IMG_2921.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 通道之書
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2922" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2922.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2922" src="/media/EgyptTravel/IMG_2922.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 右一：朱鷺頭人身的Thoth（智慧之神）  右二：Anubis
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2923" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2923.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2924" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2924.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2923" src="/media/EgyptTravel/IMG_2923.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2924" src="/media/EgyptTravel/IMG_2924.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 往天堂路途上的怪物
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2925" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2925.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2926" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2926.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2927" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2927.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2925" src="/media/EgyptTravel/IMG_2925.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2926" src="/media/EgyptTravel/IMG_2926.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2927" src="/media/EgyptTravel/IMG_2927.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 冥王Osiris和法老王
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2928" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2928.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2928" src="/media/EgyptTravel/IMG_2928.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 旭日的太陽神 Khepri，旭日隱含著復活
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2929" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2929.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2929" src="/media/EgyptTravel/IMG_2929.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Ra-Horakhty用生命之鑰替法老開口
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2931" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2931.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2931" src="/media/EgyptTravel/IMG_2931.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="kv6"&gt;KV6（拉美西斯九世）&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="IMG_2936" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2936.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2936" src="/media/EgyptTravel/IMG_2936.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 KV6的透視圖
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2937" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2937.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2939" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2939.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2937" src="/media/EgyptTravel/IMG_2937.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2939" src="/media/EgyptTravel/IMG_2939.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 太陽神Ra
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2940" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2940.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2942" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2942.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2944" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2944.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2945" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2945.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2940" src="/media/EgyptTravel/IMG_2940.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2942" src="/media/EgyptTravel/IMG_2942.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2944" src="/media/EgyptTravel/IMG_2944.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2945" src="/media/EgyptTravel/IMG_2945.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 天花板佈滿星空圖
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2946" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2946.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2947" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2947.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2948" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2948.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2949" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2949.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2950" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2950.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2946" src="/media/EgyptTravel/IMG_2946.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2947" src="/media/EgyptTravel/IMG_2947.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2948" src="/media/EgyptTravel/IMG_2948.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2949" src="/media/EgyptTravel/IMG_2949.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2950" src="/media/EgyptTravel/IMG_2950.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 眾神乘著太陽船
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2951" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2951.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2953" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2953.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2951" src="/media/EgyptTravel/IMG_2951.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2953" src="/media/EgyptTravel/IMG_2953.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉美西斯九世手托著正義之神Maat，面向冥王Osiris
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2954" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2954.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2955" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2955.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2956" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2956.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2959" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2959.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2954" src="/media/EgyptTravel/IMG_2954.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2955" src="/media/EgyptTravel/IMG_2955.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2956" src="/media/EgyptTravel/IMG_2956.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2959" src="/media/EgyptTravel/IMG_2959.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 墓室
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2962" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2962.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2962" src="/media/EgyptTravel/IMG_2962.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 墓室。墓室的天花板記載著天空之神Nut的故事
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2963" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2963.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2963" src="/media/EgyptTravel/IMG_2963.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 來世之書
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2964" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2964.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2964" src="/media/EgyptTravel/IMG_2964.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 來世之書的內容
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2965" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2965.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2965" src="/media/EgyptTravel/IMG_2965.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉美西斯九世的名字
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2966" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2966.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2967" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2967.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2966" src="/media/EgyptTravel/IMG_2966.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2967" src="/media/EgyptTravel/IMG_2967.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 壁畫的顏色很鮮豔
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2968" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2968.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2968" src="/media/EgyptTravel/IMG_2968.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 公羊神Khnum
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h3 id="kv11"&gt;KV11（拉美西斯三世）&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="IMG_2971" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2971.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2973" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2973.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2974" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2974.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2976" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2976.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2977" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2977.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2971" src="/media/EgyptTravel/IMG_2971.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2973" src="/media/EgyptTravel/IMG_2973.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2974" src="/media/EgyptTravel/IMG_2974.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2976" src="/media/EgyptTravel/IMG_2976.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2977" src="/media/EgyptTravel/IMG_2977.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 天花板有整排Ra的祈禱文，再加上兩旁的藍色星空
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2980" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2980.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2980" src="/media/EgyptTravel/IMG_2980.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Ra的祈禱文
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2982" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2982.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2983" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2983.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2984" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2984.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2985" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2985.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2982" src="/media/EgyptTravel/IMG_2982.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2983" src="/media/EgyptTravel/IMG_2983.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2984" src="/media/EgyptTravel/IMG_2984.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2985" src="/media/EgyptTravel/IMG_2985.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Nephthys和Anubis是亡者的守護神
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2988" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2988.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2988" src="/media/EgyptTravel/IMG_2988.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉美西斯三世奉獻給尼羅河之神
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2990" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2990.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2990" src="/media/EgyptTravel/IMG_2990.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉美西斯三世奉獻給冥王Osiris
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2993" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2993.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2995" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2995.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2996" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2996.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2997" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2997.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2999" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2999.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2993" src="/media/EgyptTravel/IMG_2993.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2995" src="/media/EgyptTravel/IMG_2995.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2996" src="/media/EgyptTravel/IMG_2996.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2997" src="/media/EgyptTravel/IMG_2997.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2999" src="/media/EgyptTravel/IMG_2999.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 來世之書
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3001" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3001.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3001" src="/media/EgyptTravel/IMG_3001.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 來世之書，許多怪物關卡
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3002" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3002.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3003" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3003.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3004" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3004.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3005" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3005.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3007" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3007.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3008" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3008.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3009" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3009.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3010" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3010.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_3002" src="/media/EgyptTravel/IMG_3002.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3003" src="/media/EgyptTravel/IMG_3003.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3004" src="/media/EgyptTravel/IMG_3004.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3005" src="/media/EgyptTravel/IMG_3005.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3007" src="/media/EgyptTravel/IMG_3007.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3008" src="/media/EgyptTravel/IMG_3008.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3009" src="/media/EgyptTravel/IMG_3009.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3010" src="/media/EgyptTravel/IMG_3010.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 這麼墓穴是蓋到一半，沒有完全蓋完
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3011" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3011.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3012" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3012.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3014" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3014.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3016" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3016.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3021" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3021.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3022" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3022.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_3030" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3030.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3011" src="/media/EgyptTravel/IMG_3011.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3012" src="/media/EgyptTravel/IMG_3012.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3014" src="/media/EgyptTravel/IMG_3014.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3016" src="/media/EgyptTravel/IMG_3016.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3021" src="/media/EgyptTravel/IMG_3021.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3022" src="/media/EgyptTravel/IMG_3022.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3030" src="/media/EgyptTravel/IMG_3030.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="_2"&gt;曼儂巨像&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="IMG_3055" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_3055.jpg" /&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day5: 艾得夫 Edfu【艾得夫神殿】、伊斯納水匣門、路克索【路克索神殿、卡納克神殿】</title><link href="https://ycc.idv.tw/egypt-travel_4.html" rel="alternate"></link><published>2020-02-09T12:00:00+08:00</published><updated>2020-02-09T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-09:/egypt-travel_4.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="http://www.ycc.idv.tw/media/EgyptTravel/egypt_map_d5.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_3055" src="/media/EgyptTravel/IMG_3055.jpg" /&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day5: 艾得夫 Edfu【艾得夫神殿】、伊斯納水匣門、路克索【路克索神殿、卡納克神殿】</title><link href="https://ycc.idv.tw/egypt-travel_4.html" rel="alternate"></link><published>2020-02-09T12:00:00+08:00</published><updated>2020-02-09T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-09:/egypt-travel_4.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="/media/EgyptTravel/egypt_map_d5.png" /&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Day5 行程： 艾得夫 Edfu【艾得夫神殿】&amp;gt; 🛳 &amp;gt; 伊斯納水匣門  &amp;gt; 🛳 &amp;gt; 路克索Luxor【路克索神殿、卡納克神殿】&amp;gt; 🛳😴&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id="_1"&gt;古埃及神話&lt;/h3&gt;
 &lt;p&gt;在開始今天的旅途前，我來說說古埃及的神話。&lt;/p&gt;
 &lt;p&gt;古埃及人是多神信仰，除了重要的神祉以外，每個地區都會有自己的守護神，總共有600多個神祉，所以想要知道每個神祉是不可能的，這邊我們只聊最常見的幾個。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/egypt_god.jpg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/egypt_god.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 重要神祉關係圖 (cite from: https://travelm.tw/egypt-god/)
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -3516,7 +3516,7 @@ Nephthys和Anubis是亡者的守護神
         - 旭日隱含著復活，因此木乃伊身上常放著俗稱聖甲蟲的赫普立護身符，放在心臟的位置，以防心臟在秤心儀式中說出不利於主人的供詞&lt;/li&gt;
 &lt;li&gt;Aton&lt;ul&gt;
 &lt;li&gt;阿蒙霍特普四世 Amenhotep IV 曾試圖在古埃及進行宗教改革，試圖把紛亂的古埃及信仰改成阿頓神獨尊的一神教，不過這場宗教改革最後以失敗告終。&lt;/li&gt;
-&lt;li&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/aton.png" /&gt;&lt;ul&gt;
+&lt;li&gt;&lt;img alt="" src="/media/EgyptTravel/aton.png" /&gt;&lt;ul&gt;
 &lt;li&gt;那個是手喔！你沒看錯&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
@@ -3527,7 +3527,7 @@ Nephthys和Anubis是亡者的守護神
 &lt;p&gt;Ra 的兒子、女兒則分別是風神和空氣之神 Shu、雨神和生育之神 Tefnut&lt;/p&gt;
 &lt;h4 id="_4"&gt;上圖的第三層&lt;/h4&gt;
 &lt;p&gt;Shu與Tefnut的兒子是大地之神Geb、女兒是天空女神Nuit，Geb和Nuit生下了四個孩子，但是也因為小兩口成天相親相愛，都荒廢了職責，於是他們的父親 Shu 介入其中拆散他們  &lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/geb_nut_shu.png" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/geb_nut_shu.png" /&gt;
 &lt;center&gt;&lt;small&gt;
 cite from: https://en.m.wikipedia.org/wiki/File:Geb_and_Nut03.png
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -3546,7 +3546,7 @@ cite from: https://en.m.wikipedia.org/wiki/File:Geb_and_Nut03.png
 &lt;li&gt;
 &lt;p&gt;荷魯斯 Horus: 法老守護神，王權的象徵，俄塞里斯Orisis和伊西絲Isis的兒子，鷹頭人身的形象。剛剛的故事繼續說下去，Horus繼承王位後展開了與Seth的鬥爭，終於奪回王位（艾得夫神殿的壁畫有畫這個故事），在大戰的過程中Horus的一隻眼睛被傷，後來這隻眼睛就被稱為「荷魯斯之眼」，被埃及人視為護身符，其實這就是遊戲王中千年積木中間的符號&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/horus_eye.jpg" /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;img alt="" src="/media/EgyptTravel/horus_eye.jpg" /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;Hathor: Horus的老婆，形象特徵是牛角加上太陽，牠代表喜悅、音樂、多產和幸福&lt;/li&gt;
@@ -3555,14 +3555,14 @@ cite from: https://en.m.wikipedia.org/wiki/File:Geb_and_Nut03.png
 &lt;p&gt;荷魯斯與Hathor的四子，通常會是木乃伊內臟罐子的形象，人形的 Imset 負責保護肝臟，胡狼頭得 Duamutef負責保護胃，狒狒頭的 Hapi負責保護肺，獵鷹頭的 Qebshenuf負責保護腸。&lt;/p&gt;
 &lt;h4 id="_8"&gt;底比斯三神&lt;/h4&gt;
 &lt;p&gt;阿蒙(Amun)、其妻子 姆特(Mut)和兒子為孔斯(Chons)
-&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/three_gods.png" /&gt;&lt;/p&gt;
+&lt;img alt="" src="/media/EgyptTravel/three_gods.png" /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;阿蒙Amun：生殖之神、造物之神&lt;/li&gt;
 &lt;li&gt;孔蘇：月亮之神&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h4 id="_9"&gt;死亡之書之秤心儀式&lt;/h4&gt;
 &lt;p&gt;古埃及人相信死後會進行審判，審判的儀式稱為「秤心儀式」。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/book_of_dead.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/book_of_dead.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;右邊坐在王位的是冥王Osiris，牠的後面站著分別是Isis和Nephthys，他正在進行死後的審判，天秤兩端分別是審判者的心臟與正義女神 瑪特Maat 頭上的羽毛，胡狼頭人身的Anubis在調整天秤的精確度，朱鷺頭人身的Thoth等著紀錄測量結果，審判者終極命運的兩種表現：心臟跟羽毛取得平衡，則說明死者生前積德，可享永生；若心臟較重，則心臟會被鱷魚頭獅身河馬腿的怪獸阿米特Ammit吞噬，死者便不能進入來世，上方有一排神祇陪審團，最左邊的就是太陽神Ra&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;瑪特Maat：正義女神，特徵是頭頂上有羽毛&lt;/li&gt;
@@ -3572,8 +3572,8 @@ cite from: https://en.m.wikipedia.org/wiki/File:Geb_and_Nut03.png
 &lt;h3 id="_10"&gt;搭馬車前往艾得夫神殿&lt;/h3&gt;
 &lt;p&gt;早上又得早起，昨天晚上一邊吃晚餐一邊遊輪就在往艾得夫前進，所以早上五點就直接從碼頭坐馬車前進艾得夫神殿。&lt;/p&gt;
 &lt;p&gt;艾得夫是希臘統治時期建立的城市，希臘人稱之為「太陽城」，曾經是宗教、商業中心，盛產陶器和甘蔗，而今天要參觀的艾得夫神殿也是在希臘統治時期所建立的。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2644" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2644.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2647" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2647.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2644" src="/media/EgyptTravel/IMG_2644.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2647" src="/media/EgyptTravel/IMG_2647.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="_11"&gt;艾得夫神殿&lt;/h3&gt;
 &lt;p&gt;艾得夫神殿（Temple of Edfu）又名為荷魯斯神殿，花300多年時間建，目的是獻給正義化身－鷹神荷魯斯（Horus）。&lt;/p&gt;
 &lt;p&gt;艾得夫神殿可以說是全埃及保存最完整的神殿建築，至今仍維持當年的原貌，浮雕內容更涵蓋古埃及崇拜的諸神傳說，保存完整。&lt;/p&gt;
@@ -3583,66 +3583,66 @@ cite from: https://en.m.wikipedia.org/wiki/File:Geb_and_Nut03.png
 &lt;li&gt;羅馬人在破壞這個古蹟時意外的保護了這個古蹟，羅馬人用石膏蓋住浮雕然後在上面做其他的壁畫，把石膏去除掉，還是保存了原本的浮雕&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;昨天Hassan已經有說過古埃及的標準神廟配置，今天參觀的這個艾得夫神殿因為比較少被破壞，所以根本就是教科書般的活教材。見下圖，從城牆外牆開始向內算起隔7層會到神龕的位置，而且依循著門越往內越小、地板越往內越高、屋頂越往內越低的原則，並且在最外面進去神殿會是一個前庭，前庭再進去就會是多柱廳。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2659" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2659.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2659" src="/media/EgyptTravel/IMG_2659.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 艾得夫神殿的平面圖
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;另外，第一多柱廳和第二多柱廳所有柱子家起剛好是24根，意味著一天24小時。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/temple_of_horus_map.jpeg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/temple_of_horus_map.jpeg" /&gt;
 &lt;center&gt;&lt;small&gt;
 cite from: 埃及 / 墨刻編輯部
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2652" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2652.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2652" src="/media/EgyptTravel/IMG_2652.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 艾得夫神殿門票
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2713" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2713.JPG" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2713" src="/media/EgyptTravel/IMG_2713.JPG" /&gt;
 &lt;center&gt;&lt;small&gt;
 艾得夫神殿全景圖
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2471" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2471.JPG" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2459" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2459.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2471" src="/media/EgyptTravel/IMG_2471.JPG" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2459" src="/media/EgyptTravel/IMG_2459.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 戴著上下埃及皇冠的Horus
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2467" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2467.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2668" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2668.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2674" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2674.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2680" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2680.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2467" src="/media/EgyptTravel/IMG_2467.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2668" src="/media/EgyptTravel/IMG_2668.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2674" src="/media/EgyptTravel/IMG_2674.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2680" src="/media/EgyptTravel/IMG_2680.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Horus的形象雕像
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2447" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2447.JPG" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2683" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2683.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2447" src="/media/EgyptTravel/IMG_2447.JPG" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2683" src="/media/EgyptTravel/IMG_2683.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拿破崙曾率軍住在神廟這裡三個月，天花板上的黑漬是他們在這邊烤東西所造成的
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2686" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2686.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2689" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2689.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2686" src="/media/EgyptTravel/IMG_2686.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2689" src="/media/EgyptTravel/IMG_2689.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 神龕
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2695" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2695.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2698" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2698.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2699" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2699.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2700" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2700.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2695" src="/media/EgyptTravel/IMG_2695.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2698" src="/media/EgyptTravel/IMG_2698.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2699" src="/media/EgyptTravel/IMG_2699.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2700" src="/media/EgyptTravel/IMG_2700.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 右邊是Osiris
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2702" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2702.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2702" src="/media/EgyptTravel/IMG_2702.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 壁畫的色彩還維持的很好，他進奉的是香精，這個房間曾經是放香精的地方，而在同一個房間的壁上象形文字有記載著香精的製作流程
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2704" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2704.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2704" src="/media/EgyptTravel/IMG_2704.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 存放香精
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2706" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2706.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2706" src="/media/EgyptTravel/IMG_2706.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 放香精的地方的房間牆壁記載著香精的製作流程。當時拿破崙發現了這個房間，雖然他不知道上面的象形文字代表什麼意思，但是他把他給抄起來，回法國解譯之後才知道是做香精的流程，Hassan說難怪法國香水這麼有名
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2708" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2708.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2710" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2710.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2708" src="/media/EgyptTravel/IMG_2708.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2710" src="/media/EgyptTravel/IMG_2710.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="hassan"&gt;Hassan的古埃及小教室&lt;/h3&gt;
 &lt;p&gt;在開往伊斯納水匣門的路途中有好一段時間，Hassan幫我們惡補了一些古埃及的知識。&lt;/p&gt;
 &lt;p&gt;Q：為什麼會稱之為上下埃及呢？&lt;/p&gt;
@@ -3675,8 +3675,8 @@ Horus的形象雕像
 &lt;h3 id="_12"&gt;伊斯納水匣門&lt;/h3&gt;
 &lt;p&gt;建築這個水閘是要調節尼羅河水量，預防尼羅河氾濫，因為尼羅河的河道高低起伏很大，下游的水位比上游來得低，等遊輪進入水閘後會將前面的閘門關閉，等遊輪進去後再將水位做些調整，之後再開啟閘門讓遊輪通行。&lt;/p&gt;
 &lt;p&gt;很多小販會利用船隻在等候時間來販賣東西，他們就直接在底下用丟的把東西丟上來，並且和船上的人討價還價，如果你想要買，你可以把錢放在一個袋子裡再丟下去給他們。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2740" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2740.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2742" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2742.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2740" src="/media/EgyptTravel/IMG_2740.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2742" src="/media/EgyptTravel/IMG_2742.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="luxor"&gt;路克索Luxor（古都 底比斯）&lt;/h3&gt;
 &lt;p&gt;新王國時期，古埃及首都從Memphis遷移到底比斯，也就是現在的路克索。&lt;/p&gt;
 &lt;p&gt;在底比斯東岸，有佔地超過100公頃，多達20多座的古埃及神殿。&lt;/p&gt;
@@ -3707,7 +3707,7 @@ Horus的形象雕像
 &lt;/ol&gt;
 &lt;p&gt;其中蓮花代表的是上埃及，蘆葦草代表下埃及。&lt;/p&gt;
 &lt;p&gt;在這裡可以看一個埃及人的巧思，蓮花有個特性是早上綻放，晚上含苞，所以靠近太陽的東邊是使用綻放的蓮花柱，而另外一邊則使用含苞的蓮花柱。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2761" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2761.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2761" src="/media/EgyptTravel/IMG_2761.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 卡納克神殿群：&lt;br&gt;
 1. Amun-Ra神殿  &lt;br&gt;
@@ -3717,140 +3717,140 @@ Horus的形象雕像
 5. Opet神殿 &lt;br&gt;
 6. Ptah神殿 &lt;br&gt;
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/temple_of_karnak_map.jpeg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/temple_of_karnak_map.jpeg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖上的聖湖是人工湖，用來淨身用的，具有3800年歷史，有地底水道通尼羅河 (cite from: 埃及 / 墨刻編輯部)
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2751" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2751.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2751" src="/media/EgyptTravel/IMG_2751.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 椰棗。一年只需要澆一次水，可以活100多年，可以長50米高，果實可以製成椰棗乾。
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2753" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2753.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2753" src="/media/EgyptTravel/IMG_2753.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 卡納克神殿門票
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2762" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2762.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2762" src="/media/EgyptTravel/IMG_2762.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 因為外牆的部分還沒有蓋完，所以當初用沙子當作斜坡的部分還沒有拆掉，所以Hassan說：不要再說金字塔是外星人蓋的，這裡的證據可以顯示金字塔是靠著斜坡來蓋出來的
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2759" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2759.JPG" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2759" src="/media/EgyptTravel/IMG_2759.JPG" /&gt;
 &lt;center&gt;&lt;small&gt;
 羊頭獅身代表晚上的太陽，可以看到牠的前方有一個人，那個是法老，象徵著保護法老王
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2547" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2547.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2766" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2766.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2547" src="/media/EgyptTravel/IMG_2547.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2766" src="/media/EgyptTravel/IMG_2766.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 綻放的蓮花柱
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2772" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2772.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2772" src="/media/EgyptTravel/IMG_2772.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 綻放的蓮花柱
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2773" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2773.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2773" src="/media/EgyptTravel/IMG_2773.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 含苞的蓮花柱
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2774" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2774.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2530" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2530-2.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2774" src="/media/EgyptTravel/IMG_2774.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2530" src="/media/EgyptTravel/IMG_2530-2.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 後面的雕像是拉美西斯二世
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2517" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2517.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2777" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2777.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2517" src="/media/EgyptTravel/IMG_2517.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2777" src="/media/EgyptTravel/IMG_2777.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 刻畫Feast of Opet時，將Amun-Ra沿著一條連接卡納克神殿和路克索神殿的獅身人面大道運送的過程，底下的祭司戴上老鷹頭並且扛著太陽船，太陽船上有裝有Amun-Ra神像的盒子
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2779" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2779.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2779" src="/media/EgyptTravel/IMG_2779.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉美西斯二世正在送Amun-Ra蓮花香精和牲品。法老的特徵：上下埃及皇冠、眼鏡蛇和長直鬍子，而Amun-Ra則是翹鬍子
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2792" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2792.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2792" src="/media/EgyptTravel/IMG_2792.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉美西斯二世正跪拜底比斯三神，身後的朱鷺頭智慧之神正在記載著一切，難得看到拉美西斯二世跪下，並且沒帶法老王的裝飾
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2781" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2781.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2781" src="/media/EgyptTravel/IMG_2781.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 方尖碑是一整塊花崗岩做成的，上面刻有法老的名字，已經他的事蹟，順道一提路克索這裡是不產花崗岩的，這麼高的石材怎麼一體成形，又怎麼從亞斯文那裡把他運過來，真的很不簡單
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2787" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2787.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2787" src="/media/EgyptTravel/IMG_2787.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 曾經是最高的方尖碑，是有埃及武則天之稱的哈賽普蘇女王所建
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2789" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2789.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2789" src="/media/EgyptTravel/IMG_2789.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 聖甲蟲雕像。古埃及人觀察到，聖甲蟲會在白天出來，晚上則躲在窩裡，躲在窩裡時牠會清自己的大便，一旦太陽出來後，聖甲蟲會把大便推出來。然後，剛剛有講到天空女神Nuit，埃及人解釋太陽會消失原因是太陽進去Nuit的嘴巴，太陽會再出現是因為太陽從Nuit的子宮出去，而中間的過程就是靠著聖甲蟲來推動的。所以，據說在這個聖甲蟲雕像轉7圈，可以求子，讓聖甲蟲幫忙推一下XD
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2795" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2795.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2798" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2798.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2538" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2538.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2518" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2518.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2795" src="/media/EgyptTravel/IMG_2795.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2798" src="/media/EgyptTravel/IMG_2798.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2538" src="/media/EgyptTravel/IMG_2538.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2518" src="/media/EgyptTravel/IMG_2518.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Amun-Ra
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h3 id="temple-of-luxor"&gt;路克索神殿 Temple of Luxor&lt;/h3&gt;
 &lt;p&gt;阿曼侯提普三世（Amenhotep III）在3000年前建造了這座神殿供奉「底比斯三神」：阿蒙（Amun）、姆特（Mut）和孔蘇（Khonsu），而它最重要的目的，是為了舉辦當地一年一度的歐佩特迎神慶典，強化法老王與神之間的關係。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/luxor_temple_map.jpeg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/luxor_temple_map.jpeg" /&gt;
 &lt;center&gt;&lt;small&gt;
 cite from: 埃及 / 墨刻編輯部
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2804" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2804.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2804" src="/media/EgyptTravel/IMG_2804.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 路克索神殿門票
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2807" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2807.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2807" src="/media/EgyptTravel/IMG_2807.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 路克索神殿第一塔門。方尖碑原本有兩個，對稱的放在塔門前，不過在被土耳其佔領時期將其中一個方尖碑送給法國
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2549" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2549-2.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2839" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2839.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2837" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2837.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2836" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2836.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2806" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2806.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2549" src="/media/EgyptTravel/IMG_2549-2.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2839" src="/media/EgyptTravel/IMG_2839.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2837" src="/media/EgyptTravel/IMG_2837.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2836" src="/media/EgyptTravel/IMG_2836.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2806" src="/media/EgyptTravel/IMG_2806.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 長達三公里長的獅身人面大道，連接卡納克神殿，在歐佩特迎神慶典時，底比斯三神會搭著太陽船來到這裡
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2842" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2842.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2810" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2810.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2842" src="/media/EgyptTravel/IMG_2842.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2810" src="/media/EgyptTravel/IMG_2810.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 中間為了祭祀Amun-Ra，兩旁則供奉姆特（Mut）和孔蘇（Khonsu），這邊的柱子是蘆葦草柱
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2811" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2811.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2811" src="/media/EgyptTravel/IMG_2811.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 為什麼有一個清真寺出現在這裡呢？而且怎麼門口會在這麼高的地方？原因是經過好幾年的風沙，沙子已經把路克索神殿淹沒了，阿拉伯人來這邊並不知道，所以就蓋了這個清真寺，直到後來考古學家看到方尖碑的頭，研判地底下有神殿，所以花了十年的挖掘，才讓路克索神殿重現光明
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2812" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2812.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2815" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2815.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2818" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2818.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2812" src="/media/EgyptTravel/IMG_2812.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2815" src="/media/EgyptTravel/IMG_2815.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2818" src="/media/EgyptTravel/IMG_2818.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 壁畫上的兩位面對面的是尼羅河之神Hapy，一個手拿代表上埃及的蓮花，一個手拿代表下埃及的蘆葦草，兩個繫在一起代表上下埃及的一統
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2820" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2820.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2820" src="/media/EgyptTravel/IMG_2820.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 右邊並肩而坐的是Amun-Ra和他的妻子Mut，左邊坐著的是拉美西斯二世（居然還比神大尊，真是的...）
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2821" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2821.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2821" src="/media/EgyptTravel/IMG_2821.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 圖坦卡門和他的妻子
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2830" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2830.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2562" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2562.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2567" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2567.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2830" src="/media/EgyptTravel/IMG_2830.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2562" src="/media/EgyptTravel/IMG_2562.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2567" src="/media/EgyptTravel/IMG_2567.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 蘆葦草柱
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2823" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2823.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2823" src="/media/EgyptTravel/IMG_2823.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 羅馬人把原本壁畫抹掉，把這裡建成教堂，這裡不像艾得夫神殿那樣幸運，羅馬人沒有先塗上石灰，所以就被破壞掉了
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2825" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2825.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2826" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2826.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2825" src="/media/EgyptTravel/IMG_2825.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2826" src="/media/EgyptTravel/IMG_2826.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 &lt;a href="https://zh.wikipedia.org/wiki/阿蒙霍特普二世"&gt;阿蒙霍特普二世&lt;/a&gt;與Amun-Ra。阿蒙霍特普二世是圖坦卡門的阿公，他登基時有一段小故事，他的爸爸 圖特摩斯三世 的正妻生的是女兒，而阿蒙霍特普二世的媽媽是妾，而且是血統是努比亞人，如果讓阿蒙霍特普二世當法老，大祭司們是不同意的，此時大祭司跟阿蒙霍特普二世說：「如果你想要當法老，你就娶正妻生的女兒吧！比較名正言順」，不過阿蒙霍特普二世已經有喜歡的人了，他並不答應，於是他編了一個故事，說他自己是他母親與Amun-Ra生下的兒子（所以圖特摩斯三世被帶綠帽了！？），這個說法大祭司們接受了，於是他登基成為法老，而後統治55年的時間，成就了第十八王朝最黃金的時期
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2876" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2876.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2876" src="/media/EgyptTravel/IMG_2876.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 晚上遊輪有旋轉舞表演
-&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day4: 阿布辛貝Abu Simbel【阿布辛貝雙神殿】、康孟波Kom Ombo【康孟波雙神殿】</title><link href="https://ycc.idv.tw/egypt-travel_3.html" rel="alternate"></link><published>2020-02-08T12:00:00+08:00</published><updated>2020-02-08T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-08:/egypt-travel_3.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="http://www.ycc.idv.tw/media/EgyptTravel/egypt_map_d4.png" /&gt;&lt;/p&gt;
+&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day4: 阿布辛貝Abu Simbel【阿布辛貝雙神殿】、康孟波Kom Ombo【康孟波雙神殿】</title><link href="https://ycc.idv.tw/egypt-travel_3.html" rel="alternate"></link><published>2020-02-08T12:00:00+08:00</published><updated>2020-02-08T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-08:/egypt-travel_3.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="/media/EgyptTravel/egypt_map_d4.png" /&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Day4 行程：亞斯文Aswan &amp;gt; 🚐(285KM) &amp;gt; 阿布辛貝Abu Simbel【阿布辛貝雙神殿】&amp;gt; 🚐(285KM) &amp;gt; 亞斯文Aswan &amp;gt; 🛳 &amp;gt; 康孟波Kom Ombo【康孟波雙神殿】 &amp;gt; 🛳😴 &amp;gt; 艾得夫 Edfu&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3858,14 +3858,14 @@ cite from: 埃及 / 墨刻編輯部
 &lt;p&gt;因為從亞斯文驅車前往阿布辛貝需要3到4小時，所以我們起了個大早，清晨4點就開始拉車。&lt;/p&gt;
 &lt;p&gt;在前往阿布辛貝的路途中幾乎都是行經在整片的沙漠當中，中途我們有短暫停靠在一處的休息站，也就順手拍了好幾張的沙漠早晨。&lt;/p&gt;
 &lt;p&gt;阿布辛貝嚴格說起來並不是上埃及，當然不可能是下埃及，因為原本這片土地是由努比亞人所佔領，直到拉美西斯二世攻佔這個地方後，阿布辛貝才成為埃及的一部分。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2299" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2299.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2300" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2300.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2306" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2306.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2299" src="/media/EgyptTravel/IMG_2299.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2300" src="/media/EgyptTravel/IMG_2300.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2306" src="/media/EgyptTravel/IMG_2306.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 品種好像跟台灣不大一樣
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2314" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2314.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2315" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2315.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2314" src="/media/EgyptTravel/IMG_2314.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2315" src="/media/EgyptTravel/IMG_2315.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="_2"&gt;古埃及歷史&lt;/h3&gt;
 &lt;p&gt;遠在5500年前，那個時候有上埃及和下埃及，上下埃及都有各自的國王，注意喔！是國王不是法老王，法老王指的是統一上下埃及後的國王。&lt;/p&gt;
 &lt;p&gt;BC3200，上埃及 曼尼斯國王統一上、下埃及，定都於Memphis（孟斐斯，現開羅西郊），成為古埃及第一個法老，古埃及從此開始了王朝時期。&lt;/p&gt;
@@ -3883,59 +3883,59 @@ cite from: 埃及 / 墨刻編輯部
 &lt;p&gt;阿布辛貝雙神殿不是像金字塔是用石頭鍥出來的，它是由一座山雕刻而成的，而後美國總統山的靈感也來自於阿布辛貝雙神殿。&lt;/p&gt;
 &lt;p&gt;因為建了亞斯文大水壩的關係，阿布辛貝神殿會被漲高的湖水淹沒，為了避免憾事發生，聯合國教科文組織與埃及政府合力用了4年的時間，將大神殿鋸成大石塊，搬運到現在的位置，實為現代拯救古蹟的一個大工程。&lt;/p&gt;
 &lt;p&gt;順道一提，原本進去拍照有很多限制，但就在幾個月前已經鬆綁了入內拍照的規定，現在只要用手機拍照一律不用錢。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2329" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2329.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2329" src="/media/EgyptTravel/IMG_2329.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 阿布辛貝雙神殿的門票
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2330" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2330.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2332" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2332.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2330" src="/media/EgyptTravel/IMG_2330.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2332" src="/media/EgyptTravel/IMG_2332.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 阿布辛貝雙神殿舊址是在這湖泊下
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2337" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2337.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2337" src="/media/EgyptTravel/IMG_2337.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Hassan大哥講解阿布辛貝雙神殿
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h3 id="_4"&gt;小阿布辛貝神殿（娜菲塔莉神殿）&lt;/h3&gt;
 &lt;p&gt;小阿布辛貝神殿的前面有六尊巨像，其中四個是 拉美西斯二世，另外兩個是他的老婆 娜菲塔莉。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2371" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2371.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2371" src="/media/EgyptTravel/IMG_2371.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 小阿布辛貝神殿全景圖
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2338" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2338.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2338" src="/media/EgyptTravel/IMG_2338.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 小阿布辛貝神殿
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2349" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2349.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2350" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2350.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2373" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2373.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2341" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2341.JPG" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2356" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2356.JPG" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2349" src="/media/EgyptTravel/IMG_2349.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2350" src="/media/EgyptTravel/IMG_2350.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2373" src="/media/EgyptTravel/IMG_2373.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2341" src="/media/EgyptTravel/IMG_2341.JPG" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2356" src="/media/EgyptTravel/IMG_2356.JPG" /&gt;&lt;/p&gt;
 &lt;p&gt;走入內部，神殿內四壁佈滿 拉美西斯二世 和 娜菲塔莉 向 Horus、Hathor、Maat、Mut、Satis、Horus、Isis、Khnum、Khonsu、Thoth 諸神敬奉鮮花及燃香的情景，古埃及人很喜歡用壁畫說故事。&lt;/p&gt;
 &lt;p&gt;他們獻上的花通常是古埃及的國花—蓮花。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2363" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2363.JPG" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2363" src="/media/EgyptTravel/IMG_2363.JPG" /&gt;
 &lt;center&gt;&lt;small&gt;
 生命之匙，其形狀為尼羅河的形狀，尾端像是上游，手提端有如下游的三角洲，所以生命之匙表示的是埃及
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2377" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2377.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2378" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2378.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2379" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2379.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2377" src="/media/EgyptTravel/IMG_2377.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2378" src="/media/EgyptTravel/IMG_2378.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2379" src="/media/EgyptTravel/IMG_2379.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 娜菲塔莉（右） 獻奉給 Hathor（左），牠是鷹頭人身的Horus的妻子，形象特徵是牛角加上太陽，牠代表喜悅、音樂、多產和幸福
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2381" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2381.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2381" src="/media/EgyptTravel/IMG_2381.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉美西斯二世（右） 獻奉給 Ra-Horakhty（左），Ra-Horakhty 是由太陽神Ra和鷹頭人身的Horus合體。太陽神Ra是創世之神，也是所有神祉的源頭，形象特徵就是頭頂上的大太陽。而Horus是代表法老王的神，形象特徵就是鷹頭人身。所以Ra-Horakhty兼具鷹頭人身與大太陽。
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2382" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2382.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2382" src="/media/EgyptTravel/IMG_2382.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉美西斯二世（中）和 娜菲塔莉（右）獻奉給 Hathor（左），奉獻的正是古埃及的國花—蓮花。
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2384" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2384.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2384" src="/media/EgyptTravel/IMG_2384.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 Hathor
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2385" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2385.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2385" src="/media/EgyptTravel/IMG_2385.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 鷹頭人身的Horus頭戴象徵上埃及的白冠
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -3945,51 +3945,51 @@ Hathor
 &lt;p&gt;大阿布辛貝神殿的內部深度為65米深。&lt;/p&gt;
 &lt;p&gt;值得一提的 2/22 和10/22是阿布辛貝太陽節，當天太陽光會照進大阿布辛貝神殿的聖壇，據說這兩天分別為拉美西斯二世的生日和登基紀念日，時間點位於早上6:30，大概持續30分鐘太陽光照在法老王的臉上，不過因為搬遷的緣故，現在陽光照進的時間推遲一天。&lt;/p&gt;
 &lt;p&gt;仔細想想這有多神奇，埃及人怎麼知道要如何設計神殿入口讓這兩天陽光射入的角度一致，而且就算是現代人也很難去精確的做到，真是令人驚嘆。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/great_temple_of_ramessessII_map.jpeg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/great_temple_of_ramessessII_map.jpeg" /&gt;
  &lt;center&gt;&lt;small&gt;
 cite from: 埃及 / 墨刻編輯部
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2453" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2453.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2453" src="/media/EgyptTravel/IMG_2453.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 大阿布辛貝神殿全景圖
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2536" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2536.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2536" src="/media/EgyptTravel/IMG_2536.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 四座拉美西斯二世，再加上中間的Ra-Horakhty
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2391" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2391.JPG" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2409" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2409.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2410" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2410.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2448" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2448.JPG" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2413" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2413.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2391" src="/media/EgyptTravel/IMG_2391.JPG" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2409" src="/media/EgyptTravel/IMG_2409.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2410" src="/media/EgyptTravel/IMG_2410.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2448" src="/media/EgyptTravel/IMG_2448.JPG" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2413" src="/media/EgyptTravel/IMG_2413.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 前面的老鷹是Horus的形象
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2414" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2414.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2531" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2531.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2414" src="/media/EgyptTravel/IMG_2414.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2531" src="/media/EgyptTravel/IMG_2531.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 四座巨像的腳附近的小型雕刻是拉美西斯二世的家人
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2532" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2532.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2415" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2415.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2532" src="/media/EgyptTravel/IMG_2532.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2415" src="/media/EgyptTravel/IMG_2415.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 俘虜
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2454" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2454.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2454" src="/media/EgyptTravel/IMG_2454.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 中間被橢圓框框住的是法老的名字
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2455" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2455.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2456" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2456.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2455" src="/media/EgyptTravel/IMG_2455.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2456" src="/media/EgyptTravel/IMG_2456.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 中間被橢圓框框住的是法老的名字
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2530" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2530.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2530" src="/media/EgyptTravel/IMG_2530.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 中間被橢圓框框住的是法老的名字
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2533" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2533.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2534" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2534.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2533" src="/media/EgyptTravel/IMG_2533.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2534" src="/media/EgyptTravel/IMG_2534.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;走入內部，到了第一多柱廳，有八座立姿的雕像，兩排面對面，不要懷疑，這八座也是拉美西斯二世，到底是...，而且這八座立姿的拉美西斯二世都手拿權杖，比出冥神Osiris的姿勢，更強化自己的神性。&lt;/p&gt;
 &lt;p&gt;在繼續往裡面走到底，就會到神龕的位置，敬奉的神有（順序從左至右）：  &lt;/p&gt;
 &lt;ul&gt;
@@ -3999,38 +3999,38 @@ cite from: 埃及 / 墨刻編輯部
 &lt;li&gt;Heliopolis（開羅的古地名）的守護神—Ra-Horakhty&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;有注意到了嗎？拉美西斯二世 已經把自己當作神讓人民供奉。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2461" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2461.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2461" src="/media/EgyptTravel/IMG_2461.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 第一多柱廳
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2464" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2464.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2464" src="/media/EgyptTravel/IMG_2464.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉美西斯二世 驅馬當頭作戰
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2465" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2465.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2465" src="/media/EgyptTravel/IMG_2465.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 拉美西斯二世 一個打兩個
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2498" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2498.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2499" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2499.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2501" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2501.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2502" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2502.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2507" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2507.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2498" src="/media/EgyptTravel/IMG_2498.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2499" src="/media/EgyptTravel/IMG_2499.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2501" src="/media/EgyptTravel/IMG_2501.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2502" src="/media/EgyptTravel/IMG_2502.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2507" src="/media/EgyptTravel/IMG_2507.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 大阿布辛貝神殿神龕，從左至右分別是Ptah、Amun-Ra、拉美西斯二世 和 Ra-Horakhty，今天是2/8，所以再過幾天的時間陽光就會打在 拉美西斯二世 的身上，並且壟罩在右邊的三尊，只有象徵冥神的Ptah不會被照到。
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2510" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2510.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2522" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2522.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2527" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2527.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2528" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2528.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2510" src="/media/EgyptTravel/IMG_2510.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2522" src="/media/EgyptTravel/IMG_2522.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2527" src="/media/EgyptTravel/IMG_2527.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2528" src="/media/EgyptTravel/IMG_2528.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 大阿布辛貝神殿的天花板
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2529" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2529.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2483" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2483.JPG" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2529" src="/media/EgyptTravel/IMG_2529.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2483" src="/media/EgyptTravel/IMG_2483.JPG" /&gt;&lt;/p&gt;
 &lt;h3 id="_6"&gt;海市蜃樓奇景&lt;/h3&gt;
 &lt;p&gt;在回遊輪的路途中，有看到海市蜃樓的奇景，彷彿就能看到在不遠的地方有一攤水，這不知道會害到多少古代在沙漠的人。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2549" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2549.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2549" src="/media/EgyptTravel/IMG_2549.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="temple-of-kom-ombo"&gt;康孟波神殿 Temple of Kom Ombo&lt;/h3&gt;
 &lt;p&gt;吃了午餐，休息一下，又吃了下午茶，遊輪也漸漸往北行駛，最後抵達康孟波。&lt;/p&gt;
 &lt;p&gt;名字原意為「大量(Kom) 黃金(Ombo)」的康孟波，是古埃及黃金之都的舊址，從史前時代開始，這邊就一直是熱鬧的城鎮，當地居民種植甘蔗和小麥。&lt;/p&gt;
@@ -4042,68 +4042,68 @@ cite from: 埃及 / 墨刻編輯部
 &lt;p&gt;順道一提，繼任者羅馬就沒這麼尊重埃及的文化，任意的破壞。&lt;/p&gt;
 &lt;p&gt;康孟波神殿被摧殘的很嚴重，但是和它同時也在托勒密王朝興建的艾得夫神殿卻是保存良好，原因是因為康孟波神殿地勢較低，遭受尼羅河氾濫的破壞也比較嚴重，而艾得夫神殿地勢比較高，也因此保存比較良好。&lt;/p&gt;
 &lt;p&gt;埃及神廟有個基本的標準，外面有城牆，城牆上有一個大門，大門進去是前庭，前庭進去就會是多柱廳，加上大門往內共七層的隔間才到神龕的位置，而且依循著門越往內越小、地板越往內越高、屋頂越往內越低的原則。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/temple_of_kom_ombo_map.jpeg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/temple_of_kom_ombo_map.jpeg" /&gt;
 &lt;center&gt;&lt;small&gt;
 cite from: 埃及 / 墨刻編輯部
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2583" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2583.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2591" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2591.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2595" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2595.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2583" src="/media/EgyptTravel/IMG_2583.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2591" src="/media/EgyptTravel/IMG_2591.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2595" src="/media/EgyptTravel/IMG_2595.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 從左自右分別是朱鷺頭人身的Thoth（智慧之神）、Hathor、法老王、獅面人身的Sekhmet（戰爭之神）、頭戴上下埃及王冠的Horus和頭戴下埃及王冠的Horus。諸神手拿生命之匙，代表他們保護埃及人。特別注意，Sekhmet手拿生命之匙放進法老的嘴巴，這是所謂的開口儀式，意味著復活。
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2596" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2596.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2596" src="/media/EgyptTravel/IMG_2596.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 在剛剛上面的壁畫對面，有鱷魚神索貝克（Sobek）的壁雕
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2597" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2597.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2597" src="/media/EgyptTravel/IMG_2597.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 法老王的受洗儀式，在過去大祭司會為新任法老舉辦受洗儀式，大祭司一位戴上朱鷺頭象徵Thoth（智慧之神），另外一位大祭司會戴上老鷹頭象徵Horus，雙雙手拿生命之水受洗準法老，仔細看那個水是許多生命之匙串起來的
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2598" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2598.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2598" src="/media/EgyptTravel/IMG_2598.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 法老王的受洗儀式結束之後，法老王受到左右分別代表上、下埃及的女神的擁戴，並且頭上一隻老鷹飛過，代表的是Horus正在保護埃及，最右邊的是Ra-Horakhty
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2599" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2599.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2600" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2600.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2601" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2601.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2599" src="/media/EgyptTravel/IMG_2599.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2600" src="/media/EgyptTravel/IMG_2600.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2601" src="/media/EgyptTravel/IMG_2601.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 因為被破壞過，才可以看到隱藏於石塊裡的卡榫，一個卡榫會卡住四個石塊
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2602" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2602.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2602" src="/media/EgyptTravel/IMG_2602.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 祭壇，擺的東西可不是隨便擺，有日曆紀錄聖壇每天要擺什麼
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2603" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2603.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2604" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2604.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2574" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2574.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2603" src="/media/EgyptTravel/IMG_2603.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2604" src="/media/EgyptTravel/IMG_2604.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2574" src="/media/EgyptTravel/IMG_2574.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 古埃及人醫學水平是很高的，第一排是手術刀，第三排還出現剪刀，第四排最左邊球狀的是拔罐的工具。其實在古埃及不管是醫生還是老師都是由祭司來擔任。
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2575" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2575.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2575" src="/media/EgyptTravel/IMG_2575.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 這兩位女生坐姿正在生小孩，這是古埃及人的作法，跟現在美國部分作法不謀而合
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2577" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2577.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2579" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2579.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2577" src="/media/EgyptTravel/IMG_2577.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2579" src="/media/EgyptTravel/IMG_2579.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 俘虜，連臉都不屑畫了，當然下面那個不是人名，而是他的出生地
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2580" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2580.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2580" src="/media/EgyptTravel/IMG_2580.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 動物的木乃伊棺材
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2629" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2629.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2629" src="/media/EgyptTravel/IMG_2629.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 鱷魚的木乃伊
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2633" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2633.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2633" src="/media/EgyptTravel/IMG_2633.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 鱷魚的木乃伊
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2606" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2606.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2617" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2617.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2627" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2627.jpg" /&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day3: 亞斯文【亞斯文大水壩、騎駱駝拜訪努比亞人家、三角風帆船】</title><link href="https://ycc.idv.tw/egypt-travel_2.html" rel="alternate"></link><published>2020-02-07T12:00:00+08:00</published><updated>2020-02-07T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-07:/egypt-travel_2.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="http://www.ycc.idv.tw/media/EgyptTravel/egypt_map_d3.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2606" src="/media/EgyptTravel/IMG_2606.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2617" src="/media/EgyptTravel/IMG_2617.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2627" src="/media/EgyptTravel/IMG_2627.jpg" /&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day3: 亞斯文【亞斯文大水壩、騎駱駝拜訪努比亞人家、三角風帆船】</title><link href="https://ycc.idv.tw/egypt-travel_2.html" rel="alternate"></link><published>2020-02-07T12:00:00+08:00</published><updated>2020-02-07T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-07:/egypt-travel_2.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="/media/EgyptTravel/egypt_map_d3.png" /&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Day3 行程：亞斯文Aswan【亞斯文大水壩、騎駱駝拜訪努比亞人家、三角風帆船】&amp;gt; 遊輪🛳😴&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -4121,105 +4121,105 @@ cite from: 埃及 / 墨刻編輯部
 &lt;p&gt;同時，因為亞斯文大水壩可以用來發電，也一起解決了缺電問題。&lt;/p&gt;
 &lt;p&gt;為了感謝俄羅斯的幫忙，在亞斯文大水壩附近埃及政府蓋了一座「蓮花塔」來做為合作的紀念。&lt;/p&gt;
 &lt;p&gt;但是建水庫也不僅僅有好處也有一些缺點，第一，不氾濫，就不會出現像以前一樣的黑色肥沃的泥土，第二，因為建了水庫，上游的水位線大大的提高，也造成一些土地會被淹沒，其中也包括一些古蹟，其實現在的納賽爾湖正是因為建了亞斯文水壩才多出來的，而也因為建了這個水庫，鱷魚的棲息地被限制在上游，所以納賽爾湖可以看到鱷魚，但是過了水壩的下游就再也看不到了（也是一種優點）。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_1904" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1904.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_1904" src="/media/EgyptTravel/IMG_1904.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 亞斯文大水壩的票
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_1906" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1906.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_1906" src="/media/EgyptTravel/IMG_1906.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 亞斯文大水壩
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_1917" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1917.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_1917" src="/media/EgyptTravel/IMG_1917.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 亞斯文大水壩
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_1962" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1962.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_1962" src="/media/EgyptTravel/IMG_1962.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 台埃友好
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2007" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2007.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2007" src="/media/EgyptTravel/IMG_2007.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 蓮花塔（古埃及的國花是蓮花）
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_1997" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1997.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_1986" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1986.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_1987" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1987.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_1989" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1989.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_1997" src="/media/EgyptTravel/IMG_1997.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_1986" src="/media/EgyptTravel/IMG_1986.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_1987" src="/media/EgyptTravel/IMG_1987.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_1989" src="/media/EgyptTravel/IMG_1989.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 建亞斯文大水壩時的兩任總統
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_1992" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1992.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_1992" src="/media/EgyptTravel/IMG_1992.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 埃及（右）與俄羅斯（左）的國徽
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
 &lt;h3 id="_2"&gt;搭船前往騎駱駝的地方&lt;/h3&gt;
 &lt;p&gt;參觀完水壩，我們就要去check in接下來要住四天兩夜的遊輪，遊輪看起來舒適多了，餐點也相當的不錯，至少這四天不會有腸胃炎的風險。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2029" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2029.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2029" src="/media/EgyptTravel/IMG_2029.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 我們要住四天三夜的遊輪
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2030" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2030.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2038" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2038.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2030" src="/media/EgyptTravel/IMG_2030.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2038" src="/media/EgyptTravel/IMG_2038.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;用完餐後，直接在遊輪停靠的地方，搭著汽船前往要去騎駱駝的地方，沿途的風景很好，只不過河裡礁石相當多，掌舵的人需要很小心的不讓船去撞到。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2042" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2042.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2048" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2048.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2049" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2049.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2058" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2058.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2059" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2059.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2042" src="/media/EgyptTravel/IMG_2042.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2048" src="/media/EgyptTravel/IMG_2048.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2049" src="/media/EgyptTravel/IMG_2049.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2058" src="/media/EgyptTravel/IMG_2058.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2059" src="/media/EgyptTravel/IMG_2059.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="_3"&gt;騎駱駝拜訪努比亞人家&lt;/h3&gt;
 &lt;p&gt;靠岸之後眼前就是一片的沙漠，沙漠上面蹲了好幾隻的駱駝，不要看牠蹲下去好像很矮，牠站起來真他媽的有夠高，好像還比我高...&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2064" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2064.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2065" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2065.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2066" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2066.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2064" src="/media/EgyptTravel/IMG_2064.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2065" src="/media/EgyptTravel/IMG_2065.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2066" src="/media/EgyptTravel/IMG_2066.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;選定了一隻駱駝後，連一開始要跨上去都有點困難，就這樣在那邊蹬了好多次才上駱，上去後服務人員幫忙拍了幾張相片，然後把手機還給我，然後我就天真的把它裝上去自拍棒，想說待會在行進間可以一邊拍。&lt;/p&gt;
 &lt;p&gt;服務人員說了一些口令，駱駝就開始起立，不是啊！超晃的，我的手機險些掉下去，而且為了要不讓自己摔下去，我必須緊緊的抓住前面難抓的小把手，但是我手上拿著自拍棒，更是抓不住。而且我一開始根本沒想到牠的腿這麼長，整個超高，而且駱駝不是站起來很晃以外，連走路時都超晃。&lt;/p&gt;
 &lt;p&gt;後來我漸漸抓到Tempo，比較穩了就在駱駝上面拍了幾張照片，服務小弟看我穩妥，居然就把牽繩遞給我，我一臉傻眼的看著他，是認真的嗎？我拿著牽繩後，他就開始在後面趕我的駱駝衝刺，就在驚慌當中我從原本在第六位衝到第一位，還險些走到懸崖旁（不知道為什麼駱駝總是喜歡貼著懸崖走路），就在這過程中我的自拍棒就壞了，只好趕緊把手機收進口袋裡。&lt;/p&gt;
 &lt;p&gt;路途比想像中的長，很新鮮的一個體驗。我的這隻駱駝有點不安分，看到其他駱駝就會一直靠過去，還去偷吃別人的草，而且他是很興奮的往前衝，完全沒在管牠上面的這個人，一直深怕牠會大暴走啊～&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2109" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2109.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2136" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2136.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2146" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2146.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2109" src="/media/EgyptTravel/IMG_2109.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2136" src="/media/EgyptTravel/IMG_2136.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2146" src="/media/EgyptTravel/IMG_2146.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;駱駝最後停在努比亞的村落裡，努比亞的種族是黑人，他們是曾經也建立過高度文明的古老民族，這個國家在埃及的南方，在蘇丹的北方，後來古埃及新王國時期的戰神法老王—拉美西斯二世 發動戰爭滅掉了努比亞人所建立的國家，從此失去了自己的國家達三千年之久。&lt;/p&gt;
 &lt;p&gt;目前努比亞人大多前往蘇丹的領土定居，只有少部份的人在埃及，聽Hassan大哥說，他們有些時候會抗議政府想要獨立。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2177" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2177.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2177" src="/media/EgyptTravel/IMG_2177.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 努比亞人家自己畫的壁畫
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2178" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2178.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2178" src="/media/EgyptTravel/IMG_2178.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 努比亞人家
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2180" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2180.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2180" src="/media/EgyptTravel/IMG_2180.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 努比亞人家的小寵物
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2185" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2185.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2188" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2188.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2185" src="/media/EgyptTravel/IMG_2185.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2188" src="/media/EgyptTravel/IMG_2188.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 努比亞人家的廣場屋頂是不太能遮雨的，不過如果真的下雨了，他們反而會很開心，因為一年可能只下個一兩場雨而已
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2189" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2189.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2189" src="/media/EgyptTravel/IMG_2189.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 牠是活的，努比亞人家的大寵物
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2190" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2190.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2191" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2191.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2190" src="/media/EgyptTravel/IMG_2190.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2191" src="/media/EgyptTravel/IMG_2191.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="_4"&gt;三角風帆船&lt;/h3&gt;
 &lt;p&gt;三角風帆船 Felucca 是在尼羅河上所使用的交通工具之一，據說最早以前是給法老王到各處巡視時使用的，後來才慢慢的普遍起來。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2204" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2204.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2212" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2212.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2204" src="/media/EgyptTravel/IMG_2204.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2212" src="/media/EgyptTravel/IMG_2212.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 努比亞人的迎賓曲
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2214" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2214.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2220" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2220.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2214" src="/media/EgyptTravel/IMG_2214.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IMG_2220" src="/media/EgyptTravel/IMG_2220.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="hassan"&gt;Hassan大哥的特別叮嚀&lt;/h3&gt;
 &lt;p&gt;最後回到遊輪，當地導遊Hassan大哥跟我們說晚上可以自由在附近逛，但是要特別注意很多小販賣的東西品質並不好。&lt;/p&gt;
 &lt;p&gt;例如，香精，埃及很多小販賣得並不是香精，而是精油，Hassan大哥說未來會參觀香精工廠，到了那邊在買就可以了。&lt;/p&gt;
 &lt;p&gt;另外，紙莎草，好的紙莎草在埃及一張A4大小大概要數百美元，但是有一些店卻是可以賣到只有1美元，那些大部分是用香蕉製成的紙，可能差不多放三個月就會開始脫落，好的紙莎草是可以存放千年之久的，Hassan大哥也說未來會參觀紙莎草工廠，所以也不急著現在買。因為我在背包客棧看到很多人會推路克索的 LOTUS PAPYRUS，那邊老闆會手繪紙莎草書籤，我趕緊拿這家店去問Hassan大哥，他說他知道這家店，因為很多台灣人問過他，他說這家的品質不是很好，不建議我去購買，果然有些事情還是當地人清楚，這也算是跟團的好處。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IMG_2221" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_2221.jpg" /&gt;
+&lt;p&gt;&lt;img alt="IMG_2221" src="/media/EgyptTravel/IMG_2221.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 遊輪的頂樓空間很適合放空
-&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day1-2: 開羅 穆罕默德阿里清真寺</title><link href="https://ycc.idv.tw/egypt-travel_1.html" rel="alternate"></link><published>2020-02-05T12:00:00+08:00</published><updated>2020-02-05T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-05:/egypt-travel_1.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="http://www.ycc.idv.tw/media/EgyptTravel/egypt_map_d2.png" /&gt;&lt;/p&gt;
+&lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[入埃及記] Day1-2: 開羅 穆罕默德阿里清真寺</title><link href="https://ycc.idv.tw/egypt-travel_1.html" rel="alternate"></link><published>2020-02-05T12:00:00+08:00</published><updated>2020-02-05T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2020-02-05:/egypt-travel_1.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;img alt="map" src="/media/EgyptTravel/egypt_map_d2.png" /&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Day1 行程：桃園機場 &amp;gt; ✈️(10 hrs) &amp;gt; 杜拜機場&lt;br /&gt;
 Day2 行程：杜拜 &amp;gt; ✈️(4 hrs) &amp;gt; 開羅Cairo【穆罕默德阿里清真寺】 &amp;gt; 🚐 &amp;gt; 旅館盥洗 &amp;gt; 🚆(夜臥火車😴)  &amp;gt; 亞斯文Aswan&lt;/p&gt;
@@ -4235,7 +4235,7 @@ Day2 行程：杜拜 &amp;gt; ✈️(4 hrs) &amp;gt; 開羅Cairo【穆罕默德�
 &lt;p&gt;同時，古埃及的古都 孟斐斯(Memphis) 也在開羅附近。公元前3100年左右，傳說上埃及國王&lt;a href="https://zh.wikipedia.org/wiki/美尼斯"&gt;美尼斯&lt;/a&gt;統一上、下埃及，建立&lt;a href="https://zh.wikipedia.org/wiki/第一王朝"&gt;第一王朝&lt;/a&gt;，開啟了古王朝時代，定都&lt;a href="https://zh.wikipedia.org/wiki/孟斐斯_(埃及)"&gt;孟斐斯&lt;/a&gt;（今&lt;a href="https://zh.wikipedia.org/wiki/开罗"&gt;開羅&lt;/a&gt;西郊），成為古埃及第一個&lt;a href="https://zh.wikipedia.org/wiki/法老"&gt;法老&lt;/a&gt;，古埃及從此開始了王朝時期。此時的埃及已經具備了&lt;a href="https://zh.wikipedia.org/wiki/文明"&gt;文明&lt;/a&gt;的幾個基本特徵，比如有行政官員、士兵、宗教、文字等。&lt;/p&gt;
 &lt;p&gt;而古代的上、下埃及也大概是以 孟斐斯(Memphis) 來劃分，Memphis 以北也就是尼羅河的下游稱為「下埃及」，Memphis 以南也就是尼羅河的上游稱為「上埃及」。順道一提，尼羅河的東岸稱為「東岸」，尼羅河的西岸稱為「西岸」。&lt;/p&gt;
 &lt;p&gt;古埃及的歷史悠久，是世界文明古國之一，但是古埃及結束之後，埃及長時間的受外來政權統治，分別經歷希臘、羅馬、阿拉伯、鄂圖曼土耳其帝國、法國、英國，終於在1922年2月28日，英國被迫承認埃及獨立，才結束了長時間的外來政權統治。也因此古埃及文明和知識並沒有被傳承下來，直到現代才被考古學發現後重新被世人認知。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1695.jpg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1695.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 埃及領隊 Hassan
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -4246,15 +4246,15 @@ Day2 行程：杜拜 &amp;gt; ✈️(4 hrs) &amp;gt; 開羅Cairo【穆罕默德�
 &lt;h3 id="_2"&gt;穆罕默德阿里清真寺@開羅&lt;/h3&gt;
 &lt;p&gt;在開羅的第一站就是在「大城堡」裡頭的穆罕默德阿里清真寺。&lt;/p&gt;
 &lt;p&gt;大城堡位於開羅，大城堡曾經是埃及的統治中心，時間長達700年之久，歷經多個王朝，於1176年開始興建，當初的目的是在於抵抗十字軍，後來，在土耳其、拿破崙和法國統治時期，都是一個重要的據點。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/citadel_map.jpeg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/citadel_map.jpeg" /&gt;
 &lt;center&gt;&lt;small&gt;
 cite from: 埃及 / 墨刻編輯部
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1697.jpg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1697.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 大城堡入場券
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1698.jpg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1698.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 穆罕默德阿里清真寺
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
@@ -4262,37 +4262,37 @@ cite from: 埃及 / 墨刻編輯部
 &lt;p&gt;穆罕默德•阿里在埃及近代史上享譽盛名，有現代埃及之父的美稱，他積極推廣教育、改良耕作，帶領埃及走向現代化。&lt;/p&gt;
 &lt;p&gt;外部是雪花石建材，內部華麗的祈禱室，由高達52公尺的中心圓頂支撐，遼闊的庭院，還保留有以路克索神殿方尖碑和法國換來的時鐘，可媲美伊斯坦堡的藍色清真寺，穆罕默德阿里清真寺乃埃及現代化的最佳表徵。&lt;/p&gt;
 &lt;p&gt;進到清真寺不能穿短褲，也不宜穿的太清涼，入內需要脫鞋，建議鞋子不要放外面，提著鞋子入內，Hassan大哥帶我們把鞋子放到裡頭的窗台前，果然是內行的。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1775.jpg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1775.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 鞋子可以放在裡面的窗台前
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1791.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1791.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;就這樣入內席地而坐，Hassan大哥開始介紹埃及的宗教，羅馬統治時引入了基督教，鄂圖曼土耳其帝國時引入了伊斯蘭教，目前埃及信仰中基督教佔 8%、伊斯蘭教佔 92%。&lt;/p&gt;
 &lt;p&gt;因為Hassan大哥本身是埃及人，也是伊斯蘭教的信徒，他開始仔細的介紹伊斯蘭教的禱告，虔誠的信徒一天要禱告五次，禱告前要將手、頭、臉、鼻內、口和腳全部洗過三次，然後朝著麥加的方向跪拜真主阿拉，並且要唸一段約5分鐘的經文。他開玩笑的說，埃及人一天要洗15次手，難怪沒有武漢肺炎。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1776.jpg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1776.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 階梯面向麥加的方向
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1790.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1788.jpg" /&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1790.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1788.jpg" /&gt;
 &lt;center&gt;&lt;small&gt;
 四個柱子撐起的圓拱式建築
 &lt;/small&gt;&lt;/center&gt;&lt;br&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1824.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1839.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1824.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1839.jpg" /&gt;&lt;/p&gt;
 &lt;h3 id="_3"&gt;夜晚的臥舖火車&lt;/h3&gt;
 &lt;p&gt;參觀完清真寺晚上要驅車前往亞斯文，在那之前旅行社有安排盥洗的飯店，因為火車上面沒辦法洗澡。&lt;/p&gt;
 &lt;p&gt;順道一提，埃及的交通真的蠻亂的，鮮少看到紅綠燈，車子基本上都是用擠的，逆向也是很常見的，馬路上充斥著喇叭聲，還好我不是自助旅行。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1877.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1880.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1877.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1880.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;臥舖火車的品質跟想像中的一樣差，餐點也是不好吃，當然有做功課的我已經準備好泡麵了，一個房間擠兩個人，空間相當的狹小，這個倒是還好，但是環境真的不是很乾淨，空氣中有滿滿的發霉味。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1889.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1891.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1894.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1889.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1891.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1894.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;廁所也是很嚇人的髒，馬桶是直通火車外面的地板，所以車站可能會飄來大便味是不意外的，反正都是預期內的事，來埃及本來就不是來享受度假的（煙～&lt;/p&gt;
 &lt;p&gt;吃完晚餐鋪好上下鋪，就準備睡覺囉！&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1898.jpg" /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="http://www.ycc.idv.tw/media/EgyptTravel/IMG_1899.jpg" /&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[Paper] Wide &amp; Deep Learning for Recommender Systems</title><link href="https://ycc.idv.tw/wide-and-deep-learning.html" rel="alternate"></link><published>2019-06-01T12:00:00+08:00</published><updated>2019-06-01T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2019-06-01:/wide-and-deep-learning.html</id><summary type="html">&lt;p&gt;以往認為deep learning有辦法完全取代feature engineering，Google在2016年寫下的這篇paper，指出在數據相對稀疏（sparse）的情況下feature engineering仍然有其重要性&lt;/p&gt;</summary><content type="html">&lt;h3 id="_1"&gt;結論寫在前面&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1898.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/EgyptTravel/IMG_1899.jpg" /&gt;&lt;/p&gt;</content><category term="Life"></category><category term="遊記"></category><category term="埃及"></category></entry><entry><title>[Paper] Wide &amp; Deep Learning for Recommender Systems</title><link href="https://ycc.idv.tw/wide-and-deep-learning.html" rel="alternate"></link><published>2019-06-01T12:00:00+08:00</published><updated>2019-06-01T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2019-06-01:/wide-and-deep-learning.html</id><summary type="html">&lt;p&gt;以往認為deep learning有辦法完全取代feature engineering，Google在2016年寫下的這篇paper，指出在數據相對稀疏（sparse）的情況下feature engineering仍然有其重要性&lt;/p&gt;</summary><content type="html">&lt;h3 id="_1"&gt;結論寫在前面&lt;/h3&gt;
 &lt;p&gt;以往認為deep learning有辦法完全取代feature engineering，Google在2016年寫下的這篇paper，指出在數據相對稀疏（sparse）的情況下feature engineering仍然有其重要性，此篇paper使用聯合訓練（jointly train）deep和wide結構的方法，得到比純粹deep或純粹wide的效果還好的成果，這裡的wide就是我們一般所說的feature engineering。&lt;/p&gt;
 &lt;h3 id="memorization-and-generalization"&gt;Memorization and Generalization&lt;/h3&gt;
 &lt;p&gt;Memorization指的就是wide learning，此部分的產生需要較多的人為參與，也就是feature engineering，通常我們會依照人為的認知、或是統計數據、或是反覆實驗的結果，將一些有關聯性的變數進行cross-product以讓model得以「記住」這些相關性，通常這種基於memorization的結構會比較具有解釋性。&lt;/p&gt;

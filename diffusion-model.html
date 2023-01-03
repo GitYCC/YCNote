@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,778) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 515,794) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="diffusion-model">擴散模型（Diffusion Model）：生成模型的新成員</h1>
 <p>
-      Posted on May 20, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 4,049
+      Posted on May 20, 2022 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 4,050
 
     </p>
 </header>
@@ -149,9 +149,9 @@
 <h2 id="generative-model">生成模型 (Generative Model) 家族</h2>
 <p>在過去，作為生成模型的 GAN (Generative Adversarial Network) 最廣為人使用，GAN是在2014年由 Goodfellow 所提出來的方法，其結構由兩個網路所組成：生成器網路和鑑別器網路，生成器網路負責生成以假亂真的合成樣本，而鑑別器網路負責仔細區分出真實樣本和合成樣本，經由兩者交替對抗學習，最終我們可以得到一個好的生成器。這個生成器網路通常輸入為一組取樣自高斯分布的亂數，而輸出就是合成樣本。</p>
 <p><strong>為何我們需要取樣於一個「分布」？</strong>以圖片為例，假設是長32寬32的一張圖片可以由一組長度為32x32x3的向量來表示，這並不意味著一組長度為32x32x3的隨機向量就能產生一張「有意義的」圖片，所以在32x32x3的空間中存在著能產生有意義圖片的不同機率分布，我們只要能把這個機率分布估準了，就可以從這個機率分布抽樣出有意義的圖片，這就是為何生成模型往往需要抽樣至某個分布，可想而知要用簡單的數學式來表示這樣的分布是多們困難的一件事，因此科學家們設計了一個簡單分布—高斯分布，並希望透過若干複雜的轉換（通常使用深度網路）後可以得到這個複雜的分布，通常我們會稱這個高斯分布為Hidden Space，因此「從樣本空間抽樣」等效於「從Hidden Space抽樣再轉換」。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Generative/hidden-to-sample-space.jpeg"/></p>
+<p><img alt="" src="/media/Generative/hidden-to-sample-space.jpeg"/></p>
 <p>繼GAN以後有一個後起之秀 — Flow-based Generative Model，不同於 GAN 需要一個鑑別器網路來輔助訓練生成器網路，Flow-based Generative Model 透過一個可逆推的網路結構來訓練，這個可逆推網路的兩端就是Hidden Space跟我們想要得到的Sample Space，既然網路是可以逆推的，我們就可以輸入一群真實樣本訓練網路將其分布轉換為高斯分布的Hidden Space，待網路訓練完成我們就可以逆推來作為生成器使用。</p>
-<p><img alt="ddpm" src="http://www.ycc.idv.tw/media/Generative/ddpm.png"/></p>
+<p><img alt="ddpm" src="/media/Generative/ddpm.png"/></p>
 <p>近期，生成模型的家族又多了一個新的模型，就是本篇要介紹的擴散模型（Diffusion Model），Diffusion Model 的中心思想是使用若干個微幅轉換來轉換Hidden Space成為Sample Space，如上圖所示， <span class="math">\(\pmb{x}_T\)</span> 代表抽樣自高斯分布Hidden Space的圖片，<span class="math">\(\pmb{x}_0\)</span> 代表抽樣自Sample Space的圖片，從 <span class="math">\(\pmb{x}_0\)</span> 到 <span class="math">\(\pmb{x}_T\)</span> 是模糊化的過程，中間經過若干事先定義好的操作 <span class="math">\(q(\pmb{x}_{t}\mid \pmb{x}_{t-1})\)</span>，而生成模型旨於學習模糊化的逆向轉換 <span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> ，當我們有了<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 就可以隨機抽樣自Hidden Space並轉成一張合成的圖片。實際操作上，<span class="math">\(p_\theta(\pmb{x}_{t-1}\mid \pmb{x}_t)\)</span> 是一個神經網路，其輸入為圖片 <span class="math">\(\pmb{x}_t\)</span> 和其所在的step <span class="math">\(t\)</span>，其輸出為預測模糊化中被添加的雜訊 <span class="math">\(\pmb{z}_\theta(\pmb{x}_t ,t)\)</span> ，經理論的推導證明：
 </p>
 <div class="math">$$
@@ -162,7 +162,7 @@ $$</div>
 <p>閱讀到這裡的你已經把它的概念弄懂八成了，接下來要進入到可怕的數學時間，Are you ready?</p>
 <h2 id="variational-inference-evidence-lower-bound-elbo">從 Variational Inference 到 Evidence Lower Bound (ELBO)</h2>
 <p>近年來面對極其複雜（e.g. NN）的機率模型，傳統的優化方式變得不可行，如： Expectation-Maximization Algorithm ，所以接下來要跟大家介紹的 Variational Inference (VI) 就變得開始廣為人使用。</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Generative/variational_inference.png"/></p>
+<p><img alt="" src="/media/Generative/variational_inference.png"/></p>
 <p>常見的生成模型可以表示成如上圖所示，<span class="math">\(\pmb{x}\)</span>  為生成之樣本，而 <span class="math">\(\pmb{z}\)</span> 座落於 latent space <span class="math">\(Z\)</span> 上的一個點，這個 latent space 可以具有各類可能的分布，為求方便通常會定義為一個 <a href="https://www.ycc.idv.tw/deep-dl_1.html">高斯分佈</a>，即 <span class="math">\(p (\pmb{z})\sim\mathcal{N}(\pmb{z}:\pmb{0};\pmb{I})\)</span> 。假設 <span class="math">\(p (\pmb{x}\mid \pmb{z})\)</span> (給定<span class="math">\(\pmb{z}\)</span> 之後求 <span class="math">\(\pmb{x}\)</span>  的分布) 是已知的，則聯合機率為
 </p>
 <div class="math">$$
@@ -377,7 +377,7 @@ L_{t,mean,simple}=\mid\mid\pmb{\epsilon}-\pmb{z}_\theta(\sqrt{\bar{\alpha}_t}\pm
 $$</div>
 <p>
 因此DDPM的訓練和取樣示例代碼如下：</p>
-<p><img alt="" src="http://www.ycc.idv.tw/media/Generative/DDPM-algo.png"/></p>
+<p><img alt="" src="/media/Generative/DDPM-algo.png"/></p>
 <p>其中應用到【2.24】和【2.22】。</p>
 <h2 id="appendix-a-kl-divergence-between-two-gaussians">Appendix A: KL Divergence between two Gaussians</h2>
 <div class="math">$$
