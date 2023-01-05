@@ -117,7 +117,7 @@ CC_LICENSE = {
 COPYRIGHT_YEAR = datetime.now().year
 DEFAULT_PAGINATION = 30
 
-# ADD_THIS_ID = 'ra-55adbb025d4f7e55'
+ADD_THIS_ID = 'ra-63b4eabb5e84e9fb'
 
 STATIC_PATHS = ['media', 'images', 'extra/ads.txt', 'extra/CNAME']
 
