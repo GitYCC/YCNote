@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
 <link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
 <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
-<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/pygments/default.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
 <link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
 <link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
 <link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 520,434) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 520,463) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(this); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -276,7 +276,28 @@
 <p><strong>（詳解）僅能訪問那些類別出現在自身、成員變數、方法的輸入和輸出參數中的方法。</strong></p>
 <p>-- 例子: 假設今天一名老師給了學生名條想叫班長幫忙點名。</p>
 <p>錯誤示範：</p>
-<div class="highlight"><pre><span></span><code><span class="c1">### Python3.4</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3.4</span>
 
 <span class="k">class</span> <span class="nc">Student</span><span class="p">:</span> <span class="c1">#friends: None</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
@@ -298,11 +319,36 @@
     <span class="n">leader</span> <span class="o">=</span> <span class="n">Leader</span><span class="p">()</span>
     <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span><span class="s1">'B'</span><span class="p">,</span><span class="s1">'C'</span><span class="p">,</span><span class="s1">'D'</span><span class="p">,</span><span class="s1">'E'</span><span class="p">]</span>
     <span class="n">teacher</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name_list</span><span class="p">,</span><span class="n">leader</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p><img alt="teacher-leader-student_1" src="/media/SOLID_Introduction/teacher-leader-student_1.png"/></p>
 <p>以上程式違反「迪米特法則」，因為在類別<code>Teacher</code>的方法<code>command</code>中訪問了不是朋友的<code>Student</code>，這會使得<code>Teacher</code>和<code>Student</code>會產生不必要的耦合，我們可以將創造<code>student_list</code>的權責轉移到<code>Leader</code>上，如此一來就可以斷開<code>Teacher</code>和<code>Student</code>的耦合。</p>
 <p>正確示範：</p>
-<div class="highlight"><pre><span></span><code><span class="c1">### Python3.4</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3.4</span>
 
 <span class="k">class</span> <span class="nc">Student</span><span class="p">:</span> <span class="c1">#friends: None</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
@@ -328,7 +374,7 @@
     <span class="n">leader</span> <span class="o">=</span> <span class="n">Leader</span><span class="p">()</span>
     <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span><span class="s1">'B'</span><span class="p">,</span><span class="s1">'C'</span><span class="p">,</span><span class="s1">'D'</span><span class="p">,</span><span class="s1">'E'</span><span class="p">]</span>
     <span class="n">teacher</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name_list</span><span class="p">,</span><span class="n">leader</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p><img alt="teacher-leader-student_2" src="/media/SOLID_Introduction/teacher-leader-student_2.png"/></p>
 <p>-- Why it works? </p>
 <p>先來想想「朋友」有什麼共通之處？其實它們都是類別本身無法斷開耦合的物件，既然無法斷開耦合，何不運用到底，運用這些「朋友」來完成任務，不要再去增加其他的耦合性，也同時幫助提升類別的內聚性，這就是「迪米特法則」真正想做的事。</p>
@@ -336,7 +382,21 @@
 <p><strong>（詳解）減少類別的對外方法，將沒必要對外公布的方法隱藏起來。</strong></p>
 <p>-- 例子: 安裝程式。</p>
 <p>錯誤範例：</p>
-<div class="highlight"><pre><span></span><code><span class="c1">### Python3.4</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3.4</span>
 
 <span class="k">class</span> <span class="nc">Wizard</span><span class="p">:</span> <span class="c1"># 3 public methods</span>
     <span class="k">def</span> <span class="nf">first</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -351,10 +411,27 @@
         <span class="n">wizard</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
         <span class="n">wizard</span><span class="o">.</span><span class="n">second</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
         <span class="n">wizard</span><span class="o">.</span><span class="n">third</span><span class="p">()</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p>有太多沒必要對外公布的細節了，依照「迪米特法則」，我們應該將盡量減少對外公布的資訊，把不必要公布的細節私有化。</p>
 <p>正確範例：</p>
-<div class="highlight"><pre><span></span><code><span class="c1">### Python3.4</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3.4</span>
 
 <span class="k">class</span> <span class="nc">Wizard</span><span class="p">:</span> <span class="c1"># only 1 public method</span>
     <span class="k">def</span> <span class="nf">install</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mode</span><span class="p">):</span>
@@ -372,7 +449,7 @@
 <span class="k">class</span> <span class="nc">Install</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">install</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wizard</span><span class="p">,</span><span class="n">mode</span><span class="p">):</span>
         <span class="n">wizard</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <h3 id="dependence-inversion-principle-dip">依賴倒置原則(Dependence Inversion Principle, DIP)</h3>
 <ul>
 <li>

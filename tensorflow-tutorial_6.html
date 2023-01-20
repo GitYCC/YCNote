@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
 <link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
 <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
-<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/pygments/default.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
 <link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
 <link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
 <link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 520,434) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 520,463) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(this); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -182,7 +182,17 @@ $$</div>
 <p>這就是LSTM，「長期記憶」的出現可以解決掉梯度消失的問題，RNN只有「短期記憶」，所以一旦認為一個特徵不重要，經過幾回連乘，這個特徵的梯度就會消失殆盡，但是LSTM保留State，並且使用「加」的方法更新State，所以有一些重要的State得以留下來持續影響著Output，解決了梯度消失的問題。但是，不幸的LSTM還是免不了梯度爆炸，為什麼呢？如果一個特徵真的很重要，State會記住，Input也會強調，所以幾輪下來還是有可能出現爆炸的情況，這時候我們就需要Gradient Clipping的幫忙。</p>
 <h3 id="lstm">使用LSTM實作文章產生器</h3>
 <p>接下來我們來實作LSTM，目標是做一個文章產生器，我們希望機器可以不斷的根據前文猜測下一個「字母」(Letters)應該要下什麼，如此一來我只要給個開頭字母，LSTM就可以幫我腦補成一篇文章。</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
@@ -193,8 +203,61 @@ $$</div>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
 <span class="n">tf</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">LETTER_SIZE</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># [a-z] + ' '</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">LETTER_SIZE</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># [a-z] + ' '</span>
 <span class="n">FIRST_LETTER_ASCII</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 <span class="k">def</span> <span class="nf">maybe_download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">expected_bytes</span><span class="p">):</span>
@@ -248,8 +311,16 @@ $$</div>
 <span class="n">train_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_text</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">'Train Dataset: size:'</span><span class="p">,</span> <span class="n">train_size</span><span class="p">,</span> <span class="s1">'letters,</span><span class="se">\n</span><span class="s1">  first 64:'</span><span class="p">,</span> <span class="n">train_text</span><span class="p">[:</span><span class="mi">64</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">'Validation Dataset: size:'</span><span class="p">,</span> <span class="n">valid_size</span><span class="p">,</span> <span class="s1">'letters,</span><span class="se">\n</span><span class="s1">  first 64:'</span><span class="p">,</span> <span class="n">valid_text</span><span class="p">[:</span><span class="mi">64</span><span class="p">])</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">Downloading text8.zip</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">Downloading text8.zip</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Found and verified ./text8.zip</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">=====</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Data size 100000000 letters</span><span class="w"></span>
@@ -258,12 +329,75 @@ $$</div>
 <span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">first 64</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ons anarchists advocate social relations based upon voluntary as</span><span class="w"></span>
 <span class="nt">Validation Dataset</span><span class="p">:</span><span class="w"> </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000 letters,</span><span class="w"></span>
 <span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">first 64</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">anarchism originated as a term of abuse first used against earl</span><span class="w"></span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p>上面操作我們建制完成了字母庫，接下來就可以產生我們訓練所需要的Batch Data，所以我們來看看究竟要產生怎樣格式的資料。</p>
 <p><img alt="LSTM Implement" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/TensorflowTutorial.013.jpeg"/></p>
 <p>如上圖所示，有點小複雜，假設我要設計一個LSTM Model，它的Unrolling Number為3，Batch Size為2，然後遇到的字串是"abcde fghij klmno pqrst"，接下來就開始產生每個Round要用的Data，產生的結果如上圖所示，你會發現產生的Data第0軸表示的是考慮unrolling需要取樣的資料，總共應該會有(Unrolling Number+1)筆，如上圖例，共有4筆，3筆當作輸入而3筆當作Labels，中間有2筆重疊使用，另外還有一點，我們會保留最後一筆Data當作下一個回合的第一筆，這是為了不浪費使用每一個字母前後的組合。而第1軸則是餵入單一LSTM需要的資料，我們一次可以餵多組不相干的字母進去，如上圖例，Batch Size=2所以餵2個字母進去，那這些不相干的字母在取樣的時候，我們會盡量讓它平均分配在文字庫，才能確保彼此之間不相干，以增加LSTM的訓練效率和效果。</p>
 <p>因此，先產生Batch Data吧！</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="n">probabilities</span><span class="p">):</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">characters</span><span class="p">(</span><span class="n">probabilities</span><span class="p">):</span>
     <span class="sd">"""Turn a 1-hot encoding or a probability distribution over the possible</span>
 <span class="sd">    characters back into its (most likely) character representation."""</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">id2char</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
@@ -327,16 +461,44 @@ $$</div>
 <span class="nb">print</span><span class="p">(</span><span class="s1">'*** valid_batches:'</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">batches2string</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">valid_batches</span><span class="p">)))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">batches2string</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">valid_batches</span><span class="p">)))</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nt">*** train_batches</span><span class="p">:</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">*** train_batches</span><span class="p">:</span><span class="w"></span>
 <span class="p p-Indicator">[</span><span class="s">'ons</span><span class="nv"> </span><span class="s">anarchi'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'when</span><span class="nv"> </span><span class="s">milita'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'lleria</span><span class="nv"> </span><span class="s">arch'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">abbeys</span><span class="nv"> </span><span class="s">and'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'married</span><span class="nv"> </span><span class="s">urr'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'hel</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">ric'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'y</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">litur'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ay</span><span class="nv"> </span><span class="s">opened</span><span class="nv"> </span><span class="s">f'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'tion</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'migration</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'new</span><span class="nv"> </span><span class="s">york</span><span class="nv"> </span><span class="s">ot'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'he</span><span class="nv"> </span><span class="s">boeing</span><span class="nv"> </span><span class="s">s'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">listed</span><span class="nv"> </span><span class="s">wi'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'eber</span><span class="nv"> </span><span class="s">has</span><span class="nv"> </span><span class="s">pr'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'o</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">made</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'yer</span><span class="nv"> </span><span class="s">who</span><span class="nv"> </span><span class="s">rec'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ore</span><span class="nv"> </span><span class="s">signifi'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a</span><span class="nv"> </span><span class="s">fierce</span><span class="nv"> </span><span class="s">cr'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">two</span><span class="nv"> </span><span class="s">six</span><span class="nv"> </span><span class="s">ei'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'aristotle</span><span class="nv"> </span><span class="s">s'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ity</span><span class="nv"> </span><span class="s">can</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">intrac'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'tion</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'dy</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">pass</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'f</span><span class="nv"> </span><span class="s">certain</span><span class="nv"> </span><span class="s">d'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'at</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">will</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">convince</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ent</span><span class="nv"> </span><span class="s">told</span><span class="nv"> </span><span class="s">hi'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ampaign</span><span class="nv"> </span><span class="s">and'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'rver</span><span class="nv"> </span><span class="s">side</span><span class="nv"> </span><span class="s">s'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ious</span><span class="nv"> </span><span class="s">texts</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'o</span><span class="nv"> </span><span class="s">capitaliz'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a</span><span class="nv"> </span><span class="s">duplicate'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'gh</span><span class="nv"> </span><span class="s">ann</span><span class="nv"> </span><span class="s">es</span><span class="nv"> </span><span class="s">d'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ine</span><span class="nv"> </span><span class="s">january'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ross</span><span class="nv"> </span><span class="s">zero</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'cal</span><span class="nv"> </span><span class="s">theorie'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ast</span><span class="nv"> </span><span class="s">instanc'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">dimensiona'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'most</span><span class="nv"> </span><span class="s">holy</span><span class="nv"> </span><span class="s">m'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'t</span><span class="nv"> </span><span class="s">s</span><span class="nv"> </span><span class="s">support'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'u</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">still</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">oscillati'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'o</span><span class="nv"> </span><span class="s">eight</span><span class="nv"> </span><span class="s">sub'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'of</span><span class="nv"> </span><span class="s">italy</span><span class="nv"> </span><span class="s">la'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'s</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">tower'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'klahoma</span><span class="nv"> </span><span class="s">pre'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'erprise</span><span class="nv"> </span><span class="s">lin'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ws</span><span class="nv"> </span><span class="s">becomes</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'et</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">naz'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'the</span><span class="nv"> </span><span class="s">fabian</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'etchy</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">re'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">sharman</span><span class="nv"> </span><span class="s">ne'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ised</span><span class="nv"> </span><span class="s">empero'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ting</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">pol'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'d</span><span class="nv"> </span><span class="s">neo</span><span class="nv"> </span><span class="s">latin'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'th</span><span class="nv"> </span><span class="s">risky</span><span class="nv"> </span><span class="s">ri'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'encyclopedi'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'fense</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'duating</span><span class="nv"> </span><span class="s">fro'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'treet</span><span class="nv"> </span><span class="s">grid</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ations</span><span class="nv"> </span><span class="s">more'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'appeal</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">d'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'si</span><span class="nv"> </span><span class="s">have</span><span class="nv"> </span><span class="s">mad'</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="p p-Indicator">[</span><span class="s">'ists</span><span class="nv"> </span><span class="s">advoca'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ary</span><span class="nv"> </span><span class="s">governm'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'hes</span><span class="nv"> </span><span class="s">nationa'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'d</span><span class="nv"> </span><span class="s">monasteri'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'raca</span><span class="nv"> </span><span class="s">prince'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'chard</span><span class="nv"> </span><span class="s">baer</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'rgical</span><span class="nv"> </span><span class="s">lang'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'for</span><span class="nv"> </span><span class="s">passeng'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'the</span><span class="nv"> </span><span class="s">nationa'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'took</span><span class="nv"> </span><span class="s">place</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ther</span><span class="nv"> </span><span class="s">well</span><span class="nv"> </span><span class="s">k'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'seven</span><span class="nv"> </span><span class="s">six</span><span class="nv"> </span><span class="s">s'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ith</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">gloss'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'robably</span><span class="nv"> </span><span class="s">bee'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'to</span><span class="nv"> </span><span class="s">recogniz'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ceived</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'icant</span><span class="nv"> </span><span class="s">than</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ritic</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">th'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ight</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">sig'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'s</span><span class="nv"> </span><span class="s">uncaused</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">lost</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">in'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'cellular</span><span class="nv"> </span><span class="s">ic'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">size</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">him</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">stic'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'drugs</span><span class="nv"> </span><span class="s">confu'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">take</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">co'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">priest'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'im</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">name</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'d</span><span class="nv"> </span><span class="s">barred</span><span class="nv"> </span><span class="s">at'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'standard</span><span class="nv"> </span><span class="s">fo'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">such</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">es'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ze</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">g'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">or'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'d</span><span class="nv"> </span><span class="s">hiver</span><span class="nv"> </span><span class="s">one'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'y</span><span class="nv"> </span><span class="s">eight</span><span class="nv"> </span><span class="s">mar'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'the</span><span class="nv"> </span><span class="s">lead</span><span class="nv"> </span><span class="s">ch'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'es</span><span class="nv"> </span><span class="s">classica'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ce</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">non</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'al</span><span class="nv"> </span><span class="s">analysis'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'mormons</span><span class="nv"> </span><span class="s">bel'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'t</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">lea'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">disagreed</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ing</span><span class="nv"> </span><span class="s">system</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'btypes</span><span class="nv"> </span><span class="s">base'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'anguages</span><span class="nv"> </span><span class="s">th'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'r</span><span class="nv"> </span><span class="s">commissio'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ess</span><span class="nv"> </span><span class="s">one</span><span class="nv"> </span><span class="s">nin'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'nux</span><span class="nv"> </span><span class="s">suse</span><span class="nv"> </span><span class="s">li'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">first</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'zi</span><span class="nv"> </span><span class="s">concentr'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">society</span><span class="nv"> </span><span class="s">ne'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'elatively</span><span class="nv"> </span><span class="s">s'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'etworks</span><span class="nv"> </span><span class="s">sha'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'or</span><span class="nv"> </span><span class="s">hirohito'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'litical</span><span class="nv"> </span><span class="s">ini'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'n</span><span class="nv"> </span><span class="s">most</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">t'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'iskerdoo</span><span class="nv"> </span><span class="s">ri'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'ic</span><span class="nv"> </span><span class="s">overview'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'air</span><span class="nv"> </span><span class="s">compone'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'om</span><span class="nv"> </span><span class="s">acnm</span><span class="nv"> </span><span class="s">acc'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'</span><span class="nv"> </span><span class="s">centerline'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'e</span><span class="nv"> </span><span class="s">than</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'devotional</span><span class="nv"> </span><span class="s">'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'de</span><span class="nv"> </span><span class="s">such</span><span class="nv"> </span><span class="s">dev'</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="nt">*** valid_batches</span><span class="p">:</span><span class="w"></span>
 <span class="p p-Indicator">[</span><span class="s">'</span><span class="nv"> </span><span class="s">a'</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="p p-Indicator">[</span><span class="s">'an'</span><span class="p p-Indicator">]</span><span class="w"></span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p>定義一下待會會用到的函數。</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sample_distribution</span><span class="p">(</span><span class="n">distribution</span><span class="p">):</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sample_distribution</span><span class="p">(</span><span class="n">distribution</span><span class="p">):</span>
     <span class="sd">"""Sample one element from a distribution assumed to be an array of normalized</span>
 <span class="sd">    probabilities.</span>
 <span class="sd">    """</span>
@@ -360,9 +522,206 @@ $$</div>
     <span class="sd">"""Log-probability of the true labels in a predicted batch."""</span>
     <span class="n">predictions</span><span class="p">[</span><span class="n">predictions</span> <span class="o">&lt;</span> <span class="mf">1e-10</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-10</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">predictions</span><span class="p">)))</span> <span class="o">/</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p>開始建制LSTM Model。</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LSTM</span><span class="p">:</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">LSTM</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_unrollings</span><span class="p">,</span> <span class="n">n_memory</span><span class="p">,</span> <span class="n">n_train_batch</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_unrollings</span> <span class="o">=</span> <span class="n">n_unrollings</span>
@@ -560,8 +919,62 @@ $$</div>
             <span class="n">feed</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
             <span class="n">sentence</span> <span class="o">+=</span> <span class="n">characters</span><span class="p">(</span><span class="n">feed</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">sentence</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1"># build training batch generator</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># build training batch generator</span>
 <span class="n">batch_generator</span> <span class="o">=</span> <span class="n">rnn_batch_generator</span><span class="p">(</span>
     <span class="n">text</span><span class="o">=</span><span class="n">train_text</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
@@ -616,8 +1029,84 @@ $$</div>
         <span class="nb">print</span><span class="p">(</span><span class="s1">'Generate From </span><span class="se">\'</span><span class="s1">m</span><span class="se">\'</span><span class="s1">:  '</span><span class="p">,</span> <span class="n">model_LSTM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s1">'m'</span><span class="p">,</span> <span class="n">len_generate</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">'=========================================='</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">Epoch 1/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">66s loss = 1.8249, perplexity = 5.6840</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w">    </span><span class="nt">Epoch 1/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">66s loss = 1.8249, perplexity = 5.6840</span><span class="w"></span>
 <span class="w">    </span><span class="nt">Epoch 2/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64s loss = 1.5348, perplexity = 5.7269</span><span class="w"></span>
 <span class="w">    </span><span class="nt">Epoch 3/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">63s loss = 1.4754, perplexity = 5.7866</span><span class="w"></span>
 <span class="w">    </span><span class="nt">Epoch 4/30</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">62s loss = 1.4412, perplexity = 5.3462</span><span class="w"></span>
@@ -694,12 +1183,12 @@ $$</div>
 <span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'h'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">ho wing two he wonders marding where never boat lit</span><span class="w"></span>
 <span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">Generate From 'm'</span><span class="p p-Indicator">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">mptemeignt linerical premore logical boldving on ch</span><span class="w"></span>
 <span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">==========================================</span><span class="w"></span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p>最後來產生一篇以"t"為開頭的1000字文章吧！</p>
-<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">model_LSTM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s1">'t'</span><span class="p">,</span> <span class="n">len_generate</span><span class="o">=</span><span class="mi">1000</span><span class="p">))</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">th the oppose asia college on all of indirect i suicide upse angence and including khazool cashle with jeremp of the case hasway was catiline tribui s law can be wounds to free from an eventually locations university colid for admirum syn semition goths display the might the official up it alder stowinity name like or day elenth names and lesk external links a loons for have the genione e elevang cress leven isbn effects on cultural leave to oldincil he hokerzon blacklomen with the known resolvement of literated by college founded to families in ak urke player jain of highling fake state a first o al reason into the son then mmpt one nine three three npunt university unexal and currently amnyanipation behavion from ber and ii variety of the gupife number topan has one three zero z capital prime genary brown one nine five nine so universities country recipient the vegetables bether form the distinct de plus out as a first a johnson quicky s remain which an death to anti in panibus series</span><span class="w"></span>
-</code></pre></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">model_LSTM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s1">'t'</span><span class="p">,</span> <span class="n">len_generate</span><span class="o">=</span><span class="mi">1000</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">th the oppose asia college on all of indirect i suicide upse angence and including khazool cashle with jeremp of the case hasway was catiline tribui s law can be wounds to free from an eventually locations university colid for admirum syn semition goths display the might the official up it alder stowinity name like or day elenth names and lesk external links a loons for have the genione e elevang cress leven isbn effects on cultural leave to oldincil he hokerzon blacklomen with the known resolvement of literated by college founded to families in ak urke player jain of highling fake state a first o al reason into the son then mmpt one nine three three npunt university unexal and currently amnyanipation behavion from ber and ii variety of the gupife number topan has one three zero z capital prime genary brown one nine five nine so universities country recipient the vegetables bether form the distinct de plus out as a first a johnson quicky s remain which an death to anti in panibus series</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
 <p>看得出來LSTM想表達什麼嗎，哈哈！</p>
 <h3 id="reference">Reference</h3>
 <ul>

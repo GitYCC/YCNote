@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
 <link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
 <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
-<link href="https://ycc.idv.tw/theme/pygments/monokai.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/pygments/default.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
 <link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
 <link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
 <link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 520,434) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 520,463) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(this); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -162,7 +162,22 @@
 <p>而CBOW(Continuous Bag of Words)使用另外一種方法來建立上下文關係，它將一排字挖掉中間一個字，然後希望由上下文的關係有辦法猜出中間那個字，就像是填空題，此時輸入層就變成會有多於1個字，那該怎麼處理，答案是轉換到Embedding空間後再相加平均，因為是線性轉換，所以直接線性累加就可以了。</p>
 <h3 id="_1">準備文本語料庫</h3>
 <p>先帶入一些待會會用到的函式庫，並且決定我們要取用多少<code>VOCABULARY_SIZE</code>個詞彙量來做訓練。</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">collections</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">import</span> <span class="nn">random</span>
@@ -178,9 +193,64 @@
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
 
 <span class="n">VOCABULARY_SIZE</span> <span class="o">=</span> <span class="mi">100000</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p>接下來下載Dataset，並做一些前處理。</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">maybe_download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">expected_bytes</span><span class="p">):</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">maybe_download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">expected_bytes</span><span class="p">):</span>
     <span class="sd">"""Download a file if not present, and make sure it's the right size."""</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
         <span class="n">filename</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
@@ -236,8 +306,15 @@
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">'Most common words (+UNK)'</span><span class="p">,</span> <span class="n">count</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">'Sample data'</span><span class="p">,</span> <span class="n">data</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">Downloading text8.zip</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">Downloading text8.zip</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Found and verified ./text8.zip</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">=====</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Data size 17005207</span><span class="w"></span>
@@ -245,12 +322,63 @@
 <span class="l l-Scalar l-Scalar-Plain">=====</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Most common words (+UNK) [['UNK', 189230], ('the', 1061396), ('of', 593677), ('and', 416629), ('one', 411764)]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Sample data [5234, 3081, 12, 6, 195, 2, 3134, 46, 59, 156]</span><span class="w"></span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p>我們取用<code>VOCABULARY_SIZE = 100000</code>，也是說我們將文本中的詞彙按出現次數的多寡來排列，取前面<code>VOCABULARY_SIZE</code>個保留，其餘詞彙皆歸類到「UNK Token」裡頭，UNK代表UNKnown的縮寫。</p>
 <p>我們文本的字詞數量總共有17005207個字，開頭前十個字的句子是'anarchism originated as a term of abuse first used against'。所有的這17005207個字會依照<code>dictionary</code>給予每個字Index，而文本會被表示為一個由整數所構成的List，這會放在<code>data</code>裡頭，而這個Index也就直接當作One-hot Encoding中代表這個詞彙的維度位置。當我想要把Index轉換回去我們看得懂的字的時候，就需要<code>reverse_dictionary</code>的幫忙，有了這些，我們的語料庫就已經建立完成了。</p>
 <h3 id="skip-gram">實作Skip-Gram</h3>
 <p>有了語料庫，我們就可以產生出我想要的輸入和輸出，在Skip-Gram方法，如果我的輸入是<code>target word</code>，我會先從<code>target word</code>向前、向後看出去<code>skip_window</code>的大小，所以可以選擇當作輸出的字有<code>skip_window*2</code>個，接下來我從這<code>skip_window*2</code>個中選擇<code>num_skips</code>個當作輸出，所以一個<code>target word</code>會產生<code>num_skips</code>筆數據，如果我一個batch需要<code>batch_size</code>筆數據，我就必須有<code>batch_size//num_skips</code>個<code>target word</code>，依照這樣的規則下面建立一個Generator來掃描文本，並輸出要訓練使用的Batch Data。</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">skip_gram_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_skips</span><span class="p">,</span> <span class="n">skip_window</span><span class="p">):</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">skip_gram_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_skips</span><span class="p">,</span> <span class="n">skip_window</span><span class="p">):</span>
     <span class="k">assert</span> <span class="n">batch_size</span> <span class="o">%</span> <span class="n">num_skips</span> <span class="o">==</span> <span class="mi">0</span>
     <span class="k">assert</span> <span class="n">num_skips</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">skip_window</span>
 
@@ -302,8 +430,16 @@
     <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">with num_skips = </span><span class="si">%d</span><span class="s1"> and skip_window = </span><span class="si">%d</span><span class="s1">:'</span> <span class="o">%</span> <span class="p">(</span><span class="n">num_skips</span><span class="p">,</span> <span class="n">skip_window</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">'    batch:'</span><span class="p">,</span> <span class="p">[</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">bi</span><span class="p">]</span> <span class="k">for</span> <span class="n">bi</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">'    labels:'</span><span class="p">,</span> <span class="p">[</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">li</span><span class="p">]</span> <span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">8</span><span class="p">)])</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nt">data</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'anarchism'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'originated'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'of'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'abuse'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'first'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'used'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'against'</span><span class="p p-Indicator">]</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">data</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'anarchism'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'originated'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'of'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'abuse'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'first'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'used'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'against'</span><span class="p p-Indicator">]</span><span class="w"></span>
 
 <span class="nt">with num_skips = 2 and skip_window = 1</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">batch</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'originated'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'originated'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">]</span><span class="w"></span>
@@ -312,8 +448,131 @@
 <span class="nt">with num_skips = 4 and skip_window = 2</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">batch</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'originated'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'anarchism'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'originated'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'of'</span><span class="p p-Indicator">]</span><span class="w"></span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SkipGram</span><span class="p">:</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SkipGram</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_vocabulary</span><span class="p">,</span> <span class="n">n_embedding</span><span class="p">,</span> <span class="n">reverse_dictionary</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_vocabulary</span> <span class="o">=</span> <span class="n">n_vocabulary</span>
@@ -437,9 +696,40 @@
 
     <span class="k">def</span> <span class="nf">find_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p>以上就是我建立的Model，這裡我採取<code>online_fit</code>的方法，不同於之前的<code>fit</code>，<code>online_fit</code>可以不用事先將所有Data一次餵進去，而是可以陸續的餵入Data，所以我會從上面的Generator陸續產生Batch Data並餵入Model裡來做訓練。</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># build skip-gram batch generator</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># build skip-gram batch generator</span>
 <span class="n">batch_generator</span> <span class="o">=</span> <span class="n">skip_gram_batch_generator</span><span class="p">(</span>
     <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
     <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
@@ -471,8 +761,57 @@
         <span class="n">avg_loss</span> <span class="o">+=</span> <span class="n">loss</span>
     <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">avg_loss</span> <span class="o">/</span> <span class="n">num_batchs_in_epoch</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">'Epoch </span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1">: </span><span class="si">%d</span><span class="s1">s loss = </span><span class="si">%9.4f</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span> <span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span> <span class="n">avg_loss</span> <span class="p">))</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nt">Epoch 1/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">17s loss =    4.2150</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">Epoch 1/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">17s loss =    4.2150</span><span class="w"></span>
 <span class="nt">Epoch 2/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16s loss =    3.7561</span><span class="w"></span>
 <span class="nt">Epoch 3/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16s loss =    3.6276</span><span class="w"></span>
 <span class="nt">Epoch 4/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16s loss =    3.5098</span><span class="w"></span>
@@ -522,15 +861,31 @@
 <span class="nt">Epoch 48/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s loss =    3.2419</span><span class="w"></span>
 <span class="nt">Epoch 49/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s loss =    3.0127</span><span class="w"></span>
 <span class="nt">Epoch 50/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s loss =    3.1232</span><span class="w"></span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p>我們來看看效果如何，我們使用Embedding Vectors彼此間的Cosine來定義出字詞間的相關性，並且列出8個最為靠近的字詞。</p>
-<div class="highlight"><pre><span></span><code><span class="n">valid_words_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">239</span><span class="p">,</span> <span class="mi">392</span><span class="p">,</span> <span class="mi">396</span><span class="p">])</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">valid_words_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">239</span><span class="p">,</span> <span class="mi">392</span><span class="p">,</span> <span class="mi">396</span><span class="p">])</span>
 
 <span class="n">valid_words</span><span class="p">,</span> <span class="n">nearests</span> <span class="o">=</span> <span class="n">model_SkipGram</span><span class="o">.</span><span class="n">nearest_words</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">valid_words_index</span><span class="p">,</span> <span class="n">top_nearest</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_words</span><span class="p">)):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">'Nearest to </span><span class="se">\'</span><span class="si">{}</span><span class="se">\'</span><span class="s1">: '</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">valid_words</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">nearests</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">Nearest to 'two'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'three'</span><span class="w"> </span><span class="s">'four'</span><span class="w"> </span><span class="s">'five'</span><span class="w"> </span><span class="s">'eight'</span><span class="w"> </span><span class="s">'six'</span><span class="w"> </span><span class="s">'one'</span><span class="w"> </span><span class="s">'seven'</span><span class="w"> </span><span class="s">'zero'</span><span class="p p-Indicator">]</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">Nearest to 'two'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'three'</span><span class="w"> </span><span class="s">'four'</span><span class="w"> </span><span class="s">'five'</span><span class="w"> </span><span class="s">'eight'</span><span class="w"> </span><span class="s">'six'</span><span class="w"> </span><span class="s">'one'</span><span class="w"> </span><span class="s">'seven'</span><span class="w"> </span><span class="s">'zero'</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Nearest to 'that'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'which'</span><span class="w"> </span><span class="s">'however'</span><span class="w"> </span><span class="s">'thus'</span><span class="w"> </span><span class="s">'what'</span><span class="w"> </span><span class="s">'sepulchres'</span><span class="w"> </span><span class="s">'dancewriting'</span><span class="w"> </span><span class="s">'tatars'</span><span class="w"></span>
 <span class="w"> </span><span class="s">'resent'</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Nearest to 'his'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'her'</span><span class="w"> </span><span class="s">'their'</span><span class="w"> </span><span class="s">'your'</span><span class="w"> </span><span class="s">'my'</span><span class="w"> </span><span class="s">'its'</span><span class="w"> </span><span class="s">'our'</span><span class="w"> </span><span class="s">'othniel'</span><span class="w"> </span><span class="s">'personal'</span><span class="p p-Indicator">]</span><span class="w"></span>
@@ -543,10 +898,31 @@
 <span class="l l-Scalar l-Scalar-Plain">Nearest to 'himself'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'him'</span><span class="w"> </span><span class="s">'themselves'</span><span class="w"> </span><span class="s">'herself'</span><span class="w"> </span><span class="s">'them'</span><span class="w"> </span><span class="s">'itself'</span><span class="w"> </span><span class="s">'wignacourt'</span><span class="w"> </span><span class="s">'majored'</span><span class="w"></span>
 <span class="w"> </span><span class="s">'mankiewicz'</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Nearest to 'white'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'black'</span><span class="w"> </span><span class="s">'red'</span><span class="w"> </span><span class="s">'blue'</span><span class="w"> </span><span class="s">'green'</span><span class="w"> </span><span class="s">'yellow'</span><span class="w"> </span><span class="s">'dark'</span><span class="w"> </span><span class="s">'papyri'</span><span class="w"> </span><span class="s">'kemal'</span><span class="p p-Indicator">]</span><span class="w"></span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p>結果相當驚人，與'two'靠近的真的都是數字類型的文字，與'that'靠近的都是文法功能性的詞彙，與'his'靠近的都是所有格代名詞，與'were'靠近的是be動詞，與'all'最靠近的是'both'，與'east'靠近的都是一些代表方向的詞彙，與'white'靠近的都是一些顏色的詞彙，真的是太神奇了！</p>
 <p>接下來直接來觀察Embedding空間，以下使用t-SNE來圖像化Embedding空間。</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pylab</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pylab</span>
 <span class="kn">from</span> <span class="nn">sklearn.manifold</span> <span class="kn">import</span> <span class="n">TSNE</span>
 
 <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
@@ -568,12 +944,72 @@
 <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">model_SkipGram</span><span class="o">.</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">visualization_words</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
 <span class="c1"># plot</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">two_d_embed</span><span class="p">,</span> <span class="n">words</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/05_output_13_0.png"/></p>
 <p>如此一來你將可以簡單的看出，哪些詞彙彼此相似而靠近。</p>
 <h3 id="cbow-continuous-bag-of-words">實作CBOW (Continuous Bag of Words)</h3>
 <p>接著看CBOW的方法，如果我預期輸出的字是<code>target word</code>，從<code>target word</code>向前向後看出去<code>context_window</code>的大小，看到的字都當作我的輸入，所以我輸入的字總共需要<code>context_window*2</code>個，一個<code>target word</code>只會產生一筆數據，如果我一個batch需要<code>batch_size</code>筆數據，我就必須有<code>batch_size</code>個<code>target word</code>，依照這樣的規則下面建立一個Generator來掃描文本，並輸出要訓練使用的Batch Data。</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">cbow_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">context_window</span><span class="p">):</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">cbow_batch_generator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">context_window</span><span class="p">):</span>
     <span class="n">span</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">context_window</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># [ context_window target context_window ]</span>
     <span class="n">num_bow</span> <span class="o">=</span> <span class="n">span</span> <span class="o">-</span> <span class="mi">1</span>
 
@@ -634,8 +1070,18 @@
         <span class="n">show_batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">show_batch</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">'labels:'</span><span class="p">,</span> <span class="p">[</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">li</span><span class="p">]</span> <span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">8</span><span class="p">)])</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nt">data</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'anarchism'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'originated'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'of'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'abuse'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'first'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'used'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'against'</span><span class="p p-Indicator">]</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">data</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'anarchism'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'originated'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'of'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'abuse'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'first'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'used'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'against'</span><span class="p p-Indicator">]</span><span class="w"></span>
 
 <span class="nt">with context_window = 1</span><span class="p">:</span><span class="w"></span>
 <span class="nt">batch</span><span class="p">:</span><span class="w"></span>
@@ -646,8 +1092,130 @@
 <span class="nt">batch</span><span class="p">:</span><span class="w"></span>
 <span class="p p-Indicator">[[</span><span class="s">'anarchism'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'originated'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'originated'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'of'</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'of'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'abuse'</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'abuse'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'first'</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'term'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'of'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'first'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'used'</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'of'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'abuse'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'used'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'against'</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'abuse'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'first'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'against'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'early'</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'first'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'used'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'early'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'working'</span><span class="p p-Indicator">]]</span><span class="w"></span>
 <span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'as'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'a'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'term'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'of'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'abuse'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'first'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'used'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'against'</span><span class="p p-Indicator">]</span><span class="w"></span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">CBOW</span><span class="p">:</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CBOW</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_vocabulary</span><span class="p">,</span> <span class="n">n_embedding</span><span class="p">,</span>
                  <span class="n">context_window</span><span class="p">,</span> <span class="n">reverse_dictionary</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
@@ -770,8 +1338,41 @@
 
     <span class="k">def</span> <span class="nf">find_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">context_window</span> <span class="o">=</span> <span class="mi">1</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">context_window</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="c1"># build CBOW batch generator</span>
 <span class="n">batch_generator</span> <span class="o">=</span> <span class="n">cbow_batch_generator</span><span class="p">(</span>
@@ -805,8 +1406,57 @@
         <span class="n">avg_loss</span> <span class="o">+=</span> <span class="n">loss</span>
     <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">avg_loss</span> <span class="o">/</span> <span class="n">num_batchs_in_epoch</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">'Epoch </span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1">: </span><span class="si">%d</span><span class="s1">s loss = </span><span class="si">%9.4f</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span> <span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span> <span class="n">avg_loss</span> <span class="p">))</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nt">Epoch 1/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s loss =    3.8700</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">Epoch 1/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s loss =    3.8700</span><span class="w"></span>
 <span class="nt">Epoch 2/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s loss =    3.2961</span><span class="w"></span>
 <span class="nt">Epoch 3/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s loss =    3.1988</span><span class="w"></span>
 <span class="nt">Epoch 4/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s loss =    3.1201</span><span class="w"></span>
@@ -856,14 +1506,29 @@
 <span class="nt">Epoch 48/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s loss =    2.4154</span><span class="w"></span>
 <span class="nt">Epoch 49/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s loss =    2.4927</span><span class="w"></span>
 <span class="nt">Epoch 50/50</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15s loss =    2.4948</span><span class="w"></span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">valid_words_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">239</span><span class="p">,</span> <span class="mi">392</span><span class="p">,</span> <span class="mi">396</span><span class="p">])</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">valid_words_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">239</span><span class="p">,</span> <span class="mi">392</span><span class="p">,</span> <span class="mi">396</span><span class="p">])</span>
 
 <span class="n">valid_words</span><span class="p">,</span> <span class="n">nearests</span> <span class="o">=</span> <span class="n">model_CBOW</span><span class="o">.</span><span class="n">nearest_words</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">valid_words_index</span><span class="p">,</span> <span class="n">top_nearest</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_words</span><span class="p">)):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">'Nearest to </span><span class="se">\'</span><span class="si">{}</span><span class="se">\'</span><span class="s1">: '</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">valid_words</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">nearests</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">Nearest to 'two'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'three'</span><span class="w"> </span><span class="s">'four'</span><span class="w"> </span><span class="s">'five'</span><span class="w"> </span><span class="s">'six'</span><span class="w"> </span><span class="s">'seven'</span><span class="w"> </span><span class="s">'eight'</span><span class="w"> </span><span class="s">'nine'</span><span class="w"> </span><span class="s">'zero'</span><span class="p p-Indicator">]</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">Nearest to 'two'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'three'</span><span class="w"> </span><span class="s">'four'</span><span class="w"> </span><span class="s">'five'</span><span class="w"> </span><span class="s">'six'</span><span class="w"> </span><span class="s">'seven'</span><span class="w"> </span><span class="s">'eight'</span><span class="w"> </span><span class="s">'nine'</span><span class="w"> </span><span class="s">'zero'</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Nearest to 'that'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'which'</span><span class="w"> </span><span class="s">'what'</span><span class="w"> </span><span class="s">'furthermore'</span><span class="w"> </span><span class="s">'however'</span><span class="w"> </span><span class="s">'talmudic'</span><span class="w"> </span><span class="s">'endress'</span><span class="w"> </span><span class="s">'tonight'</span><span class="w"></span>
 <span class="w"> </span><span class="s">'how'</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Nearest to 'his'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'her'</span><span class="w"> </span><span class="s">'their'</span><span class="w"> </span><span class="s">'my'</span><span class="w"> </span><span class="s">'your'</span><span class="w"> </span><span class="s">'its'</span><span class="w"> </span><span class="s">'our'</span><span class="w"> </span><span class="s">'the'</span><span class="w"> </span><span class="s">'photographs'</span><span class="p p-Indicator">]</span><span class="w"></span>
@@ -875,8 +1540,29 @@
 <span class="w"> </span><span class="s">'north'</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Nearest to 'himself'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'him'</span><span class="w"> </span><span class="s">'themselves'</span><span class="w"> </span><span class="s">'herself'</span><span class="w"> </span><span class="s">'itself'</span><span class="w"> </span><span class="s">'them'</span><span class="w"> </span><span class="s">'donal'</span><span class="w"> </span><span class="s">'activex'</span><span class="w"> </span><span class="s">'carnaval'</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="l l-Scalar l-Scalar-Plain">Nearest to 'white'</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="p p-Indicator">[</span><span class="s">'black'</span><span class="w"> </span><span class="s">'red'</span><span class="w"> </span><span class="s">'morel'</span><span class="w"> </span><span class="s">'green'</span><span class="w"> </span><span class="s">'bluish'</span><span class="w"> </span><span class="s">'dead'</span><span class="w"> </span><span class="s">'blue'</span><span class="w"> </span><span class="s">'lessig'</span><span class="p p-Indicator">]</span><span class="w"></span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pylab</span>
+</code></pre></div></td></tr></table></div>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pylab</span>
 <span class="kn">from</span> <span class="nn">sklearn.manifold</span> <span class="kn">import</span> <span class="n">TSNE</span>
 
 <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
@@ -898,7 +1584,7 @@
 <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">model_CBOW</span><span class="o">.</span><span class="n">reverse_dictionary</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">visualization_words</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
 <span class="c1"># plot</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">two_d_embed</span><span class="p">,</span> <span class="n">words</span><span class="p">)</span>
-</code></pre></div>
+</code></pre></div></td></tr></table></div>
 <p><img alt="png" src="https://raw.githubusercontent.com/GitYCC/Tensorflow_Tutorial/master/img/05_output_20_0.png"/></p>
 <h3 id="reference">Reference</h3>
 <ul>
