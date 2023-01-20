@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 520,515) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 520,524) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(this); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="introduction-object-oriented-programming_2">物件導向武功秘笈（2）：招式篇 — Python與Java的物件導向編程介紹</h1>
 <p>
-      Posted on April 10, 2018 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 12,716
+      Posted on April 10, 2018 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 12,717
 
     </p>
 </header>
@@ -177,14 +177,14 @@
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">shout</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//{5}</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">". meow~"</span><span class="p">;</span><span class="w"> </span><span class="c1">//{6}</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">". meow~"</span><span class="p">;</span><span class="w"> </span><span class="c1">//{6}</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Test</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//{7}</span><span class="w"></span>
 <span class="w">        </span><span class="n">Cat</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Cat</span><span class="p">(</span><span class="s">"May"</span><span class="p">);</span><span class="w"> </span><span class="c1">//{8}</span><span class="w"></span>
-<span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">cat</span><span class="p">.</span><span class="na">shout</span><span class="p">());</span><span class="w"> </span><span class="c1">//{9}</span><span class="w"></span>
+<span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">cat</span><span class="p">.</span><span class="na">shout</span><span class="p">());</span><span class="w"> </span><span class="c1">//{9}</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 <span class="c1">// output:</span><span class="w"></span>
@@ -220,11 +220,11 @@
 <span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3</span>
 
 <span class="k">class</span> <span class="nc">Cat</span><span class="p">:</span> <span class="c1">#{1}</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span> <span class="c1">#{2}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span> <span class="c1">#{3}</span>
+      <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span> <span class="c1">#{2}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span> <span class="c1">#{3}</span>
 
-    <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1">#{4}</span>
-        <span class="k">return</span> <span class="s2">"My name is "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="s2">". meow~"</span> <span class="c1">#{5}</span>
+      <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1">#{4}</span>
+            <span class="k">return</span> <span class="s2">"My name is "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="s2">". meow~"</span> <span class="c1">#{5}</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="n">cat</span> <span class="o">=</span> <span class="n">Cat</span><span class="p">(</span><span class="s2">"May"</span><span class="p">)</span> <span class="c1">#{6}</span>
@@ -245,7 +245,7 @@
 <p>{7} 接下來使用<code>cat.shout()</code>去執行喵喵叫的動作，這個方法會回傳字串，再利用<code>print</code>的方法將字串顯示出來。注意！在物件導向的習慣中，會用<code>.</code>來表示在那物件中的方法或屬性，所以<code>cat.shout()</code>就是執行在物件<code>cat</code>中的方法<code>shout()</code>。</p>
 <p>{8} 在Python程式執行時，它的<code>__name__</code>會是<code>"__main__"</code>，也就是說會去執行這個<code>if</code>判斷式下面的程式。</p>
 <h3 id="method-overloading">方法多載（Method Overloading）</h3>
-<p>物件導向允許「使用不同的參數形式去實現同一個方法」，這就稱之為方法多載，這個方法涵蓋一般方法和構造初始化方法。</p>
+<p>物件導向的方法多載（Method Overloading）是指在同一類別中定義多個名稱相同的方法，但傳入參數的型別或數量不同。這可以讓同一個方法名稱能夠支援不同的參數，並讓程式碼更具彈性和易讀性。</p>
 <p>來延伸剛剛的貓的例子，假設今天我們允許用戶不去設定貓咪的名字，而程式會預先給貓咪No-Name的預設值，所以我們需要另外一個初始化方法是不用貓咪名字的參數形式。</p>
 <p>Java的實現程式碼如下所示，如此一來只要碰到沒有參數的形式，程式會給予<code>"No-Name"</code>的名字去當作貓咪的名字，並進行初始化。</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
@@ -287,14 +287,14 @@
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">shout</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">". meow~"</span><span class="p">;</span><span class="w"> </span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">". meow~"</span><span class="p">;</span><span class="w"> </span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 
 <span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Test</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
 <span class="w">        </span><span class="n">Cat</span><span class="w"> </span><span class="n">cat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Cat</span><span class="p">();</span><span class="w"> </span><span class="c1">// no-argumant format</span><span class="w"></span>
-<span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">cat</span><span class="p">.</span><span class="na">shout</span><span class="p">());</span><span class="w"></span>
+<span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">cat</span><span class="p">.</span><span class="na">shout</span><span class="p">());</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 <span class="c1">// output:</span><span class="w"></span>
@@ -318,14 +318,14 @@
 <span class="normal">15</span>
 <span class="normal">16</span>
 <span class="normal">17</span>
-<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3.4</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3</span>
 
 <span class="k">class</span> <span class="nc">Cat</span><span class="p">:</span> 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">"No-Name"</span><span class="p">):</span> <span class="c1"># name's default is "No-Name"</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">name</span> 
+      <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"No-Name"</span><span class="p">):</span> <span class="c1"># name's default is "No-Name"</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span> 
 
-    <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
-        <span class="k">return</span> <span class="s2">"My name is "</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">__name</span><span class="o">+</span><span class="s2">". meow~"</span> 
+      <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+            <span class="k">return</span> <span class="s2">"My name is "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="s2">". meow~"</span> 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="n">cat</span> <span class="o">=</span> <span class="n">Cat</span><span class="p">()</span> <span class="c1"># no-argument format</span>
@@ -382,41 +382,31 @@
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3.4</span>
-
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3</span>
 
 <span class="k">class</span> <span class="nc">Calculation</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nums</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span> <span class="o">=</span> <span class="n">nums</span> <span class="c1">#{1}</span>
-        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nums</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nums</span> <span class="o">=</span> <span class="n">nums</span>  <span class="c1"># {1}</span>
+        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nums</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__checkPositiveInteger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span> <span class="c1">#{2}</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="nb">int</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">num</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">_checkPositiveInteger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>  <span class="c1"># {2}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">num</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+              <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__primeFactorize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span> <span class="c1">#{3}</span>
+    <span class="k">def</span> <span class="nf">_primeFactorize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>  <span class="c1"># {3}</span>
         <span class="n">prime_factorize</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="k">while</span><span class="p">(</span><span class="n">num</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">num</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">prime_factorize</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prime_factorize</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">prime_factorize</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prime_factorize</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="n">num</span> <span class="o">/=</span> <span class="n">i</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">prime_factorize</span>
 
     <span class="k">def</span> <span class="nf">findGCF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">prime_factorize</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span><span class="p">:</span>
-            <span class="n">prime_factorize</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__primeFactorize</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
+        <span class="n">prime_factorize</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_primeFactorize</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">nums</span><span class="p">]</span>
 
         <span class="n">common_prime</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">prime_factorize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">prime_factorize</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
@@ -424,9 +414,7 @@
 
         <span class="n">gcf</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">for</span> <span class="n">prime</span> <span class="ow">in</span> <span class="n">common_prime</span><span class="p">:</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span>
-            <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">prime_factorize</span><span class="p">:</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">pf</span><span class="p">[</span><span class="n">prime</span><span class="p">])</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">pf</span><span class="p">[</span><span class="n">prime</span><span class="p">]</span> <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">prime_factorize</span><span class="p">])</span>
             <span class="n">gcf</span> <span class="o">=</span> <span class="n">gcf</span> <span class="o">*</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">m</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">gcf</span>
@@ -434,11 +422,11 @@
     <span class="k">def</span> <span class="nf">findLCM</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">gcf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findGCF</span><span class="p">()</span>
         <span class="n">lcm</span> <span class="o">=</span> <span class="n">gcf</span>
-        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span><span class="p">:</span>
-            <span class="n">lcm</span> <span class="o">*=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="o">/</span><span class="n">gcf</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nums</span><span class="p">:</span>
+            <span class="n">lcm</span> <span class="o">*=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span> <span class="o">/</span> <span class="n">gcf</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lcm</span>
 </code></pre></div></td></tr></table></div>
-<p>{1} 使用私有變數，讓外部不能任意的改變<code>self.__name</code>變數，在這個例子當中，如果<code>self.__name</code>被任意改變，它將會逃過<code>__checkPositiveInteger</code>的檢查。
+<p>{1} 使用私有變數，讓外部不能任意的改變<code>self._nums</code>變數，在這個例子當中，如果<code>self._nums</code>被任意改變，它將會逃過<code>_checkPositiveInteger</code>的檢查。
 {2}&amp;{3} 不需要由外部讀取的方法，就盡量讓它是私有的。</p>
 <p>再回到貓咪的這個例子，如果我們想要可以調控「叫聲次數」的話，可以這樣實現。</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
@@ -501,7 +489,7 @@
 <span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">shout_num</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">){</span><span class="w"></span>
 <span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s">"meow~ "</span><span class="p">;</span><span class="w"></span>
 <span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">". "</span><span class="o">+</span><span class="n">result</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">". "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 
@@ -551,27 +539,29 @@
 <span class="normal">29</span>
 <span class="normal">30</span>
 <span class="normal">31</span>
-<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3.4</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3</span>
 
 <span class="k">class</span> <span class="nc">Cat</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">"No-Name"</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__shout_num</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"No-Name"</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="mi">3</span>
 
     <span class="nd">@property</span>  <span class="c1">#{1}</span>
     <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__shout_num</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span>
 
     <span class="nd">@shout_num</span><span class="o">.</span><span class="n">setter</span>  <span class="c1">#{2}</span>
-    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__shout_num</span> <span class="o">=</span> <span class="n">num</span>
+    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+          <span class="k">if</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="n">num</span>
 
     <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="s2">""</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__shout_num</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shout_num</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="s2">"meow~ "</span>
-        <span class="k">return</span> <span class="s2">"My name is "</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">__name</span><span class="o">+</span><span class="s2">". "</span><span class="o">+</span><span class="n">result</span>
+        <span class="k">return</span> <span class="s2">"My name is "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="s2">". "</span> <span class="o">+</span> <span class="n">result</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="n">cat</span> <span class="o">=</span> <span class="n">Cat</span><span class="p">(</span><span class="s2">"May"</span><span class="p">)</span>
@@ -672,7 +662,7 @@
 <span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">shout_num</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">){</span><span class="w"></span>
 <span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s">"meow~ "</span><span class="p">;</span><span class="w"></span>
 <span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">". "</span><span class="o">+</span><span class="n">result</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">". "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 <span class="kd">class</span> <span class="nc">Dog</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Animal</span><span class="p">{</span><span class="w"></span>
@@ -716,41 +706,46 @@
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3.4</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3</span>
 
 <span class="k">class</span> <span class="nc">Animal</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">"No-Name"</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"No-Name"</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1">#{1}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="mi">3</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span>
+
     <span class="nd">@shout_num</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
+          <span class="k">if</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="n">num</span>
 
 <span class="k">class</span> <span class="nc">Cat</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">"No_Name"</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>  <span class="c1">#{2}</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"No_Name"</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>  <span class="c1">#{1}</span>
 
     <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="s2">""</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shout_num</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="s2">"meow~ "</span>
-        <span class="k">return</span> <span class="s2">"My name is "</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">+</span><span class="s2">". "</span><span class="o">+</span><span class="n">result</span>
+        <span class="k">return</span> <span class="s2">"My name is "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="s2">". "</span> <span class="o">+</span> <span class="n">result</span>
+
 <span class="k">class</span> <span class="nc">Dog</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="s2">""</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shout_num</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="s2">"woof~ "</span>
-        <span class="k">return</span> <span class="s2">"My name is "</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">+</span><span class="s2">". "</span><span class="o">+</span><span class="n">result</span>
+        <span class="k">return</span> <span class="s2">"My name is "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="s2">". "</span> <span class="o">+</span> <span class="n">result</span>
 </code></pre></div></td></tr></table></div>
-<p>{1} Python的<code>protected</code>使用單底線<code>_</code>開頭表示。</p>
-<p>{2} <code>super</code>指的是父類，這裡我們使用父類來做初始化，事實上這邊可以不用再初始化一次，子類本身就會繼承父類的初始化方法，所以可以像<code>Dog</code>一樣省略不寫。</p>
+<p>{1} <code>super</code>指的是父類，這裡我們使用父類來做初始化，事實上這邊可以不用再初始化一次，子類本身就會繼承父類的初始化方法，所以可以像<code>Dog</code>一樣省略不寫。</p>
 <h3 id="abstract-classabstract-methodinterface">抽象化：抽象類別(Abstract Class)、抽象方法(Abstract Method)和接口(Interface)</h3>
-<p>事實上，剛剛使用<code>Animal</code>的方法並不是很正確，我們將<code>Animal</code>當作一個類別處理，所以<code>Animal</code>其實是可以被實例化的，但是<code>Animal</code>根本沒有什麼有用的方法，它必須被繼承後再添加方法才有用處，所以我們其實可以把<code>Animal</code>抽象化，將<code>Animal</code>視為抽象類別，其中擁有一些方法需要在子類實現的，稱為抽象方法，我們直接看怎麼做。</p>
+<p>事實上，剛剛使用<code>Animal</code>的方法並不是很完整，我們將<code>Animal</code>當作一個類別處理，所以<code>Animal</code>其實是可以被實例化的，但是<code>Animal</code>根本沒有什麼有用的方法，它必須被繼承後再添加方法才有用處，所以我們其實可以把<code>Animal</code>抽象化，將<code>Animal</code>視為抽象類別，其中擁有一些方法需要在子類實現的，稱為抽象方法，我們直接看怎麼做。</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -808,7 +803,7 @@
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">shout_num</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">setShoutNum</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">num</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">num</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="na">lang</span><span class="p">.</span><span class="na">IllegalArgumentException</span><span class="p">();</span><span class="w"></span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">num</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="na">lang</span><span class="p">.</span><span class="na">IllegalArgumentException</span><span class="p">();</span><span class="w"></span>
 <span class="w">        </span><span class="n">shout_num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">num</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 
@@ -817,7 +812,7 @@
 <span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">shout_num</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">){</span><span class="w"></span>
 <span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">getShoutSound</span><span class="p">()</span><span class="o">+</span><span class="s">" "</span><span class="p">;</span><span class="w"> </span><span class="c1">//{3}</span><span class="w"></span>
 <span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">". "</span><span class="o">+</span><span class="n">result</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">". "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="w">    </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">protected</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getShoutSound</span><span class="p">();</span><span class="w"> </span><span class="c1">//{4}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
@@ -838,7 +833,7 @@
 <p>{3} 這裡使用的<code>getShoutSound()</code>方法要等在子類才會被實現。</p>
 <p>{4} 使用<code>abstract</code>設置抽象方法，繼承自抽象類別的子類必須要完全實現所有的抽象方法。</p>
 <p>{5} 實現抽象方法。</p>
-<p>在Python中沒有原生的抽象類別和方法，必須<code>import abc</code>。</p>
+<p>在 Python 中沒有原生的抽象類別和方法，過去可能會使用 <code>abc</code> ，但是 YC 發現其實幾乎很少人使用這樣的方法，大部分的作法是使用 <code>raise NotImplementedError</code> ，如下：</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -869,44 +864,43 @@
 <span class="normal">28</span>
 <span class="normal">29</span>
 <span class="normal">30</span>
-<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3.4</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="k">class</span> <span class="nc">Animal</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span> <span class="c1">#{1}</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">"No-Name"</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Animal</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"No-Name"</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="mi">3</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span>
+
     <span class="nd">@shout_num</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="n">num</span>
 
     <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="s2">""</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span><span class="p">):</span>
-            <span class="n">result</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getShoutSound</span><span class="p">()</span><span class="o">+</span><span class="s2">" "</span>
-        <span class="k">return</span> <span class="s2">"My name is "</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">+</span><span class="s2">". "</span><span class="o">+</span><span class="n">result</span>  
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>  <span class="c1">#{2}</span>
-    <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shout_num</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getShoutSound</span><span class="p">()</span> <span class="o">+</span> <span class="s2">" "</span>
+        <span class="k">return</span> <span class="s2">"My name is "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="s2">". "</span> <span class="o">+</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1">#{1}</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <span class="k">class</span> <span class="nc">Cat</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1">#{3}</span>
+    <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1">#{2}</span>
         <span class="k">return</span> <span class="s2">"meow~"</span>
 
 <span class="k">class</span> <span class="nc">Dog</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">"woof~"</span>
 </code></pre></div></td></tr></table></div>
-<p>{1} 繼承<code>abc.ABC</code>來建立抽象類別。</p>
-<p>{2} 使用<code>@abc.abstractmethod</code>來建立抽象方法。</p>
-<p>{3} 實現抽象方法。</p>
+<p>{1} <code>_getShoutSound</code> 是一個未實現的方法，如果繼承之後沒有去Override這個方法，將會報錯。</p>
+<p>{2} Override這個方法。</p>
 <p>還有一種類型抽象化的更為徹底，稱之為「接口」，「接口」上的所有方法都是抽象未實現的，「接口」不能擁有任何具體的方法。雖然「接口」很像是完全抽象化的「抽象類別」，也確實可以利用「抽象類別」來創造「接口」，但是兩者的意義是不同的，「抽象類別」是從子類中發現共通的東西，而泛化出現的，但是「接口」可以根本不預先知道子類是什麼，而僅僅事先定義行為本身，換句話說，「抽象類別」是類別的抽象化，而「接口」則是行為的抽象化。</p>
 <p>例如，我想要讓某些動物擁有「飛」的能力，這是一個行為，而不會事先知道它會套用到哪一個類別上面。</p>
-<p>在Java之中只允許單一繼承，但是卻可以有多個「接口」；而Python沒有現成的「接口」可以使用，我們必須使用「抽象方法」來創造「接口」，所以開發者要謹記「接口」的限制：不能有任何的具體方法，因為Python允許多重繼承，所以就可以直接將模擬「接口」的抽象類別直接疊加上去。</p>
+<p>在Java之中只允許單一繼承，但是卻可以有多個「接口」；而Python沒有現成的「接口」可以使用，我們必須使用「抽象方法」來創造「接口」，所以開發者要謹記「接口」的限制：不能有任何的具體方法。</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -932,7 +926,7 @@
 <span class="p">}</span><span class="w"></span>
 <span class="kd">class</span> <span class="nc">FlyingCat</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Cat</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">IFly</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//{3}</span><span class="w"></span>
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">flyTo</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">place</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">//{4}</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">shout</span><span class="p">()</span><span class="o">+</span><span class="s">" I'm going to fly to "</span><span class="o">+</span><span class="n">place</span><span class="o">+</span><span class="s">"."</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">shout</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">" I'm going to fly to "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">place</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">"."</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 
@@ -949,6 +943,7 @@
 <p>{2} 「接口」定義未實現的抽象方法<code>flyTo</code>。</p>
 <p>{3} <code>FlyingCat</code>繼承自<code>Cat</code>並且裝上<code>IFly</code>的「接口」。</p>
 <p>{4} 必須實現「接口」上所有的抽象方法。</p>
+<p>因為Python允許多重繼承，所以就可以直接將模擬「接口」的抽象類別直接疊加上去。</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -967,31 +962,27 @@
 <span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3.4</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="k">class</span> <span class="nc">IFly</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span> <span class="c1">#{1}</span>
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span> <span class="c1">#{2}</span>
-    <span class="k">def</span> <span class="nf">flyTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">place</span><span class="p">):</span>
-        <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">IFly</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">flyTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">place</span><span class="p">):</span> 
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-<span class="k">class</span> <span class="nc">FlyingCat</span><span class="p">(</span><span class="n">Cat</span><span class="p">,</span><span class="n">IFly</span><span class="p">):</span> <span class="c1">#{3}</span>
-    <span class="k">def</span> <span class="nf">flyTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">place</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shout</span><span class="p">()</span><span class="o">+</span><span class="s2">" I'm going to fly to "</span><span class="o">+</span><span class="n">place</span><span class="o">+</span><span class="s2">"."</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">FlyingCat</span><span class="p">(</span><span class="n">Cat</span><span class="p">,</span> <span class="n">IFly</span><span class="p">):</span> <span class="c1">#{1}</span>
+    <span class="k">def</span> <span class="nf">flyTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">place</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shout</span><span class="p">()</span> <span class="o">+</span> <span class="s2">" I'm going to fly to "</span> <span class="o">+</span> <span class="n">place</span> <span class="o">+</span> <span class="s2">"."</span><span class="p">;</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="n">cat</span> <span class="o">=</span> <span class="n">FlyingCat</span><span class="p">(</span><span class="s2">"May"</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">fly</span><span class="p">(</span><span class="s2">"Taiwan"</span><span class="p">))</span>
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 
 <span class="c1"># output: </span>
 <span class="c1"># My name is May. meow~ meow~ meow~ I'm going to fly to Taiwan.</span>
 </code></pre></div></td></tr></table></div>
-<p>{1} 使用抽象類別來創造「接口」。</p>
-<p>{2} 要注意！「接口」裡頭不能有具體方法。</p>
-<p>{3} 直接使用多重繼承，將<code>IFly</code>安裝上去。</p>
+<p>{1} 直接使用多重繼承，將<code>IFly</code>安裝上去。</p>
 <h3 id="polymorphism">物件導向三大特性—多型(Polymorphism)</h3>
 <p>最後，來講講物件導向的最後一個特性，那就是「多型」。「多型」的涵義是指「子類可以以父類的身分出現」，而因為是以父類的角色出現，所以只能執行父類擁有的方法，也就是只能執行這些子類共同泛化分享的方法，當然不同的子類實現後的效果會不一樣，不然使用「多型」的意義就不大了，至於子類自己的特殊方法則不可以使用「多型」去執行。</p>
 <p>直接來看範例，假設今天我要邀請三隻貓貓狗狗來參加叫聲比賽，分別請他們叫個幾聲來聽聽，此時就需要使用到「多型」的方法。</p>
@@ -1078,7 +1069,7 @@
 <span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">shout_num</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">){</span><span class="w"></span>
 <span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">getShoutSound</span><span class="p">()</span><span class="o">+</span><span class="s">" "</span><span class="p">;</span><span class="w"> </span>
 <span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s">". "</span><span class="o">+</span><span class="n">result</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">"My name is "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">". "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="w">    </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">protected</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getShoutSound</span><span class="p">();</span><span class="w"> </span>
 <span class="p">}</span><span class="w"></span>
@@ -1162,29 +1153,31 @@
 <span class="normal">45</span>
 <span class="normal">46</span>
 <span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3.4</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1">### Python3</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="k">class</span> <span class="nc">Animal</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span> 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">"No-Name"</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Animal</span><span class="p">:</span> 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"No-Name"</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="mi">3</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span>
+
     <span class="nd">@shout_num</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">shout_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span> <span class="o">=</span> <span class="n">num</span>
 
     <span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="s2">""</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shout_num</span><span class="p">):</span>
-            <span class="n">result</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getShoutSound</span><span class="p">()</span><span class="o">+</span><span class="s2">" "</span>
-        <span class="k">return</span> <span class="s2">"My name is "</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">+</span><span class="s2">". "</span><span class="o">+</span><span class="n">result</span>  
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shout_num</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getShoutSound</span><span class="p">()</span> <span class="o">+</span> <span class="s2">" "</span>
+        <span class="k">return</span> <span class="s2">"My name is "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="s2">". "</span> <span class="o">+</span> <span class="n">result</span>  
+
     <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <span class="k">class</span> <span class="nc">Cat</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1193,14 +1186,16 @@
 <span class="k">class</span> <span class="nc">Dog</span><span class="p">(</span><span class="n">Animal</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">_getShoutSound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">"woof~"</span>
+
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="c1"># Shout Game</span>
-    <span class="n">arrayAnimal</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1">#{1}</span>
+      <span class="n">arrayAnimal</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1">#{1}</span>
     <span class="n">arrayAnimal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Cat</span><span class="p">(</span><span class="s2">"May"</span><span class="p">))</span> 
     <span class="n">arrayAnimal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Dog</span><span class="p">(</span><span class="s2">"Linda"</span><span class="p">))</span>
     <span class="n">arrayAnimal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Cat</span><span class="p">(</span><span class="s2">"Joy"</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">animal</span> <span class="ow">in</span> <span class="n">arrayAnimal</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">animal</span><span class="p">,</span><span class="n">Animal</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">TypeError</span> <span class="c1">#not necessary #{2}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">animal</span><span class="p">,</span> <span class="n">Animal</span><span class="p">):</span> 
+            <span class="k">raise</span> <span class="ne">TypeError</span> <span class="c1">#not necessary #{2}</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">animal</span><span class="o">.</span><span class="n">shout</span><span class="p">())</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
