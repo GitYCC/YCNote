@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 516,549) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 520,434) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(this); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -123,7 +123,7 @@
 <header>
 <h1 id="introduction-object-oriented-programming_1">物件導向武功秘笈（1）：認知篇 — 什麼是好的程式？</h1>
 <p>
-      Posted on April 05, 2018 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 5,231
+      Posted on April 05, 2018 in <a href="https://ycc.idv.tw/category/coding.html">Coding</a>. View: 5,256
 
     </p>
 </header>
@@ -158,172 +158,13 @@
 <p>有關「單元」的相依性有兩個重要術語—耦合性(Coupling)和聚合性(Cohesion)，耦合性指的是「單元」和「單元」之間資訊或參數依賴的程度，所以我們要追求「低耦合」。聚合性指的是「單元」內使用到自身資訊或參數的程度，所以我們要追求「高內聚」，通常「低耦合」都會伴隨著「高內聚」。</p>
 <h3 id="_4">程式碼精練之旅</h3>
 <p>來看個例子，假設今天我想要實現一個求最大公因數的計算機，使用<strong>Python</strong>隨便寫一段程式碼可能是這樣的。</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer A: "</span><span class="p">)</span>
-    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer B: "</span><span class="p">)</span>
-
-    <span class="n">numA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numA</span><span class="p">)</span>
-    <span class="n">numB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numB</span><span class="p">)</span>
-
-    <span class="n">prime_factorize_A</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="k">while</span><span class="p">(</span><span class="n">numA</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">numA</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">prime_factorize_A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prime_factorize_A</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="n">numA</span> <span class="o">/=</span> <span class="n">i</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="n">prime_factorize_B</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="k">while</span><span class="p">(</span><span class="n">numB</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">numB</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">prime_factorize_B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prime_factorize_B</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="n">numB</span> <span class="o">/=</span> <span class="n">i</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>    
-
-    <span class="n">common_prime</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">prime_factorize_A</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">prime_factorize_B</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-
-    <span class="n">gcf</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">for</span> <span class="n">prime</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">common_prime</span><span class="p">):</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">prime_factorize_A</span><span class="p">[</span><span class="n">prime</span><span class="p">],</span><span class="n">prime_factorize_B</span><span class="p">[</span><span class="n">prime</span><span class="p">])</span>
-        <span class="n">gcf</span> <span class="o">=</span> <span class="n">gcf</span> <span class="o">*</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">m</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Greatest Common Factor: "</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
-</code></pre></div>
+<script src="https://gist.github.com/GitYCC/14fb5b060a1993e0a29604dd76169dfb.js?file=introduction-object-oriented-programming-1_1.py"></script>
 <p>好！那接下來用剛剛的規則來檢視看看這個程式，第一點，有沒有「可正常執行」？上述的例子，沒有考慮到一些Edge Case，當輸入的值不是正整數，必須要報錯，所以我們將程式修改一下。</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer A: "</span><span class="p">)</span>
-    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer B: "</span><span class="p">)</span>
-
-    <span class="n">numA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numA</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">numA</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">numA</span><span class="p">))</span>
-    <span class="n">numB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numB</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">numB</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">numB</span><span class="p">))</span>
-
-    <span class="n">prime_factorize_A</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="k">while</span><span class="p">(</span><span class="n">numA</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">numA</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">prime_factorize_A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prime_factorize_A</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="n">numA</span> <span class="o">/=</span> <span class="n">i</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="n">prime_factorize_B</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="k">while</span><span class="p">(</span><span class="n">numB</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">numB</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">prime_factorize_B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prime_factorize_B</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="n">numB</span> <span class="o">/=</span> <span class="n">i</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>    
-
-    <span class="n">common_prime</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">prime_factorize_A</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">prime_factorize_B</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-
-    <span class="n">gcf</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">for</span> <span class="n">prime</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">common_prime</span><span class="p">):</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">prime_factorize_A</span><span class="p">[</span><span class="n">prime</span><span class="p">],</span><span class="n">prime_factorize_B</span><span class="p">[</span><span class="n">prime</span><span class="p">])</span>
-        <span class="n">gcf</span> <span class="o">=</span> <span class="n">gcf</span> <span class="o">*</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">m</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Greatest Common Factor: "</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
-</code></pre></div>
+<script src="https://gist.github.com/GitYCC/14fb5b060a1993e0a29604dd76169dfb.js?file=introduction-object-oriented-programming-1_2.py.diff"></script>
 <p>再來檢查一下是不是具有「不重複撰寫」的特性？也就是Don't Repeat Yourself，顯然是沒有遵守，<code>numA</code>和<code>numB</code>處理方法幾乎一模一樣，這會造成程式碼很冗長，來稍做修改。</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
-    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="nb">int</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">num</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
-
-<span class="k">def</span> <span class="nf">primeFactorize</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
-    <span class="n">checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
-
-    <span class="n">prime_factorize</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="k">while</span><span class="p">(</span><span class="n">num</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">num</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">prime_factorize</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prime_factorize</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="n">num</span> <span class="o">/=</span> <span class="n">i</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">prime_factorize</span>
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer A: "</span><span class="p">)</span>
-    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer B: "</span><span class="p">)</span>
-
-    <span class="n">numA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numA</span><span class="p">)</span>
-    <span class="n">numB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numB</span><span class="p">)</span>
-
-    <span class="n">prime_factorize_A</span> <span class="o">=</span> <span class="n">primeFactorize</span><span class="p">(</span><span class="n">numA</span><span class="p">)</span>
-    <span class="n">prime_factorize_B</span> <span class="o">=</span> <span class="n">primeFactorize</span><span class="p">(</span><span class="n">numB</span><span class="p">)</span>
-
-    <span class="n">common_prime</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">prime_factorize_A</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">prime_factorize_B</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-
-    <span class="n">gcf</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">for</span> <span class="n">prime</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">common_prime</span><span class="p">):</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">prime_factorize_A</span><span class="p">[</span><span class="n">prime</span><span class="p">],</span><span class="n">prime_factorize_B</span><span class="p">[</span><span class="n">prime</span><span class="p">])</span>
-        <span class="n">gcf</span> <span class="o">=</span> <span class="n">gcf</span> <span class="o">*</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">m</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Greatest Common Factor: "</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
-</code></pre></div>
+<script src="https://gist.github.com/GitYCC/14fb5b060a1993e0a29604dd76169dfb.js?file=introduction-object-oriented-programming-1_3.py"></script>
 <p>接下來來檢查一下「穩健度」和「可擴展」，也就是程式是否符合：低耦合、高內聚，其實上面的程式碼有一個大問題，客戶端邏輯和業務邏輯混為一談，客戶端邏輯就是實現功能的部分，而業務邏輯就是實作的細節，所以上面的程式碼把所有的實作的細節全部攤在客戶端，這是相當不好的，這會造成不易更改，因此我們將程式作單元的拆分，讓業務邏輯和客戶端邏輯相分離，讓不直接實現客戶端的程式碼可以隱藏起來，減少客戶端和業務邏輯的耦合。然後順道加入求取最小公倍數的功能。</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">def</span> <span class="nf">checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
-    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="nb">int</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">num</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
-
-<span class="k">def</span> <span class="nf">primeFactorize</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
-    <span class="n">checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
-
-    <span class="n">prime_factorize</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="k">while</span><span class="p">(</span><span class="n">num</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">num</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">prime_factorize</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prime_factorize</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="n">num</span> <span class="o">/=</span> <span class="n">i</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">prime_factorize</span>
-
-<span class="k">def</span> <span class="nf">findGCF</span><span class="p">(</span><span class="n">nums</span><span class="p">):</span>
-    <span class="n">prime_factorize</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">nums</span><span class="p">:</span>
-        <span class="n">prime_factorize</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">primeFactorize</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
-
-    <span class="n">common_prime</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">prime_factorize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">prime_factorize</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-        <span class="n">common_prime</span> <span class="o">&amp;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">pf</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-
-    <span class="n">gcf</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">for</span> <span class="n">prime</span> <span class="ow">in</span> <span class="n">common_prime</span><span class="p">:</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span>
-        <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">prime_factorize</span><span class="p">:</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">pf</span><span class="p">[</span><span class="n">prime</span><span class="p">])</span>
-        <span class="n">gcf</span> <span class="o">=</span> <span class="n">gcf</span> <span class="o">*</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">m</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">gcf</span>
-
-<span class="k">def</span> <span class="nf">findLCM</span><span class="p">(</span><span class="n">nums</span><span class="p">):</span>
-    <span class="n">gcf</span> <span class="o">=</span> <span class="n">findGCF</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
-    <span class="n">lcm</span> <span class="o">=</span> <span class="n">gcf</span>
-    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">nums</span><span class="p">:</span>
-        <span class="n">lcm</span> <span class="o">*=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="o">/</span><span class="n">gcf</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">lcm</span>
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer A: "</span><span class="p">)</span>
-    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer B: "</span><span class="p">)</span>
-
-    <span class="n">numA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numA</span><span class="p">)</span>
-    <span class="n">numB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numB</span><span class="p">)</span>
-
-    <span class="n">nums</span> <span class="o">=</span> <span class="p">[</span><span class="n">numA</span><span class="p">,</span><span class="n">numB</span><span class="p">]</span>    
-    <span class="n">gcf</span> <span class="o">=</span> <span class="n">findGCF</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
-    <span class="n">lcm</span> <span class="o">=</span> <span class="n">findLCM</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Greatest Common Factor: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Lowest Common Multiple: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lcm</span><span class="p">))</span>
-</code></pre></div>
+<script src="https://gist.github.com/GitYCC/14fb5b060a1993e0a29604dd76169dfb.js?file=introduction-object-oriented-programming-1_4.py"></script>
 <p>如此一來程式碼就看起來乾淨很多，function和function之間的耦合性被降低了，而function本身的內聚性提高了，程式碼達到了低耦合、高內聚，但是似乎還可以更好。</p>
 <h3 id="_5">形塑出物件導向</h3>
 <p>剛剛我們已經完成了一個看起來很乾淨的程式碼了，但是其實還可以更好，在這裡我們就必須形塑出物件導向，才有辦法再前進一步。</p>
@@ -334,68 +175,7 @@
 <code>checkPositiveInteger(num)</code>, <code>primeFactorize(num)</code>。我們使用「藍圖」去建構「物件」的模版，再由「藍圖」配合不同的輸入參數去生成一個一個獨立的「物件」，以因應不同的狀況。</p>
 <p>這就是物件導向！</p>
 <p>接下來，我將上面程式碼引入物件導向改寫如下。（看不懂～沒關係！未來會詳述）</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">class</span> <span class="nc">Calculation</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nums</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span> <span class="o">=</span> <span class="n">nums</span>
-        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__checkPositiveInteger</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__checkPositiveInteger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="nb">int</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">num</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid positive integer: "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">__primeFactorize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
-        <span class="n">prime_factorize</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
-        <span class="k">while</span><span class="p">(</span><span class="n">num</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">num</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">prime_factorize</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prime_factorize</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="n">num</span> <span class="o">/=</span> <span class="n">i</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">prime_factorize</span>
-
-    <span class="k">def</span> <span class="nf">findGCF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">prime_factorize</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span><span class="p">:</span>
-            <span class="n">prime_factorize</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__primeFactorize</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
-
-        <span class="n">common_prime</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">prime_factorize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">prime_factorize</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-            <span class="n">common_prime</span> <span class="o">&amp;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">pf</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-
-        <span class="n">gcf</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">for</span> <span class="n">prime</span> <span class="ow">in</span> <span class="n">common_prime</span><span class="p">:</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span>
-            <span class="k">for</span> <span class="n">pf</span> <span class="ow">in</span> <span class="n">prime_factorize</span><span class="p">:</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">pf</span><span class="p">[</span><span class="n">prime</span><span class="p">])</span>
-            <span class="n">gcf</span> <span class="o">=</span> <span class="n">gcf</span> <span class="o">*</span> <span class="p">(</span><span class="n">prime</span> <span class="o">**</span> <span class="n">m</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">gcf</span>
-
-    <span class="k">def</span> <span class="nf">findLCM</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">gcf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findGCF</span><span class="p">()</span>
-        <span class="n">lcm</span> <span class="o">=</span> <span class="n">gcf</span>
-        <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nums</span><span class="p">:</span>
-            <span class="n">lcm</span> <span class="o">*=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="o">/</span><span class="n">gcf</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">lcm</span>
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">str_numA</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer A: "</span><span class="p">)</span>
-    <span class="n">str_numB</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Positive Integer B: "</span><span class="p">)</span>
-
-    <span class="n">numA</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numA</span><span class="p">)</span>
-    <span class="n">numB</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">str_numB</span><span class="p">)</span>
-
-    <span class="n">nums</span> <span class="o">=</span> <span class="p">[</span><span class="n">numA</span><span class="p">,</span><span class="n">numB</span><span class="p">]</span>
-    <span class="n">calc</span> <span class="o">=</span> <span class="n">Calculation</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
-    <span class="n">gcf</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">findGCF</span><span class="p">()</span>
-    <span class="n">lcm</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">findLCM</span><span class="p">()</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Greatest Common Factor: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gcf</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Lowest Common Multiple: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lcm</span><span class="p">))</span>
-</code></pre></div>
+<script src="https://gist.github.com/GitYCC/14fb5b060a1993e0a29604dd76169dfb.js?file=introduction-object-oriented-programming-1_5.py"></script>
 <h3 id="_6">總結：程式碼鑑賞能力</h3>
 <p>本章YC帶大家建立一種品味，像是藝術評論家一樣，我們學會了如何鑑賞好的程式碼，我們提到了好的程式碼須要符合「正常執行」、「穩健」、「不重複撰寫」、「可讀性」、「可擴展」的特性，並且提到我們要追求低耦合、高內聚，但是「不重複撰寫」的這個原則會和低耦合相互違和，所以工程師要小心拿捏！有了鑑賞能力，我們開始精練我們的程式，而自然而然就可以引出物件導向的概念。當然，物件導向不只如此啦！我們下章就會看到物件導向還有什麼花拳繡腿。</p>
 </div>
