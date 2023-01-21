@@ -4897,12 +4897,14 @@ cite from: 埃及 / 墨刻編輯部
 &lt;p&gt;&lt;img alt="Inheritance Principle.jpeg" src="/media/SOLID_Introduction/inheritance_principle.jpeg" /&gt;&lt;/p&gt;
 &lt;h3 id="law-of-demeter-lod"&gt;迪米特法則(Law of Demeter, LoD)&lt;/h3&gt;
 &lt;p&gt;又稱為「最少知識原則」，它規定物件應該要對其他物件有最少的了解。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;規則1：一個物件應該與它「朋友」互動，而不應該與陌生對象互動。&lt;/strong&gt;這樣可以減少耦合，提高物件之間的低耦合性，使得物件與物件之間的關係更加簡單易懂。「朋友」的定義：對於類別 C 的其中一個方法 M 而言，在 M 的方法中僅能訪問以下物件：
-- &lt;code&gt;self&lt;/code&gt;，類別 C 自身
-- C 的成員變數
-- M 的輸入參數
-- M 的輸出物件
-- 全域變數的物件&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;規則1：一個物件應該與它「朋友」互動，而不應該與陌生對象互動。&lt;/strong&gt;這樣可以減少耦合，提高物件之間的低耦合性，使得物件與物件之間的關係更加簡單易懂。「朋友」的定義：對於類別 C 的其中一個方法 M 而言，在 M 的方法中僅能訪問以下物件：  &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;self&lt;/code&gt;，類別 C 自身&lt;/li&gt;
+&lt;li&gt;C 的成員變數&lt;/li&gt;
+&lt;li&gt;M 的輸入參數&lt;/li&gt;
+&lt;li&gt;M 的輸出物件&lt;/li&gt;
+&lt;li&gt;全域變數的物件&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;舉個例子：假設今天一名老師給了學生名條想叫班長幫忙點名&lt;/p&gt;
 &lt;p&gt;錯誤示範：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
@@ -6149,7 +6151,7 @@ cite from: 埃及 / 墨刻編輯部
 
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
     &lt;span class="n"&gt;cat&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;FlyingCat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;May&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cat&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fly&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Taiwan&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cat&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;flyTo&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Taiwan&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
 &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
