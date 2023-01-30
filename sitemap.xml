@@ -5,7 +5,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://ycc.idv.tw/</loc>
-<lastmod>2023-01-30T21:04:59-00:00</lastmod>
+<lastmod>2023-01-30T21:35:35-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.2</priority>
 </url>
@@ -383,6 +383,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://ycc.idv.tw/category/aiml.html</loc>
+<lastmod>2022-10-15T12:00:00+08:06</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.2</priority>
+</url>
+
+<url>
+<loc>https://ycc.idv.tw/category/cs.html</loc>
 <lastmod>2022-11-26T12:00:00+08:06</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.2</priority>
@@ -403,14 +410,14 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>https://ycc.idv.tw/category/software.html</loc>
-<lastmod>2018-04-14T12:00:00+08:06</lastmod>
+<loc>https://ycc.idv.tw/tag/cs.html</loc>
+<lastmod>2022-11-26T12:00:00+08:06</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.2</priority>
 </url>
 
 <url>
-<loc>https://ycc.idv.tw/tag/cs.html</loc>
+<loc>https://ycc.idv.tw/tag/python.html</loc>
 <lastmod>2022-11-26T12:00:00+08:06</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.2</priority>
@@ -480,15 +487,15 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>https://ycc.idv.tw/tag/tensorflow.html</loc>
-<lastmod>2017-11-25T12:00:00+08:06</lastmod>
+<loc>https://ycc.idv.tw/tag/java.html</loc>
+<lastmod>2018-04-10T12:00:00+08:06</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.2</priority>
 </url>
 
 <url>
-<loc>https://ycc.idv.tw/tag/pythonwan-shu-ju.html</loc>
-<lastmod>2017-05-06T12:00:00+08:06</lastmod>
+<loc>https://ycc.idv.tw/tag/tensorflow.html</loc>
+<lastmod>2017-11-25T12:00:00+08:06</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.2</priority>
 </url>
