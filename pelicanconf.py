@@ -8,16 +8,16 @@ SITEURL = ' '
 SITENAME = 'YC Note'
 SITETITLE = 'YC Note'
 SITESUBTITLE = 'ML/DL Tech Blog'
-SITEDESCRIPTION = 'YC Note - ML/DL Tech Blog'
+SITEDESCRIPTION = '[ YC Note - ML/DL Tech Blog ] Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I built this blog for anyone interested in data science and machine learning.'
 
-SITEDESC1 = "This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies."
-SITEDESC2 = "Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer."
+SITEDESC1 = "Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer."
+SITEDESC2 = "This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies."
 
 # SITELOGO = ''
 FAVICON = '/images/favicon.png'
 BROWSER_COLOR = '#FFFFFF'
 THEME_COLOR = 'light'
-PYGMENTS_STYLE = 'monokai'
+PYGMENTS_STYLE = 'default'
 
 ROBOTS = 'index, follow'
 
@@ -30,7 +30,7 @@ DISABLE_URL_HASH = True
 
 MARKDOWN = {
     'extension_configs': {
-        'markdown.extensions.codehilite': {'css_class': 'highlight'},
+        'markdown.extensions.codehilite': {'css_class': 'highlight', 'linenums': True},
         'markdown.extensions.extra': {},
         'markdown.extensions.meta': {},
         'markdown.extensions.toc': {'title': 'Table of Contents'},
@@ -102,6 +102,8 @@ SOCIAL = (
 
 MENUITEMS = (
     ('About Me', '/about-me.html'),
+    ('AI.ML', '/category/aiml.html'),
+    ('CS', '/category/cs.html'),
     ('Categories', '/categories.html'),
     ('Tags', '/tags.html'),
 )

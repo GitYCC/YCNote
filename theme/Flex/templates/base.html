@@ -11,8 +11,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="HandheldFriendly" content="True" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  {% if page in hidden_pages %}
+  {% if page in hidden_pages%}
   <meta name="robots" content="noindex, nofollow" />
+  {% elif page_noindex %}
+  <meta name="robots" content="noindex, follow" />
   {% else %}
   <meta name="robots" content="{{ ROBOTS }}" />
   {% endif %}

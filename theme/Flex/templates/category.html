@@ -1,5 +1,5 @@
 {% extends "index.html" %}
-{% block title %} &ndash; {{ _('Category %(name)s', name=category) }}{% endblock %}
+{% block title %} &ndash; {{ _('Category: %(name)s', name=category) }}{% endblock %}
 {% block section %}
 <article class="single">
     <header>
@@ -9,3 +9,4 @@
 </article>
 {% endblock %}
 {% set summarise = True %}
+{% set page_noindex = True %}

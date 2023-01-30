@@ -38,11 +38,11 @@
     {% endif %}
 
     {% if SITEDESC1 %}
-    <p>{{ SITEDESC1 }}</p>
+    <p>{{ SITEDESC1 }} <a href="{{ SITEURL }}/about-me.html#anchor" style="color:yellow">More about me.</a></p>
     {% endif %}
 
     {% if SITEDESC2 %}
-    <p>{{ SITEDESC2 }} <a href="{{ SITEURL }}/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+    <p>{{ SITEDESC2 }}</p>
     {% endif %}
 
     {% if (pages and DISPLAY_PAGES_ON_MENU) or LINKS %}
