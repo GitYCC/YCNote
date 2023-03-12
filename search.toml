@@ -1,5 +1,5 @@
 [input]
-base_directory = "/Users/ian/Workshop/YCNote/output"
+base_directory = "/Users/yi-changchen/Workspace/YCNote/output"
 html_selector = "div.main-contents"
 
 [[input.files]]
