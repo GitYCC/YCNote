@@ -2172,10 +2172,10 @@ $$&lt;/div&gt;
 &lt;p&gt;那麼這個Regularization Term究竟怎麼來的？&lt;/p&gt;
 &lt;p&gt;一開始學機器學習或深度學習時，你應該會覺得貿然的加上Regularization Term怪怪的，而今天你可以從這裡得到更好的解釋。神奇的是！當你在優化MAP時假設了參數 &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; 分布的同時，Regularization Term會被自然的推導出來，讓我們繼續看下去。&lt;/p&gt;
 &lt;hr /&gt;
-&lt;p&gt;透過【5】式 &lt;span class="math"&gt;\(p(\mathcal{D},m,\theta)\)&lt;/span&gt; 可以列出以下關係式：
+&lt;p&gt;透過【3】式 &lt;span class="math"&gt;\(p(\mathcal{D},m,\theta)\)&lt;/span&gt; 可以列出以下關係式：
 &lt;/p&gt;
 &lt;div class="math"&gt;$$
-p((\mathcal{D}\cap m), \theta)=p(\mathcal{D},m\mid \theta)p(\theta)=p(\theta\mid \mathcal{D},m)p(\mathcal{D},m)  \ \ ↪︎【18】
+p(\mathcal{D}, m, \theta)=p(\mathcal{D},m\mid \theta)p(\theta)=p(\theta\mid \mathcal{D},m)p(\mathcal{D},m)  \ \ ↪︎【18】
 $$&lt;/div&gt;
 &lt;p&gt;
 稍作移項可得：

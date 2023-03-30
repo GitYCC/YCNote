@@ -79,7 +79,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 531,387) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 535,309) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(this); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -125,7 +125,7 @@
 <header>
 <h1 id="deep-dl_3">剖析深度學習 (3)：MLE、MAP差在哪？談機器學習裡的兩大統計觀點</h1>
 <p>
-      Posted on March 07, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 17,350
+      Posted on March 07, 2020 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 17,587
 
     </p>
 </header>
@@ -285,10 +285,10 @@ $$</div>
 <p>那麼這個Regularization Term究竟怎麼來的？</p>
 <p>一開始學機器學習或深度學習時，你應該會覺得貿然的加上Regularization Term怪怪的，而今天你可以從這裡得到更好的解釋。神奇的是！當你在優化MAP時假設了參數 <span class="math">\(\theta\)</span> 分布的同時，Regularization Term會被自然的推導出來，讓我們繼續看下去。</p>
 <hr/>
-<p>透過【5】式 <span class="math">\(p(\mathcal{D},m,\theta)\)</span> 可以列出以下關係式：
+<p>透過【3】式 <span class="math">\(p(\mathcal{D},m,\theta)\)</span> 可以列出以下關係式：
 </p>
 <div class="math">$$
-p((\mathcal{D}\cap m), \theta)=p(\mathcal{D},m\mid \theta)p(\theta)=p(\theta\mid \mathcal{D},m)p(\mathcal{D},m)  \ \ ↪︎【18】
+p(\mathcal{D}, m, \theta)=p(\mathcal{D},m\mid \theta)p(\theta)=p(\theta\mid \mathcal{D},m)p(\mathcal{D},m)  \ \ ↪︎【18】
 $$</div>
 <p>
 稍作移項可得：
