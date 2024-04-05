@@ -139,18 +139,18 @@ VIEW_ID = '161391535'
 GA_START_DATE = '2005-01-01'
 GA_END_DATE = 'today'
 
-GOOGLE_ADSENSE = {
-    'ca_id': 'ca-pub-5639899546876072',
-    'page_level_ads': True,
-    'ads': {
-        'aside': '',
-        'main_menu': '',
-        'index_top': '',
-        'index_bottom': '',
-        'article_top': '5718861428',
-        'article_bottom': '',
-    },
-}
+# GOOGLE_ADSENSE = {
+#     'ca_id': 'ca-pub-5639899546876072',
+#     'page_level_ads': True,
+#     'ads': {
+#         'aside': '',
+#         'main_menu': '',
+#         'index_top': '',
+#         'index_bottom': '',
+#         'article_top': '5718861428',
+#         'article_bottom': '',
+#     },
+# }
 
 AUTHOR_SAVE_AS = ''
 AUTHORS_SAVE_AS = ''
