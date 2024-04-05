@@ -62,13 +62,6 @@
 <meta content="Tensorflow" property="article:tag"/>
 <meta content="" property="og:image"/>
 <title>YC Note – 實作Tensorflow (5)：Word2Vec</title>
-<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({
-      google_ad_client: "ca-pub-5639899546876072",
-      enable_page_level_ads: true
-    });
-  </script>
 </meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/tensorflow-tutorial_5.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Tensorflow tutorial_5", "item": "https://ycc.idv.tw/tensorflow-tutorial_5.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "實作Tensorflow (5)：Word2Vec", "about": "AI.ML", "datePublished": "2017-11-19 12:00"}</script></head>
 <body class="light-theme">
 <aside>
@@ -134,11 +127,6 @@
 <a href="https://ycc.idv.tw/tag/tensorflow.html">Tensorflow</a>
 </p>
 </div>
-<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<ins class="adsbygoogle ads-responsive" data-ad-client="ca-pub-5639899546876072" data-ad-slot="5718861428"></ins>
-<script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
 <div class="main-contents">
 <p>機器有辦法自行從文本中觀察出詞彙間的相似度嗎？是可以的，word2vec是"word to vector"的縮寫，代表的正是將每個字轉換成向量，而一旦兩個字的向量越是靠近，就代表它的相似度越高，我們究竟要如何得到這些向量呢？方法簡單但出奇有效，文章的最後會向大家呈現它的精彩的結果。</p>
 <p>本單元程式碼Skip-Gram Word2Vec部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_1_word2vec_SkipGram.py">Github</a>下載，CBOW Word2Vec部分可於<a href="https://github.com/GitYCC/Tensorflow_Tutorial/blob/master/code/05_2_word2vec_CBOW.py">Github</a>下載。</p>
