@@ -2,74 +2,50 @@ import sys
 
 from pelican import signals
 from pelican.generators import ArticlesGenerator, PagesGenerator
-from apiclient.discovery import build
-from oauth2client.service_account import ServiceAccountCredentials
-
-SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
-
-
-def initialize_analyticsreporting(key_file_location):
-    """Initializes an Analytics Reporting API V4 service object.
-
-    Returns:
-    An authorized Analytics Reporting API V4 service object.
-    """
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        key_file_location, SCOPES)
-
-    # Build the service object.
-    analytics = build('analyticsreporting', 'v4', credentials=credentials)
-
-    return analytics
+from google.oauth2 import service_account
+from google.analytics.data_v1beta import BetaAnalyticsDataClient
+from google.analytics.data_v1beta.types import (
+    DateRange,
+    Dimension,
+    Metric,
+    RunReportRequest,
+)
 
 
-def get_report(analytics, view_id, start_date, end_date):
-    """Queries the Analytics Reporting API V4.
+def get_report(client, property_id, start_date, end_date):
+    request = RunReportRequest(
+        property=f"properties/{property_id}",
+        dimensions=[Dimension(name="pagePath")],
+        metrics=[Metric(name="screenPageViews")],
+        date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
+    )
+    response = client.run_report(request)
+    return response
 
-    Args:
-    analytics: An authorized Analytics Reporting API V4 service object.
-    Returns:
-    The Analytics Reporting API V4 response.
-    """
-    return analytics.reports().batchGet(
-        body={
-        'reportRequests': [
-        {
-            'pageSize': 999999,
-            'viewId': view_id,
-            'dateRanges': [{'startDate': start_date, 'endDate': end_date}],
-            'metrics': [{'expression': 'ga:pageviews'}],
-            'dimensions': [{'name': 'ga:pagePath'}]
-        }]
-        }
-    ).execute()
 
 def commafy(value):
     return '{:,d}'.format(value)
 
+
 def get_pageviews(generators):
     generator = generators[0]
     key_file_location = generator.settings.get('GOOGLE_KEY_FILE', None)
-    view_id = generator.settings.get('VIEW_ID', None)
+    property_id = generator.settings.get('PROPERTY_ID', None)
 
-    page_view = dict()
+    credentials = service_account.Credentials.from_service_account_file(
+        key_file_location
+    )
+    client = BetaAnalyticsDataClient(credentials=credentials)
+    start_date = generator.settings.get('GA_START_DATE', '2015-08-17')
+    end_date = generator.settings.get('GA_END_DATE', 'today')
+
+    page_view = generator.settings.get('HISTORY_PAGEVIEWS', dict())
     try:
-        start_date = generator.settings.get('GA_START_DATE', '2005-01-01')
-        end_date = generator.settings.get('GA_END_DATE', 'today')
-
-        analytics = initialize_analyticsreporting(key_file_location)
-        response = get_report(analytics, view_id, start_date, end_date)
-        for report in response.get('reports', []):
-            for row in report.get('data', {}).get('rows', []):
-                dimensions = row.get('dimensions')
-                if not dimensions:
-                    continue
-                path = dimensions[0].split('?')[0]
-
-                dateRangeValues = row.get('metrics', [])
-                for values in dateRangeValues:
-                    for value in values.get('values', []):
-                        page_view[path] =  page_view.get(path, 0) + int(value)
+        response = get_report(client, property_id, start_date, end_date)
+        for row in response.rows:
+            path = row.dimension_values[0].value
+            value = row.metric_values[0].value
+            page_view[path] =  page_view.get(path, 0) + int(value)
 
     except Exception as e:
         sys.stderr.write("[ga_page_view] Failed to fetch page view information:\n{}\n".format(e))
