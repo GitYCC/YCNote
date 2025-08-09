@@ -72,7 +72,7 @@
 <h1>
 <a href="https://ycc.idv.tw/">YC Note</a>
 </h1>
-<p style="text-align: center;">ML/DL Tech Blog (Total Views: 655,286) </p>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 655,381) </p>
 <div class="stork">
 <input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(this); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
 <div class="stork-output" data-stork="sitesearch-output"></div>
@@ -118,7 +118,7 @@
 <header>
 <h1 id="gemini-cli-agent-explore">從解析 Gemini CLI 窺探當代 Coding Agent 的架構設計</h1>
 <p>
-      Posted on August 09, 2025 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 0
+      Posted on August 09, 2025 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 16
 
     </p>
 </header>
@@ -128,7 +128,7 @@
 </p>
 </div>
 <div class="main-contents">
-<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" height="450" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/DuKV_tWES-M?si=xw4ySWNU5N9rNWDE" title="YouTube video player" width="750"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" height="100%" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/DuKV_tWES-M?si=xw4ySWNU5N9rNWDE" style="aspect-ratio: 16/9;" title="YouTube video player" width="100%"></iframe>
 <div class="toc"><span class="toctitle">Table of Contents</span><ul>
 <li><a href="#system-overview-architecture">系統整體架構 (System Overview Architecture)</a></li>
 <li><a href="#agent">Agent 核心運作概覽</a></li>
@@ -872,7 +872,7 @@ Here is the folder structure of the current working directories:
 <p><strong>四種工具類型：</strong></p>
 <p><strong>內建工具 (Built-in Tools)</strong>:</p>
 <ul>
-<li>檔案系統工具 (File System Tools)<ul>
+<li>檔案系統工具 (File System Tools)</li>
 <li><code>ReadFileTool</code>: 檔案讀取<ul>
 <li><strong>功能</strong>: 讀取檔案內容，支援二進位檔案檢測</li>
 <li><strong>特性</strong>: 自動編碼檢測、大檔案處理、權限檢查</li>
@@ -888,18 +888,14 @@ Here is the folder structure of the current working directories:
 <li><strong>特性</strong>: Diff 生成、編輯器整合、撤銷支援</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>執行環境工具 (Execution Tools)<ul>
+<li>執行環境工具 (Execution Tools)</li>
 <li><code>ShellTool</code>: Shell 命令執行<ul>
 <li><strong>功能</strong>: 執行 shell 命令</li>
 <li><strong>安全</strong>: 沙盒支援、危險命令檢測、輸出限制</li>
 <li><strong>特性</strong>: 即時輸出、中止支援、環境變數管理</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>搜尋與發現工具 (Search &amp; Discovery Tools)<ul>
+<li>搜尋與發現工具 (Search &amp; Discovery Tools)</li>
 <li><code>GrepTool</code>: 檔案搜尋<ul>
 <li><strong>功能</strong>: 基於 ripgrep 的檔案內容搜尋</li>
 <li><strong>特性</strong>: 正規表示式支援、多檔案搜尋、效能最佳化</li>
@@ -910,9 +906,7 @@ Here is the folder structure of the current working directories:
 <li><strong>特性</strong>: 快速檔案查找、排序、過濾</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>網路工具 (Network Tools)<ul>
+<li>網路工具 (Network Tools)</li>
 <li><code>WebFetchTool</code>: 網頁抓取<ul>
 <li><strong>功能</strong>: 抓取網頁內容</li>
 <li><strong>特性</strong>: HTML 轉 Markdown、快取、安全檢查</li>
@@ -921,8 +915,6 @@ Here is the folder structure of the current working directories:
 <li><code>WebSearchTool</code>: 網路搜尋<ul>
 <li><strong>功能</strong>: Google 搜尋整合</li>
 <li><strong>特性</strong>: 結構化結果、相關性排序</li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
