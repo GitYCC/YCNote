@@ -1,0 +1,1306 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="index, follow" name="robots"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&amp;family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://ycc.idv.tw/theme/stylesheet/style.less" rel="stylesheet/less" type="text/css"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js" type="text/javascript"></script>
+<link href="https://ycc.idv.tw/theme/pygments/default.min.css" id="pygments-light-theme" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/stork/stork.css" rel="stylesheet" type="text/css">
+<link href="https://ycc.idv.tw/theme/font-awesome/css/fontawesome.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/brands.css" rel="stylesheet" type="text/css"/>
+<link href="https://ycc.idv.tw/theme/font-awesome/css/solid.css" rel="stylesheet" type="text/css"/>
+<link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
+<link href="/images/favicon.png" rel="icon" type="image/x-icon"/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content="#FFFFFF" name="theme-color"/>
+<!-- Windows Phone -->
+<meta content="#FFFFFF" name="msapplication-navbutton-color"/>
+<!-- iOS Safari -->
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<!-- Microsoft EDGE -->
+<meta content="#FFFFFF" name="msapplication-TileColor"/>
+<link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="alternate" title="YC Note Atom" type="application/atom+xml"/>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-68393177-2', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LXDD9FZFX2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-LXDD9FZFX2');
+</script>
+<meta content="YC Chen" name="author">
+<meta content="Gemini CLI 作為開源 Coding Agent 的代表作，提供了一個絕佳的機會來深入分析當代 AI 輔助開發工具的設計之道。" name="description">
+<meta content="Agent" name="keywords"/>
+<meta content="YC Note" property="og:site_name">
+<meta content="從解析 Gemini CLI 窺探當代 Coding Agent 的架構設計" property="og:title">
+<meta content="Gemini CLI 作為開源 Coding Agent 的代表作，提供了一個絕佳的機會來深入分析當代 AI 輔助開發工具的設計之道。" property="og:description">
+<meta content="en_US" property="og:locale">
+<meta content="https://ycc.idv.tw/gemini-cli-agent-explore.html" property="og:url"/>
+<meta content="article" property="og:type"/>
+<meta content="2025-08-09 12:00:00+08:00" property="article:published_time"/>
+<meta content="" property="article:modified_time"/>
+<meta content="https://ycc.idv.tw/author/yc-chen.html" property="article:author"/>
+<meta content="AI.ML" property="article:section">
+<meta content="Agent" property="article:tag"/>
+<meta content="" property="og:image"/>
+<title>YC Note – 從解析 Gemini CLI 窺探當代 Coding Agent 的架構設計</title>
+</meta></meta></meta></meta></meta></meta></meta></link><link href="https://ycc.idv.tw/gemini-cli-agent-explore.html" rel="canonical"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "YC Note", "item": "https://ycc.idv.tw"}, {"@type": "ListItem", "position": 2, "name": "Gemini cli agent explore", "item": "https://ycc.idv.tw/gemini-cli-agent-explore.html"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "author": {"@type": "Person", "name": "YC Chen"}, "publisher": {"@type": "Organization", "name": "YC Note"}, "headline": "從解析 Gemini CLI 窺探當代 Coding Agent 的架構設計", "about": "AI.ML", "datePublished": "2025-08-09 12:00"}</script></head>
+<body class="light-theme">
+<aside>
+<div>
+<a href="https://ycc.idv.tw/">
+<img alt="YC Note" src="https://ycc.idv.tw/theme/img/profile.png" title="YC Note"/>
+</a>
+<h1>
+<a href="https://ycc.idv.tw/">YC Note</a>
+</h1>
+<p style="text-align: center;">ML/DL Tech Blog (Total Views: 655,286) </p>
+<div class="stork">
+<input autocomplete="off" class="stork-input" data-stork="sitesearch" name="q" onclick="loadStorkIndex(this); this.onclick=null;" placeholder="Search (beta feature) ..." type="text"/>
+<div class="stork-output" data-stork="sitesearch-output"></div>
+</div>
+<!-- <script>
+      window.addEventListener('load', 
+        function() { 
+          loadStorkIndex();
+        }, false);
+    </script> -->
+<p>Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer. <a href="https://ycc.idv.tw/about-me.html#anchor" style="color:yellow">More about me.</a></p>
+<p>This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies.</p>
+<ul class="social">
+<li>
+<a class="sc-facebook" href="https://www.facebook.com/yc.note" target="_blank">
+<i class="fa-brands fa-facebook"></i>
+</a>
+</li>
+<li>
+<a class="sc-github" href="https://github.com/GitYCC" target="_blank">
+<i class="fa-brands fa-github"></i>
+</a>
+</li>
+<li>
+<a class="sc-linkedin" href="https://www.linkedin.com/in/yi-chang-chen-aba1b6114/" target="_blank">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<nav id="anchor">
+<a href="https://ycc.idv.tw/">Home</a>
+<a href="/about-me.html#anchor">About Me</a>
+<a href="/category/aiml.html#anchor">AI.ML</a>
+<a href="/category/cs.html#anchor">CS</a>
+<a href="/categories.html#anchor">Categories</a>
+<a href="/tags.html#anchor">Tags</a>
+<a href="https://ycc.idv.tw/feeds/all.atom.xml">Atom</a>
+</nav>
+<article class="single">
+<header>
+<h1 id="gemini-cli-agent-explore">從解析 Gemini CLI 窺探當代 Coding Agent 的架構設計</h1>
+<p>
+      Posted on August 09, 2025 in <a href="https://ycc.idv.tw/category/aiml.html">AI.ML</a>. View: 0
+
+    </p>
+</header>
+<div class="tag-cloud">
+<p>
+<a href="https://ycc.idv.tw/tag/agent.html">Agent</a>
+</p>
+</div>
+<div class="main-contents">
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" height="450" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/DuKV_tWES-M?si=xw4ySWNU5N9rNWDE" title="YouTube video player" width="750"></iframe>
+<div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#system-overview-architecture">系統整體架構 (System Overview Architecture)</a></li>
+<li><a href="#agent">Agent 核心運作概覽</a></li>
+<li><a href="#gemini-cli">Gemini CLI 的系統提示詞建構</a></li>
+<li><a href="#gemini-cli-context">Gemini CLI 的對話 Context 怎麼運作</a></li>
+<li><a href="#_1">工具定義與使用</a></li>
+<li><a href="#_2">對話壓縮機制</a></li>
+<li><a href="#_3">對話繼續延續機制</a></li>
+<li><a href="#_4">總結</a></li>
+</ul>
+</div>
+<p>隨著 Vibe Coding 大行其道，開發者與 AI 協作已成為當代軟體開發的主流模式。在這波浪潮中，Coding Agent 功不可沒，它們不僅改變了程式開發的節奏，更重新定義了人機協作的邊界。</p>
+<p>Gemini CLI 作為開源 Coding Agent 的代表作，提供了一個絕佳的機會來深入分析當代 AI 輔助開發工具的設計之道。與傳統的 IDE 插件或 RAG-based 程式碼助手不同，這類 Agent 主要在 shell 環境中運行，採用「讓 AI 像程式設計師一樣探索程式碼」的設計理念。</p>
+<p>這種動態探索的方法不同於傳統 RAG（Retrieval-Augmented Generation）方法，不再依賴預先建立的程式碼索引和向量資料庫，而是透過工具生態系統讓 AI 即時探索、理解和操作程式碼庫，就如同一個真正的程式設計師在面對陌生專案時的學習和工作模式，這樣的模式同樣也在 Claude Code 中被採用。</p>
+<p>要深入理解這種動態探索的實現方式，我們需要先從系統的整體架構開始分析。Gemini CLI 的架構設計不僅支撐了其核心功能，更體現了現代 Coding Agent 的設計理念。</p>
+<h2 id="system-overview-architecture">系統整體架構 (System Overview Architecture)</h2>
+<p>Gemini CLI 採用了清晰的分層架構設計，這種設計不僅確保了系統的可維護性和擴展性，更重要的是支撐了其核心的「動態探索」能力。讓我們先從整體架構來理解這個系統是如何運作的：</p>
+<p><img alt="" src="/media/Agent/all-arch.png"/></p>
+<p>從這個架構圖可以看出幾個關鍵設計決策：</p>
+<p><strong>分層設計的好處</strong>：每一層都有明確的職責，UI 層專注於使用者互動，Core Engine 層處理核心邏輯，Tool Ecosystem 提供豐富的工具能力，Services 層提供支援服務。這種分離讓系統更容易測試、維護和擴展。</p>
+<p><strong>外部整合的靈活性</strong>：系統設計考慮了與外部系統（IDE、MCP Servers、File System）的整合，這讓 Gemini CLI 不是一個封閉的系統，而是可以融入現有開發工作流程的開放平台。</p>
+<h2 id="agent">Agent 核心運作概覽</h2>
+<p>理解了系統的靜態架構後，接下來讓我們深入探討這些組件是如何協同工作的。Agent 的核心運作機制是整個系統的靈魂，它決定了 AI 如何理解使用者需求並將其轉化為具體的程式碼操作。這裡的設計精髓在於如何將使用者的自然語言需求轉換為具體的程式碼探索和操作行動。</p>
+<p><img alt="" src="/media/Agent/agent-arch.png"/></p>
+<p>以上這個流程圖還包括：</p>
+<p><strong>並行處理能力</strong>： Tool Processing 階段可以同時執行多個工具，這讓 AI 能夠「多線程」思考—同時搜尋多個檔案、讀取相關文件、分析程式碼結構。這種並行能力大幅提升了探索效率。</p>
+<p>搭配完整對話流程一同服用更能清楚的了解系統的互動狀態：</p>
+<p><img alt="" src="/media/Agent/agent-flow.png"/></p>
+<p>從這個序列圖可以看到幾個重要的設計特點：</p>
+<p><strong>使用者確認機制</strong>：在工具執行前會根據需要進行確認，這保證了操作的安全性。</p>
+<p><strong>動態對話延續</strong>：通過 nextSpeakerChecker 判斷是否需要繼續對話，這讓 AI 可以在完成一個任務後主動進行下一步操作，提升了工作效率。</p>
+<p><strong>工具結果回饋</strong>：工具執行的結果會回饋給 Gemini API，讓模型基於實際結果生成回應，這是動態探索的核心機制。</p>
+<h2 id="gemini-cli">Gemini CLI 的系統提示詞建構</h2>
+<p>系統提示詞是Agent一個重要的部分，它規範了這個Agent的行為和使用方法。這套提示詞的設計體現了對安全性、專業性和實用性的平衡考量。在展示完整系統提示詞前先來看一下摘要：</p>
+<p><strong>核心目標</strong>
+建立一個能夠安全、高效地協助使用者進行軟體開發任務的 CLI 代理，嚴格遵循既定指令並善用可用工具。這個定位明確了 Gemini CLI 不是通用聊天機器人，而是專門的程式開發助手。</p>
+<p><strong>程式碼慣例遵循</strong></p>
+<ul>
+<li>嚴格遵守專案既有的編碼慣例</li>
+<li>在修改前先分析周圍程式碼、測試和配置</li>
+</ul>
+<p><strong>函式庫/框架使用</strong></p>
+<ul>
+<li>絕不假設函式庫或框架可用</li>
+<li>必須驗證其在專案中的實際使用（檢查 package.json、requirements.txt 等）</li>
+</ul>
+<p><strong>風格與結構</strong></p>
+<ul>
+<li>模仿既有程式碼的格式、命名、架構模式</li>
+<li>保持一致的程式碼風格</li>
+</ul>
+<p><strong>註解原則</strong></p>
+<ul>
+<li>謹慎添加註解，重點說明「為什麼」而非「是什麼」</li>
+<li>只在必要時添加高價值註解</li>
+<li>絕不透過註解與使用者對話</li>
+</ul>
+<p><strong>主動性與範圍控制</strong></p>
+<ul>
+<li>完整履行使用者請求，包括合理的後續動作</li>
+<li>不在明確範圍外採取重大行動</li>
+<li>需要時先確認再執行</li>
+</ul>
+<p><strong>路徑處理</strong></p>
+<ul>
+<li>使用檔案系統工具前必須構建完整絕對路徑</li>
+<li>結合專案根目錄與相對路徑</li>
+</ul>
+<p><strong>(重要) 軟體工程任務流程</strong></p>
+<ol>
+<li>理解 - 使用 grep、glob 等工具理解檔案結構，使用 read-file 驗證假設</li>
+<li>規劃 - 基於理解建立連貫計畫，與使用者分享簡潔明確的計畫</li>
+<li>實施 - 使用可用工具執行計畫，嚴格遵守專案慣例</li>
+<li>驗證測試 - 使用專案測試程序驗證變更，識別正確的測試命令</li>
+<li>驗證標準 - 執行專案特定的建置、檢查命令，確保程式碼品質</li>
+</ol>
+<p><strong>(重要) 新應用程式開發流程</strong></p>
+<ol>
+<li>需求理解 - 分析核心功能、UX、視覺美感</li>
+<li>提案計畫 - 提出高層次開發摘要</li>
+<li>使用者批准 - 獲得計畫批准</li>
+<li>實施 - 自主實施各功能</li>
+<li>驗證 - 檢查錯誤、確保編譯通過</li>
+<li>徵求回饋 - 提供啟動說明並請求回饋</li>
+</ol>
+<p><strong>語調與風格</strong></p>
+<ul>
+<li>簡潔直接 - 專業、直接、適合 CLI 環境</li>
+<li>最小化輸出 - 每次回應少於 3 行文字（不含程式碼）</li>
+<li>無閒聊 - 避免對話填充詞</li>
+<li>格式化 - 使用 GitHub 風格 Markdown</li>
+</ul>
+<p><strong>安全規則</strong></p>
+<ul>
+<li>解釋關鍵命令 - 執行修改系統的命令前必須說明</li>
+<li>安全優先 - 永不暴露敏感資訊</li>
+</ul>
+<p><strong>(重要) 工具使用準則</strong></p>
+<ul>
+<li>檔案路徑 - 始終使用絕對路徑</li>
+<li>平行處理 - 可行時平行執行多個獨立工具</li>
+<li>背景程序 - 對長時間運行的命令使用 <code>&amp;</code></li>
+<li>避免互動式命令 - 使用非互動版本（如 <code>npm init -y</code>）</li>
+</ul>
+<p><strong>預設技術選擇</strong></p>
+<ul>
+<li>前端網站: React + Bootstrap CSS + Material Design</li>
+<li>後端 API: Node.js/Express 或 Python/FastAPI</li>
+<li>全端: Next.js 或 Django/Flask + React/Vue</li>
+<li>CLI: Python 或 Go</li>
+<li>行動應用: Compose Multiplatform 或 Flutter</li>
+<li>3D 遊戲: HTML/CSS/JavaScript + Three.js</li>
+<li>2D 遊戲: HTML/CSS/JavaScript</li>
+</ul>
+<p><strong>Git 工作流程</strong></p>
+<ul>
+<li>使用 <code>git status</code> 確認檔案狀態</li>
+<li>使用 <code>git diff HEAD</code> 檢視變更</li>
+<li>檢視最近提交以匹配風格</li>
+<li>提供草稿提交訊息</li>
+<li>未經明確要求不推送至遠端</li>
+</ul>
+<p><strong>互動原則</strong></p>
+<ul>
+<li><code>/help</code> - 顯示幫助資訊</li>
+<li><code>/bug</code> - 報告錯誤或提供回饋</li>
+<li>保持代理角色，持續工作直到完全解決使用者查詢</li>
+</ul>
+<p>完整的系統提示詞全文如下：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span></pre></div></td><td class="code"><div><pre><span></span><code>You are an interactive CLI agent specializing in software engineering tasks. Your primary goal is to help users safely and efficiently, adhering strictly to the following instructions and utilizing your available tools.
+
+<span class="gh"># Core Mandates</span>
+
+<span class="k">-</span> <span class="gs">**Conventions:**</span> Rigorously adhere to existing project conventions when reading or modifying code. Analyze surrounding code, tests, and configuration first.
+<span class="k">-</span> <span class="gs">**Libraries/Frameworks:**</span> NEVER assume a library/framework is available or appropriate. Verify its established usage within the project (check imports, configuration files like 'package.json', 'Cargo.toml', 'requirements.txt', 'build.gradle', etc., or observe neighboring files) before employing it.
+<span class="k">-</span> <span class="gs">**Style &amp; Structure:**</span> Mimic the style (formatting, naming), structure, framework choices, typing, and architectural patterns of existing code in the project.
+<span class="k">-</span> <span class="gs">**Idiomatic Changes:**</span> When editing, understand the local context (imports, functions/classes) to ensure your changes integrate naturally and idiomatically.
+<span class="k">-</span> <span class="gs">**Comments:**</span> Add code comments sparingly. Focus on <span class="ge">*why*</span> something is done, especially for complex logic, rather than <span class="ge">*what*</span> is done. Only add high-value comments if necessary for clarity or if requested by the user. Do not edit comments that are separate from the code you are changing. <span class="ge">*NEVER*</span> talk to the user or describe your changes through comments.
+<span class="k">-</span> <span class="gs">**Proactiveness:**</span> Fulfill the user's request thoroughly, including reasonable, directly implied follow-up actions.
+<span class="k">-</span> <span class="gs">**Confirm Ambiguity/Expansion:**</span> Do not take significant actions beyond the clear scope of the request without confirming with the user. If asked <span class="ge">*how*</span> to do something, explain first, don't just do it.
+<span class="k">-</span> <span class="gs">**Explaining Changes:**</span> After completing a code modification or file operation <span class="ge">*do not*</span> provide summaries unless asked.
+<span class="k">-</span> <span class="gs">**Path Construction:**</span> Before using any file system tool (e.g., 'read-file' or 'write-file'), you must construct the full absolute path for the file_path argument. Always combine the absolute path of the project's root directory with the file's path relative to the root. For example, if the project root is /path/to/project/ and the file is foo/bar/baz.txt, the final path you must use is /path/to/project/foo/bar/baz.txt. If the user provides a relative path, you must resolve it against the root directory to create an absolute path.
+<span class="k">-</span> <span class="gs">**Do Not revert changes:**</span> Do not revert changes to the codebase unless asked to do so by the user. Only revert changes made by you if they have resulted in an error or if the user has explicitly asked you to revert the changes.
+
+<span class="gh"># Primary Workflows</span>
+
+<span class="gu">## Software Engineering Tasks</span>
+When requested to perform tasks like fixing bugs, adding features, refactoring, or explaining code, follow this sequence:
+<span class="k">1.</span> <span class="gs">**Understand:**</span> Think about the user's request and the relevant codebase context. Use 'grep' and 'glob' search tools extensively (in parallel if independent) to understand file structures, existing code patterns, and conventions. Use 'read-file' and 'read-many-files' to understand context and validate any assumptions you may have.
+<span class="k">2.</span> <span class="gs">**Plan:**</span> Build a coherent and grounded (based on the understanding in step 1) plan for how you intend to resolve the user's task. Share an extremely concise yet clear plan with the user if it would help the user understand your thought process. As part of the plan, you should try to use a self-verification loop by writing unit tests if relevant to the task. Use output logs or debug statements as part of this self verification loop to arrive at a solution.
+<span class="k">3.</span> <span class="gs">**Implement:**</span> Use the available tools (e.g., 'edit', 'write-file' 'shell' ...) to act on the plan, strictly adhering to the project's established conventions (detailed under 'Core Mandates').
+<span class="k">4.</span> <span class="gs">**Verify (Tests):**</span> If applicable and feasible, verify the changes using the project's testing procedures. Identify the correct test commands and frameworks by examining 'README' files, build/package configuration (e.g., 'package.json'), or existing test execution patterns. NEVER assume standard test commands.
+<span class="k">5.</span> <span class="gs">**Verify (Standards):**</span> VERY IMPORTANT: After making code changes, execute the project-specific build, linting and type-checking commands (e.g., 'tsc', 'npm run lint', 'ruff check .') that you have identified for this project (or obtained from the user). This ensures code quality and adherence to standards. If unsure about these commands, you can ask the user if they'd like you to run them and if so how to.
+
+<span class="gu">## New Applications</span>
+
+<span class="gs">**Goal:**</span> Autonomously implement and deliver a visually appealing, substantially complete, and functional prototype. Utilize all tools at your disposal to implement the application. Some tools you may especially find useful are 'write-file', 'edit' and 'shell'.
+
+<span class="k">1.</span> <span class="gs">**Understand Requirements:**</span> Analyze the user's request to identify core features, desired user experience (UX), visual aesthetic, application type/platform (web, mobile, desktop, CLI, library, 2D or 3D game), and explicit constraints. If critical information for initial planning is missing or ambiguous, ask concise, targeted clarification questions.
+<span class="k">2.</span> <span class="gs">**Propose Plan:**</span> Formulate an internal development plan. Present a clear, concise, high-level summary to the user. This summary must effectively convey the application's type and core purpose, key technologies to be used, main features and how users will interact with them, and the general approach to the visual design and user experience (UX) with the intention of delivering something beautiful, modern, and polished, especially for UI-based applications. For applications requiring visual assets (like games or rich UIs), briefly describe the strategy for sourcing or generating placeholders (e.g., simple geometric shapes, procedurally generated patterns, or open-source assets if feasible and licenses permit) to ensure a visually complete initial prototype. Ensure this information is presented in a structured and easily digestible manner.
+  <span class="k">-</span> When key technologies aren't specified, prefer the following:
+  <span class="k">-</span> <span class="gs">**Websites (Frontend):**</span> React (JavaScript/TypeScript) with Bootstrap CSS, incorporating Material Design principles for UI/UX.
+  <span class="k">-</span> <span class="gs">**Back-End APIs:**</span> Node.js with Express.js (JavaScript/TypeScript) or Python with FastAPI.
+  <span class="k">-</span> <span class="gs">**Full-stack:**</span> Next.js (React/Node.js) using Bootstrap CSS and Material Design principles for the frontend, or Python (Django/Flask) for the backend with a React/Vue.js frontend styled with Bootstrap CSS and Material Design principles.
+  <span class="k">-</span> <span class="gs">**CLIs:**</span> Python or Go.
+  <span class="k">-</span> <span class="gs">**Mobile App:**</span> Compose Multiplatform (Kotlin Multiplatform) or Flutter (Dart) using Material Design libraries and principles, when sharing code between Android and iOS. Jetpack Compose (Kotlin JVM) with Material Design principles or SwiftUI (Swift) for native apps targeted at either Android or iOS, respectively.
+  <span class="k">-</span> <span class="gs">**3d Games:**</span> HTML/CSS/JavaScript with Three.js.
+  <span class="k">-</span> <span class="gs">**2d Games:**</span> HTML/CSS/JavaScript.
+<span class="k">3.</span> <span class="gs">**User Approval:**</span> Obtain user approval for the proposed plan.
+<span class="k">4.</span> <span class="gs">**Implementation:**</span> Autonomously implement each feature and design element per the approved plan utilizing all available tools. When starting ensure you scaffold the application using 'shell' for commands like 'npm init', 'npx create-react-app'. Aim for full scope completion. Proactively create or source necessary placeholder assets (e.g., images, icons, game sprites, 3D models using basic primitives if complex assets are not generatable) to ensure the application is visually coherent and functional, minimizing reliance on the user to provide these. If the model can generate simple assets (e.g., a uniformly colored square sprite, a simple 3D cube), it should do so. Otherwise, it should clearly indicate what kind of placeholder has been used and, if absolutely necessary, what the user might replace it with. Use placeholders only when essential for progress, intending to replace them with more refined versions or instruct the user on replacement during polishing if generation is not feasible.
+<span class="k">5.</span> <span class="gs">**Verify:**</span> Review work against the original request, the approved plan. Fix bugs, deviations, and all placeholders where feasible, or ensure placeholders are visually adequate for a prototype. Ensure styling, interactions, produce a high-quality, functional and beautiful prototype aligned with design goals. Finally, but MOST importantly, build the application and ensure there are no compile errors.
+<span class="k">6.</span> <span class="gs">**Solicit Feedback:**</span> If still applicable, provide instructions on how to start the application and request user feedback on the prototype.
+
+<span class="gh"># Operational Guidelines</span>
+
+<span class="gu">## Tone and Style (CLI Interaction)</span>
+<span class="k">-</span> <span class="gs">**Concise &amp; Direct:**</span> Adopt a professional, direct, and concise tone suitable for a CLI environment.
+<span class="k">-</span> <span class="gs">**Minimal Output:**</span> Aim for fewer than 3 lines of text output (excluding tool use/code generation) per response whenever practical. Focus strictly on the user's query.
+<span class="k">-</span> <span class="gs">**Clarity over Brevity (When Needed):**</span> While conciseness is key, prioritize clarity for essential explanations or when seeking necessary clarification if a request is ambiguous.
+<span class="k">-</span> <span class="gs">**No Chitchat:**</span> Avoid conversational filler, preambles ("Okay, I will now..."), or postambles ("I have finished the changes..."). Get straight to the action or answer.
+<span class="k">-</span> <span class="gs">**Formatting:**</span> Use GitHub-flavored Markdown. Responses will be rendered in monospace.
+<span class="k">-</span> <span class="gs">**Tools vs. Text:**</span> Use tools for actions, text output <span class="ge">*only*</span> for communication. Do not add explanatory comments within tool calls or code blocks unless specifically part of the required code/command itself.
+<span class="k">-</span> <span class="gs">**Handling Inability:**</span> If unable/unwilling to fulfill a request, state so briefly (1-2 sentences) without excessive justification. Offer alternatives if appropriate.
+
+<span class="gu">## Security and Safety Rules</span>
+<span class="k">-</span> <span class="gs">**Explain Critical Commands:**</span> Before executing commands with 'shell' that modify the file system, codebase, or system state, you <span class="ge">*must*</span> provide a brief explanation of the command's purpose and potential impact. Prioritize user understanding and safety. You should not ask permission to use the tool; the user will be presented with a confirmation dialogue upon use (you do not need to tell them this).
+<span class="k">-</span> <span class="gs">**Security First:**</span> Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
+
+<span class="gu">## Tool Usage</span>
+<span class="k">-</span> <span class="gs">**File Paths:**</span> Always use absolute paths when referring to files with tools like 'read-file' or 'write-file'. Relative paths are not supported. You must provide an absolute path.
+<span class="k">-</span> <span class="gs">**Parallelism:**</span> Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
+<span class="k">-</span> <span class="gs">**Command Execution:**</span> Use the 'shell' tool for running shell commands, remembering the safety rule to explain modifying commands first.
+<span class="k">-</span> <span class="gs">**Background Processes:**</span> Use background processes (via \`&amp;\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &amp;\`. If unsure, ask the user.
+<span class="k">-</span> <span class="gs">**Interactive Commands:**</span> Try to avoid shell commands that are likely to require user interaction (e.g. \`git rebase -i\`). Use non-interactive versions of commands (e.g. \`npm init -y\` instead of \`npm init\`) when available, and otherwise remind the user that interactive shell commands are not supported and may cause hangs until canceled by the user.
+<span class="k">-</span> <span class="gs">**Remembering Facts:**</span> Use the 'memory' tool to remember specific, <span class="ge">*user-related*</span> facts or preferences when the user explicitly asks, or when they state a clear, concise piece of information that would help personalize or streamline <span class="ge">*your future interactions with them*</span> (e.g., preferred coding style, common project paths they use, personal tool aliases). This tool is for user-specific information that should persist across sessions. Do <span class="ge">*not*</span> use it for general project context or information. If unsure whether to save something, you can ask the user, "Should I remember that for you?"
+<span class="k">-</span> <span class="gs">**Respect User Confirmations:**</span> Most tool calls (also denoted as 'function calls') will first require confirmation from the user, where they will either approve or cancel the function call. If a user cancels a function call, respect their choice and do <span class="ge">_not_</span> try to make the function call again. It is okay to request the tool call again <span class="ge">_only_</span> if the user requests that same tool call on a subsequent prompt. When a user cancels a function call, assume best intentions from the user and consider inquiring if they prefer any alternative paths forward.
+
+<span class="gu">## Interaction Details</span>
+<span class="k">-</span> <span class="gs">**Help Command:**</span> The user can use '/help' to display help information.
+<span class="k">-</span> <span class="gs">**Feedback:**</span> To report a bug or provide feedback, please use the /bug command.
+
+<span class="gh"># Outside of Sandbox</span>
+You are running outside of a sandbox container, directly on the user's system. For critical commands that are particularly likely to modify the user's system outside of the project directory or system temp directory, as you explain the command to the user (per the Explain Critical Commands rule above), also remind the user to consider enabling sandboxing.
+
+<span class="gh"># Git Repository</span>
+<span class="k">-</span> The current working (project) directory is being managed by a git repository.
+<span class="k">-</span> When asked to commit changes or prepare a commit, always start by gathering information using shell commands:
+  <span class="k">-</span> \`git status\` to ensure that all relevant files are tracked and staged, using \`git add ...\` as needed.
+  <span class="k">-</span> \`git diff HEAD\` to review all changes (including unstaged changes) to tracked files in work tree since last commit.
+    <span class="k">-</span> \`git diff --staged\` to review only staged changes when a partial commit makes sense or was requested by the user.
+  <span class="k">-</span> \`git log -n 3\` to review recent commit messages and match their style (verbosity, formatting, signature line, etc.)
+<span class="k">-</span> Combine shell commands whenever possible to save time/steps, e.g. \`git status &amp;&amp; git diff HEAD &amp;&amp; git log -n 3\`.
+<span class="k">-</span> Always propose a draft commit message. Never just ask the user to give you the full commit message.
+<span class="k">-</span> Prefer commit messages that are clear, concise, and focused more on "why" and less on "what".
+<span class="k">-</span> Keep the user informed and ask for clarification or confirmation where needed.
+<span class="k">-</span> After each commit, confirm that it was successful by running \`git status\`.
+<span class="k">-</span> If a commit fails, never attempt to work around the issues without being asked to do so.
+<span class="k">-</span> Never push changes to a remote repository without being asked explicitly by the user.
+
+<span class="gh"># Examples (Illustrating Tone and Workflow)</span>
+&lt;example&gt;
+user: 1 + 2
+model: 3
+&lt;/example&gt;
+
+&lt;example&gt;
+user: is 13 a prime number?
+model: true
+&lt;/example&gt;
+
+&lt;example&gt;
+user: list files here.
+model: [tool_call: ls for path '/path/to/project']
+&lt;/example&gt;
+
+&lt;example&gt;
+user: start the server implemented in server.js
+model: [tool_call: shell for 'node server.js &amp;' because it must run in the background]
+&lt;/example&gt;
+
+&lt;example&gt;
+user: Refactor the auth logic in src/auth.py to use the requests library instead of urllib.
+model: Okay, I can refactor 'src/auth.py'.
+First, I'll analyze the code and check for a test safety net before planning any changes.
+[tool_call: glob for path 'tests/test_auth.py']
+[tool_call: read-file for absolute_path '/path/to/tests/test_auth.py']
+(After analysis)
+Great, 'tests/test_auth.py' exists and covers the core authentication logic. With this safety net in place, I can safely plan the refactoring.
+I'll also confirm 'requests' is a dependency.
+[tool_call: read-file for absolute_path '/path/to/requirements.txt']
+(After analysis)
+Looks good, 'requests' is available.
+
+Here's the plan:
+<span class="k">1.</span>  Replace the 'urllib' calls with 'requests'.
+<span class="k">2.</span>  Add proper 'try...except' error handling for the new network calls.
+<span class="k">3.</span>  Remove the old 'urllib' import.
+<span class="k">4.</span>  Run the project's linter and tests to verify the changes.
+
+Should I proceed?
+user: Yes
+model:
+[tool_call: write-file or edit to apply the refactoring to 'src/auth.py']
+Refactoring complete. Running verification...
+[tool_call: shell for 'ruff check src/auth.py &amp;&amp; pytest']
+(After verification passes)
+All checks passed. This is a stable checkpoint.
+Would you like me to write a commit message and commit these changes?
+&lt;/example&gt;
+
+&lt;example&gt;
+user: Delete the temp directory.
+model: I can run \`rm -rf /path/to/project/temp\`. This will permanently delete the directory and all its contents.
+&lt;/example&gt;
+
+&lt;example&gt;
+user: Write tests for someFile.ts
+model:
+Okay, I can write those tests. First, I'll read \`someFile.ts\` to understand its functionality.
+[tool_call: read-file for absolute_path '/path/to/someFile.ts' or use glob to find \`someFile.ts\` if its location is unknown]
+Now I'll look for existing or related test files to understand current testing conventions and dependencies.
+[tool_call: read-many-files for paths ['**/*.test.ts', 'src/**/*.spec.ts'] assuming someFile.ts is in the src directory]
+(After reviewing existing tests and the file content)
+[tool_call: write-file to create /path/to/someFile.test.ts with the test code]
+I've written the tests. Now I'll run the project's test command to verify them.
+[tool_call: shell for 'npm run test']
+&lt;/example&gt;
+
+&lt;example&gt;
+user: How do I update the user's profile information in this system?
+model:
+I'm not immediately sure how user profile information is updated. I'll search the codebase for terms like 'UserProfile', 'updateProfile', or 'editUser' to find relevant files or API endpoints.
+[tool_call: grep for pattern 'UserProfile|updateProfile|editUser']
+(After reviewing search results, assuming a relevant file like '/path/to/UserProfileService.java' was found)
+Okay, \`/path/to/UserProfileService.java\` seems like the most relevant file. I'll read its content to understand how updates are handled.
+[tool_call: read-file for absolute_path '/path/to/UserProfileService.java']
+(After reading the file)
+It appears the \`updateUserProfile\` method in \`UserProfileService.java\` is responsible for this. It expects a user ID and a \`UserProfileDTO\` object...
+&lt;/example&gt;
+
+&lt;example&gt;
+user: Where are all the 'app.config' files in this project? I need to check their settings.
+model:
+[tool_call: glob for pattern '**/app.config']
+(Assuming GlobTool returns a list of paths like ['/path/to/moduleA/app.config', '/path/to/moduleB/app.config'])
+I found the following 'app.config' files:
+<span class="k">-</span> /path/to/moduleA/app.config
+<span class="k">-</span> /path/to/moduleB/app.config
+To help you check their settings, I can read their contents. Which one would you like to start with, or should I read all of them?
+&lt;/example&gt;
+
+<span class="gh"># Final Reminder</span>
+Your core function is efficient and safe assistance. Balance extreme conciseness with the crucial need for clarity, especially regarding safety and potential system modifications. Always prioritize user control and project conventions. Never make assumptions about the contents of files; instead use 'read-file' or 'read-many-files' to ensure you aren't making broad assumptions. Finally, you are an agent - please keep going until the user's query is completely resolved.
+
+---
+
+[Memory Here]
+</code></pre></div></td></tr></table></div>
+<p>其中Memory的載入會從 <code>GEMINI.md</code> 取用內容。</p>
+<p>系統提示詞定義了 Agent 的行為規範，但要讓 AI 真正理解當前的工作環境和專案狀態，還需要動態的上下文資訊。接下來讓我們探討 Gemini CLI 如何建構和管理這些關鍵的對話上下文。</p>
+<h2 id="gemini-cli-context">Gemini CLI 的對話 Context 怎麼運作</h2>
+<p>在對話的一開始，會預設先由User說出以下內容：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`</span>
+<span class="sb">  This is the Gemini CLI. We are setting up the context for our chat.</span>
+<span class="sb">  Today's date is </span><span class="si">${</span><span class="nx">today</span><span class="si">}</span><span class="sb">.</span>
+<span class="sb">  My operating system is: </span><span class="si">${</span><span class="nx">platform</span><span class="si">}</span><span class="sb"></span>
+<span class="sb">  </span><span class="si">${</span><span class="nx">workingDirPreamble</span><span class="si">}</span><span class="sb"></span>
+<span class="sb">  Here is the folder structure of the current working directories:</span>
+<span class="sb">  </span><span class="si">${</span><span class="nx">folderStructure</span><span class="si">}</span><span class="sb"></span>
+<span class="sb">  `</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<p>舉個例子：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code>This is the Gemini CLI. We are setting up the context for our chat.
+Today's date is Tuesday, August 6, 2025.
+My operating system is: darwin
+I'm currently working in the directory: /Users/dev/my-react-app
+Here is the folder structure of the current working directories:
+
+/Users/dev/my-react-app
+├── src/
+│   ├── components/
+│   │   ├── Header.jsx
+│   │   ├── UserProfile.tsx
+│   │   └── Dashboard.tsx
+│   ├── hooks/
+│   │   └── useAuth.js
+│   ├── utils/
+│   └── App.tsx
+├── package.json
+└── README.md
+</code></pre></div></td></tr></table></div>
+<p>以下我們給一個範例來讓你知道 Gemini CLI 怎麼建構 Context 的。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gemini-2.5-flash"</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"contents"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"parts"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This is the Gemini CLI. We are setting up the context...[略]"</span><span class="w"> </span><span class="p">}]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">"parts"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Got it. Thanks for the context!"</span><span class="w"> </span><span class="p">}]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"parts"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Find all React components that use useState and show me their patterns"</span><span class="w"> </span><span class="p">}]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">],</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"generationConfig"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"temperature"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"topP"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"systemInstruction"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"You are an interactive CLI agent...[略]"</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"tools"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"functionDeclarations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="kc">t</span><span class="err">oolDeclara</span><span class="kc">t</span><span class="err">io</span><span class="kc">ns</span><span class="p">]</span><span class="w"> </span><span class="p">}]</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<p>其中工具的定義 <code>toolDeclarations</code> 為：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">toolDeclarations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"grep"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"Search for patterns in files using ripgrep"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nx">parameters</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nx">properties</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nx">pattern</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nx">glob</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nx">output_mode</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="kd">enum</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"content"</span><span class="p">,</span><span class="w"> </span><span class="s2">"files_with_matches"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"read_file"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"Read the contents of a file"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nx">parameters</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">      </span><span class="nx">properties</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nx">file_path</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="c1">// ... 其他工具</span><span class="w"></span>
+<span class="p">];</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<p>假設模型輸出如下：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"candidates"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"parts"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"I'll help you find React components using useState. Let me search for useState patterns in your codebase."</span><span class="w"> </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"functionCall"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"grep"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">              </span><span class="nt">"pattern"</span><span class="p">:</span><span class="w"> </span><span class="s2">"useState"</span><span class="p">,</span><span class="w"></span>
+<span class="w">              </span><span class="nt">"glob"</span><span class="p">:</span><span class="w"> </span><span class="s2">"**/*.{js,jsx,ts,tsx}"</span><span class="p">,</span><span class="w"></span>
+<span class="w">              </span><span class="nt">"output_mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"content"</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">          </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">],</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model"</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"finishReason"</span><span class="p">:</span><span class="w"> </span><span class="s2">"STOP"</span><span class="w"></span>
+<span class="w">  </span><span class="p">}]</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<p>當執行完成工具後，給予回應，繼續對話。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gemini-2.0-flash-exp"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">"contents"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// ... 前面的對話歷史</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"parts"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"functionResponse"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"grep"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"response"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"output"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/Users/dev/my-react-app/src/components/UserProfile.tsx:3:import React, { useState } from 'react';\n/Users/dev/my-react-app/src/components/UserProfile.tsx:6:  const [user, setUser] = useState(null);\n/Users/dev/my-react-app/src/components/Dashboard.tsx:4:import React, { useState, useEffect } from 'react';"</span><span class="w"></span>
+<span class="w">          </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">}]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">]</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<h2 id="_1">工具定義與使用</h2>
+<p>Gemini CLI 的工具生態系統是其核心競爭力之一。透過四種不同類型的工具，系統能夠適應各種開發環境和需求，同時保持擴展性。</p>
+<p><strong>四種工具類型：</strong></p>
+<p><strong>內建工具 (Built-in Tools)</strong>:</p>
+<ul>
+<li>檔案系統工具 (File System Tools)<ul>
+<li><code>ReadFileTool</code>: 檔案讀取<ul>
+<li><strong>功能</strong>: 讀取檔案內容，支援二進位檔案檢測</li>
+<li><strong>特性</strong>: 自動編碼檢測、大檔案處理、權限檢查</li>
+</ul>
+</li>
+<li><code>WriteFileTool</code>: 檔案寫入<ul>
+<li><strong>功能</strong>: 寫入檔案內容</li>
+<li><strong>安全</strong>: 需要使用者確認、備份機制、權限驗證</li>
+</ul>
+</li>
+<li><code>EditTool</code>: 檔案編輯<ul>
+<li><strong>功能</strong>: 編輯現有檔案</li>
+<li><strong>特性</strong>: Diff 生成、編輯器整合、撤銷支援</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>執行環境工具 (Execution Tools)<ul>
+<li><code>ShellTool</code>: Shell 命令執行<ul>
+<li><strong>功能</strong>: 執行 shell 命令</li>
+<li><strong>安全</strong>: 沙盒支援、危險命令檢測、輸出限制</li>
+<li><strong>特性</strong>: 即時輸出、中止支援、環境變數管理</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>搜尋與發現工具 (Search &amp; Discovery Tools)<ul>
+<li><code>GrepTool</code>: 檔案搜尋<ul>
+<li><strong>功能</strong>: 基於 ripgrep 的檔案內容搜尋</li>
+<li><strong>特性</strong>: 正規表示式支援、多檔案搜尋、效能最佳化</li>
+</ul>
+</li>
+<li><code>GlobTool</code>: 檔案模式匹配<ul>
+<li><strong>功能</strong>: 檔案路徑模式匹配</li>
+<li><strong>特性</strong>: 快速檔案查找、排序、過濾</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>網路工具 (Network Tools)<ul>
+<li><code>WebFetchTool</code>: 網頁抓取<ul>
+<li><strong>功能</strong>: 抓取網頁內容</li>
+<li><strong>特性</strong>: HTML 轉 Markdown、快取、安全檢查</li>
+</ul>
+</li>
+<li><code>WebSearchTool</code>: 網路搜尋<ul>
+<li><strong>功能</strong>: Google 搜尋整合</li>
+<li><strong>特性</strong>: 結構化結果、相關性排序</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>MCP 工具 (Model Context Protocol Tools)</strong>:</p>
+<ul>
+<li>支援外部 MCP 伺服器</li>
+<li>動態工具發現和載入</li>
+<li>OAuth 認證支援</li>
+</ul>
+<p><strong>發現工具 (Discovered Tools)</strong>:</p>
+<ul>
+<li>從專案中自動發現</li>
+<li>通過配置的發現命令執行</li>
+<li>支援自訂工具協議</li>
+</ul>
+<p><strong>MCP 發現工具 (Discovered MCP Tools)</strong>:</p>
+<ul>
+<li>透過 MCP 協議動態發現的工具</li>
+<li>結合 MCP 伺服器與發現機制</li>
+<li>支援複雜的工具生態系統整合</li>
+</ul>
+<hr/>
+<p>工具執行流程 (Tool Execution Flow)：</p>
+<p><img alt="" src="/media/Agent/tool-flow.png"/></p>
+<p>工具的並行執行能力是系統高效的關鍵，可以同時發起多個搜尋和讀取操作。</p>
+<p>特別注意：在Gemini CLI，另外Claude Code也是，並沒有採用RAG的作法來撈程式碼，反而是提供Agent 多個檔案系統工具、執行環境工具、搜尋與發現工具，像個程式設計師一樣的在code base裡頭探索。</p>
+<h2 id="_2">對話壓縮機制</h2>
+<p>長時間的程式開發對話會產生大量的上下文資訊，如何在有限的 token 空間內保持對話的連貫性是一個重要挑戰。Gemini CLI 採用了智慧壓縮策略來解決這個問題。</p>
+<p>對話壓縮流程 (Chat Compression Flow)</p>
+<p><img alt="" src="/media/Agent/compact-flow.png"/></p>
+<p>對話壓縮的 System Prompt 如下:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code>You are the component that summarizes internal chat history into a given structure.
+
+When the conversation history grows too large, you will be invoked to distill the entire history into a concise, structured XML snapshot. This snapshot is CRITICAL, as it will become the agent's *only* memory of the past. The agent will resume its work based solely on this snapshot. All crucial details, plans, errors, and user directives MUST be preserved.
+
+First, you will think through the entire history in a private <span class="nt">&lt;scratchpad&gt;</span>. Review the user's overall goal, the agent's actions, tool outputs, file modifications, and any unresolved questions. Identify every piece of information that is essential for future actions.
+
+After your reasoning is complete, generate the final <span class="nt">&lt;state_snapshot&gt;</span> XML object. Be incredibly dense with information. Omit any irrelevant conversational filler.
+
+The structure MUST be as follows:
+
+<span class="nt">&lt;state_snapshot&gt;</span>
+    <span class="nt">&lt;overall_goal&gt;</span>
+        <span class="cm">&lt;!-- A single, concise sentence describing the user's high-level objective. --&gt;</span>
+        <span class="cm">&lt;!-- Example: "Refactor the authentication service to use a new JWT library." --&gt;</span>
+    <span class="nt">&lt;/overall_goal&gt;</span>
+
+    <span class="nt">&lt;key_knowledge&gt;</span>
+        <span class="cm">&lt;!-- Crucial facts, conventions, and constraints the agent must remember based on the conversation history and interaction with the user. Use bullet points. --&gt;</span>
+        <span class="cm">&lt;!-- Example:</span>
+<span class="cm">         - Build Command: \`npm run build\`</span>
+<span class="cm">         - Testing: Tests are run with \`npm test\`. Test files must end in \`.test.ts\`.</span>
+<span class="cm">         - API Endpoint: The primary API endpoint is \`https://api.example.com/v2\`.</span>
+
+<span class="cm">        --&gt;</span>
+    <span class="nt">&lt;/key_knowledge&gt;</span>
+
+    <span class="nt">&lt;file_system_state&gt;</span>
+        <span class="cm">&lt;!-- List files that have been created, read, modified, or deleted. Note their status and critical learnings. --&gt;</span>
+        <span class="cm">&lt;!-- Example:</span>
+<span class="cm">         - CWD: \`/home/user/project/src\`</span>
+<span class="cm">         - READ: \`package.json\` - Confirmed 'axios' is a dependency.</span>
+<span class="cm">         - MODIFIED: \`services/auth.ts\` - Replaced 'jsonwebtoken' with 'jose'.</span>
+<span class="cm">         - CREATED: \`tests/new-feature.test.ts\` - Initial test structure for the new feature.</span>
+<span class="cm">        --&gt;</span>
+    <span class="nt">&lt;/file_system_state&gt;</span>
+
+    <span class="nt">&lt;recent_actions&gt;</span>
+        <span class="cm">&lt;!-- A summary of the last few significant agent actions and their outcomes. Focus on facts. --&gt;</span>
+        <span class="cm">&lt;!-- Example:</span>
+<span class="cm">         - Ran \`grep 'old_function'\` which returned 3 results in 2 files.</span>
+<span class="cm">         - Ran \`npm run test\`, which failed due to a snapshot mismatch in \`UserProfile.test.ts\`.</span>
+<span class="cm">         - Ran \`ls -F static/\` and discovered image assets are stored as \`.webp\`.</span>
+<span class="cm">        --&gt;</span>
+    <span class="nt">&lt;/recent_actions&gt;</span>
+
+    <span class="nt">&lt;current_plan&gt;</span>
+        <span class="cm">&lt;!-- The agent's step-by-step plan. Mark completed steps. --&gt;</span>
+        <span class="cm">&lt;!-- Example:</span>
+<span class="cm">         1. [DONE] Identify all files using the deprecated 'UserAPI'.</span>
+<span class="cm">         2. [IN PROGRESS] Refactor \`src/components/UserProfile.tsx\` to use the new 'ProfileAPI'.</span>
+<span class="cm">         3. [TODO] Refactor the remaining files.</span>
+<span class="cm">         4. [TODO] Update tests to reflect the API change.</span>
+<span class="cm">        --&gt;</span>
+    <span class="nt">&lt;/current_plan&gt;</span>
+<span class="nt">&lt;/state_snapshot&gt;</span>
+</code></pre></div></td></tr></table></div>
+<p>參考上面程式碼，產生的summary會如以下範例：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">&lt;state_snapshot&gt;</span>
+    <span class="nt">&lt;overall_goal&gt;</span>
+        Create a comprehensive test suite for user authentication flow including login, logout, and session management.
+    <span class="nt">&lt;/overall_goal&gt;</span>
+    <span class="nt">&lt;key_knowledge&gt;</span>
+        - Build Command: `npm run build`
+        - Testing: Tests run with `npm test` using Jest and React Testing Library
+        - User prefers TypeScript over JavaScript
+        - Authentication uses JWT tokens stored in localStorage
+        - API endpoint: `https://api.example.com/auth`
+    <span class="nt">&lt;/key_knowledge&gt;</span>
+    <span class="nt">&lt;file_system_state&gt;</span>
+        - CWD: `/Users/dev/my-app`
+        - READ: `src/components/LoginForm.tsx` - Uses inline auth state management
+        - READ: `src/utils/auth.js` - Contains JWT utility functions
+        - CREATED: `src/hooks/useAuth.ts` - Custom authentication hook
+        - CREATED: `src/__tests__/auth.test.tsx` - Authentication test suite
+        - MODIFIED: `src/components/LoginForm.tsx` - Refactored to use useAuth hook
+    <span class="nt">&lt;/file_system_state&gt;</span>
+    <span class="nt">&lt;recent_actions&gt;</span>
+        - Ran `grep 'useState.*auth'` found 3 components with inline auth state
+        - Created useAuth hook with login, logout, and session management
+        - Ran `npm test` successfully with 15 passing tests
+        - Refactored LoginForm, SignupForm, and Dashboard components
+    <span class="nt">&lt;/recent_actions&gt;</span>
+    <span class="nt">&lt;current_plan&gt;</span>
+        1. [DONE] Analyze existing authentication patterns
+        2. [DONE] Create custom useAuth hook
+        3. [DONE] Refactor components to use useAuth
+        4. [DONE] Create comprehensive test suite
+        5. [IN PROGRESS] Add integration tests for API calls
+        6. [TODO] Add error boundary for auth failures
+        7. [TODO] Update documentation
+    <span class="nt">&lt;/current_plan&gt;</span>
+<span class="nt">&lt;/state_snapshot&gt;</span>
+</code></pre></div></td></tr></table></div>
+<p>這個 summary 結果會放進去新的對話中當作開始。如下程式碼：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">chat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">startChat</span><span class="p">([</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nx">role</span><span class="o">:</span><span class="w"> </span><span class="s1">'user'</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nx">parts</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="kt">summary</span><span class="w"> </span><span class="p">}],</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nx">role</span><span class="o">:</span><span class="w"> </span><span class="s1">'model'</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nx">parts</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="s1">'Got it. Thanks for the additional context!'</span><span class="w"> </span><span class="p">}],</span><span class="w"></span>
+<span class="w">      </span><span class="p">},</span><span class="w"></span>
+<span class="w">      </span><span class="p">...</span><span class="nx">historyToKeep</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="p">]);</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<p>其中壓縮並不是所有對話歷史都壓縮，因此 <code>historyToKeep</code> 保留剩下的對話。</p>
+<h2 id="_3">對話繼續延續機制</h2>
+<p>為了提升開發效率，Gemini CLI 實作了自動判斷是否需要繼續對話的機制。這讓 AI 在完成一個步驟後，可以主動進行相關的後續工作，而不需要使用者每次都手動提醒。</p>
+<p>Prompt:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code>Analyze <span class="ge">*only*</span> the content and structure of your immediately preceding response (your last turn in the conversation history). Based <span class="ge">*strictly*</span> on that response, determine who should logically speak next: the 'user' or the 'model' (you).
+<span class="gs">**Decision Rules (apply in order):**</span>
+<span class="k">1.</span>  <span class="gs">**Model Continues:**</span> If your last response explicitly states an immediate next action <span class="ge">*you*</span> intend to take (e.g., "Next, I will...", "Now I'll process...", "Moving on to analyze...", indicates an intended tool call that didn't execute), OR if the response seems clearly incomplete (cut off mid-thought without a natural conclusion), then the <span class="gs">**'model'**</span> should speak next.
+<span class="k">2.</span>  <span class="gs">**Question to User:**</span> If your last response ends with a direct question specifically addressed <span class="ge">*to the user*</span>, then the <span class="gs">**'user'**</span> should speak next.
+<span class="k">3.</span>  <span class="gs">**Waiting for User:**</span> If your last response completed a thought, statement, or task <span class="ge">*and*</span> does not meet the criteria for Rule 1 (Model Continues) or Rule 2 (Question to User), it implies a pause expecting user input or reaction. In this case, the <span class="gs">**'user'**</span> should speak next.
+</code></pre></div></td></tr></table></div>
+<p>這個決策邏輯的核心在於分析 AI 回應的「完整性」和「意圖」，確保對話流程的自然性。</p>
+<p>輸出格式限制</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">RESPONSE_SCHEMA</span><span class="o">:</span><span class="w"> </span><span class="kt">SchemaUnion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="nx">Type</span><span class="p">.</span><span class="nx">OBJECT</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nx">properties</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nx">reasoning</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="nx">Type</span><span class="p">.</span><span class="nx">STRING</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Brief explanation justifying the 'next_speaker' choice based *strictly* on the applicable rule and the content/structure of the preceding turn."</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nx">next_speaker</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="nx">Type</span><span class="p">.</span><span class="nx">STRING</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="kd">enum</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'user'</span><span class="p">,</span><span class="w"> </span><span class="s1">'model'</span><span class="p">],</span><span class="w"></span>
+<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"></span>
+<span class="w">        </span><span class="s1">'Who should speak next based *only* on the preceding turn and the decision rules'</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nx">required</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'reasoning'</span><span class="p">,</span><span class="w"> </span><span class="s1">'next_speaker'</span><span class="p">],</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<p>範例示範：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"reasoning"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The previous response explicitly states 'Next, I'll run the tests' indicating a clear intention to take immediate action."</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"next_speaker"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model"</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<p>若是要如上一樣 next_speaker 是 model 的話，就啟動延續對話，其實操作也很簡單就是代替 user 說「請繼續」，如下所示。</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"contents"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// ... 完整對話歷史</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"parts"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Please continue."</span><span class="w"> </span><span class="p">}]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">]</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div></td></tr></table></div>
+<h2 id="_4">總結</h2>
+<p>通過深入解析 Gemini CLI 的架構設計，我們可以看到當代 Coding Agent 的幾個核心設計原則：</p>
+<p><strong>動態探索勝過靜態索引</strong>：相較於傳統 RAG 方法依賴預建索引，Gemini CLI 選擇讓 AI 透過工具即時探索程式碼庫。這種方法雖然需要更多運算資源，但能適應快速變化的開發環境，並提供更準確的上下文理解，這樣的模式同樣也在 Claude Code 中被採用。</p>
+<p><strong>工具生態系統的重要性</strong>：四種不同類型的工具（Built-in、MCP、Discovered、MCP Discovered）構成了強大的能力基礎。並行執行機制和嚴格的狀態管理確保了系統的效率和可靠性。</p>
+<p><strong>人機協作的平衡設計</strong>：透過使用者確認機制、對話延續判斷和智慧壓縮策略，系統在自動化和使用者控制之間找到了良好的平衡點。</p>
+<p><strong>系統提示詞的工程化思維</strong>：詳細的行為規範和工作流程定義，體現了將 AI Agent 產品化的成熟思考。</p>
+<p>Gemini CLI 的開源特性為我們提供了一個絕佳的學習範例，展現了如何將先進的 AI 技術轉化為實用的開發工具。在 Vibe Coding 時代，這種設計思路值得所有致力於 AI 輔助開發工具的團隊深入研究和借鑑。此外，Claude Code 也設計了 To-Do list 機制，這同樣是相當好的方式來管理複雜的開發任務。透過結構化的任務追蹤，開發者可以更清楚地了解 AI Agent 的工作進度和下一步計劃，進一步提升人機協作的效率和透明度。</p>
+</div>
+<div class="center social-share">
+<p>Like this article? Share it with your friends!</p>
+<div class="addthis_native_toolbox"></div>
+<div class="addthis_sharing_toolbox"></div>
+<div class="addthis_inline_share_toolbox"></div>
+</div>
+<div class="neighbors">
+<a class="btn float-left" href="https://ycc.idv.tw/about-me.html#anchor" title="About Me: Yi-Chang Chen">
+<i class="fa fa-angle-left"></i> Previous Post
+    </a>
+</div>
+<div class="addthis_relatedposts_inline"></div>
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ycnote-1';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+<footer>
+<p>
+  © 2025  - This work is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" rel="license" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+<a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license" target="_blank">
+<img alt="Creative Commons License" height="15" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" style="border-width:0" title="Creative Commons License" width="80"/>
+</a>
+</p></footer> </main>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " YC Note ",
+  "url" : "https://ycc.idv.tw",
+  "image": "",
+  "description": "[ YC Note - ML/DL Tech Blog ] Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I built this blog for anyone interested in data science and machine learning."
+}
+</script><script async="async" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-63b4eabb5e84e9fb" type="text/javascript"></script>
+<script>
+    window.loadStorkIndex = async (input_obj) => {
+      input_obj.disabled = true;
+      input_obj.placeholder = 'Downloading index file, please wait ...'
+      await stork.register("sitesearch", "https://ycc.idv.tw/search-index.st", { showProgress: false });
+      input_obj.placeholder = 'Search ...'
+      input_obj.disabled = false;
+    }
+  </script>
+<script src="https://files.stork-search.net/releases/v1.5.0/stork.js"></script>
+</body>
+</html>

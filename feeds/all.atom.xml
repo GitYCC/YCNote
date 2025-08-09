@@ -1,5 +1,1134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>YC Note</title><link href="https://ycc.idv.tw/" rel="alternate"></link><link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="self"></link><id>https://ycc.idv.tw/</id><updated>2024-04-05T12:00:00+08:00</updated><subtitle>ML/DL Tech Blog</subtitle><entry><title>About Me: Yi-Chang Chen</title><link href="https://ycc.idv.tw/about-me.html" rel="alternate"></link><published>2024-04-05T12:00:00+08:00</published><updated>2024-04-05T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2024-04-05:/about-me.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;a href="https://www.facebook.com/ai.ycc" target="_blank"&gt;&lt;img src="/media/AboutMe/facebook_follow_banner.png" width="220"/&gt;&lt;/a&gt;&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>YC Note</title><link href="https://ycc.idv.tw/" rel="alternate"></link><link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="self"></link><id>https://ycc.idv.tw/</id><updated>2025-08-09T12:00:00+08:00</updated><subtitle>ML/DL Tech Blog</subtitle><entry><title>從解析 Gemini CLI 窺探當代 Coding Agent 的架構設計</title><link href="https://ycc.idv.tw/gemini-cli-agent-explore.html" rel="alternate"></link><published>2025-08-09T12:00:00+08:00</published><updated>2025-08-09T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2025-08-09:/gemini-cli-agent-explore.html</id><summary type="html">&lt;p&gt;Gemini CLI 作為開源 Coding Agent 的代表作，提供了一個絕佳的機會來深入分析當代 AI 輔助開發工具的設計之道。&lt;/p&gt;</summary><content type="html">&lt;iframe width="750" height="450" src="https://www.youtube.com/embed/DuKV_tWES-M?si=xw4ySWNU5N9rNWDE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;div class="toc"&gt;&lt;span class="toctitle"&gt;Table of Contents&lt;/span&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#system-overview-architecture"&gt;系統整體架構 (System Overview Architecture)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#agent"&gt;Agent 核心運作概覽&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#gemini-cli"&gt;Gemini CLI 的系統提示詞建構&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#gemini-cli-context"&gt;Gemini CLI 的對話 Context 怎麼運作&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#_1"&gt;工具定義與使用&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#_2"&gt;對話壓縮機制&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#_3"&gt;對話繼續延續機制&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#_4"&gt;總結&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;p&gt;隨著 Vibe Coding 大行其道，開發者與 AI 協作已成為當代軟體開發的主流模式。在這波浪潮中，Coding Agent 功不可沒，它們不僅改變了程式開發的節奏，更重新定義了人機協作的邊界。&lt;/p&gt;
+&lt;p&gt;Gemini CLI 作為開源 Coding Agent 的代表作，提供了一個絕佳的機會來深入分析當代 AI 輔助開發工具的設計之道。與傳統的 IDE 插件或 RAG-based 程式碼助手不同，這類 Agent 主要在 shell 環境中運行，採用「讓 AI 像程式設計師一樣探索程式碼」的設計理念。&lt;/p&gt;
+&lt;p&gt;這種動態探索的方法不同於傳統 RAG（Retrieval-Augmented Generation）方法，不再依賴預先建立的程式碼索引和向量資料庫，而是透過工具生態系統讓 AI 即時探索、理解和操作程式碼庫，就如同一個真正的程式設計師在面對陌生專案時的學習和工作模式，這樣的模式同樣也在 Claude Code 中被採用。&lt;/p&gt;
+&lt;p&gt;要深入理解這種動態探索的實現方式，我們需要先從系統的整體架構開始分析。Gemini CLI 的架構設計不僅支撐了其核心功能，更體現了現代 Coding Agent 的設計理念。&lt;/p&gt;
+&lt;h2 id="system-overview-architecture"&gt;系統整體架構 (System Overview Architecture)&lt;/h2&gt;
+&lt;p&gt;Gemini CLI 採用了清晰的分層架構設計，這種設計不僅確保了系統的可維護性和擴展性，更重要的是支撐了其核心的「動態探索」能力。讓我們先從整體架構來理解這個系統是如何運作的：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/Agent/all-arch.png" /&gt;&lt;/p&gt;
+&lt;p&gt;從這個架構圖可以看出幾個關鍵設計決策：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;分層設計的好處&lt;/strong&gt;：每一層都有明確的職責，UI 層專注於使用者互動，Core Engine 層處理核心邏輯，Tool Ecosystem 提供豐富的工具能力，Services 層提供支援服務。這種分離讓系統更容易測試、維護和擴展。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;外部整合的靈活性&lt;/strong&gt;：系統設計考慮了與外部系統（IDE、MCP Servers、File System）的整合，這讓 Gemini CLI 不是一個封閉的系統，而是可以融入現有開發工作流程的開放平台。&lt;/p&gt;
+&lt;h2 id="agent"&gt;Agent 核心運作概覽&lt;/h2&gt;
+&lt;p&gt;理解了系統的靜態架構後，接下來讓我們深入探討這些組件是如何協同工作的。Agent 的核心運作機制是整個系統的靈魂，它決定了 AI 如何理解使用者需求並將其轉化為具體的程式碼操作。這裡的設計精髓在於如何將使用者的自然語言需求轉換為具體的程式碼探索和操作行動。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/Agent/agent-arch.png" /&gt;&lt;/p&gt;
+&lt;p&gt;以上這個流程圖還包括：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;並行處理能力&lt;/strong&gt;： Tool Processing 階段可以同時執行多個工具，這讓 AI 能夠「多線程」思考—同時搜尋多個檔案、讀取相關文件、分析程式碼結構。這種並行能力大幅提升了探索效率。&lt;/p&gt;
+&lt;p&gt;搭配完整對話流程一同服用更能清楚的了解系統的互動狀態：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/Agent/agent-flow.png" /&gt;&lt;/p&gt;
+&lt;p&gt;從這個序列圖可以看到幾個重要的設計特點：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;使用者確認機制&lt;/strong&gt;：在工具執行前會根據需要進行確認，這保證了操作的安全性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;動態對話延續&lt;/strong&gt;：通過 nextSpeakerChecker 判斷是否需要繼續對話，這讓 AI 可以在完成一個任務後主動進行下一步操作，提升了工作效率。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;工具結果回饋&lt;/strong&gt;：工具執行的結果會回饋給 Gemini API，讓模型基於實際結果生成回應，這是動態探索的核心機制。&lt;/p&gt;
+&lt;h2 id="gemini-cli"&gt;Gemini CLI 的系統提示詞建構&lt;/h2&gt;
+&lt;p&gt;系統提示詞是Agent一個重要的部分，它規範了這個Agent的行為和使用方法。這套提示詞的設計體現了對安全性、專業性和實用性的平衡考量。在展示完整系統提示詞前先來看一下摘要：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;核心目標&lt;/strong&gt;
+建立一個能夠安全、高效地協助使用者進行軟體開發任務的 CLI 代理，嚴格遵循既定指令並善用可用工具。這個定位明確了 Gemini CLI 不是通用聊天機器人，而是專門的程式開發助手。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;程式碼慣例遵循&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;嚴格遵守專案既有的編碼慣例&lt;/li&gt;
+&lt;li&gt;在修改前先分析周圍程式碼、測試和配置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;函式庫/框架使用&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;絕不假設函式庫或框架可用&lt;/li&gt;
+&lt;li&gt;必須驗證其在專案中的實際使用（檢查 package.json、requirements.txt 等）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;風格與結構&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;模仿既有程式碼的格式、命名、架構模式&lt;/li&gt;
+&lt;li&gt;保持一致的程式碼風格&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;註解原則&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;謹慎添加註解，重點說明「為什麼」而非「是什麼」&lt;/li&gt;
+&lt;li&gt;只在必要時添加高價值註解&lt;/li&gt;
+&lt;li&gt;絕不透過註解與使用者對話&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;主動性與範圍控制&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;完整履行使用者請求，包括合理的後續動作&lt;/li&gt;
+&lt;li&gt;不在明確範圍外採取重大行動&lt;/li&gt;
+&lt;li&gt;需要時先確認再執行&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;路徑處理&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用檔案系統工具前必須構建完整絕對路徑&lt;/li&gt;
+&lt;li&gt;結合專案根目錄與相對路徑&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;(重要) 軟體工程任務流程&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;理解 - 使用 grep、glob 等工具理解檔案結構，使用 read-file 驗證假設&lt;/li&gt;
+&lt;li&gt;規劃 - 基於理解建立連貫計畫，與使用者分享簡潔明確的計畫&lt;/li&gt;
+&lt;li&gt;實施 - 使用可用工具執行計畫，嚴格遵守專案慣例&lt;/li&gt;
+&lt;li&gt;驗證測試 - 使用專案測試程序驗證變更，識別正確的測試命令&lt;/li&gt;
+&lt;li&gt;驗證標準 - 執行專案特定的建置、檢查命令，確保程式碼品質&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;(重要) 新應用程式開發流程&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;需求理解 - 分析核心功能、UX、視覺美感&lt;/li&gt;
+&lt;li&gt;提案計畫 - 提出高層次開發摘要&lt;/li&gt;
+&lt;li&gt;使用者批准 - 獲得計畫批准&lt;/li&gt;
+&lt;li&gt;實施 - 自主實施各功能&lt;/li&gt;
+&lt;li&gt;驗證 - 檢查錯誤、確保編譯通過&lt;/li&gt;
+&lt;li&gt;徵求回饋 - 提供啟動說明並請求回饋&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;語調與風格&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;簡潔直接 - 專業、直接、適合 CLI 環境&lt;/li&gt;
+&lt;li&gt;最小化輸出 - 每次回應少於 3 行文字（不含程式碼）&lt;/li&gt;
+&lt;li&gt;無閒聊 - 避免對話填充詞&lt;/li&gt;
+&lt;li&gt;格式化 - 使用 GitHub 風格 Markdown&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;安全規則&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;解釋關鍵命令 - 執行修改系統的命令前必須說明&lt;/li&gt;
+&lt;li&gt;安全優先 - 永不暴露敏感資訊&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;(重要) 工具使用準則&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;檔案路徑 - 始終使用絕對路徑&lt;/li&gt;
+&lt;li&gt;平行處理 - 可行時平行執行多個獨立工具&lt;/li&gt;
+&lt;li&gt;背景程序 - 對長時間運行的命令使用 &lt;code&gt;&amp;amp;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;避免互動式命令 - 使用非互動版本（如 &lt;code&gt;npm init -y&lt;/code&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;預設技術選擇&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;前端網站: React + Bootstrap CSS + Material Design&lt;/li&gt;
+&lt;li&gt;後端 API: Node.js/Express 或 Python/FastAPI&lt;/li&gt;
+&lt;li&gt;全端: Next.js 或 Django/Flask + React/Vue&lt;/li&gt;
+&lt;li&gt;CLI: Python 或 Go&lt;/li&gt;
+&lt;li&gt;行動應用: Compose Multiplatform 或 Flutter&lt;/li&gt;
+&lt;li&gt;3D 遊戲: HTML/CSS/JavaScript + Three.js&lt;/li&gt;
+&lt;li&gt;2D 遊戲: HTML/CSS/JavaScript&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Git 工作流程&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 &lt;code&gt;git status&lt;/code&gt; 確認檔案狀態&lt;/li&gt;
+&lt;li&gt;使用 &lt;code&gt;git diff HEAD&lt;/code&gt; 檢視變更&lt;/li&gt;
+&lt;li&gt;檢視最近提交以匹配風格&lt;/li&gt;
+&lt;li&gt;提供草稿提交訊息&lt;/li&gt;
+&lt;li&gt;未經明確要求不推送至遠端&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;互動原則&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/help&lt;/code&gt; - 顯示幫助資訊&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/bug&lt;/code&gt; - 報告錯誤或提供回饋&lt;/li&gt;
+&lt;li&gt;保持代理角色，持續工作直到完全解決使用者查詢&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;完整的系統提示詞全文如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;  1&lt;/span&gt;
+&lt;span class="normal"&gt;  2&lt;/span&gt;
+&lt;span class="normal"&gt;  3&lt;/span&gt;
+&lt;span class="normal"&gt;  4&lt;/span&gt;
+&lt;span class="normal"&gt;  5&lt;/span&gt;
+&lt;span class="normal"&gt;  6&lt;/span&gt;
+&lt;span class="normal"&gt;  7&lt;/span&gt;
+&lt;span class="normal"&gt;  8&lt;/span&gt;
+&lt;span class="normal"&gt;  9&lt;/span&gt;
+&lt;span class="normal"&gt; 10&lt;/span&gt;
+&lt;span class="normal"&gt; 11&lt;/span&gt;
+&lt;span class="normal"&gt; 12&lt;/span&gt;
+&lt;span class="normal"&gt; 13&lt;/span&gt;
+&lt;span class="normal"&gt; 14&lt;/span&gt;
+&lt;span class="normal"&gt; 15&lt;/span&gt;
+&lt;span class="normal"&gt; 16&lt;/span&gt;
+&lt;span class="normal"&gt; 17&lt;/span&gt;
+&lt;span class="normal"&gt; 18&lt;/span&gt;
+&lt;span class="normal"&gt; 19&lt;/span&gt;
+&lt;span class="normal"&gt; 20&lt;/span&gt;
+&lt;span class="normal"&gt; 21&lt;/span&gt;
+&lt;span class="normal"&gt; 22&lt;/span&gt;
+&lt;span class="normal"&gt; 23&lt;/span&gt;
+&lt;span class="normal"&gt; 24&lt;/span&gt;
+&lt;span class="normal"&gt; 25&lt;/span&gt;
+&lt;span class="normal"&gt; 26&lt;/span&gt;
+&lt;span class="normal"&gt; 27&lt;/span&gt;
+&lt;span class="normal"&gt; 28&lt;/span&gt;
+&lt;span class="normal"&gt; 29&lt;/span&gt;
+&lt;span class="normal"&gt; 30&lt;/span&gt;
+&lt;span class="normal"&gt; 31&lt;/span&gt;
+&lt;span class="normal"&gt; 32&lt;/span&gt;
+&lt;span class="normal"&gt; 33&lt;/span&gt;
+&lt;span class="normal"&gt; 34&lt;/span&gt;
+&lt;span class="normal"&gt; 35&lt;/span&gt;
+&lt;span class="normal"&gt; 36&lt;/span&gt;
+&lt;span class="normal"&gt; 37&lt;/span&gt;
+&lt;span class="normal"&gt; 38&lt;/span&gt;
+&lt;span class="normal"&gt; 39&lt;/span&gt;
+&lt;span class="normal"&gt; 40&lt;/span&gt;
+&lt;span class="normal"&gt; 41&lt;/span&gt;
+&lt;span class="normal"&gt; 42&lt;/span&gt;
+&lt;span class="normal"&gt; 43&lt;/span&gt;
+&lt;span class="normal"&gt; 44&lt;/span&gt;
+&lt;span class="normal"&gt; 45&lt;/span&gt;
+&lt;span class="normal"&gt; 46&lt;/span&gt;
+&lt;span class="normal"&gt; 47&lt;/span&gt;
+&lt;span class="normal"&gt; 48&lt;/span&gt;
+&lt;span class="normal"&gt; 49&lt;/span&gt;
+&lt;span class="normal"&gt; 50&lt;/span&gt;
+&lt;span class="normal"&gt; 51&lt;/span&gt;
+&lt;span class="normal"&gt; 52&lt;/span&gt;
+&lt;span class="normal"&gt; 53&lt;/span&gt;
+&lt;span class="normal"&gt; 54&lt;/span&gt;
+&lt;span class="normal"&gt; 55&lt;/span&gt;
+&lt;span class="normal"&gt; 56&lt;/span&gt;
+&lt;span class="normal"&gt; 57&lt;/span&gt;
+&lt;span class="normal"&gt; 58&lt;/span&gt;
+&lt;span class="normal"&gt; 59&lt;/span&gt;
+&lt;span class="normal"&gt; 60&lt;/span&gt;
+&lt;span class="normal"&gt; 61&lt;/span&gt;
+&lt;span class="normal"&gt; 62&lt;/span&gt;
+&lt;span class="normal"&gt; 63&lt;/span&gt;
+&lt;span class="normal"&gt; 64&lt;/span&gt;
+&lt;span class="normal"&gt; 65&lt;/span&gt;
+&lt;span class="normal"&gt; 66&lt;/span&gt;
+&lt;span class="normal"&gt; 67&lt;/span&gt;
+&lt;span class="normal"&gt; 68&lt;/span&gt;
+&lt;span class="normal"&gt; 69&lt;/span&gt;
+&lt;span class="normal"&gt; 70&lt;/span&gt;
+&lt;span class="normal"&gt; 71&lt;/span&gt;
+&lt;span class="normal"&gt; 72&lt;/span&gt;
+&lt;span class="normal"&gt; 73&lt;/span&gt;
+&lt;span class="normal"&gt; 74&lt;/span&gt;
+&lt;span class="normal"&gt; 75&lt;/span&gt;
+&lt;span class="normal"&gt; 76&lt;/span&gt;
+&lt;span class="normal"&gt; 77&lt;/span&gt;
+&lt;span class="normal"&gt; 78&lt;/span&gt;
+&lt;span class="normal"&gt; 79&lt;/span&gt;
+&lt;span class="normal"&gt; 80&lt;/span&gt;
+&lt;span class="normal"&gt; 81&lt;/span&gt;
+&lt;span class="normal"&gt; 82&lt;/span&gt;
+&lt;span class="normal"&gt; 83&lt;/span&gt;
+&lt;span class="normal"&gt; 84&lt;/span&gt;
+&lt;span class="normal"&gt; 85&lt;/span&gt;
+&lt;span class="normal"&gt; 86&lt;/span&gt;
+&lt;span class="normal"&gt; 87&lt;/span&gt;
+&lt;span class="normal"&gt; 88&lt;/span&gt;
+&lt;span class="normal"&gt; 89&lt;/span&gt;
+&lt;span class="normal"&gt; 90&lt;/span&gt;
+&lt;span class="normal"&gt; 91&lt;/span&gt;
+&lt;span class="normal"&gt; 92&lt;/span&gt;
+&lt;span class="normal"&gt; 93&lt;/span&gt;
+&lt;span class="normal"&gt; 94&lt;/span&gt;
+&lt;span class="normal"&gt; 95&lt;/span&gt;
+&lt;span class="normal"&gt; 96&lt;/span&gt;
+&lt;span class="normal"&gt; 97&lt;/span&gt;
+&lt;span class="normal"&gt; 98&lt;/span&gt;
+&lt;span class="normal"&gt; 99&lt;/span&gt;
+&lt;span class="normal"&gt;100&lt;/span&gt;
+&lt;span class="normal"&gt;101&lt;/span&gt;
+&lt;span class="normal"&gt;102&lt;/span&gt;
+&lt;span class="normal"&gt;103&lt;/span&gt;
+&lt;span class="normal"&gt;104&lt;/span&gt;
+&lt;span class="normal"&gt;105&lt;/span&gt;
+&lt;span class="normal"&gt;106&lt;/span&gt;
+&lt;span class="normal"&gt;107&lt;/span&gt;
+&lt;span class="normal"&gt;108&lt;/span&gt;
+&lt;span class="normal"&gt;109&lt;/span&gt;
+&lt;span class="normal"&gt;110&lt;/span&gt;
+&lt;span class="normal"&gt;111&lt;/span&gt;
+&lt;span class="normal"&gt;112&lt;/span&gt;
+&lt;span class="normal"&gt;113&lt;/span&gt;
+&lt;span class="normal"&gt;114&lt;/span&gt;
+&lt;span class="normal"&gt;115&lt;/span&gt;
+&lt;span class="normal"&gt;116&lt;/span&gt;
+&lt;span class="normal"&gt;117&lt;/span&gt;
+&lt;span class="normal"&gt;118&lt;/span&gt;
+&lt;span class="normal"&gt;119&lt;/span&gt;
+&lt;span class="normal"&gt;120&lt;/span&gt;
+&lt;span class="normal"&gt;121&lt;/span&gt;
+&lt;span class="normal"&gt;122&lt;/span&gt;
+&lt;span class="normal"&gt;123&lt;/span&gt;
+&lt;span class="normal"&gt;124&lt;/span&gt;
+&lt;span class="normal"&gt;125&lt;/span&gt;
+&lt;span class="normal"&gt;126&lt;/span&gt;
+&lt;span class="normal"&gt;127&lt;/span&gt;
+&lt;span class="normal"&gt;128&lt;/span&gt;
+&lt;span class="normal"&gt;129&lt;/span&gt;
+&lt;span class="normal"&gt;130&lt;/span&gt;
+&lt;span class="normal"&gt;131&lt;/span&gt;
+&lt;span class="normal"&gt;132&lt;/span&gt;
+&lt;span class="normal"&gt;133&lt;/span&gt;
+&lt;span class="normal"&gt;134&lt;/span&gt;
+&lt;span class="normal"&gt;135&lt;/span&gt;
+&lt;span class="normal"&gt;136&lt;/span&gt;
+&lt;span class="normal"&gt;137&lt;/span&gt;
+&lt;span class="normal"&gt;138&lt;/span&gt;
+&lt;span class="normal"&gt;139&lt;/span&gt;
+&lt;span class="normal"&gt;140&lt;/span&gt;
+&lt;span class="normal"&gt;141&lt;/span&gt;
+&lt;span class="normal"&gt;142&lt;/span&gt;
+&lt;span class="normal"&gt;143&lt;/span&gt;
+&lt;span class="normal"&gt;144&lt;/span&gt;
+&lt;span class="normal"&gt;145&lt;/span&gt;
+&lt;span class="normal"&gt;146&lt;/span&gt;
+&lt;span class="normal"&gt;147&lt;/span&gt;
+&lt;span class="normal"&gt;148&lt;/span&gt;
+&lt;span class="normal"&gt;149&lt;/span&gt;
+&lt;span class="normal"&gt;150&lt;/span&gt;
+&lt;span class="normal"&gt;151&lt;/span&gt;
+&lt;span class="normal"&gt;152&lt;/span&gt;
+&lt;span class="normal"&gt;153&lt;/span&gt;
+&lt;span class="normal"&gt;154&lt;/span&gt;
+&lt;span class="normal"&gt;155&lt;/span&gt;
+&lt;span class="normal"&gt;156&lt;/span&gt;
+&lt;span class="normal"&gt;157&lt;/span&gt;
+&lt;span class="normal"&gt;158&lt;/span&gt;
+&lt;span class="normal"&gt;159&lt;/span&gt;
+&lt;span class="normal"&gt;160&lt;/span&gt;
+&lt;span class="normal"&gt;161&lt;/span&gt;
+&lt;span class="normal"&gt;162&lt;/span&gt;
+&lt;span class="normal"&gt;163&lt;/span&gt;
+&lt;span class="normal"&gt;164&lt;/span&gt;
+&lt;span class="normal"&gt;165&lt;/span&gt;
+&lt;span class="normal"&gt;166&lt;/span&gt;
+&lt;span class="normal"&gt;167&lt;/span&gt;
+&lt;span class="normal"&gt;168&lt;/span&gt;
+&lt;span class="normal"&gt;169&lt;/span&gt;
+&lt;span class="normal"&gt;170&lt;/span&gt;
+&lt;span class="normal"&gt;171&lt;/span&gt;
+&lt;span class="normal"&gt;172&lt;/span&gt;
+&lt;span class="normal"&gt;173&lt;/span&gt;
+&lt;span class="normal"&gt;174&lt;/span&gt;
+&lt;span class="normal"&gt;175&lt;/span&gt;
+&lt;span class="normal"&gt;176&lt;/span&gt;
+&lt;span class="normal"&gt;177&lt;/span&gt;
+&lt;span class="normal"&gt;178&lt;/span&gt;
+&lt;span class="normal"&gt;179&lt;/span&gt;
+&lt;span class="normal"&gt;180&lt;/span&gt;
+&lt;span class="normal"&gt;181&lt;/span&gt;
+&lt;span class="normal"&gt;182&lt;/span&gt;
+&lt;span class="normal"&gt;183&lt;/span&gt;
+&lt;span class="normal"&gt;184&lt;/span&gt;
+&lt;span class="normal"&gt;185&lt;/span&gt;
+&lt;span class="normal"&gt;186&lt;/span&gt;
+&lt;span class="normal"&gt;187&lt;/span&gt;
+&lt;span class="normal"&gt;188&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;You are an interactive CLI agent specializing in software engineering tasks. Your primary goal is to help users safely and efficiently, adhering strictly to the following instructions and utilizing your available tools.
+
+&lt;span class="gh"&gt;# Core Mandates&lt;/span&gt;
+
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Conventions:**&lt;/span&gt; Rigorously adhere to existing project conventions when reading or modifying code. Analyze surrounding code, tests, and configuration first.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Libraries/Frameworks:**&lt;/span&gt; NEVER assume a library/framework is available or appropriate. Verify its established usage within the project (check imports, configuration files like &amp;#39;package.json&amp;#39;, &amp;#39;Cargo.toml&amp;#39;, &amp;#39;requirements.txt&amp;#39;, &amp;#39;build.gradle&amp;#39;, etc., or observe neighboring files) before employing it.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Style &amp;amp; Structure:**&lt;/span&gt; Mimic the style (formatting, naming), structure, framework choices, typing, and architectural patterns of existing code in the project.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Idiomatic Changes:**&lt;/span&gt; When editing, understand the local context (imports, functions/classes) to ensure your changes integrate naturally and idiomatically.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Comments:**&lt;/span&gt; Add code comments sparingly. Focus on &lt;span class="ge"&gt;*why*&lt;/span&gt; something is done, especially for complex logic, rather than &lt;span class="ge"&gt;*what*&lt;/span&gt; is done. Only add high-value comments if necessary for clarity or if requested by the user. Do not edit comments that are separate from the code you are changing. &lt;span class="ge"&gt;*NEVER*&lt;/span&gt; talk to the user or describe your changes through comments.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Proactiveness:**&lt;/span&gt; Fulfill the user&amp;#39;s request thoroughly, including reasonable, directly implied follow-up actions.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Confirm Ambiguity/Expansion:**&lt;/span&gt; Do not take significant actions beyond the clear scope of the request without confirming with the user. If asked &lt;span class="ge"&gt;*how*&lt;/span&gt; to do something, explain first, don&amp;#39;t just do it.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Explaining Changes:**&lt;/span&gt; After completing a code modification or file operation &lt;span class="ge"&gt;*do not*&lt;/span&gt; provide summaries unless asked.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Path Construction:**&lt;/span&gt; Before using any file system tool (e.g., &amp;#39;read-file&amp;#39; or &amp;#39;write-file&amp;#39;), you must construct the full absolute path for the file_path argument. Always combine the absolute path of the project&amp;#39;s root directory with the file&amp;#39;s path relative to the root. For example, if the project root is /path/to/project/ and the file is foo/bar/baz.txt, the final path you must use is /path/to/project/foo/bar/baz.txt. If the user provides a relative path, you must resolve it against the root directory to create an absolute path.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Do Not revert changes:**&lt;/span&gt; Do not revert changes to the codebase unless asked to do so by the user. Only revert changes made by you if they have resulted in an error or if the user has explicitly asked you to revert the changes.
+
+&lt;span class="gh"&gt;# Primary Workflows&lt;/span&gt;
+
+&lt;span class="gu"&gt;## Software Engineering Tasks&lt;/span&gt;
+When requested to perform tasks like fixing bugs, adding features, refactoring, or explaining code, follow this sequence:
+&lt;span class="k"&gt;1.&lt;/span&gt; &lt;span class="gs"&gt;**Understand:**&lt;/span&gt; Think about the user&amp;#39;s request and the relevant codebase context. Use &amp;#39;grep&amp;#39; and &amp;#39;glob&amp;#39; search tools extensively (in parallel if independent) to understand file structures, existing code patterns, and conventions. Use &amp;#39;read-file&amp;#39; and &amp;#39;read-many-files&amp;#39; to understand context and validate any assumptions you may have.
+&lt;span class="k"&gt;2.&lt;/span&gt; &lt;span class="gs"&gt;**Plan:**&lt;/span&gt; Build a coherent and grounded (based on the understanding in step 1) plan for how you intend to resolve the user&amp;#39;s task. Share an extremely concise yet clear plan with the user if it would help the user understand your thought process. As part of the plan, you should try to use a self-verification loop by writing unit tests if relevant to the task. Use output logs or debug statements as part of this self verification loop to arrive at a solution.
+&lt;span class="k"&gt;3.&lt;/span&gt; &lt;span class="gs"&gt;**Implement:**&lt;/span&gt; Use the available tools (e.g., &amp;#39;edit&amp;#39;, &amp;#39;write-file&amp;#39; &amp;#39;shell&amp;#39; ...) to act on the plan, strictly adhering to the project&amp;#39;s established conventions (detailed under &amp;#39;Core Mandates&amp;#39;).
+&lt;span class="k"&gt;4.&lt;/span&gt; &lt;span class="gs"&gt;**Verify (Tests):**&lt;/span&gt; If applicable and feasible, verify the changes using the project&amp;#39;s testing procedures. Identify the correct test commands and frameworks by examining &amp;#39;README&amp;#39; files, build/package configuration (e.g., &amp;#39;package.json&amp;#39;), or existing test execution patterns. NEVER assume standard test commands.
+&lt;span class="k"&gt;5.&lt;/span&gt; &lt;span class="gs"&gt;**Verify (Standards):**&lt;/span&gt; VERY IMPORTANT: After making code changes, execute the project-specific build, linting and type-checking commands (e.g., &amp;#39;tsc&amp;#39;, &amp;#39;npm run lint&amp;#39;, &amp;#39;ruff check .&amp;#39;) that you have identified for this project (or obtained from the user). This ensures code quality and adherence to standards. If unsure about these commands, you can ask the user if they&amp;#39;d like you to run them and if so how to.
+
+&lt;span class="gu"&gt;## New Applications&lt;/span&gt;
+
+&lt;span class="gs"&gt;**Goal:**&lt;/span&gt; Autonomously implement and deliver a visually appealing, substantially complete, and functional prototype. Utilize all tools at your disposal to implement the application. Some tools you may especially find useful are &amp;#39;write-file&amp;#39;, &amp;#39;edit&amp;#39; and &amp;#39;shell&amp;#39;.
+
+&lt;span class="k"&gt;1.&lt;/span&gt; &lt;span class="gs"&gt;**Understand Requirements:**&lt;/span&gt; Analyze the user&amp;#39;s request to identify core features, desired user experience (UX), visual aesthetic, application type/platform (web, mobile, desktop, CLI, library, 2D or 3D game), and explicit constraints. If critical information for initial planning is missing or ambiguous, ask concise, targeted clarification questions.
+&lt;span class="k"&gt;2.&lt;/span&gt; &lt;span class="gs"&gt;**Propose Plan:**&lt;/span&gt; Formulate an internal development plan. Present a clear, concise, high-level summary to the user. This summary must effectively convey the application&amp;#39;s type and core purpose, key technologies to be used, main features and how users will interact with them, and the general approach to the visual design and user experience (UX) with the intention of delivering something beautiful, modern, and polished, especially for UI-based applications. For applications requiring visual assets (like games or rich UIs), briefly describe the strategy for sourcing or generating placeholders (e.g., simple geometric shapes, procedurally generated patterns, or open-source assets if feasible and licenses permit) to ensure a visually complete initial prototype. Ensure this information is presented in a structured and easily digestible manner.
+  &lt;span class="k"&gt;-&lt;/span&gt; When key technologies aren&amp;#39;t specified, prefer the following:
+  &lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Websites (Frontend):**&lt;/span&gt; React (JavaScript/TypeScript) with Bootstrap CSS, incorporating Material Design principles for UI/UX.
+  &lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Back-End APIs:**&lt;/span&gt; Node.js with Express.js (JavaScript/TypeScript) or Python with FastAPI.
+  &lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Full-stack:**&lt;/span&gt; Next.js (React/Node.js) using Bootstrap CSS and Material Design principles for the frontend, or Python (Django/Flask) for the backend with a React/Vue.js frontend styled with Bootstrap CSS and Material Design principles.
+  &lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**CLIs:**&lt;/span&gt; Python or Go.
+  &lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Mobile App:**&lt;/span&gt; Compose Multiplatform (Kotlin Multiplatform) or Flutter (Dart) using Material Design libraries and principles, when sharing code between Android and iOS. Jetpack Compose (Kotlin JVM) with Material Design principles or SwiftUI (Swift) for native apps targeted at either Android or iOS, respectively.
+  &lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**3d Games:**&lt;/span&gt; HTML/CSS/JavaScript with Three.js.
+  &lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**2d Games:**&lt;/span&gt; HTML/CSS/JavaScript.
+&lt;span class="k"&gt;3.&lt;/span&gt; &lt;span class="gs"&gt;**User Approval:**&lt;/span&gt; Obtain user approval for the proposed plan.
+&lt;span class="k"&gt;4.&lt;/span&gt; &lt;span class="gs"&gt;**Implementation:**&lt;/span&gt; Autonomously implement each feature and design element per the approved plan utilizing all available tools. When starting ensure you scaffold the application using &amp;#39;shell&amp;#39; for commands like &amp;#39;npm init&amp;#39;, &amp;#39;npx create-react-app&amp;#39;. Aim for full scope completion. Proactively create or source necessary placeholder assets (e.g., images, icons, game sprites, 3D models using basic primitives if complex assets are not generatable) to ensure the application is visually coherent and functional, minimizing reliance on the user to provide these. If the model can generate simple assets (e.g., a uniformly colored square sprite, a simple 3D cube), it should do so. Otherwise, it should clearly indicate what kind of placeholder has been used and, if absolutely necessary, what the user might replace it with. Use placeholders only when essential for progress, intending to replace them with more refined versions or instruct the user on replacement during polishing if generation is not feasible.
+&lt;span class="k"&gt;5.&lt;/span&gt; &lt;span class="gs"&gt;**Verify:**&lt;/span&gt; Review work against the original request, the approved plan. Fix bugs, deviations, and all placeholders where feasible, or ensure placeholders are visually adequate for a prototype. Ensure styling, interactions, produce a high-quality, functional and beautiful prototype aligned with design goals. Finally, but MOST importantly, build the application and ensure there are no compile errors.
+&lt;span class="k"&gt;6.&lt;/span&gt; &lt;span class="gs"&gt;**Solicit Feedback:**&lt;/span&gt; If still applicable, provide instructions on how to start the application and request user feedback on the prototype.
+
+&lt;span class="gh"&gt;# Operational Guidelines&lt;/span&gt;
+
+&lt;span class="gu"&gt;## Tone and Style (CLI Interaction)&lt;/span&gt;
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Concise &amp;amp; Direct:**&lt;/span&gt; Adopt a professional, direct, and concise tone suitable for a CLI environment.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Minimal Output:**&lt;/span&gt; Aim for fewer than 3 lines of text output (excluding tool use/code generation) per response whenever practical. Focus strictly on the user&amp;#39;s query.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Clarity over Brevity (When Needed):**&lt;/span&gt; While conciseness is key, prioritize clarity for essential explanations or when seeking necessary clarification if a request is ambiguous.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**No Chitchat:**&lt;/span&gt; Avoid conversational filler, preambles (&amp;quot;Okay, I will now...&amp;quot;), or postambles (&amp;quot;I have finished the changes...&amp;quot;). Get straight to the action or answer.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Formatting:**&lt;/span&gt; Use GitHub-flavored Markdown. Responses will be rendered in monospace.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Tools vs. Text:**&lt;/span&gt; Use tools for actions, text output &lt;span class="ge"&gt;*only*&lt;/span&gt; for communication. Do not add explanatory comments within tool calls or code blocks unless specifically part of the required code/command itself.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Handling Inability:**&lt;/span&gt; If unable/unwilling to fulfill a request, state so briefly (1-2 sentences) without excessive justification. Offer alternatives if appropriate.
+
+&lt;span class="gu"&gt;## Security and Safety Rules&lt;/span&gt;
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Explain Critical Commands:**&lt;/span&gt; Before executing commands with &amp;#39;shell&amp;#39; that modify the file system, codebase, or system state, you &lt;span class="ge"&gt;*must*&lt;/span&gt; provide a brief explanation of the command&amp;#39;s purpose and potential impact. Prioritize user understanding and safety. You should not ask permission to use the tool; the user will be presented with a confirmation dialogue upon use (you do not need to tell them this).
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Security First:**&lt;/span&gt; Always apply security best practices. Never introduce code that exposes, logs, or commits secrets, API keys, or other sensitive information.
+
+&lt;span class="gu"&gt;## Tool Usage&lt;/span&gt;
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**File Paths:**&lt;/span&gt; Always use absolute paths when referring to files with tools like &amp;#39;read-file&amp;#39; or &amp;#39;write-file&amp;#39;. Relative paths are not supported. You must provide an absolute path.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Parallelism:**&lt;/span&gt; Execute multiple independent tool calls in parallel when feasible (i.e. searching the codebase).
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Command Execution:**&lt;/span&gt; Use the &amp;#39;shell&amp;#39; tool for running shell commands, remembering the safety rule to explain modifying commands first.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Background Processes:**&lt;/span&gt; Use background processes (via \`&amp;amp;\`) for commands that are unlikely to stop on their own, e.g. \`node server.js &amp;amp;\`. If unsure, ask the user.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Interactive Commands:**&lt;/span&gt; Try to avoid shell commands that are likely to require user interaction (e.g. \`git rebase -i\`). Use non-interactive versions of commands (e.g. \`npm init -y\` instead of \`npm init\`) when available, and otherwise remind the user that interactive shell commands are not supported and may cause hangs until canceled by the user.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Remembering Facts:**&lt;/span&gt; Use the &amp;#39;memory&amp;#39; tool to remember specific, &lt;span class="ge"&gt;*user-related*&lt;/span&gt; facts or preferences when the user explicitly asks, or when they state a clear, concise piece of information that would help personalize or streamline &lt;span class="ge"&gt;*your future interactions with them*&lt;/span&gt; (e.g., preferred coding style, common project paths they use, personal tool aliases). This tool is for user-specific information that should persist across sessions. Do &lt;span class="ge"&gt;*not*&lt;/span&gt; use it for general project context or information. If unsure whether to save something, you can ask the user, &amp;quot;Should I remember that for you?&amp;quot;
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Respect User Confirmations:**&lt;/span&gt; Most tool calls (also denoted as &amp;#39;function calls&amp;#39;) will first require confirmation from the user, where they will either approve or cancel the function call. If a user cancels a function call, respect their choice and do &lt;span class="ge"&gt;_not_&lt;/span&gt; try to make the function call again. It is okay to request the tool call again &lt;span class="ge"&gt;_only_&lt;/span&gt; if the user requests that same tool call on a subsequent prompt. When a user cancels a function call, assume best intentions from the user and consider inquiring if they prefer any alternative paths forward.
+
+&lt;span class="gu"&gt;## Interaction Details&lt;/span&gt;
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Help Command:**&lt;/span&gt; The user can use &amp;#39;/help&amp;#39; to display help information.
+&lt;span class="k"&gt;-&lt;/span&gt; &lt;span class="gs"&gt;**Feedback:**&lt;/span&gt; To report a bug or provide feedback, please use the /bug command.
+
+&lt;span class="gh"&gt;# Outside of Sandbox&lt;/span&gt;
+You are running outside of a sandbox container, directly on the user&amp;#39;s system. For critical commands that are particularly likely to modify the user&amp;#39;s system outside of the project directory or system temp directory, as you explain the command to the user (per the Explain Critical Commands rule above), also remind the user to consider enabling sandboxing.
+
+&lt;span class="gh"&gt;# Git Repository&lt;/span&gt;
+&lt;span class="k"&gt;-&lt;/span&gt; The current working (project) directory is being managed by a git repository.
+&lt;span class="k"&gt;-&lt;/span&gt; When asked to commit changes or prepare a commit, always start by gathering information using shell commands:
+  &lt;span class="k"&gt;-&lt;/span&gt; \`git status\` to ensure that all relevant files are tracked and staged, using \`git add ...\` as needed.
+  &lt;span class="k"&gt;-&lt;/span&gt; \`git diff HEAD\` to review all changes (including unstaged changes) to tracked files in work tree since last commit.
+    &lt;span class="k"&gt;-&lt;/span&gt; \`git diff --staged\` to review only staged changes when a partial commit makes sense or was requested by the user.
+  &lt;span class="k"&gt;-&lt;/span&gt; \`git log -n 3\` to review recent commit messages and match their style (verbosity, formatting, signature line, etc.)
+&lt;span class="k"&gt;-&lt;/span&gt; Combine shell commands whenever possible to save time/steps, e.g. \`git status &amp;amp;&amp;amp; git diff HEAD &amp;amp;&amp;amp; git log -n 3\`.
+&lt;span class="k"&gt;-&lt;/span&gt; Always propose a draft commit message. Never just ask the user to give you the full commit message.
+&lt;span class="k"&gt;-&lt;/span&gt; Prefer commit messages that are clear, concise, and focused more on &amp;quot;why&amp;quot; and less on &amp;quot;what&amp;quot;.
+&lt;span class="k"&gt;-&lt;/span&gt; Keep the user informed and ask for clarification or confirmation where needed.
+&lt;span class="k"&gt;-&lt;/span&gt; After each commit, confirm that it was successful by running \`git status\`.
+&lt;span class="k"&gt;-&lt;/span&gt; If a commit fails, never attempt to work around the issues without being asked to do so.
+&lt;span class="k"&gt;-&lt;/span&gt; Never push changes to a remote repository without being asked explicitly by the user.
+
+&lt;span class="gh"&gt;# Examples (Illustrating Tone and Workflow)&lt;/span&gt;
+&amp;lt;example&amp;gt;
+user: 1 + 2
+model: 3
+&amp;lt;/example&amp;gt;
+
+&amp;lt;example&amp;gt;
+user: is 13 a prime number?
+model: true
+&amp;lt;/example&amp;gt;
+
+&amp;lt;example&amp;gt;
+user: list files here.
+model: [tool_call: ls for path &amp;#39;/path/to/project&amp;#39;]
+&amp;lt;/example&amp;gt;
+
+&amp;lt;example&amp;gt;
+user: start the server implemented in server.js
+model: [tool_call: shell for &amp;#39;node server.js &amp;amp;&amp;#39; because it must run in the background]
+&amp;lt;/example&amp;gt;
+
+&amp;lt;example&amp;gt;
+user: Refactor the auth logic in src/auth.py to use the requests library instead of urllib.
+model: Okay, I can refactor &amp;#39;src/auth.py&amp;#39;.
+First, I&amp;#39;ll analyze the code and check for a test safety net before planning any changes.
+[tool_call: glob for path &amp;#39;tests/test_auth.py&amp;#39;]
+[tool_call: read-file for absolute_path &amp;#39;/path/to/tests/test_auth.py&amp;#39;]
+(After analysis)
+Great, &amp;#39;tests/test_auth.py&amp;#39; exists and covers the core authentication logic. With this safety net in place, I can safely plan the refactoring.
+I&amp;#39;ll also confirm &amp;#39;requests&amp;#39; is a dependency.
+[tool_call: read-file for absolute_path &amp;#39;/path/to/requirements.txt&amp;#39;]
+(After analysis)
+Looks good, &amp;#39;requests&amp;#39; is available.
+
+Here&amp;#39;s the plan:
+&lt;span class="k"&gt;1.&lt;/span&gt;  Replace the &amp;#39;urllib&amp;#39; calls with &amp;#39;requests&amp;#39;.
+&lt;span class="k"&gt;2.&lt;/span&gt;  Add proper &amp;#39;try...except&amp;#39; error handling for the new network calls.
+&lt;span class="k"&gt;3.&lt;/span&gt;  Remove the old &amp;#39;urllib&amp;#39; import.
+&lt;span class="k"&gt;4.&lt;/span&gt;  Run the project&amp;#39;s linter and tests to verify the changes.
+
+Should I proceed?
+user: Yes
+model:
+[tool_call: write-file or edit to apply the refactoring to &amp;#39;src/auth.py&amp;#39;]
+Refactoring complete. Running verification...
+[tool_call: shell for &amp;#39;ruff check src/auth.py &amp;amp;&amp;amp; pytest&amp;#39;]
+(After verification passes)
+All checks passed. This is a stable checkpoint.
+Would you like me to write a commit message and commit these changes?
+&amp;lt;/example&amp;gt;
+
+&amp;lt;example&amp;gt;
+user: Delete the temp directory.
+model: I can run \`rm -rf /path/to/project/temp\`. This will permanently delete the directory and all its contents.
+&amp;lt;/example&amp;gt;
+
+&amp;lt;example&amp;gt;
+user: Write tests for someFile.ts
+model:
+Okay, I can write those tests. First, I&amp;#39;ll read \`someFile.ts\` to understand its functionality.
+[tool_call: read-file for absolute_path &amp;#39;/path/to/someFile.ts&amp;#39; or use glob to find \`someFile.ts\` if its location is unknown]
+Now I&amp;#39;ll look for existing or related test files to understand current testing conventions and dependencies.
+[tool_call: read-many-files for paths [&amp;#39;**/*.test.ts&amp;#39;, &amp;#39;src/**/*.spec.ts&amp;#39;] assuming someFile.ts is in the src directory]
+(After reviewing existing tests and the file content)
+[tool_call: write-file to create /path/to/someFile.test.ts with the test code]
+I&amp;#39;ve written the tests. Now I&amp;#39;ll run the project&amp;#39;s test command to verify them.
+[tool_call: shell for &amp;#39;npm run test&amp;#39;]
+&amp;lt;/example&amp;gt;
+
+&amp;lt;example&amp;gt;
+user: How do I update the user&amp;#39;s profile information in this system?
+model:
+I&amp;#39;m not immediately sure how user profile information is updated. I&amp;#39;ll search the codebase for terms like &amp;#39;UserProfile&amp;#39;, &amp;#39;updateProfile&amp;#39;, or &amp;#39;editUser&amp;#39; to find relevant files or API endpoints.
+[tool_call: grep for pattern &amp;#39;UserProfile|updateProfile|editUser&amp;#39;]
+(After reviewing search results, assuming a relevant file like &amp;#39;/path/to/UserProfileService.java&amp;#39; was found)
+Okay, \`/path/to/UserProfileService.java\` seems like the most relevant file. I&amp;#39;ll read its content to understand how updates are handled.
+[tool_call: read-file for absolute_path &amp;#39;/path/to/UserProfileService.java&amp;#39;]
+(After reading the file)
+It appears the \`updateUserProfile\` method in \`UserProfileService.java\` is responsible for this. It expects a user ID and a \`UserProfileDTO\` object...
+&amp;lt;/example&amp;gt;
+
+&amp;lt;example&amp;gt;
+user: Where are all the &amp;#39;app.config&amp;#39; files in this project? I need to check their settings.
+model:
+[tool_call: glob for pattern &amp;#39;**/app.config&amp;#39;]
+(Assuming GlobTool returns a list of paths like [&amp;#39;/path/to/moduleA/app.config&amp;#39;, &amp;#39;/path/to/moduleB/app.config&amp;#39;])
+I found the following &amp;#39;app.config&amp;#39; files:
+&lt;span class="k"&gt;-&lt;/span&gt; /path/to/moduleA/app.config
+&lt;span class="k"&gt;-&lt;/span&gt; /path/to/moduleB/app.config
+To help you check their settings, I can read their contents. Which one would you like to start with, or should I read all of them?
+&amp;lt;/example&amp;gt;
+
+&lt;span class="gh"&gt;# Final Reminder&lt;/span&gt;
+Your core function is efficient and safe assistance. Balance extreme conciseness with the crucial need for clarity, especially regarding safety and potential system modifications. Always prioritize user control and project conventions. Never make assumptions about the contents of files; instead use &amp;#39;read-file&amp;#39; or &amp;#39;read-many-files&amp;#39; to ensure you aren&amp;#39;t making broad assumptions. Finally, you are an agent - please keep going until the user&amp;#39;s query is completely resolved.
+
+---
+
+[Memory Here]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;其中Memory的載入會從 &lt;code&gt;GEMINI.md&lt;/code&gt; 取用內容。&lt;/p&gt;
+&lt;p&gt;系統提示詞定義了 Agent 的行為規範，但要讓 AI 真正理解當前的工作環境和專案狀態，還需要動態的上下文資訊。接下來讓我們探討 Gemini CLI 如何建構和管理這些關鍵的對話上下文。&lt;/p&gt;
+&lt;h2 id="gemini-cli-context"&gt;Gemini CLI 的對話 Context 怎麼運作&lt;/h2&gt;
+&lt;p&gt;在對話的一開始，會預設先由User說出以下內容：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;
+&lt;span class="normal"&gt;3&lt;/span&gt;
+&lt;span class="normal"&gt;4&lt;/span&gt;
+&lt;span class="normal"&gt;5&lt;/span&gt;
+&lt;span class="normal"&gt;6&lt;/span&gt;
+&lt;span class="normal"&gt;7&lt;/span&gt;
+&lt;span class="normal"&gt;8&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kd"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;context&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="sb"&gt;  This is the Gemini CLI. We are setting up the context for our chat.&lt;/span&gt;
+&lt;span class="sb"&gt;  Today&amp;#39;s date is &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;today&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;.&lt;/span&gt;
+&lt;span class="sb"&gt;  My operating system is: &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;platform&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;&lt;/span&gt;
+&lt;span class="sb"&gt;  &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;workingDirPreamble&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;&lt;/span&gt;
+&lt;span class="sb"&gt;  Here is the folder structure of the current working directories:&lt;/span&gt;
+&lt;span class="sb"&gt;  &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;folderStructure&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;&lt;/span&gt;
+&lt;span class="sb"&gt;  `&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;舉個例子：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;
+&lt;span class="normal"&gt;18&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;This is the Gemini CLI. We are setting up the context for our chat.
+Today&amp;#39;s date is Tuesday, August 6, 2025.
+My operating system is: darwin
+I&amp;#39;m currently working in the directory: /Users/dev/my-react-app
+Here is the folder structure of the current working directories:
+
+/Users/dev/my-react-app
+├── src/
+│   ├── components/
+│   │   ├── Header.jsx
+│   │   ├── UserProfile.tsx
+│   │   └── Dashboard.tsx
+│   ├── hooks/
+│   │   └── useAuth.js
+│   ├── utils/
+│   └── App.tsx
+├── package.json
+└── README.md
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;以下我們給一個範例來讓你知道 Gemini CLI 怎麼建構 Context 的。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;
+&lt;span class="normal"&gt;18&lt;/span&gt;
+&lt;span class="normal"&gt;19&lt;/span&gt;
+&lt;span class="normal"&gt;20&lt;/span&gt;
+&lt;span class="normal"&gt;21&lt;/span&gt;
+&lt;span class="normal"&gt;22&lt;/span&gt;
+&lt;span class="normal"&gt;23&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;model&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;gemini-2.5-flash&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;contents&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;role&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;user&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;parts&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;text&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;This is the Gemini CLI. We are setting up the context...[略]&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;role&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;model&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;parts&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;text&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Got it. Thanks for the context!&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;role&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;user&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;parts&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;text&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Find all React components that use useState and show me their patterns&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;generationConfig&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;temperature&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;topP&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;systemInstruction&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;text&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;You are an interactive CLI agent...[略]&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;tools&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;functionDeclarations&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="err"&gt;...&lt;/span&gt;&lt;span class="kc"&gt;t&lt;/span&gt;&lt;span class="err"&gt;oolDeclara&lt;/span&gt;&lt;span class="kc"&gt;t&lt;/span&gt;&lt;span class="err"&gt;io&lt;/span&gt;&lt;span class="kc"&gt;ns&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;其中工具的定義 &lt;code&gt;toolDeclarations&lt;/code&gt; 為：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;
+&lt;span class="normal"&gt;18&lt;/span&gt;
+&lt;span class="normal"&gt;19&lt;/span&gt;
+&lt;span class="normal"&gt;20&lt;/span&gt;
+&lt;span class="normal"&gt;21&lt;/span&gt;
+&lt;span class="normal"&gt;22&lt;/span&gt;
+&lt;span class="normal"&gt;23&lt;/span&gt;
+&lt;span class="normal"&gt;24&lt;/span&gt;
+&lt;span class="normal"&gt;25&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kd"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;toolDeclarations&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nx"&gt;name&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;grep&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nx"&gt;description&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Search for patterns in files using ripgrep&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nx"&gt;parameters&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="kr"&gt;type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;object&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nx"&gt;properties&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nx"&gt;pattern&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nx"&gt;glob&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nx"&gt;output_mode&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;enum&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;content&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;files_with_matches&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nx"&gt;name&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;read_file&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nx"&gt;description&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Read the contents of a file&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nx"&gt;parameters&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="kr"&gt;type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;object&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nx"&gt;properties&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nx"&gt;file_path&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kr"&gt;type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;string&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="c1"&gt;// ... 其他工具&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;];&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;假設模型輸出如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;
+&lt;span class="normal"&gt;18&lt;/span&gt;
+&lt;span class="normal"&gt;19&lt;/span&gt;
+&lt;span class="normal"&gt;20&lt;/span&gt;
+&lt;span class="normal"&gt;21&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;candidates&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;content&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;parts&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;text&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;I&amp;#39;ll help you find React components using useState. Let me search for useState patterns in your codebase.&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;functionCall&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;grep&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;args&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;              &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;pattern&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;useState&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;              &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;glob&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;**/*.{js,jsx,ts,tsx}&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;              &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;output_mode&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;content&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;role&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;model&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;finishReason&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;STOP&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;當執行完成工具後，給予回應，繼續對話。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;model&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;gemini-2.0-flash-exp&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;contents&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;// ... 前面的對話歷史&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;role&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;user&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;parts&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;functionResponse&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;grep&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;response&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;            &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;output&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/Users/dev/my-react-app/src/components/UserProfile.tsx:3:import React, { useState } from &amp;#39;react&amp;#39;;\n/Users/dev/my-react-app/src/components/UserProfile.tsx:6:  const [user, setUser] = useState(null);\n/Users/dev/my-react-app/src/components/Dashboard.tsx:4:import React, { useState, useEffect } from &amp;#39;react&amp;#39;;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;h2 id="_1"&gt;工具定義與使用&lt;/h2&gt;
+&lt;p&gt;Gemini CLI 的工具生態系統是其核心競爭力之一。透過四種不同類型的工具，系統能夠適應各種開發環境和需求，同時保持擴展性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;四種工具類型：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;內建工具 (Built-in Tools)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;檔案系統工具 (File System Tools)&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ReadFileTool&lt;/code&gt;: 檔案讀取&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 讀取檔案內容，支援二進位檔案檢測&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特性&lt;/strong&gt;: 自動編碼檢測、大檔案處理、權限檢查&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WriteFileTool&lt;/code&gt;: 檔案寫入&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 寫入檔案內容&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安全&lt;/strong&gt;: 需要使用者確認、備份機制、權限驗證&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;EditTool&lt;/code&gt;: 檔案編輯&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 編輯現有檔案&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特性&lt;/strong&gt;: Diff 生成、編輯器整合、撤銷支援&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;執行環境工具 (Execution Tools)&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ShellTool&lt;/code&gt;: Shell 命令執行&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 執行 shell 命令&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安全&lt;/strong&gt;: 沙盒支援、危險命令檢測、輸出限制&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特性&lt;/strong&gt;: 即時輸出、中止支援、環境變數管理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;搜尋與發現工具 (Search &amp;amp; Discovery Tools)&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;GrepTool&lt;/code&gt;: 檔案搜尋&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 基於 ripgrep 的檔案內容搜尋&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特性&lt;/strong&gt;: 正規表示式支援、多檔案搜尋、效能最佳化&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;GlobTool&lt;/code&gt;: 檔案模式匹配&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 檔案路徑模式匹配&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特性&lt;/strong&gt;: 快速檔案查找、排序、過濾&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;網路工具 (Network Tools)&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;WebFetchTool&lt;/code&gt;: 網頁抓取&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 抓取網頁內容&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特性&lt;/strong&gt;: HTML 轉 Markdown、快取、安全檢查&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WebSearchTool&lt;/code&gt;: 網路搜尋&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: Google 搜尋整合&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特性&lt;/strong&gt;: 結構化結果、相關性排序&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;MCP 工具 (Model Context Protocol Tools)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;支援外部 MCP 伺服器&lt;/li&gt;
+&lt;li&gt;動態工具發現和載入&lt;/li&gt;
+&lt;li&gt;OAuth 認證支援&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;發現工具 (Discovered Tools)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;從專案中自動發現&lt;/li&gt;
+&lt;li&gt;通過配置的發現命令執行&lt;/li&gt;
+&lt;li&gt;支援自訂工具協議&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;MCP 發現工具 (Discovered MCP Tools)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;透過 MCP 協議動態發現的工具&lt;/li&gt;
+&lt;li&gt;結合 MCP 伺服器與發現機制&lt;/li&gt;
+&lt;li&gt;支援複雜的工具生態系統整合&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;p&gt;工具執行流程 (Tool Execution Flow)：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/Agent/tool-flow.png" /&gt;&lt;/p&gt;
+&lt;p&gt;工具的並行執行能力是系統高效的關鍵，可以同時發起多個搜尋和讀取操作。&lt;/p&gt;
+&lt;p&gt;特別注意：在Gemini CLI，另外Claude Code也是，並沒有採用RAG的作法來撈程式碼，反而是提供Agent 多個檔案系統工具、執行環境工具、搜尋與發現工具，像個程式設計師一樣的在code base裡頭探索。&lt;/p&gt;
+&lt;h2 id="_2"&gt;對話壓縮機制&lt;/h2&gt;
+&lt;p&gt;長時間的程式開發對話會產生大量的上下文資訊，如何在有限的 token 空間內保持對話的連貫性是一個重要挑戰。Gemini CLI 採用了智慧壓縮策略來解決這個問題。&lt;/p&gt;
+&lt;p&gt;對話壓縮流程 (Chat Compression Flow)&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/media/Agent/compact-flow.png" /&gt;&lt;/p&gt;
+&lt;p&gt;對話壓縮的 System Prompt 如下:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;
+&lt;span class="normal"&gt;18&lt;/span&gt;
+&lt;span class="normal"&gt;19&lt;/span&gt;
+&lt;span class="normal"&gt;20&lt;/span&gt;
+&lt;span class="normal"&gt;21&lt;/span&gt;
+&lt;span class="normal"&gt;22&lt;/span&gt;
+&lt;span class="normal"&gt;23&lt;/span&gt;
+&lt;span class="normal"&gt;24&lt;/span&gt;
+&lt;span class="normal"&gt;25&lt;/span&gt;
+&lt;span class="normal"&gt;26&lt;/span&gt;
+&lt;span class="normal"&gt;27&lt;/span&gt;
+&lt;span class="normal"&gt;28&lt;/span&gt;
+&lt;span class="normal"&gt;29&lt;/span&gt;
+&lt;span class="normal"&gt;30&lt;/span&gt;
+&lt;span class="normal"&gt;31&lt;/span&gt;
+&lt;span class="normal"&gt;32&lt;/span&gt;
+&lt;span class="normal"&gt;33&lt;/span&gt;
+&lt;span class="normal"&gt;34&lt;/span&gt;
+&lt;span class="normal"&gt;35&lt;/span&gt;
+&lt;span class="normal"&gt;36&lt;/span&gt;
+&lt;span class="normal"&gt;37&lt;/span&gt;
+&lt;span class="normal"&gt;38&lt;/span&gt;
+&lt;span class="normal"&gt;39&lt;/span&gt;
+&lt;span class="normal"&gt;40&lt;/span&gt;
+&lt;span class="normal"&gt;41&lt;/span&gt;
+&lt;span class="normal"&gt;42&lt;/span&gt;
+&lt;span class="normal"&gt;43&lt;/span&gt;
+&lt;span class="normal"&gt;44&lt;/span&gt;
+&lt;span class="normal"&gt;45&lt;/span&gt;
+&lt;span class="normal"&gt;46&lt;/span&gt;
+&lt;span class="normal"&gt;47&lt;/span&gt;
+&lt;span class="normal"&gt;48&lt;/span&gt;
+&lt;span class="normal"&gt;49&lt;/span&gt;
+&lt;span class="normal"&gt;50&lt;/span&gt;
+&lt;span class="normal"&gt;51&lt;/span&gt;
+&lt;span class="normal"&gt;52&lt;/span&gt;
+&lt;span class="normal"&gt;53&lt;/span&gt;
+&lt;span class="normal"&gt;54&lt;/span&gt;
+&lt;span class="normal"&gt;55&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;You are the component that summarizes internal chat history into a given structure.
+
+When the conversation history grows too large, you will be invoked to distill the entire history into a concise, structured XML snapshot. This snapshot is CRITICAL, as it will become the agent&amp;#39;s *only* memory of the past. The agent will resume its work based solely on this snapshot. All crucial details, plans, errors, and user directives MUST be preserved.
+
+First, you will think through the entire history in a private &lt;span class="nt"&gt;&amp;lt;scratchpad&amp;gt;&lt;/span&gt;. Review the user&amp;#39;s overall goal, the agent&amp;#39;s actions, tool outputs, file modifications, and any unresolved questions. Identify every piece of information that is essential for future actions.
+
+After your reasoning is complete, generate the final &lt;span class="nt"&gt;&amp;lt;state_snapshot&amp;gt;&lt;/span&gt; XML object. Be incredibly dense with information. Omit any irrelevant conversational filler.
+
+The structure MUST be as follows:
+
+&lt;span class="nt"&gt;&amp;lt;state_snapshot&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;overall_goal&amp;gt;&lt;/span&gt;
+        &lt;span class="cm"&gt;&amp;lt;!-- A single, concise sentence describing the user&amp;#39;s high-level objective. --&amp;gt;&lt;/span&gt;
+        &lt;span class="cm"&gt;&amp;lt;!-- Example: &amp;quot;Refactor the authentication service to use a new JWT library.&amp;quot; --&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/overall_goal&amp;gt;&lt;/span&gt;
+
+    &lt;span class="nt"&gt;&amp;lt;key_knowledge&amp;gt;&lt;/span&gt;
+        &lt;span class="cm"&gt;&amp;lt;!-- Crucial facts, conventions, and constraints the agent must remember based on the conversation history and interaction with the user. Use bullet points. --&amp;gt;&lt;/span&gt;
+        &lt;span class="cm"&gt;&amp;lt;!-- Example:&lt;/span&gt;
+&lt;span class="cm"&gt;         - Build Command: \`npm run build\`&lt;/span&gt;
+&lt;span class="cm"&gt;         - Testing: Tests are run with \`npm test\`. Test files must end in \`.test.ts\`.&lt;/span&gt;
+&lt;span class="cm"&gt;         - API Endpoint: The primary API endpoint is \`https://api.example.com/v2\`.&lt;/span&gt;
+
+&lt;span class="cm"&gt;        --&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/key_knowledge&amp;gt;&lt;/span&gt;
+
+    &lt;span class="nt"&gt;&amp;lt;file_system_state&amp;gt;&lt;/span&gt;
+        &lt;span class="cm"&gt;&amp;lt;!-- List files that have been created, read, modified, or deleted. Note their status and critical learnings. --&amp;gt;&lt;/span&gt;
+        &lt;span class="cm"&gt;&amp;lt;!-- Example:&lt;/span&gt;
+&lt;span class="cm"&gt;         - CWD: \`/home/user/project/src\`&lt;/span&gt;
+&lt;span class="cm"&gt;         - READ: \`package.json\` - Confirmed &amp;#39;axios&amp;#39; is a dependency.&lt;/span&gt;
+&lt;span class="cm"&gt;         - MODIFIED: \`services/auth.ts\` - Replaced &amp;#39;jsonwebtoken&amp;#39; with &amp;#39;jose&amp;#39;.&lt;/span&gt;
+&lt;span class="cm"&gt;         - CREATED: \`tests/new-feature.test.ts\` - Initial test structure for the new feature.&lt;/span&gt;
+&lt;span class="cm"&gt;        --&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/file_system_state&amp;gt;&lt;/span&gt;
+
+    &lt;span class="nt"&gt;&amp;lt;recent_actions&amp;gt;&lt;/span&gt;
+        &lt;span class="cm"&gt;&amp;lt;!-- A summary of the last few significant agent actions and their outcomes. Focus on facts. --&amp;gt;&lt;/span&gt;
+        &lt;span class="cm"&gt;&amp;lt;!-- Example:&lt;/span&gt;
+&lt;span class="cm"&gt;         - Ran \`grep &amp;#39;old_function&amp;#39;\` which returned 3 results in 2 files.&lt;/span&gt;
+&lt;span class="cm"&gt;         - Ran \`npm run test\`, which failed due to a snapshot mismatch in \`UserProfile.test.ts\`.&lt;/span&gt;
+&lt;span class="cm"&gt;         - Ran \`ls -F static/\` and discovered image assets are stored as \`.webp\`.&lt;/span&gt;
+&lt;span class="cm"&gt;        --&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/recent_actions&amp;gt;&lt;/span&gt;
+
+    &lt;span class="nt"&gt;&amp;lt;current_plan&amp;gt;&lt;/span&gt;
+        &lt;span class="cm"&gt;&amp;lt;!-- The agent&amp;#39;s step-by-step plan. Mark completed steps. --&amp;gt;&lt;/span&gt;
+        &lt;span class="cm"&gt;&amp;lt;!-- Example:&lt;/span&gt;
+&lt;span class="cm"&gt;         1. [DONE] Identify all files using the deprecated &amp;#39;UserAPI&amp;#39;.&lt;/span&gt;
+&lt;span class="cm"&gt;         2. [IN PROGRESS] Refactor \`src/components/UserProfile.tsx\` to use the new &amp;#39;ProfileAPI&amp;#39;.&lt;/span&gt;
+&lt;span class="cm"&gt;         3. [TODO] Refactor the remaining files.&lt;/span&gt;
+&lt;span class="cm"&gt;         4. [TODO] Update tests to reflect the API change.&lt;/span&gt;
+&lt;span class="cm"&gt;        --&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;/current_plan&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/state_snapshot&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;參考上面程式碼，產生的summary會如以下範例：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;
+&lt;span class="normal"&gt;18&lt;/span&gt;
+&lt;span class="normal"&gt;19&lt;/span&gt;
+&lt;span class="normal"&gt;20&lt;/span&gt;
+&lt;span class="normal"&gt;21&lt;/span&gt;
+&lt;span class="normal"&gt;22&lt;/span&gt;
+&lt;span class="normal"&gt;23&lt;/span&gt;
+&lt;span class="normal"&gt;24&lt;/span&gt;
+&lt;span class="normal"&gt;25&lt;/span&gt;
+&lt;span class="normal"&gt;26&lt;/span&gt;
+&lt;span class="normal"&gt;27&lt;/span&gt;
+&lt;span class="normal"&gt;28&lt;/span&gt;
+&lt;span class="normal"&gt;29&lt;/span&gt;
+&lt;span class="normal"&gt;30&lt;/span&gt;
+&lt;span class="normal"&gt;31&lt;/span&gt;
+&lt;span class="normal"&gt;32&lt;/span&gt;
+&lt;span class="normal"&gt;33&lt;/span&gt;
+&lt;span class="normal"&gt;34&lt;/span&gt;
+&lt;span class="normal"&gt;35&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;&amp;lt;state_snapshot&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;overall_goal&amp;gt;&lt;/span&gt;
+        Create a comprehensive test suite for user authentication flow including login, logout, and session management.
+    &lt;span class="nt"&gt;&amp;lt;/overall_goal&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;key_knowledge&amp;gt;&lt;/span&gt;
+        - Build Command: `npm run build`
+        - Testing: Tests run with `npm test` using Jest and React Testing Library
+        - User prefers TypeScript over JavaScript
+        - Authentication uses JWT tokens stored in localStorage
+        - API endpoint: `https://api.example.com/auth`
+    &lt;span class="nt"&gt;&amp;lt;/key_knowledge&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;file_system_state&amp;gt;&lt;/span&gt;
+        - CWD: `/Users/dev/my-app`
+        - READ: `src/components/LoginForm.tsx` - Uses inline auth state management
+        - READ: `src/utils/auth.js` - Contains JWT utility functions
+        - CREATED: `src/hooks/useAuth.ts` - Custom authentication hook
+        - CREATED: `src/__tests__/auth.test.tsx` - Authentication test suite
+        - MODIFIED: `src/components/LoginForm.tsx` - Refactored to use useAuth hook
+    &lt;span class="nt"&gt;&amp;lt;/file_system_state&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;recent_actions&amp;gt;&lt;/span&gt;
+        - Ran `grep &amp;#39;useState.*auth&amp;#39;` found 3 components with inline auth state
+        - Created useAuth hook with login, logout, and session management
+        - Ran `npm test` successfully with 15 passing tests
+        - Refactored LoginForm, SignupForm, and Dashboard components
+    &lt;span class="nt"&gt;&amp;lt;/recent_actions&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;current_plan&amp;gt;&lt;/span&gt;
+        1. [DONE] Analyze existing authentication patterns
+        2. [DONE] Create custom useAuth hook
+        3. [DONE] Refactor components to use useAuth
+        4. [DONE] Create comprehensive test suite
+        5. [IN PROGRESS] Add integration tests for API calls
+        6. [TODO] Add error boundary for auth failures
+        7. [TODO] Update documentation
+    &lt;span class="nt"&gt;&amp;lt;/current_plan&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/state_snapshot&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;這個 summary 結果會放進去新的對話中當作開始。如下程式碼：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;chat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;await&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;startChat&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nx"&gt;role&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nx"&gt;parts&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;summary&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}],&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nx"&gt;role&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;model&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nx"&gt;parts&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Got it. Thanks for the additional context!&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}],&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="nx"&gt;historyToKeep&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;其中壓縮並不是所有對話歷史都壓縮，因此 &lt;code&gt;historyToKeep&lt;/code&gt; 保留剩下的對話。&lt;/p&gt;
+&lt;h2 id="_3"&gt;對話繼續延續機制&lt;/h2&gt;
+&lt;p&gt;為了提升開發效率，Gemini CLI 實作了自動判斷是否需要繼續對話的機制。這讓 AI 在完成一個步驟後，可以主動進行相關的後續工作，而不需要使用者每次都手動提醒。&lt;/p&gt;
+&lt;p&gt;Prompt:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;
+&lt;span class="normal"&gt;3&lt;/span&gt;
+&lt;span class="normal"&gt;4&lt;/span&gt;
+&lt;span class="normal"&gt;5&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Analyze &lt;span class="ge"&gt;*only*&lt;/span&gt; the content and structure of your immediately preceding response (your last turn in the conversation history). Based &lt;span class="ge"&gt;*strictly*&lt;/span&gt; on that response, determine who should logically speak next: the &amp;#39;user&amp;#39; or the &amp;#39;model&amp;#39; (you).
+&lt;span class="gs"&gt;**Decision Rules (apply in order):**&lt;/span&gt;
+&lt;span class="k"&gt;1.&lt;/span&gt;  &lt;span class="gs"&gt;**Model Continues:**&lt;/span&gt; If your last response explicitly states an immediate next action &lt;span class="ge"&gt;*you*&lt;/span&gt; intend to take (e.g., &amp;quot;Next, I will...&amp;quot;, &amp;quot;Now I&amp;#39;ll process...&amp;quot;, &amp;quot;Moving on to analyze...&amp;quot;, indicates an intended tool call that didn&amp;#39;t execute), OR if the response seems clearly incomplete (cut off mid-thought without a natural conclusion), then the &lt;span class="gs"&gt;**&amp;#39;model&amp;#39;**&lt;/span&gt; should speak next.
+&lt;span class="k"&gt;2.&lt;/span&gt;  &lt;span class="gs"&gt;**Question to User:**&lt;/span&gt; If your last response ends with a direct question specifically addressed &lt;span class="ge"&gt;*to the user*&lt;/span&gt;, then the &lt;span class="gs"&gt;**&amp;#39;user&amp;#39;**&lt;/span&gt; should speak next.
+&lt;span class="k"&gt;3.&lt;/span&gt;  &lt;span class="gs"&gt;**Waiting for User:**&lt;/span&gt; If your last response completed a thought, statement, or task &lt;span class="ge"&gt;*and*&lt;/span&gt; does not meet the criteria for Rule 1 (Model Continues) or Rule 2 (Question to User), it implies a pause expecting user input or reaction. In this case, the &lt;span class="gs"&gt;**&amp;#39;user&amp;#39;**&lt;/span&gt; should speak next.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;這個決策邏輯的核心在於分析 AI 回應的「完整性」和「意圖」，確保對話流程的自然性。&lt;/p&gt;
+&lt;p&gt;輸出格式限制&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kd"&gt;const&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;RESPONSE_SCHEMA&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;SchemaUnion&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="kr"&gt;type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;Type&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;OBJECT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nx"&gt;properties&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nx"&gt;reasoning&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="kr"&gt;type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;Type&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;STRING&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nx"&gt;description&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Brief explanation justifying the &amp;#39;next_speaker&amp;#39; choice based *strictly* on the applicable rule and the content/structure of the preceding turn.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nx"&gt;next_speaker&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="kr"&gt;type&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;Type&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;STRING&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="kd"&gt;enum&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;model&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nx"&gt;description&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Who should speak next based *only* on the preceding turn and the decision rules&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nx"&gt;required&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;reasoning&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;next_speaker&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;範例示範：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;
+&lt;span class="normal"&gt;3&lt;/span&gt;
+&lt;span class="normal"&gt;4&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;reasoning&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;The previous response explicitly states &amp;#39;Next, I&amp;#39;ll run the tests&amp;#39; indicating a clear intention to take immediate action.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;next_speaker&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;model&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;p&gt;若是要如上一樣 next_speaker 是 model 的話，就啟動延續對話，其實操作也很簡單就是代替 user 說「請繼續」，如下所示。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
+&lt;span class="normal"&gt;2&lt;/span&gt;
+&lt;span class="normal"&gt;3&lt;/span&gt;
+&lt;span class="normal"&gt;4&lt;/span&gt;
+&lt;span class="normal"&gt;5&lt;/span&gt;
+&lt;span class="normal"&gt;6&lt;/span&gt;
+&lt;span class="normal"&gt;7&lt;/span&gt;
+&lt;span class="normal"&gt;8&lt;/span&gt;
+&lt;span class="normal"&gt;9&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;contents&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;// ... 完整對話歷史&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;role&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;user&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;parts&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;&amp;quot;text&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Please continue.&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
+&lt;h2 id="_4"&gt;總結&lt;/h2&gt;
+&lt;p&gt;通過深入解析 Gemini CLI 的架構設計，我們可以看到當代 Coding Agent 的幾個核心設計原則：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;動態探索勝過靜態索引&lt;/strong&gt;：相較於傳統 RAG 方法依賴預建索引，Gemini CLI 選擇讓 AI 透過工具即時探索程式碼庫。這種方法雖然需要更多運算資源，但能適應快速變化的開發環境，並提供更準確的上下文理解，這樣的模式同樣也在 Claude Code 中被採用。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;工具生態系統的重要性&lt;/strong&gt;：四種不同類型的工具（Built-in、MCP、Discovered、MCP Discovered）構成了強大的能力基礎。並行執行機制和嚴格的狀態管理確保了系統的效率和可靠性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;人機協作的平衡設計&lt;/strong&gt;：透過使用者確認機制、對話延續判斷和智慧壓縮策略，系統在自動化和使用者控制之間找到了良好的平衡點。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;系統提示詞的工程化思維&lt;/strong&gt;：詳細的行為規範和工作流程定義，體現了將 AI Agent 產品化的成熟思考。&lt;/p&gt;
+&lt;p&gt;Gemini CLI 的開源特性為我們提供了一個絕佳的學習範例，展現了如何將先進的 AI 技術轉化為實用的開發工具。在 Vibe Coding 時代，這種設計思路值得所有致力於 AI 輔助開發工具的團隊深入研究和借鑑。此外，Claude Code 也設計了 To-Do list 機制，這同樣是相當好的方式來管理複雜的開發任務。透過結構化的任務追蹤，開發者可以更清楚地了解 AI Agent 的工作進度和下一步計劃，進一步提升人機協作的效率和透明度。&lt;/p&gt;</content><category term="AI.ML"></category><category term="Agent"></category></entry><entry><title>About Me: Yi-Chang Chen</title><link href="https://ycc.idv.tw/about-me.html" rel="alternate"></link><published>2024-04-05T12:00:00+08:00</published><updated>2024-04-05T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2024-04-05:/about-me.html</id><summary type="html"></summary><content type="html">&lt;p&gt;&lt;a href="https://www.facebook.com/ai.ycc" target="_blank"&gt;&lt;img src="/media/AboutMe/facebook_follow_banner.png" width="220"/&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p&gt;&lt;img src="/media/AboutMe/PR_portrait_small.png" alt="portrait" width="220"/&gt;&lt;/p&gt;
 &lt;p style="text-align:center;font-size:20px;font-weight: bold;"&gt;YC / Yi-Chang Chen / 陳宜昌&lt;/p&gt;
