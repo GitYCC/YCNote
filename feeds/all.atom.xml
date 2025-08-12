@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>YC Note</title><link href="https://ycc.idv.tw/" rel="alternate"></link><link href="https://ycc.idv.tw/feeds/all.atom.xml" rel="self"></link><id>https://ycc.idv.tw/</id><updated>2025-08-12T12:00:00+08:00</updated><subtitle>ML/DL Tech Blog</subtitle><entry><title>About Me: Yi-Chang Chen</title><link href="https://ycc.idv.tw/about-me.html" rel="alternate"></link><published>2025-08-12T12:00:00+08:00</published><updated>2025-08-12T12:00:00+08:00</updated><author><name>YC Chen</name></author><id>tag:ycc.idv.tw,2025-08-12:/about-me.html</id><summary type="html"></summary><content type="html">&lt;p style="display: flex; gap: 10px;"&gt;
   &lt;a href="https://www.facebook.com/ai.ycc" target="_blank"&gt;
-    &lt;img src="/media/AboutMe/facebook_follow_banner.png" height="50"&gt;
+    &lt;img src="/media/AboutMe/facebook_follow_banner.png" height="48"&gt;
   &lt;/a&gt;
   &lt;a href="https://www.youtube.com/@YC-Booster" target="_blank"&gt;
-    &lt;img src="/media/AboutMe/youtube_follow_banner.png" height="50"&gt;
+    &lt;img src="/media/AboutMe/youtube_follow_banner.png" height="48"&gt;
   &lt;/a&gt;
 &lt;/p&gt;
 
@@ -34,9 +34,9 @@
 📌 Ur Warm Pet Cafe, Resident Singer | Mar. 2017 - Mar. 2018 @Hsinchu, Taiwan&lt;br /&gt;
 📌 TSMC, Photo Lithography Software R&amp;amp;D Engineer | Nov. 2015 - Mar. 2018 @Hsinchu, Taiwan  &lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;PUBLICATIONS&lt;/strong&gt;&lt;br /&gt;
-📌 Chan-Jan Hsu&lt;em&gt;, Yi-Chang Chen&lt;/em&gt;, Feng-Ting Liao, Pei-Chen Ho, Yu-Hsiang Wang, Po-Chun Hsu, Da-shan Shiu, “Let's Fuse Step by Step: A Generative Fusion Decoding Algorithm with LLMs for Robust and Instruction-Aware ASR and OCR,” in &lt;em&gt;Findings of ACL&lt;/em&gt;, 2025. [&lt;a href="https://aclanthology.org/2025.findings-acl.1281/"&gt;Paper&lt;/a&gt;][&lt;a href="https://github.com/mtkresearch/generative-fusion-decoding"&gt;Code&lt;/a&gt;] &lt;br /&gt;
-📌 Liang-Hsuan Tseng&lt;em&gt;, Yi-Chang Chen&lt;/em&gt;, Kuan-Yi Lee, Da-Shan Shiu, Hung-yi Lee, “TASTE: Text-Aligned Speech Tokenization and Embedding for Spoken Language Modeling,” in &lt;em&gt;Arxiv&lt;/em&gt;, 2025. [&lt;a href="https://arxiv.org/abs/2504.07053"&gt;Paper&lt;/a&gt;][&lt;a href="https://mtkresearch.github.io/TASTE-SpokenLM.github.io/"&gt;Overview&lt;/a&gt;] &lt;br /&gt;
-📌 Feng-Ting Liao, Yung-Chieh Chan, Yi-Chang Chen, Chan-Jan Hsu, Da-shan Shiu, “Zero-shot Domain-sensitive Speech Recognition with Prompt-conditioning Fine-tuning,” in &lt;em&gt;ASRU&lt;/em&gt;, 2023. [&lt;a href="https://ieeexplore.ieee.org/document/10389617"&gt;Paper&lt;/a&gt;][&lt;a href="https://github.com/mtkresearch/clairaudience"&gt;Code&lt;/a&gt;]  &lt;br /&gt;
+📌 Chan-Jan Hsu*, Yi-Chang Chen*, Feng-Ting Liao, Pei-Chen Ho, Yu-Hsiang Wang, Po-Chun Hsu, Da-shan Shiu, “Let's Fuse Step by Step: A Generative Fusion Decoding Algorithm with LLMs for Robust and Instruction-Aware ASR and OCR,” in &lt;em&gt;Findings of ACL&lt;/em&gt;, 2025. [&lt;a href="https://aclanthology.org/2025.findings-acl.1281/"&gt;Paper&lt;/a&gt;][&lt;a href="https://github.com/mtkresearch/generative-fusion-decoding"&gt;Code&lt;/a&gt;] &lt;br /&gt;
+📌 Liang-Hsuan Tseng*, Yi-Chang Chen*, Kuan-Yi Lee, Da-Shan Shiu, Hung-yi Lee, “TASTE: Text-Aligned Speech Tokenization and Embedding for Spoken Language Modeling,” in &lt;em&gt;Arxiv&lt;/em&gt;, 2025. [&lt;a href="https://arxiv.org/abs/2504.07053"&gt;Paper&lt;/a&gt;][&lt;a href="https://mtkresearch.github.io/TASTE-SpokenLM.github.io/"&gt;Overview&lt;/a&gt;] &lt;br /&gt;
+📌 Feng-Ting Liao*, Yung-Chieh Chan*, Yi-Chang Chen, Chan-Jan Hsu, Da-shan Shiu, “Zero-shot Domain-sensitive Speech Recognition with Prompt-conditioning Fine-tuning,” in &lt;em&gt;ASRU&lt;/em&gt;, 2023. [&lt;a href="https://ieeexplore.ieee.org/document/10389617"&gt;Paper&lt;/a&gt;][&lt;a href="https://github.com/mtkresearch/clairaudience"&gt;Code&lt;/a&gt;]  &lt;br /&gt;
 📌 Yi-Chang Chen, Yu-Chuan Chang, Yen-Cheng Chang, and Yi-Ren Yeh, “g2pW: A Conditional Weighted Softmax BERT for Polyphone Disambiguation in Mandarin,” in &lt;em&gt;INTERSPEECH&lt;/em&gt;, 2022. [&lt;a href="https://www.isca-archive.org/interspeech_2022/chen22d_interspeech.html"&gt;Paper&lt;/a&gt;][&lt;a href="https://github.com/GitYCC/g2pW"&gt;Code&lt;/a&gt;]&lt;br /&gt;
 📌 Yen-Cheng Chang, Yi-Chang Chen, Yu-Chuan Chang, and Yi-Ren Yeh, “SMILE: Sequence-to-Sequence Domain Adaptation with Minimizing Latent Entropy for Text Image Recognition,” in &lt;em&gt;ICIP&lt;/em&gt;, 2022. [&lt;a href="https://ieeexplore.ieee.org/document/9897599/"&gt;Paper&lt;/a&gt;]&lt;br /&gt;
 📌 Yi-Chang Chen, Yu-Chuan Chang, Yen-Cheng Chang, and Yi-Ren Yeh, “Traditional Chinese Synthetic Datasets Verified with Labeled Data for Scene Text Recognition,” in &lt;em&gt;DLVDR Workshop on ICPR&lt;/em&gt;, 2022. [&lt;a href="https://arxiv.org/abs/2111.13327"&gt;Paper&lt;/a&gt;][&lt;a href="https://github.com/esun-ai/traditional-chinese-text-recogn-dataset"&gt;Code&lt;/a&gt;]&lt;br /&gt;
