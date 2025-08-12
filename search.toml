@@ -3,14 +3,14 @@ base_directory = "/Users/yi-changchen/Workspace/YCNote/output"
 html_selector = "div.main-contents"
 
 [[input.files]]
-path = "gemini-cli-agent-explore.html"
-url = "/gemini-cli-agent-explore.html"
-title = "從解析 Gemini CLI 窺探當代 Coding Agent 的架構設計"
-
-[[input.files]]
 path = "about-me.html"
 url = "/about-me.html"
 title = "About Me: Yi-Chang Chen"
+
+[[input.files]]
+path = "gemini-cli-agent-explore.html"
+url = "/gemini-cli-agent-explore.html"
+title = "從解析 Gemini CLI 窺探當代 Coding Agent 的架構設計"
 
 [[input.files]]
 path = "multithread-multiprocess-gil.html"

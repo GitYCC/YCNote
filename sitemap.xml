@@ -5,21 +5,21 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://ycc.idv.tw/</loc>
-<lastmod>2025-08-09T22:24:52-00:00</lastmod>
+<lastmod>2025-08-12T09:04:15-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.2</priority>
 </url>
 
 <url>
-<loc>https://ycc.idv.tw/gemini-cli-agent-explore.html</loc>
-<lastmod>2025-08-09T12:00:00+08:00</lastmod>
+<loc>https://ycc.idv.tw/about-me.html</loc>
+<lastmod>2025-08-12T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>1.0</priority>
 </url>
 
 <url>
-<loc>https://ycc.idv.tw/about-me.html</loc>
-<lastmod>2024-04-05T12:00:00+08:00</lastmod>
+<loc>https://ycc.idv.tw/gemini-cli-agent-explore.html</loc>
+<lastmod>2025-08-09T12:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>1.0</priority>
 </url>
@@ -404,7 +404,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://ycc.idv.tw/category/life.html</loc>
-<lastmod>2024-04-05T12:00:00+08:06</lastmod>
+<lastmod>2025-08-12T12:00:00+08:06</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.2</priority>
 </url>
