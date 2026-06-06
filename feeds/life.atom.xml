@@ -9,7 +9,7 @@
 &lt;/p&gt;
 
 &lt;hr /&gt;
-&lt;p&gt;&lt;img src="/media/AboutMe/PR_portrait_small.png" alt="portrait" width="220"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/media/AboutMe/PR_portrait_small.png" alt="portrait" width="220" style="border-radius: 50%; object-fit: cover;"/&gt;&lt;/p&gt;
 &lt;p style="text-align:center;font-size:20px;font-weight: bold;"&gt;YC / Yi-Chang Chen / 陳宜昌&lt;/p&gt;
 
 &lt;p&gt;YC is the CEO &amp;amp; Founder of Noopher AI — a company dedicated to solving real-world problems backed by deep AI research. He has over 8 years of R&amp;amp;D experience in machine learning — spanning multiple industries (semiconductor, finance, and marketing) and roles (backend engineer, ML engineer, and AI researcher) — with a focus on language, visual, and speech AI. With 5 years of leadership experience leading R&amp;amp;D teams of up to 5 researchers, he has successfully brought projects from research to production, pioneering multiple Taiwan-first open-source AI systems — Breeze (LLM), BreezyVoice (TTS with voice cloning), and BreezeASR-Taigi (Taigi speech recognition). He has published 8 AI papers at top-tier conferences including ICLR (one of the top venues in machine learning), ACL, and INTERSPEECH, accumulating 100+ academic citations.&lt;/p&gt;
