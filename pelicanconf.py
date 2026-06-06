@@ -5,13 +5,13 @@ LOG_FILTER = [(logging.WARN, 'Empty alt attribute for image %s in %s')]
 
 AUTHOR = 'Yi-Chang Chen'
 SITEURL = ' '
-SITENAME = 'YC Note'
-SITETITLE = 'YC Note'
-SITESUBTITLE = 'ML/DL Tech Blog'
-SITEDESCRIPTION = '[ YC Note - ML/DL Tech Blog ] Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I built this blog for anyone interested in data science and machine learning.'
+SITENAME = 'YC\'s Note'
+SITETITLE = 'YC\'s Note'
+SITESUBTITLE = 'AI Tech. Blog'
+SITEDESCRIPTION = '[ YC Note - ML/DL Tech Blog ] Hello, I am YC, CEO & Founder of Noopher AI, an AI researcher with 8+ years of R&D experience in language, visual, and speech AI. '
 
-SITEDESC1 = "Hello, I am YC, an ML engineer/researcher with experience in CV, NLP/NLU, and Recommender. I also have experience in high-QPS ML systems. In my spare time, I'm a blogger and guitar singer."
-SITEDESC2 = "This blog is a resource for anyone interested in data science and machine learning, featuring tutorials, research papers, and the latest industry technologies."
+SITEDESC1 = "YC is the CEO & Founder of Noopher AI — a company dedicated to solving real-world problems backed by deep AI research. He has over 8 years of R&D experience in machine learning — spanning multiple industries (semiconductor, finance, and marketing) and roles (backend engineer, ML engineer, and AI researcher) — with a focus on language, visual, and speech AI. With 5 years of leadership experience leading R&D teams of up to 5 researchers, he has successfully brought projects from research to production, pioneering multiple Taiwan-first open-source AI systems — Breeze (LLM), BreezyVoice (TTS with voice cloning), and BreezeASR-Taigi (Taigi speech recognition). He has published 8 AI papers at top-tier conferences including ICLR, ACL, and INTERSPEECH, accumulating 100+ academic citations."
+SITEDESC2 = ""
 
 # SITELOGO = ''
 FAVICON = '/images/favicon.png'
@@ -95,7 +95,8 @@ HOME_HIDE_TAGS = True
 GITHUB_CORNER_URL = ''
 
 SOCIAL = (
-    ('facebook', 'https://www.facebook.com/yc.note'),
+    ('facebook', 'https://www.facebook.com/ai.ycc'),
+    ('youtube', 'https://www.youtube.com/@YC-more'),
     ('github', 'https://github.com/GitYCC'),
     ('linkedin', 'https://www.linkedin.com/in/yi-chang-chen-aba1b6114/'),
 )
